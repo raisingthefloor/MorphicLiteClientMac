@@ -1,0 +1,14 @@
+//
+//  Release.xcconfig
+//  MorphicMenuBar
+//
+//  Created by Owen Shaw on 2/25/20.
+//  Copyright © 2020 Raising the Floor. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+// It's a pain, but values here cannot contain //, so the most used hack
+// is to put an empty variable between the two slashes in the URL
+MORPHIC_SERVICE_ENDPOINT=https:/$()/morphic-lite.raisingthefloor.org/

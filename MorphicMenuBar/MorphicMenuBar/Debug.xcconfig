@@ -1,0 +1,25 @@
+//
+//  Debug.xcconfig
+//  MorphicMenuBar
+//
+//  Created by Owen Shaw on 2/25/20.
+//  Copyright © 2020 Raising the Floor. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+
+// The root endpoint URL for the Morphic HTTP service
+//
+// If you need a different URL in your local development environment, create
+// a Local.xcconfig file and provide your own value there.
+//
+// Local.xcconfig is already setup in .gitignore so your personal settings
+// will never be added to the shared git environment.
+//
+// And it's a pain, but values here cannot contain //, so the most used hack
+// is to put an empty variable between the two slashes in the URL
+MORPHIC_SERVICE_ENDPOINT=http:/$()/localhost:8000/
+
+#include? "Local.xcconfig"
