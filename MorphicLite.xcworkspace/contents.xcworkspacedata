@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:MorphicMenuBar/MorphicMenuBar.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:MorphicCore/MorphicCore.xcodeproj">
    </FileRef>
    <FileRef
@@ -9,8 +12,5 @@
    </FileRef>
    <FileRef
       location = "group:MorphicSettings/MorphicSettings.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:MorphicMenuBar/MorphicMenuBar.xcodeproj">
    </FileRef>
 </Workspace>
