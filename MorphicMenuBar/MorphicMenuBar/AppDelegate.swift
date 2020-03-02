@@ -74,7 +74,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     // MARK: - Quick Strip
     
     /// The window controller for the morphic quick strip that is shown by clicking on the `statusItem`
-    var quickStripController: NSWindowController?
+    var quickStripWindow: NSWindow?
     
     /// Show or hide the morphic quick strip
     ///
@@ -84,20 +84,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         guard let button = sender as? NSButton else{
             return
         }
-        if let controller = quickStripController{
-            controller.close()
+        if let window = quickStripWindow{
+            window.close()
         }else{
             NSApplication.shared.activate(ignoringOtherApps: true)
+            quickStripWindow = QuickStripWindow()
             let location = button.window!.convertPoint(toScreen: button.convert(NSPoint(x: 0, y: button.bounds.size.height), to: nil))
-            let storyboard = NSStoryboard(name: "QuickStrip", bundle: nil)
-            guard let controller = storyboard.instantiateInitialController() as? NSWindowController else{
-                return
-            }
-            quickStripController = controller
-            controller.window?.level = .floating
-            controller.window?.delegate = self
-            controller.window?.setFrameOrigin(location)
-            controller.showWindow(button)
+            quickStripWindow?.level = .floating
+            quickStripWindow?.delegate = self
+            quickStripWindow?.setFrameOrigin(location)
+            quickStripWindow?.makeKeyAndOrderFront(button)
         }
     }
     
@@ -107,12 +103,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     func windowDidResignKey(_ notification: Notification) {
         os_log(.info, log: logger, "didResignKey")
-        quickStripController?.close()
+        quickStripWindow?.close()
     }
     
     func windowWillClose(_ notification: Notification) {
         os_log(.info, log: logger, "willClose")
-        quickStripController = nil
+        quickStripWindow = nil
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {

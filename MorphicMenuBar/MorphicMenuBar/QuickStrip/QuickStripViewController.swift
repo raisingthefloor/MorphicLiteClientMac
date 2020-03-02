@@ -12,8 +12,7 @@ class QuickStripViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        view.layer?.backgroundColor = .white
     }
 
     override var representedObject: Any? {

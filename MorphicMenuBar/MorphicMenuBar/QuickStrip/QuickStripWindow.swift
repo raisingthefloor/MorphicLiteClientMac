@@ -10,6 +10,13 @@ import Cocoa
 
 class QuickStripWindow: NSWindow {
     
+    init(){
+        super.init(contentRect: NSMakeRect(0, 0, 137, 137), styleMask: .borderless, backing: .buffered, defer: false)
+        contentViewController = QuickStripViewController.init(nibName: "QuickStrip", bundle: nil)
+        hasShadow = true
+        isReleasedWhenClosed = false
+    }
+    
     override var canBecomeKey: Bool{
         return true
     }
