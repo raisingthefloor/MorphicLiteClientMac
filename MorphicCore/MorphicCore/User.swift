@@ -30,17 +30,26 @@ public struct User: Codable{
     // MARK: - Codable
     
     enum CodingKeys: String, CodingKey{
-        case identifier
+        case identifier = "Id"
+        case preferencesId = "PreferencesId"
+        case firstName = "FirstName"
+        case lastName = "LastName"
     }
     
     public init(from decoder: Decoder) throws{
         let container = try decoder.container(keyedBy: CodingKeys.self)
         identifier = try container.decode(String.self, forKey: CodingKeys.identifier)
+        preferencesId = try container.decode(String.self, forKey: CodingKeys.preferencesId)
+        firstName = try container.decode(String.self, forKey: CodingKeys.firstName)
+        lastName = try container.decode(String.self, forKey: CodingKeys.lastName)
     }
     
     public func encode(to encoder: Encoder) throws{
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(identifier, forKey: CodingKeys.identifier)
+        try container.encode(preferencesId, forKey: CodingKeys.preferencesId)
+        try container.encode(firstName, forKey: CodingKeys.firstName)
+        try container.encode(lastName, forKey: CodingKeys.lastName)
     }
     
     // MARK: - Identification
@@ -50,4 +59,15 @@ public struct User: Codable{
     /// A globally unique identifier for the user
     public var identifier: Identifier
     
+    // MARK: - Name
+    
+    /// The user's first name
+    public var firstName: String?
+    
+    /// The user's last name
+    public var lastName: String?
+    
+    // MARK: - Preferences
+    
+    public var preferencesId: String!
 }

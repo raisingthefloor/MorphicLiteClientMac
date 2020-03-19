@@ -20,17 +20,17 @@ extension URLSession{
     /// Expects the `Content-Type` response header to be `application/json; charset=utf-8`
     ///
     /// - parameters:
-    ///   - url: The URL of the request
-    ///   - method: The request method to use
+    ///   - request: The URL request
     ///   - completion: The block to call when the request completes
-    ///   - success: Whether the request succeeded
+    ///   - response: The `Decodable` object that was sent as a response
     ///
-    /// - returns: The created task, or `nil` if the object encoding failed
-    func runningDataTask<T>(with url: URL, completion: @escaping (_ jsonDecodable: T?) -> Void) -> URLSessionDataTask where T: Decodable{
-        let task = dataTask(with: url){
+    /// - returns: The created task
+    func runningDataTask<ResponseBody>(with request: URLRequest, completion: @escaping (_ response: ResponseBody?) -> Void) -> URLSessionDataTask where ResponseBody: Decodable{
+        let task = dataTask(with: request){
             data, response, error in
+            let body: ResponseBody? = response?.morphicObject(from: data)
             DispatchQueue.main.async {
-                completion(response?.morphicObject(from: data))
+                completion(body)
             }
         }
         task.resume()
@@ -42,34 +42,17 @@ extension URLSession{
     /// Prepares a `URLRequest` and calls `dataTask(with:completionHandler:)` using that
     /// request, calling the `completion` handler on the main thread.
     ///
-    /// Because the completion handler only reports a `Bool` success/fail, this method is appropritate
-    /// for operations like save calls where the server doesn't return data or the returned data is
-    /// identical to what was submitted
+    /// The completion function has a single `Bool` argument, ideal for cases that don't return any data
     ///
     /// Sets the `Content-Type` header to `application/json; charset=utf-8`
     ///
     /// - parameters:
-    ///   - url: The URL of the request
-    ///   - morphicObject: The `Encodable` object to send as JSON in the request body
-    ///   - method: The request method to use
+    ///   - request: The URL request
     ///   - completion: The block to call when the request completes
     ///   - success: Whether the request succeeded
     ///
     /// - returns: The created task, or `nil` if the object encoding failed
-    func runningDataTask<T>(with url: URL, jsonEncodable: T, method: URLRequest.Method, completion: @escaping (_ success: Bool) -> Void) -> URLSessionDataTask? where T: Encodable{
-        var request = URLRequest(url: url)
-        request.httpMethod = method.rawValue
-        request.addValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        let encoder = JSONEncoder()
-        do {
-            request.httpBody = try encoder.encode(jsonEncodable)
-        } catch {
-            os_log(.error, log: logger, "Error encoding data for %{public}s: %{public}s", String(describing: T.self), error.localizedDescription)
-            DispatchQueue.main.async {
-                completion(false)
-            }
-            return nil
-        }
+    func runningDataTask(with request: URLRequest, completion: @escaping (_ success: Bool) -> Void) -> URLSessionDataTask{
         let task = dataTask(with: request){
             data, response, error in
             DispatchQueue.main.async {
@@ -81,7 +64,29 @@ extension URLSession{
     }
 }
 
+
 extension URLRequest{
+    
+    /// Create a new request for the given morphic service config
+    init(url: URL, method: Method, morphicConfiguration: Service.Configuration){
+        self.init(url: url)
+        httpMethod = method.rawValue
+        if let token = morphicConfiguration.authToken(for: url){
+            self.addValue(token, forHTTPHeaderField: "X-Morphic-Auth-Token")
+        }
+    }
+    
+    init?<Body>(url: URL, method: Method, body: Body, morphicConfiguration: Service.Configuration) where Body: Encodable{
+        self.init(url: url, method: method, morphicConfiguration: morphicConfiguration)
+        addValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        let encoder = JSONEncoder()
+        do {
+            httpBody = try encoder.encode(body)
+        } catch {
+            os_log(.error, log: logger, "Error encoding data for %{public}s: %{public}s", String(describing: Body.self), error.localizedDescription)
+            return nil
+        }
+    }
     
     /// Common request methods
     enum Method: String{

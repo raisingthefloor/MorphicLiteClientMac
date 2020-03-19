@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		316CBD652422D640004BD374 /* Codable+Morphic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316CBD642422D640004BD374 /* Codable+Morphic.swift */; };
 		31A0A55D2405965600166668 /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5532405965600166668 /* MorphicCore.framework */; };
 		31A0A5622405965600166668 /* MorphicCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5612405965600166668 /* MorphicCoreTests.swift */; };
 		31A0A5642405965600166668 /* MorphicCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 31A0A5562405965600166668 /* MorphicCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -26,6 +27,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		316CBD642422D640004BD374 /* Codable+Morphic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Codable+Morphic.swift"; sourceTree = "<group>"; };
 		31A0A5532405965600166668 /* MorphicCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MorphicCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		31A0A5562405965600166668 /* MorphicCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MorphicCore.h; sourceTree = "<group>"; };
 		31A0A5572405965600166668 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 				31A0A5572405965600166668 /* Info.plist */,
 				31A0A59C2405986800166668 /* User.swift */,
 				31A0A5982405973E00166668 /* Preferences.swift */,
+				316CBD642422D640004BD374 /* Codable+Morphic.swift */,
 				31A0A5AC2405B75500166668 /* UserDeafults+Morphic.swift */,
 			);
 			path = MorphicCore;
@@ -208,6 +211,7 @@
 				31A0A5AD2405B75500166668 /* UserDeafults+Morphic.swift in Sources */,
 				31A0A59D2405986800166668 /* User.swift in Sources */,
 				31A0A5992405973E00166668 /* Preferences.swift in Sources */,
+				316CBD652422D640004BD374 /* Codable+Morphic.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
