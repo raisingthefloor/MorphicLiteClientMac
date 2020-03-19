@@ -7,6 +7,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="QuickStripViewController" customModule="MorphicMenuBar" customModuleProvider="target">
             <connections>
+                <outlet property="displayModeButton" destination="KSX-H2-uSo" id="Chc-3C-MYv"/>
                 <outlet property="view" destination="c22-O7-iKe" id="gRp-Cf-8sn"/>
             </connections>
         </customObject>
@@ -17,7 +18,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pp7-sU-jX5">
-                    <rect key="frame" x="164" y="51" width="153" height="32"/>
+                    <rect key="frame" x="313" y="13" width="153" height="32"/>
                     <buttonCell key="cell" type="push" title="Open Configurator" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="LTp-nN-Fop">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -26,10 +27,29 @@
                         <action selector="openConfigurator:" target="-2" id="w6W-By-MY6"/>
                     </connections>
                 </button>
+                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KSX-H2-uSo">
+                    <rect key="frame" x="202" y="55" width="77" height="25"/>
+                    <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="2hn-Zw-1LI" id="8yk-RV-9hg">
+                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                        <menu key="menu" id="rTc-xS-3iS">
+                            <items>
+                                <menuItem title="Item 1" state="on" id="2hn-Zw-1LI"/>
+                                <menuItem title="Item 2" id="4Eu-wZ-aZd"/>
+                                <menuItem title="Item 3" id="Pec-6e-RYe"/>
+                            </items>
+                        </menu>
+                    </popUpButtonCell>
+                    <connections>
+                        <action selector="changeDisplayMode:" target="-2" id="d4b-fs-aUP"/>
+                    </connections>
+                </popUpButton>
             </subviews>
             <constraints>
-                <constraint firstItem="pp7-sU-jX5" firstAttribute="centerX" secondItem="c22-O7-iKe" secondAttribute="centerX" id="6e1-ar-kOg"/>
-                <constraint firstItem="pp7-sU-jX5" firstAttribute="centerY" secondItem="c22-O7-iKe" secondAttribute="centerY" id="yao-B2-l3v"/>
+                <constraint firstItem="KSX-H2-uSo" firstAttribute="centerX" secondItem="c22-O7-iKe" secondAttribute="centerX" id="Axn-nz-gYr"/>
+                <constraint firstItem="KSX-H2-uSo" firstAttribute="centerY" secondItem="c22-O7-iKe" secondAttribute="centerY" id="Fhb-tv-bx2"/>
+                <constraint firstAttribute="bottom" secondItem="pp7-sU-jX5" secondAttribute="bottom" constant="20" id="b7W-gd-Wd3"/>
+                <constraint firstAttribute="trailing" secondItem="pp7-sU-jX5" secondAttribute="trailing" constant="20" id="lyN-lJ-M3h"/>
             </constraints>
             <point key="canvasLocation" x="143" y="67"/>
         </customView>

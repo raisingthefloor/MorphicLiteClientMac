@@ -88,10 +88,12 @@ class Morphic{
         }
         preferencesFetchTask?.cancel()
         let user = User(identifier: identifier)
-        preferencesFetchTask = service.fetch(preferencesFor: user){
-            preferences in
-            self.preferences = preferences
-            self.preferencesFetchTask = nil
+        if user.preferencesId != nil{
+            preferencesFetchTask = service.fetch(preferencesFor: user){
+                preferences in
+                self.preferences = preferences
+                self.preferencesFetchTask = nil
+            }
         }
     }
     

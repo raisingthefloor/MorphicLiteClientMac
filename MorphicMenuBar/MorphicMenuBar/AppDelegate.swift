@@ -80,13 +80,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     ///
     /// - parameter sender: The UI element that caused this action to be invoked
     @objc
-    func toggleQuickStrip(_ sender: Any){
-        guard let button = sender as? NSButton else{
-            return
-        }
+    func toggleQuickStrip(_ sender: Any?){
         if let window = quickStripWindow{
             window.close()
         }else{
+            guard let button = sender as? NSButton else{
+                return
+            }
             NSApplication.shared.activate(ignoringOtherApps: true)
             quickStripWindow = QuickStripWindow()
             let location = button.window!.convertPoint(toScreen: button.convert(NSPoint(x: 0, y: button.bounds.size.height), to: nil))
