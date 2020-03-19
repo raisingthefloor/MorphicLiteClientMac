@@ -10,14 +10,9 @@ import Foundation
 import MorphicCore
 
 /// Interface to the remote Morphic preferences server
-public class PreferencesService: Service{
+public extension Service{
     
     // MARK: - Requests
-    
-    private lazy var preferencesBaseURL: URL = URL(string: "preferences/", relativeTo: configuration.endpoint)!
-    private func preferencesURL(for user: User) -> URL{
-        return preferencesBaseURL.appendingPathComponent(user.preferencesId)
-    }
     
     /// Fetch the preferences for the given user
     ///
@@ -26,8 +21,8 @@ public class PreferencesService: Service{
     ///   - completion: The block to call when the task has loaded
     ///   - preferences: The preferences for the user, if the load was successful
     /// - returns: The URL session task that is making the remote request for preferences data
-    public func fetch(preferencesFor user: User, completion: @escaping (_ preferences: Preferences?) -> Void) -> URLSessionTask{
-        let request = URLRequest(url: preferencesURL(for: user), method: .get, morphicConfiguration: configuration)
+    func fetch(preferencesFor user: User, completion: @escaping (_ preferences: Preferences?) -> Void) -> URLSessionTask{
+        let request = URLRequest(service: self, path: "preferences/\(user.preferencesId!)", method: .get)
         return session.runningDataTask(with: request, completion: completion)
     }
     
@@ -39,8 +34,8 @@ public class PreferencesService: Service{
     ///   - completion: The block to call when the task has loaded
     ///   - success: Whether the save request succeeded
     /// - returns: The URL session task that is making the remote request for preferences data
-    public func save(_ preferences: Preferences, for user: User, completion: @escaping (_ success: Bool) -> Void) -> URLSessionTask?{
-        guard let request = URLRequest(url: preferencesURL(for: user), method: .put, body: preferences, morphicConfiguration: configuration) else{
+    func save(_ preferences: Preferences, for user: User, completion: @escaping (_ success: Bool) -> Void) -> URLSessionTask?{
+        guard let request = URLRequest(service: self, path: "preferences/\(user.preferencesId!)", method: .put, body: preferences) else{
             return nil
         }
         return session.runningDataTask(with: request, completion: completion)

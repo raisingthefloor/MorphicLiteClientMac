@@ -34,10 +34,6 @@ class Morphic{
         return URLSession(configuration: .ephemeral)
     }()
     
-    lazy var serviceConfiguration: Service.Configuration = {
-        return Service.Configuration(endpoint: endpoint)
-    }()
-    
     /// The root URL endpoint for the Morphic service
     ///
     /// Obtained from the `MorhpicServiceEndpoint` entry in `Info.plist`, which itself is
@@ -92,7 +88,7 @@ class Morphic{
         }
         preferencesFetchTask?.cancel()
         let user = User(identifier: identifier)
-        preferencesFetchTask = preferencesService.fetch(preferencesFor: user){
+        preferencesFetchTask = service.fetch(preferencesFor: user){
             preferences in
             self.preferences = preferences
             self.preferencesFetchTask = nil
@@ -105,8 +101,7 @@ class Morphic{
     }
     
     /// The preferences service
-    private lazy var preferencesService = PreferencesService(session: session, configuration: serviceConfiguration)
-    private lazy var authService = AuthService(session: session, configuration: serviceConfiguration)
+    private lazy var service = Service(endpoint: endpoint, session: session)
     
     /// The active task that is fetching user preferences, if any
     private var preferencesFetchTask: URLSessionTask?

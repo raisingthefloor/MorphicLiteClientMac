@@ -68,16 +68,17 @@ extension URLSession{
 extension URLRequest{
     
     /// Create a new request for the given morphic service config
-    init(url: URL, method: Method, morphicConfiguration: Service.Configuration){
+    init(service: Service, path: String, method: Method){
+        let url = URL(string: path, relativeTo: service.endpoint)!
         self.init(url: url)
         httpMethod = method.rawValue
-        if let token = morphicConfiguration.authToken(for: url){
+        if let token = service.authToken{
             self.addValue(token, forHTTPHeaderField: "X-Morphic-Auth-Token")
         }
     }
     
-    init?<Body>(url: URL, method: Method, body: Body, morphicConfiguration: Service.Configuration) where Body: Encodable{
-        self.init(url: url, method: method, morphicConfiguration: morphicConfiguration)
+    init?<Body>(service: Service, path: String, method: Method, body: Body) where Body: Encodable{
+        self.init(service: service, path: path, method: method)
         addValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         let encoder = JSONEncoder()
         do {
@@ -150,6 +151,18 @@ extension URLResponse{
             return false
         }
         return response.statusCode / 100 == 2
+    }
+    
+    /// Check if the Morphic HTTP request failed because of authentication required
+    ///
+    /// In order to be considered an auth failure:
+    /// * The response object must be an `HTTPURLResponse`
+    /// * The HTTP `statusCode` must be `401`
+    var requiresMorphicAuthentication: Bool{
+        guard let response = self as? HTTPURLResponse else{
+            return false
+        }
+        return response.statusCode == 401
     }
     
 }

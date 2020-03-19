@@ -10,14 +10,9 @@ import Foundation
 import MorphicCore
 
 /// Interface to the remote Morphic auth server
-public class AuthService: Service{
+public extension Service{
     
     // MARK: - Requests
-    
-    private lazy var registerUsernameURL: URL = URL(string: "register/usernname", relativeTo: configuration.endpoint)!
-    private lazy var registerKeyURL: URL = URL(string: "register/key", relativeTo: configuration.endpoint)!
-    private lazy var authUsernameURL: URL = URL(string: "auth/usernname", relativeTo: configuration.endpoint)!
-    private lazy var authKeyURL: URL = URL(string: "auth/key", relativeTo: configuration.endpoint)!
     
     /// Register using a username
     ///
@@ -28,9 +23,9 @@ public class AuthService: Service{
     ///   - completion: The block to call when the task has completed
     ///   - authentication: The authentication response
     /// - returns: The URL session task that is making the remote request for preferences data
-    public func register(user: User, username: String, password: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> URLSessionTask?{
+    func register(user: User, username: String, password: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> URLSessionTask?{
         let body = RegisterUsernameRequest(username: username, password: password, firstName: user.firstName, lastName: user.lastName)
-        guard let request = URLRequest(url: registerUsernameURL, method: .post, body: body, morphicConfiguration: configuration) else{
+        guard let request = URLRequest(service: self, path: "register/username", method: .post, body: body) else{
             return nil
         }
         return session.runningDataTask(with: request, completion: captureAuthToken(completion: completion))
@@ -45,9 +40,9 @@ public class AuthService: Service{
     ///   - completion: The block to call when the task has completed
     ///   - authentication: The authentication response
     /// - returns: The URL session task that is making the remote request for preferences data
-    public func register(user: User, key: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> URLSessionTask?{
+    func register(user: User, key: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> URLSessionTask?{
         let body = RegisterKeyRequest(key: key, firstName: user.firstName, lastName: user.lastName)
-        guard let request = URLRequest(url: registerKeyURL, method: .post, body: body, morphicConfiguration: configuration) else{
+        guard let request = URLRequest(service: self, path: "register/key", method: .post, body: body) else{
             return nil
         }
         return session.runningDataTask(with: request, completion: captureAuthToken(completion: completion))
@@ -61,9 +56,9 @@ public class AuthService: Service{
     ///   - completion: The block to call when the task has completed
     ///   - authentication: The authentication response
     /// - returns: The URL session task that is making the remote request for preferences data
-    public func authenticate(username: String, password: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> URLSessionTask?{
+    func authenticate(username: String, password: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> URLSessionTask?{
         let body = AuthUsernameRequest(username: username, password: password)
-        guard let request = URLRequest(url: authUsernameURL, method: .post, body: body, morphicConfiguration: configuration) else{
+        guard let request = URLRequest(service: self, path: "auth/username", method: .post, body: body) else{
             return nil
         }
         return session.runningDataTask(with: request, completion: captureAuthToken(completion: completion))
@@ -76,9 +71,9 @@ public class AuthService: Service{
     ///   - completion: The block to call when the task has loaded
     ///   - success: Whether the save request succeeded
     /// - returns: The URL session task that is making the remote request for preferences data
-    public func authenticate(key: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> URLSessionTask?{
+    func authenticate(key: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> URLSessionTask?{
         let body = AuthKeyRequest(key: key)
-        guard let request = URLRequest(url: authKeyURL, method: .post, body: body, morphicConfiguration: configuration) else{
+        guard let request = URLRequest(service: self, path: "auth/key", method: .post, body: body) else{
             return nil
         }
         return session.runningDataTask(with: request, completion: captureAuthToken(completion: completion))
@@ -88,7 +83,7 @@ public class AuthService: Service{
         return {
             auth in
             if let token = auth?.token{
-                self.configuration.authToken = token
+                self.authToken = token
             }
             completion(auth)
         }
