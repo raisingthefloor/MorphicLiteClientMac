@@ -40,6 +40,16 @@ class QuickStripViewController: NSViewController {
     
     private func populteDisplayModeButton(){
         displayModeButton.removeAllItems()
+        let zoomRawValue = Session.shared.string(for: "zoom", in: "com.apple.macos.display") ?? "normal"
+        let currentLevel = Display.ZoomLevel(rawValue: zoomRawValue)
+        var i = 0
+        for level in zoomLevels{
+            displayModeButton.addItem(withTitle: level.label)
+            if level == currentLevel{
+                displayModeButton.selectItem(at: i)
+            }
+            i += 1
+        }
     }
 
     @IBAction

@@ -10,6 +10,7 @@ import Cocoa
 import OSLog
 import MorphicCore
 import MorphicService
+import MorphicSettings
 
 private let logger = OSLog(subsystem: "app", category: "delegate")
 
@@ -42,6 +43,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     // MARK: - Application Lifecycle
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        if let id = MorphicDisplay.getMainDisplayId(){
+            if let modes = MorphicDisplay.getAllDisplayModes(for: id){
+                for mode in modes{
+                    if mode.isStretched{
+                        print("\(mode.widthInVirtualPixels)x\(mode.heightInVirtualPixels) (\(mode.widthInPixels)x\(mode.heightInPixels)) @\(Int(mode.refreshRateInHertz!)) 0x\(String(mode.flags, radix: 16))")
+                    }
+                }
+            }
+        }
         AppDelegate.shared = self
         Session.shared.open {
             self.createStatusItem()

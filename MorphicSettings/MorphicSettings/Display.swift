@@ -49,9 +49,25 @@ public class Display{
         guard let currentMode = MorphicDisplay.getCurrentDisplayMode(for: id) else{
             return nil
         }
-        let possibleModes = modes.filter({ $0.isUsableForDesktopGui && $0.aspectRatio == currentMode.aspectRatio && $0.integerRefresh == currentMode.integerRefresh && $0.scale == currentMode.scale }).sorted(by: <)
-        // TODO: figure out which mode matches the zoom level
-        return currentMode
+        var possibleModes = modes.filter({ $0.isUsableForDesktopGui && $0.aspectRatio == currentMode.aspectRatio && $0.integerRefresh == currentMode.integerRefresh && $0.scale == currentMode.scale }).sorted(by: <)
+        for i in (1..<possibleModes.count).reversed(){
+            if possibleModes[i] == possibleModes[i - 1]{
+                possibleModes.remove(at: i)
+            }
+        }
+        guard let normalMode = possibleModes.first(where: { $0.isDefault }) else{
+            return nil
+        }
+        switch zoomLevel{
+        case .normal:
+            return normalMode
+        case .percent125:
+            return possibleModes.reversed().first(where: { $0.widthInVirtualPixels <= Int(Double(normalMode.widthInVirtualPixels) * 4 / 5) }) ?? possibleModes.first
+        case .percent150:
+            return possibleModes.reversed().first(where: { $0.widthInVirtualPixels <= Int(Double(normalMode.widthInVirtualPixels) * 2 / 3) }) ?? possibleModes.first
+        case .percent200:
+            return possibleModes.reversed().first(where: { $0.widthInVirtualPixels <= Int(Double(normalMode.widthInVirtualPixels) / 2) }) ?? possibleModes.first
+        }
     }
     
 }

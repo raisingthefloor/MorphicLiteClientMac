@@ -50,7 +50,7 @@ public class Storage{
     ///   - encodable: The object to save
     ///   - completion: The block to call when the save request completes
     ///   - success: Whether the object was saved successfully to disk
-    public func save<RecordType>(record: RecordType, at url: URL?, completion: @escaping (_ success: Bool) -> Void) where RecordType: Encodable, RecordType: Record{
+    public func save<RecordType>(record: RecordType, completion: @escaping (_ success: Bool) -> Void) where RecordType: Encodable, RecordType: Record{
         queue.async {
             guard let url = self.url(for: record.identifier, type: RecordType.self) else{
                 os_log(.error, log: logger, "Could not obtain a valid file url for saving")

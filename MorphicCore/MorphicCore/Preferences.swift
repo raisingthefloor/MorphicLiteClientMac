@@ -67,6 +67,10 @@ public struct Preferences: Codable, Record{
         defaults?[solution]?.values[preference] = value
     }
     
+    public func get(preference: String, in solution: String) -> Interoperable?{
+        return defaults?[solution]?.values[preference] ?? nil
+    }
+    
     // MARK: - Codable
     
     enum CodingKeys: String, CodingKey{

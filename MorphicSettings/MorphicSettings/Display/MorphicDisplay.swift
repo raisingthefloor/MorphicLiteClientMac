@@ -28,6 +28,7 @@ public class MorphicDisplay {
         public let refreshRateInHertz: Double?
         // NOTE: isUsableForDesktopGui encodes as UInt8(1) if true and UInt8(0) if false
         public let isUsableForDesktopGui: Bool // NOTE: we can use this flag, in theory, to limit the resolutions we provide to user
+        public let flags: UInt32
 
         private init(
             ioDisplayModeId: Int32,
@@ -36,7 +37,8 @@ public class MorphicDisplay {
             widthInVirtualPixels: Int,
             heightInVirtualPixels: Int,
             refreshRateInHertz: Double?,
-            isUsableForDesktopGui: Bool
+            isUsableForDesktopGui: Bool,
+            flags: UInt32
         ) {
             self.ioDisplayModeId = ioDisplayModeId
             self.widthInPixels = widthInPixels
@@ -45,6 +47,7 @@ public class MorphicDisplay {
             self.heightInVirtualPixels = heightInVirtualPixels
             self.refreshRateInHertz = refreshRateInHertz
             self.isUsableForDesktopGui = isUsableForDesktopGui
+            self.flags = flags
         }
         
         // this function converts the data from a macOS CGDisplayMode class instance to a DisplayMode structure which we can use conveniently and which we can pass via exported cdecl functions
@@ -60,7 +63,8 @@ public class MorphicDisplay {
                 widthInVirtualPixels: cgDisplayMode.width,
                 heightInVirtualPixels: cgDisplayMode.height,
                 refreshRateInHertz: cgDisplayMode.refreshRate != 0 ? cgDisplayMode.refreshRate : nil,
-                isUsableForDesktopGui: cgDisplayMode.isUsableForDesktopGUI())
+                isUsableForDesktopGui: cgDisplayMode.isUsableForDesktopGUI(),
+                flags: cgDisplayMode.ioFlags)
             
             return result
         }
@@ -103,6 +107,22 @@ public class MorphicDisplay {
             
             // otherwise, the arguments are equal
             return true
+        }
+        
+        public var isDefault: Bool{
+            return flags & UInt32(kDisplayModeDefaultFlag) == UInt32(kDisplayModeDefaultFlag)
+        }
+        
+        public var alwaysShow: Bool{
+            return flags & UInt32(kDisplayModeAlwaysShowFlag) == UInt32(kDisplayModeAlwaysShowFlag)
+        }
+        
+        public var neverShow: Bool{
+            return flags & UInt32(kDisplayModeNeverShowFlag) == UInt32(kDisplayModeNeverShowFlag)
+        }
+        
+        public var isStretched: Bool{
+            return flags & UInt32(kDisplayModeStretchedFlag) == UInt32(kDisplayModeStretchedFlag)
         }
     }
 
