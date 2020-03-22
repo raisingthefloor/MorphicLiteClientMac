@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		311336582427FB3A00686AF6 /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 311336572427FB3A00686AF6 /* MorphicSettings.framework */; };
+		311336592427FB3A00686AF6 /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 311336572427FB3A00686AF6 /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		311E88532427D7630025DCBB /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311E88522427D7630025DCBB /* UserService.swift */; };
+		311E88552427D83E0025DCBB /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311E88542427D83E0025DCBB /* Session.swift */; };
 		316CBD672422E1AC004BD374 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316CBD662422E1AC004BD374 /* AuthService.swift */; };
 		31A0A5372405955B00166668 /* MorphicService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A52D2405955B00166668 /* MorphicService.framework */; };
 		31A0A53C2405955B00166668 /* MorphicServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A53B2405955B00166668 /* MorphicServiceTests.swift */; };
@@ -14,7 +18,6 @@
 		31A0A5482405958C00166668 /* PreferencesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5472405958C00166668 /* PreferencesService.swift */; };
 		31A0A5952405972E00166668 /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5942405972E00166668 /* MorphicCore.framework */; };
 		31A0A5962405972E00166668 /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5942405972E00166668 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		31A0A59F2405A20300166668 /* URLSession+Morphic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A59E2405A20300166668 /* URLSession+Morphic.swift */; };
 		31BBBA812422FB4000F368F7 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31BBBA802422FB4000F368F7 /* Service.swift */; };
 /* End PBXBuildFile section */
 
@@ -35,6 +38,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				311336592427FB3A00686AF6 /* MorphicSettings.framework in Embed Frameworks */,
 				31A0A5962405972E00166668 /* MorphicCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -43,6 +47,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		311336572427FB3A00686AF6 /* MorphicSettings.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicSettings.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		311E88522427D7630025DCBB /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
+		311E88542427D83E0025DCBB /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		316CBD662422E1AC004BD374 /* AuthService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		31A0A52D2405955B00166668 /* MorphicService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MorphicService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		31A0A5302405955B00166668 /* MorphicService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MorphicService.h; sourceTree = "<group>"; };
@@ -52,7 +59,6 @@
 		31A0A53D2405955B00166668 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		31A0A5472405958C00166668 /* PreferencesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesService.swift; sourceTree = "<group>"; };
 		31A0A5942405972E00166668 /* MorphicCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		31A0A59E2405A20300166668 /* URLSession+Morphic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Morphic.swift"; sourceTree = "<group>"; };
 		31BBBA802422FB4000F368F7 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -61,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				311336582427FB3A00686AF6 /* MorphicSettings.framework in Frameworks */,
 				31A0A5952405972E00166668 /* MorphicCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -101,9 +108,10 @@
 				31A0A5302405955B00166668 /* MorphicService.h */,
 				31A0A5312405955B00166668 /* Info.plist */,
 				31A0A5472405958C00166668 /* PreferencesService.swift */,
+				311E88522427D7630025DCBB /* UserService.swift */,
 				316CBD662422E1AC004BD374 /* AuthService.swift */,
-				31A0A59E2405A20300166668 /* URLSession+Morphic.swift */,
 				31BBBA802422FB4000F368F7 /* Service.swift */,
+				311E88542427D83E0025DCBB /* Session.swift */,
 			);
 			path = MorphicService;
 			sourceTree = "<group>";
@@ -120,6 +128,7 @@
 		31A0A5932405972E00166668 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				311336572427FB3A00686AF6 /* MorphicSettings.framework */,
 				31A0A5942405972E00166668 /* MorphicCore.framework */,
 			);
 			name = Frameworks;
@@ -237,9 +246,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				316CBD672422E1AC004BD374 /* AuthService.swift in Sources */,
+				311E88532427D7630025DCBB /* UserService.swift in Sources */,
+				311E88552427D83E0025DCBB /* Session.swift in Sources */,
 				31A0A5482405958C00166668 /* PreferencesService.swift in Sources */,
 				31BBBA812422FB4000F368F7 /* Service.swift in Sources */,
-				31A0A59F2405A20300166668 /* URLSession+Morphic.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

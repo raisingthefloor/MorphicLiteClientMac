@@ -9,7 +9,7 @@
 import Foundation
 
 /// A Morphic user
-public struct User: Codable{
+public struct User: Codable, Record{
     
     // MARK: - Creating a User
     
@@ -18,6 +18,7 @@ public struct User: Codable{
     /// Typically used for completely new users
     public init(){
         identifier = UUID().uuidString
+        preferencesId = UUID().uuidString
     }
     
     /// Create a user with a known identifier
@@ -26,6 +27,8 @@ public struct User: Codable{
     public init(identifier: Identifier) {
         self.identifier = identifier
     }
+    
+    public static var typeName: String = "User"
     
     // MARK: - Codable
     
@@ -39,9 +42,9 @@ public struct User: Codable{
     public init(from decoder: Decoder) throws{
         let container = try decoder.container(keyedBy: CodingKeys.self)
         identifier = try container.decode(String.self, forKey: CodingKeys.identifier)
-        preferencesId = try container.decode(String.self, forKey: CodingKeys.preferencesId)
-        firstName = try container.decode(String.self, forKey: CodingKeys.firstName)
-        lastName = try container.decode(String.self, forKey: CodingKeys.lastName)
+        preferencesId = try container.decode(String?.self, forKey: CodingKeys.preferencesId)
+        firstName = try container.decode(String?.self, forKey: CodingKeys.firstName)
+        lastName = try container.decode(String?.self, forKey: CodingKeys.lastName)
     }
     
     public func encode(to encoder: Encoder) throws{

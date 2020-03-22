@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		311E88512427CD960025DCBB /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311E88502427CD960025DCBB /* Credentials.swift */; };
+		311E88572427DB270025DCBB /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311E88562427DB270025DCBB /* Keychain.swift */; };
 		316CBD652422D640004BD374 /* Codable+Morphic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316CBD642422D640004BD374 /* Codable+Morphic.swift */; };
 		31A0A55D2405965600166668 /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5532405965600166668 /* MorphicCore.framework */; };
 		31A0A5622405965600166668 /* MorphicCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5612405965600166668 /* MorphicCoreTests.swift */; };
@@ -14,7 +16,8 @@
 		31A0A5992405973E00166668 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5982405973E00166668 /* Preferences.swift */; };
 		31A0A59D2405986800166668 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A59C2405986800166668 /* User.swift */; };
 		31A0A5AD2405B75500166668 /* UserDeafults+Morphic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5AC2405B75500166668 /* UserDeafults+Morphic.swift */; };
-		31BBBA832423D1A500F368F7 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31BBBA822423D1A500F368F7 /* Keychain.swift */; };
+		31DDA6A32424130900F18A43 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DDA6A22424130900F18A43 /* Storage.swift */; };
+		31DDA6A624241CF900F18A43 /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DDA6A524241CF900F18A43 /* Record.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,6 +31,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		311E88502427CD960025DCBB /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
+		311E88562427DB270025DCBB /* Keychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		316CBD642422D640004BD374 /* Codable+Morphic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Codable+Morphic.swift"; sourceTree = "<group>"; };
 		31A0A5532405965600166668 /* MorphicCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MorphicCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		31A0A5562405965600166668 /* MorphicCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MorphicCore.h; sourceTree = "<group>"; };
@@ -38,7 +43,8 @@
 		31A0A5982405973E00166668 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		31A0A59C2405986800166668 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		31A0A5AC2405B75500166668 /* UserDeafults+Morphic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDeafults+Morphic.swift"; sourceTree = "<group>"; };
-		31BBBA822423D1A500F368F7 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
+		31DDA6A22424130900F18A43 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
+		31DDA6A524241CF900F18A43 /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,10 +90,13 @@
 				31A0A5562405965600166668 /* MorphicCore.h */,
 				31A0A5572405965600166668 /* Info.plist */,
 				31A0A59C2405986800166668 /* User.swift */,
+				31DDA6A524241CF900F18A43 /* Record.swift */,
 				31A0A5982405973E00166668 /* Preferences.swift */,
 				316CBD642422D640004BD374 /* Codable+Morphic.swift */,
+				311E88562427DB270025DCBB /* Keychain.swift */,
 				31A0A5AC2405B75500166668 /* UserDeafults+Morphic.swift */,
-				31BBBA822423D1A500F368F7 /* Keychain.swift */,
+				311E88502427CD960025DCBB /* Credentials.swift */,
+				31DDA6A22424130900F18A43 /* Storage.swift */,
 			);
 			path = MorphicCore;
 			sourceTree = "<group>";
@@ -213,9 +222,12 @@
 			files = (
 				31A0A5AD2405B75500166668 /* UserDeafults+Morphic.swift in Sources */,
 				31A0A59D2405986800166668 /* User.swift in Sources */,
+				311E88512427CD960025DCBB /* Credentials.swift in Sources */,
 				31A0A5992405973E00166668 /* Preferences.swift in Sources */,
 				316CBD652422D640004BD374 /* Codable+Morphic.swift in Sources */,
-				31BBBA832423D1A500F368F7 /* Keychain.swift in Sources */,
+				311E88572427DB270025DCBB /* Keychain.swift in Sources */,
+				31DDA6A624241CF900F18A43 /* Record.swift in Sources */,
+				31DDA6A32424130900F18A43 /* Storage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

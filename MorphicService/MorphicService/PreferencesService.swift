@@ -21,9 +21,9 @@ public extension Service{
     ///   - completion: The block to call when the task has loaded
     ///   - preferences: The preferences for the user, if the load was successful
     /// - returns: The URL session task that is making the remote request for preferences data
-    func fetch(preferencesFor user: User, completion: @escaping (_ preferences: Preferences?) -> Void) -> URLSessionTask{
-        let request = URLRequest(service: self, path: "preferences/\(user.preferencesId!)", method: .get)
-        return session.runningDataTask(with: request, completion: completion)
+    func fetch(preferences identifier: String, completion: @escaping (_ preferences: Preferences?) -> Void) -> Session.Task{
+        let request = URLRequest(session: session, path: "preferences/\(identifier)", method: .get)
+        return session.runningTask(with: request, completion: completion)
     }
     
     /// Save the preferences for the given user
@@ -34,11 +34,9 @@ public extension Service{
     ///   - completion: The block to call when the task has loaded
     ///   - success: Whether the save request succeeded
     /// - returns: The URL session task that is making the remote request for preferences data
-    func save(_ preferences: Preferences, for user: User, completion: @escaping (_ success: Bool) -> Void) -> URLSessionTask?{
-        guard let request = URLRequest(service: self, path: "preferences/\(user.preferencesId!)", method: .put, body: preferences) else{
-            return nil
-        }
-        return session.runningDataTask(with: request, completion: completion)
+    func save(_ preferences: Preferences, completion: @escaping (_ success: Bool) -> Void) -> Session.Task{
+        let request = URLRequest(session: session, path: "preferences/\(preferences.identifier)", method: .put, body: preferences)
+        return session.runningTask(with: request, completion: completion)
     }
     
 }

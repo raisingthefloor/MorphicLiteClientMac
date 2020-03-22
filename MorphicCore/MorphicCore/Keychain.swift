@@ -24,11 +24,12 @@ public class Keychain{
         self.identifier = identifier
     }
     
+    public private(set) static var shared = Keychain(identifier: "org.raisingthefloor.Morphic")
+    
     /// This keychain's identifier
     public private(set) var identifier: String?
     
     // MARK: Getting Items
-    
     
     /// Get a website login item
     public func login(for url: URL) -> Login?{
@@ -45,6 +46,10 @@ public class Keychain{
             return nil
         }
         return Login(url: url, username: username, password: password)
+    }
+    
+    public func secret(for url: URL, identifier: String) -> Secret?{
+        return secret(for: "\(identifier);\(url.absoluteString)")
     }
     
     /// Get a secret
@@ -173,11 +178,26 @@ public class Keychain{
         public var url: URL
         public var username: String
         public var password: String
+        
+        public init(url: URL, username: String, password: String){
+            self.url = url
+            self.username = username
+            self.password = password
+        }
     }
     
     public struct Secret{
         public var identifier: String
         public var value: String
+        
+        public init(url: URL, identifier: String, value: String){
+            self.init(identifier: "\(identifier);\(url.absoluteString)", value: value)
+        }
+        
+        public init(identifier: String, value: String){
+            self.identifier = identifier
+            self.value = value
+        }
     }
     
 }

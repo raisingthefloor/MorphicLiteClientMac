@@ -12,7 +12,7 @@
 		31A0A5A42405B0A400166668 /* MorphicService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5A12405B0A400166668 /* MorphicService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		31A0A5A52405B0A400166668 /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5A22405B0A400166668 /* MorphicSettings.framework */; };
 		31A0A5A62405B0A400166668 /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5A22405B0A400166668 /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		31A0A5AF2405BCDD00166668 /* Morphic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5AE2405BCDD00166668 /* Morphic.swift */; };
+		31A0A5AF2405BCDD00166668 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5AE2405BCDD00166668 /* Session.swift */; };
 		31A0A5FA2405D2C600166668 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5F92405D2C600166668 /* AppDelegate.swift */; };
 		31A0A5FC2405D2C600166668 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5FB2405D2C600166668 /* ViewController.swift */; };
 		31A0A5FE2405D2C800166668 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31A0A5FD2405D2C800166668 /* Assets.xcassets */; };
@@ -28,6 +28,9 @@
 		31CDCF8B240586EE00B99D48 /* MorphicMenuBarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CDCF8A240586EE00B99D48 /* MorphicMenuBarTests.swift */; };
 		31CDCF96240586EE00B99D48 /* MorphicMenuBarUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CDCF95240586EE00B99D48 /* MorphicMenuBarUITests.swift */; };
 		31CDCFA42405885C00B99D48 /* QuickStripWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CDCFA32405885C00B99D48 /* QuickStripWindow.swift */; };
+		31DDA6A424241ABC00F18A43 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5AE2405BCDD00166668 /* Session.swift */; };
+		31DDA6A72424311200F18A43 /* MorphicService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5A12405B0A400166668 /* MorphicService.framework */; };
+		31DDA6A82424311200F18A43 /* MorphicService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5A12405B0A400166668 /* MorphicService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +98,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				31A0A6252405D33300166668 /* MorphicCore.framework in Embed Frameworks */,
+				31DDA6A82424311200F18A43 /* MorphicService.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -117,7 +121,7 @@
 		31A0A5A22405B0A400166668 /* MorphicSettings.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicSettings.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		31A0A5A82405B5D500166668 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		31A0A5A92405B5E700166668 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
-		31A0A5AE2405BCDD00166668 /* Morphic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Morphic.swift; sourceTree = "<group>"; };
+		31A0A5AE2405BCDD00166668 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		31A0A5B12405C50B00166668 /* Local.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Local.xcconfig; sourceTree = "<group>"; };
 		31A0A5F72405D2C600166668 /* MorphicConfigurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorphicConfigurator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31A0A5F92405D2C600166668 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -154,6 +158,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31A0A6242405D33300166668 /* MorphicCore.framework in Frameworks */,
+				31DDA6A72424311200F18A43 /* MorphicService.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,7 +290,7 @@
 				31CDCF81240586EE00B99D48 /* MorphicMenuBar.entitlements */,
 				31CDCF7B240586EE00B99D48 /* Assets.xcassets */,
 				31CDCF77240586EC00B99D48 /* AppDelegate.swift */,
-				31A0A5AE2405BCDD00166668 /* Morphic.swift */,
+				31A0A5AE2405BCDD00166668 /* Session.swift */,
 				31A0A522240593FA00166668 /* QuickStrip */,
 			);
 			path = MorphicMenuBar;
@@ -534,6 +539,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31DDA6A424241ABC00F18A43 /* Session.swift in Sources */,
 				31A0A5FC2405D2C600166668 /* ViewController.swift in Sources */,
 				31A0A5FA2405D2C600166668 /* AppDelegate.swift in Sources */,
 			);
@@ -561,7 +567,7 @@
 			files = (
 				31CDCF7A240586EC00B99D48 /* QuickStripViewController.swift in Sources */,
 				31CDCF78240586EC00B99D48 /* AppDelegate.swift in Sources */,
-				31A0A5AF2405BCDD00166668 /* Morphic.swift in Sources */,
+				31A0A5AF2405BCDD00166668 /* Session.swift in Sources */,
 				31CDCFA42405885C00B99D48 /* QuickStripWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -634,6 +640,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = MorphicConfigurator/MorphicConfigurator.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = MorphicConfigurator/Info.plist;
@@ -652,6 +659,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = MorphicConfigurator/MorphicConfigurator.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = MorphicConfigurator/Info.plist;

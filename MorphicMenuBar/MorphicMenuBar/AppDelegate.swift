@@ -37,26 +37,29 @@ class Application: NSApplication{
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
+    static var shared: AppDelegate!
+    
     // MARK: - Application Lifecycle
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        createStatusItem()
-        if Morphic.shared.currentUserIdentifier == nil{
-            Morphic.shared.launchConfigurator()
-            UserDefaults.morphic.addObserver(self, forKeyPath: .morphicDefaultsKeyUserIdentifier, options: .new, context: nil)
-        }else{
-            Morphic.shared.fetchUserPreferences()
+        AppDelegate.shared = self
+        Session.shared.open {
+            self.createStatusItem()
+            if Session.shared.user == nil{
+                UserDefaults.morphic.addObserver(self, forKeyPath: .morphicDefaultsKeyUserIdentifier, options: .new, context: nil)
+                self.launchConfigurator()
+            }
         }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
     }
-    
+     
     // MARK: - Status Bar Item
 
     /// The item that shows in the macOS menu bar
     var statusItem: NSStatusItem!
-    
+     
     /// Create our `statusItem` for the macOS menu bar
     ///
     /// Should be called during application launch
@@ -70,12 +73,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         button.target = self
         button.action = #selector(toggleQuickStrip(_:))
     }
-    
+     
     // MARK: - Quick Strip
-    
+     
     /// The window controller for the morphic quick strip that is shown by clicking on the `statusItem`
     var quickStripWindow: NSWindow?
-    
+     
     /// Show or hide the morphic quick strip
     ///
     /// - parameter sender: The UI element that caused this action to be invoked
@@ -96,25 +99,43 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             quickStripWindow?.makeKeyAndOrderFront(button)
         }
     }
-    
+     
     func windowDidBecomeKey(_ notification: Notification) {
         os_log(.info, log: logger, "didBecomeKey")
     }
-    
+     
     func windowDidResignKey(_ notification: Notification) {
         os_log(.info, log: logger, "didResignKey")
         quickStripWindow?.close()
     }
-    
+     
     func windowWillClose(_ notification: Notification) {
         os_log(.info, log: logger, "willClose")
         quickStripWindow = nil
     }
-    
+     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         toggleQuickStrip(statusItem.button!)
         UserDefaults.morphic.removeObserver(self, forKeyPath: .morphicDefaultsKeyUserIdentifier)
-        Morphic.shared.fetchUserPreferences()
+        // TODO: fetch preference
+    }
+     
+    // MARK: - Configurator App
+     
+    func launchConfigurator(){
+        guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "org.raisingthefloor.MorphicConfigurator") else{
+            os_log(.error, log: logger, "Configurator app not found")
+            return
+        }
+        let config = NSWorkspace.OpenConfiguration()
+        config.activates = true
+        NSWorkspace.shared.openApplication(at: url, configuration: config){
+            (app, error) in
+            guard error == nil else{
+                os_log(.error, log: logger, "Failed to launch configurator: %{public}s", error!.localizedDescription)
+                return
+            }
+        }
     }
 
 }

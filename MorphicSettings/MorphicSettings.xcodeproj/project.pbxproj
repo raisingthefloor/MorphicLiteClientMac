@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3113364D2427F01100686AF6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3113364C2427F01100686AF6 /* Settings.swift */; };
+		311336512427F33600686AF6 /* Display.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311336502427F33600686AF6 /* Display.swift */; };
+		311336542427FB3400686AF6 /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 311336532427FB3400686AF6 /* MorphicCore.framework */; };
+		311336552427FB3400686AF6 /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 311336532427FB3400686AF6 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		31A0A5812405967600166668 /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5772405967600166668 /* MorphicSettings.framework */; };
 		31A0A5862405967600166668 /* MorphicSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5852405967600166668 /* MorphicSettingsTests.swift */; };
 		31A0A5882405967600166668 /* MorphicSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = 31A0A57A2405967600166668 /* MorphicSettings.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -30,7 +34,24 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		311336562427FB3500686AF6 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				311336552427FB3400686AF6 /* MorphicCore.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		3113364C2427F01100686AF6 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		311336502427F33600686AF6 /* Display.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Display.swift; sourceTree = "<group>"; };
+		311336532427FB3400686AF6 /* MorphicCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		31A0A5772405967600166668 /* MorphicSettings.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MorphicSettings.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		31A0A57A2405967600166668 /* MorphicSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MorphicSettings.h; sourceTree = "<group>"; };
 		31A0A57B2405967600166668 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -52,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				311336542427FB3400686AF6 /* MorphicCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,12 +88,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		311336522427FB3400686AF6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				311336532427FB3400686AF6 /* MorphicCore.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		31A0A56D2405967600166668 = {
 			isa = PBXGroup;
 			children = (
 				31A0A5792405967600166668 /* MorphicSettings */,
 				31A0A5842405967600166668 /* MorphicSettingsTests */,
 				31A0A5782405967600166668 /* Products */,
+				311336522427FB3400686AF6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -96,6 +127,8 @@
 				31A16BC92423E86C0081A72C /* Window */,
 				31A0A57A2405967600166668 /* MorphicSettings.h */,
 				31A0A57B2405967600166668 /* Info.plist */,
+				3113364C2427F01100686AF6 /* Settings.swift */,
+				311336502427F33600686AF6 /* Display.swift */,
 			);
 			path = MorphicSettings;
 			sourceTree = "<group>";
@@ -188,6 +221,7 @@
 				31A0A5732405967600166668 /* Sources */,
 				31A0A5742405967600166668 /* Frameworks */,
 				31A0A5752405967600166668 /* Resources */,
+				311336562427FB3500686AF6 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -280,8 +314,10 @@
 				31A16BD12423E86C0081A72C /* MorphicAudio.swift in Sources */,
 				31A16BCC2423E86C0081A72C /* MorphicProcess.swift in Sources */,
 				31A16BCB2423E86C0081A72C /* MorphicLaunchDaemonsAndAgents.swift in Sources */,
+				311336512427F33600686AF6 /* Display.swift in Sources */,
 				31A16BD02423E86C0081A72C /* MorphicDisplay.swift in Sources */,
 				31A16BCF2423E86C0081A72C /* MorphicDisk.swift in Sources */,
+				3113364D2427F01100686AF6 /* Settings.swift in Sources */,
 				31A16BCD2423E86C0081A72C /* MorphicInput.swift in Sources */,
 				31A16BCE2423E86C0081A72C /* MorphicLanguage.swift in Sources */,
 			);

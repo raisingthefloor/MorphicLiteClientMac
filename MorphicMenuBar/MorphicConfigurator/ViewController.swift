@@ -8,6 +8,8 @@
 
 import Cocoa
 import MorphicCore
+import MorphicService
+import CryptoKit
 
 class ViewController: NSViewController {
 
@@ -29,8 +31,22 @@ class ViewController: NSViewController {
     @IBAction
     func createTestUser(_ sender: Any){
         let user = User()
-        UserDefaults.morphic.setValue(user.identifier, forKey: .morphicDefaultsKeyUserIdentifier)
-        NSApplication.shared.terminate(sender)
+        let key = SymmetricKey(size: .init(bitCount: 512))
+        let base64 = key.withUnsafeBytes{
+            (bytes: UnsafeRawBufferPointer) in
+            Data(Array(bytes)).base64EncodedString()
+        }
+        createUserButton.isEnabled = false
+        _ = Session.shared.service.register(user: user, key: base64){
+            auth in
+            if auth != nil{
+                Session.shared.savedKeyCredentials = KeyCredentials(key: base64)
+                UserDefaults.morphic.setValue(user.identifier, forKey: .morphicDefaultsKeyUserIdentifier)
+                NSApplication.shared.terminate(sender)
+            }else{
+                self.createUserButton.isEnabled = true
+            }
+        }
     }
     
     @IBAction

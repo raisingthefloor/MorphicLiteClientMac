@@ -7,6 +7,10 @@
 //
 
 import Foundation
+import MorphicCore
+import OSLog
+
+private let logger = OSLog(subsystem: "MorphicService", category: "Service")
 
 /// Base class for all morphic services
 public class Service{
@@ -18,7 +22,7 @@ public class Service{
     /// - parameters:
     ///   - endpoint: The location of the remote server
     ///   - session: The URL session to use for requests to the remote server
-    public init(endpoint: URL, session: URLSession){
+    public init(endpoint: URL, session: Session){
         self.endpoint = endpoint
         self.session = session
     }
@@ -29,8 +33,5 @@ public class Service{
     public private(set) var endpoint: URL
     
     /// The URL session to use when making requests to the remote server
-    public private(set) var session: URLSession
-    
-    /// The auth token string for the current session
-    public var authToken: String?
+    public private(set) weak var session: Session!
 }
