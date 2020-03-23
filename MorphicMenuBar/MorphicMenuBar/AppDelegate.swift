@@ -43,22 +43,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     // MARK: - Application Lifecycle
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        if let id = MorphicDisplay.getMainDisplayId(){
-            if let modes = MorphicDisplay.getAllDisplayModes(for: id){
-                for mode in modes{
-                    if mode.isStretched{
-                        print("\(mode.widthInVirtualPixels)x\(mode.heightInVirtualPixels) (\(mode.widthInPixels)x\(mode.heightInPixels)) @\(Int(mode.refreshRateInHertz!)) 0x\(String(mode.flags, radix: 16))")
-                    }
-                }
-            }
-        }
+        os_log(.info, log: logger, "applicationDidFinishLaunching")
         AppDelegate.shared = self
+        os_log(.info, log: logger, "opening morphic session...")
         Session.shared.open {
             self.createStatusItem()
-            os_log("Ready", log: logger, type: .info)
             if Session.shared.user == nil{
+                os_log(.info, log: logger, "no user")
                 UserDefaults.morphic.addObserver(self, forKeyPath: .morphicDefaultsKeyUserIdentifier, options: .new, context: nil)
                 self.launchConfigurator()
+            }else{
+                os_log(.info, log: logger, "session open")
             }
         }
     }
@@ -75,6 +70,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     ///
     /// Should be called during application launch
     func createStatusItem(){
+        os_log(.info, log: logger, "Creating status item")
         statusItem = NSStatusBar.system.statusItem(withLength: -1)
         guard let button = statusItem.button else {
             return
@@ -128,14 +124,20 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         toggleQuickStrip(statusItem.button!)
         UserDefaults.morphic.removeObserver(self, forKeyPath: .morphicDefaultsKeyUserIdentifier)
+        os_log(.info, log: logger, "Configurator set user identifier, retrying session open")
         Session.shared.open {
-            os_log("Ready", log: logger, type: .info)
+            if Session.shared.user == nil{
+                os_log(.error, log: logger, "no user, launching configurator")
+            }else{
+                os_log(.info, log: logger, "session open")
+            }
         }
     }
      
     // MARK: - Configurator App
      
     func launchConfigurator(){
+        os_log(.info, log: logger, "launching configurator")
         guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "org.raisingthefloor.MorphicConfigurator") else{
             os_log(.error, log: logger, "Configurator app not found")
             return

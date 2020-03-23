@@ -31,6 +31,7 @@ class QuickStripViewController: NSViewController {
     }
     
     @IBOutlet weak var displayModeButton: NSPopUpButton!
+    
     var zoomLevels: [Display.ZoomLevel] = [
         .normal,
         .percent125,
