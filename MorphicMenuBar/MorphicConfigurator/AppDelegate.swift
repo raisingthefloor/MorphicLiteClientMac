@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import MorphicService
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {

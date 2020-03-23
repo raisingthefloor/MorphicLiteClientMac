@@ -55,6 +55,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         AppDelegate.shared = self
         Session.shared.open {
             self.createStatusItem()
+            os_log("Ready", log: logger, type: .info)
             if Session.shared.user == nil{
                 UserDefaults.morphic.addObserver(self, forKeyPath: .morphicDefaultsKeyUserIdentifier, options: .new, context: nil)
                 self.launchConfigurator()
@@ -127,7 +128,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         toggleQuickStrip(statusItem.button!)
         UserDefaults.morphic.removeObserver(self, forKeyPath: .morphicDefaultsKeyUserIdentifier)
-        // TODO: fetch preference
+        Session.shared.open {
+            os_log("Ready", log: logger, type: .info)
+        }
     }
      
     // MARK: - Configurator App

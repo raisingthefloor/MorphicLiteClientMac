@@ -40,6 +40,7 @@ public class Session{
                     completion()
                     return
                 }
+                self.user = user
                 // Query the user's preferences
                 _ = self.service.fetch(preferences: user.preferencesId){
                     preferences in
@@ -210,72 +211,27 @@ public class Session{
     // MARK: - Authentication
     
     /// The keychain to use for user secrets
-    lazy var keychain = Keychain()
-    
-    /// Get the saved username login from the keychain
-    public var savedUsernameCredentials: UsernameCredentials?{
-        get{
-            if let login = keychain.login(for: service.endpoint){
-                return UsernameCredentials(username: login.username, password: login.password)
-            }
-            return nil
-        }
-        set{
-            if let credentials = newValue{
-                let login = Keychain.Login(url: service.endpoint, username: credentials.username, password: credentials.password)
-                if !keychain.save(login: login){
-                    os_log(.fault, log: logger, "Failed to save login to keychain")
-                }
-            }else{
-                if let login = keychain.login(for: service.endpoint){
-                    if !keychain.remove(login: login){
-                        os_log(.fault, log: logger, "Failed to remove login to keychain")
-                    }
-                }
-            }
-        }
-    }
-    
-    /// Get the saved secret key login from the keychain
-    public var savedKeyCredentials: KeyCredentials?{
-        get{
-            if let key = keychain.secret(for: service.endpoint, identifier: "key")?.value{
-                return KeyCredentials(key: key)
-            }
-            return nil
-        }
-        set{
-            if let key = newValue?.key{
-                let secret = Keychain.Secret(url: service.endpoint, identifier: "key", value: key)
-                if !keychain.save(secret: secret){
-                    os_log(.fault, log: logger, "Failed to save secret to keychain")
-                }
-            }else{
-                if let secret = keychain.secret(for: service.endpoint, identifier: "key"){
-                    if !keychain.remove(secret: secret){
-                        os_log(.fault, log: logger, "Failed to remove secret to keychain")
-                    }
-                }
-            }
-        }
-    }
+    lazy var keychain = Keychain.shared
     
     /// Get the saved secret key login from the keychain
     public var authToken: String?{
         get{
-            return keychain.secret(for: service.endpoint, identifier: "token")?.value
+            if let identifier = currentUserIdentifier{
+                return keychain.authToken(for: service.endpoint, userIdentifier: identifier)
+            }
+            return nil
         }
         set{
+            guard let identifier = currentUserIdentifier else{
+                return
+            }
             if let token = newValue{
-                let secret = Keychain.Secret(url: service.endpoint, identifier: "token", value: token)
-                if !keychain.save(secret: secret){
+                if !keychain.save(authToken: token, for: service.endpoint, userIdentifier: identifier){
                     os_log(.fault, log: logger, "Failed to save token to keychain")
                 }
             }else{
-                if let secret = keychain.secret(for: service.endpoint, identifier: "token"){
-                    if !keychain.remove(secret: secret){
-                        os_log(.fault, log: logger, "Failed to remove secret to keychain")
-                    }
+                if !keychain.removeAuthToken(for: service.endpoint, userIdentifier: identifier){
+                    os_log(.fault, log: logger, "Failed to remove secret to keychain")
                 }
             }
         }
@@ -283,10 +239,15 @@ public class Session{
     
     /// Authenticate the user using whatever saved secret we have
     private func authenticate(completion: @escaping (_ success: Bool) -> Void) -> URLSessionTask?{
-        if let creds: Credentials = savedKeyCredentials ?? savedUsernameCredentials{
+        if let identifier = currentUserIdentifier, let creds = credentialsForCurrentUser{
             let task = service.authenticate(credentials: creds){
                 auth in
-                completion(auth != nil)
+                if let auth = auth{
+                    _ = self.keychain.save(authToken: auth.token, for: self.service.endpoint, userIdentifier: identifier)
+                    completion(true)
+                }else{
+                    completion(false)
+                }
             }
             return task.urlTask
         }
@@ -294,6 +255,19 @@ public class Session{
             completion(false)
         }
         return nil
+    }
+    
+    /// Get the credentials for the current user
+    private var credentialsForCurrentUser: Credentials?{
+        guard let identifier = currentUserIdentifier else{
+            return nil
+        }
+        if let username = UserDefaults.morphic.morphicUsername(for: identifier){
+            if let creds = keychain.usernameCredentials(for: service.endpoint, username: username){
+                return creds
+            }
+        }
+        return keychain.keyCredentials(for: service.endpoint, userIdentifier: identifier)
     }
     
     // MARK: - User Info
@@ -309,7 +283,26 @@ public class Session{
     }
     
     /// The current user
-    public var user: User?
+    public var user: User?{
+        didSet{
+            currentUserIdentifier = user?.identifier
+        }
+    }
+    
+    private func signin(user: User, completion: @escaping () -> Void){
+        self.user = user
+        _ = self.service.fetch(preferences: user.preferencesId){
+            preferences in
+            self.preferences = preferences
+            self.applyAllPreferences()
+            completion()
+        }
+    }
+    
+    public func signout(){
+        self.user = nil
+        self.preferences = nil
+    }
     
     public func registerUser(completion: @escaping (_ success: Bool) -> Void){
         let user = User()
@@ -321,13 +314,28 @@ public class Session{
         _ = service.register(user: user, key: base64){
             auth in
             if let auth = auth{
-                self.user = auth.user
-                UserDefaults.morphic.setValue(auth.user.identifier, forKey: .morphicDefaultsKeyUserIdentifier)
-                self.savedKeyCredentials = KeyCredentials(key: base64)
-                _ = self.service.fetch(preferences: self.user!.preferencesId){
-                    preferences in
-                    self.preferences = preferences
-                    self.applyAllPreferences()
+                let credentials = KeyCredentials(key: base64)
+                _ = self.keychain.save(keyCredentials: credentials, for: self.service.endpoint, userIdentifier: auth.user.identifier)
+                _ = self.keychain.save(authToken: auth.token, for: self.service.endpoint, userIdentifier: auth.user.identifier)
+                self.signin(user: auth.user){
+                    completion(true)
+                }
+            }else{
+                completion(false)
+            }
+        }
+    }
+    
+    public func registerUser(username: String, password: String, completion: @escaping (_ success: Bool) -> Void){
+        let user = User()
+        _ = service.register(user: user, username: username, password: password){
+            auth in
+            if let auth = auth{
+                let credentials = UsernameCredentials(username: username, password: password)
+                _ = self.keychain.save(usernameCredentials: credentials, for: self.service.endpoint)
+                _ = self.keychain.save(authToken: auth.token, for: self.service.endpoint, userIdentifier: auth.user.identifier)
+                UserDefaults.morphic.set(morphicUsername: username, for: auth.user.identifier)
+                self.signin(user: auth.user){
                     completion(true)
                 }
             }else{

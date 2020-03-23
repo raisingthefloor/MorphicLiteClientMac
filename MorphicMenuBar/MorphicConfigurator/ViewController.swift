@@ -42,7 +42,7 @@ class ViewController: NSViewController {
     
     @IBAction
     func clearUser(_ sender: Any){
-        UserDefaults.morphic.setValue(nil, forKey: .morphicDefaultsKeyUserIdentifier)
+        Session.shared.signout()
         NSApplication.shared.terminate(sender)
     }
 

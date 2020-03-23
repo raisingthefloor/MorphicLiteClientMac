@@ -15,10 +15,6 @@ private let logger = OSLog(subsystem: "MorphicCore", category: "Keychain")
 /// Simpler interface to SECKeychain functionality for secure password/secret storage
 public class Keychain{
     
-    /// Create a keychain with the default identifier
-    public init(){
-    }
-    
     /// Create a keychain with the given identifier
     public init(identifier: String){
         self.identifier = identifier
@@ -27,16 +23,14 @@ public class Keychain{
     public private(set) static var shared = Keychain(identifier: "org.raisingthefloor.Morphic")
     
     /// This keychain's identifier
-    public private(set) var identifier: String?
+    public private(set) var identifier: String
     
-    // MARK: Getting Items
+    // MARK: - Username/Password Logins
     
     /// Get a website login item
-    public func login(for url: URL) -> Login?{
-        guard let result = query(kSecClassInternetPassword, attributes: url.keychainAttributes) else{
-            return nil
-        }
-        guard let url = URL.from(keychainAttributes: result) else{
+    public func usernameCredentials(for url: URL, username: String) -> UsernameCredentials?{
+        let query = identifyingAttributes(for: url, username: username)
+        guard let result = first(matching: query) else{
             return nil
         }
         guard let username = result.string(for: kSecAttrAccount) else{
@@ -45,44 +39,104 @@ public class Keychain{
         guard let password = result.string(for: kSecValueData, encoding: .utf8) else{
             return nil
         }
-        return Login(url: url, username: username, password: password)
+        return UsernameCredentials(username: username, password: password)
     }
     
-    public func secret(for url: URL, identifier: String) -> Secret?{
-        return secret(for: "\(identifier);\(url.absoluteString)")
+    public func save(usernameCredentials: UsernameCredentials, for url: URL) -> Bool{
+        let query = identifyingAttributes(for: url, username: usernameCredentials.username)
+        var attributes = query
+        attributes[kSecValueData] = usernameCredentials.password.data(using: .utf8)! as CFData
+        return save(attributes: attributes, matching: query)
     }
     
-    /// Get a secret
-    public func secret(for identifier: String) -> Secret?{
-        guard let result = query(kSecClassGenericPassword, attributes: [kSecAttrGeneric: identifier.data(using: .utf8)! as CFData]) else{
-            return nil
-        }
-        guard let value = result.string(for: kSecValueData, encoding: .utf8) else{
-            return nil
-        }
-        return Secret(identifier: identifier, value: value)
+    public func removeUsernameCredentials(for url: URL, username: String) -> Bool{
+        let query = identifyingAttributes(for: url, username: username)
+        return remove(matching: query)
     }
     
-    private func queryAttributes(for itemClass: CFString, merging: [CFString: CFTypeRef]?) -> [CFString: CFTypeRef]{
+    private func identifyingAttributes(for url: URL, username: String) -> [CFString: CFTypeRef]{
         var attributes: [CFString: CFTypeRef] = [
-            kSecClass: itemClass,
-            kSecMatchLimit: kSecMatchLimitOne,
-            kSecReturnData: kCFBooleanTrue,
-            kSecReturnAttributes: kCFBooleanTrue
+            kSecClass: kSecClassInternetPassword,
+            kSecAttrAccessGroup: identifier as CFString,
+            kSecAttrAccount: username as CFString
         ]
-        if let identifier = identifier{
-            attributes[kSecAttrAccessGroup] = identifier as CFString
-        }
-        if let merging = merging{
-            attributes.merge(merging)
-        }
+        attributes.merge(url.keychainAttributes)
         return attributes
     }
     
-    private func query(_ itemClass: CFString, attributes: [CFString: CFTypeRef]) -> [CFString: CFTypeRef]?{
-        let attributes = queryAttributes(for: itemClass, merging: attributes)
+    // MARK: - Secret Key Logins
+    
+    public func keyCredentials(for url: URL, userIdentifier: String) -> KeyCredentials?{
+        let query = identifyingAttributes(for: url, service: secretKeyService, userIdentifier: userIdentifier)
+        guard let result = first(matching: query) else{
+            return nil
+        }
+        guard let key = result.string(for: kSecValueData, encoding: .utf8) else{
+            return nil
+        }
+        return KeyCredentials(key: key)
+    }
+    
+    public func save(keyCredentials: KeyCredentials, for url: URL, userIdentifier: String) -> Bool{
+        let query = identifyingAttributes(for: url, service: secretKeyService, userIdentifier: userIdentifier)
+        var attributes = query
+        attributes[kSecValueData] = keyCredentials.key.data(using: .utf8)! as CFData
+        return save(attributes: attributes, matching: query)
+    }
+    
+    public func removeKeyCredentials(for url: URL, userIdentifier: String) -> Bool{
+        let query = identifyingAttributes(for: url, service: secretKeyService, userIdentifier: userIdentifier)
+        return remove(matching: query)
+    }
+    
+    private var secretKeyService = "org.raisingthefloor.morphic.secret-key"
+    
+    private func identifyingAttributes(for url: URL, service: String, userIdentifier: String) -> [CFString: CFTypeRef]{
+        return [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccessGroup: identifier as CFString,
+            kSecAttrService: service as CFString,
+            kSecAttrAccount: userIdentifier as CFString,
+            kSecAttrGeneric: url.absoluteString.data(using: .utf8)! as CFData
+        ]
+    }
+    
+    // MARK: - Auth Tokens
+    
+    public func authToken(for url: URL, userIdentifier: String) -> String?{
+        let query = identifyingAttributes(for: url, service: authTokenService, userIdentifier: userIdentifier)
+        guard let result = first(matching: query) else{
+            return nil
+        }
+        guard let token = result.string(for: kSecValueData, encoding: .utf8) else{
+            return nil
+        }
+        return token
+    }
+    
+    public func save(authToken: String, for url: URL, userIdentifier: String) -> Bool{
+        let query = identifyingAttributes(for: url, service: authTokenService, userIdentifier: userIdentifier)
+        var attributes = query
+        attributes[kSecValueData] = authToken.data(using: .utf8)! as CFData
+        return save(attributes: attributes, matching: query)
+    }
+    
+    public func removeAuthToken(for url: URL, userIdentifier: String) -> Bool{
+        let query = identifyingAttributes(for: url, service: authTokenService, userIdentifier: userIdentifier)
+        return remove(matching: query)
+    }
+    
+    private var authTokenService = "org.raisingthefloor.morphic.auth-token"
+    
+    // MARK: - Querying
+    
+    private func first(matching query: [CFString: CFTypeRef]) -> [CFString: CFTypeRef]?{
+        var query = query
+        query[kSecReturnData] = kCFBooleanTrue
+        query[kSecReturnAttributes] = kCFBooleanTrue
+        query[kSecMatchLimit] = kSecMatchLimitOne
         let result = UnsafeMutablePointer<CFTypeRef?>.allocate(capacity: 1)
-        let status = SecItemCopyMatching(attributes as CFDictionary, result)
+        let status = SecItemCopyMatching(query as CFDictionary, result)
         guard status == errSecSuccess else{
             if status != errSecItemNotFound{
                 os_log("Failed to query item in keychain: %d", log: logger, type: .error, status)
@@ -102,39 +156,14 @@ public class Keychain{
         return resultAttributes
     }
     
-    // MARK: - Saving Items
-    
-    private func attributes(for itemClass: CFString, merging: [CFString: CFTypeRef]?, data: Data) -> [CFString: CFTypeRef]{
-        var attributes: [CFString: CFTypeRef] = [
-            kSecClass: itemClass,
-            kSecAttrSynchronizable: kCFBooleanFalse
-        ]
-        if let identifier = identifier{
-            attributes[kSecAttrAccessGroup] = identifier as CFString
-        }
-        attributes[kSecValueData] = data as CFData
-        if let merging = merging{
-            attributes.merge(merging)
-        }
-        return attributes
-    }
-    
-    public func save(login: Login) -> Bool{
-        let query = queryAttributes(for: kSecClassInternetPassword, merging: login.url.keychainAttributes)
-        var attributes = self.attributes(for: kSecClassInternetPassword, merging: login.url.keychainAttributes, data: login.password.data(using: .utf8)!)
-        attributes[kSecAttrAccount] = login.username as CFString
-        return save(query: query, attributes: attributes)
-    }
-    
-    public func save(secret: Secret) -> Bool{
-        let query = queryAttributes(for: kSecClassGenericPassword, merging: [kSecAttrGeneric: secret.identifier.data(using: .utf8)! as CFData])
-        let attributes = self.attributes(for: kSecClassGenericPassword, merging: [kSecAttrGeneric: secret.identifier.data(using: .utf8)! as CFData], data: secret.value.data(using: .utf8)!)
-        return save(query: query, attributes: attributes)
-    }
-    
-    private func save(query: [CFString: CFTypeRef], attributes: [CFString: CFTypeRef]) -> Bool{
+    private func save(attributes: [CFString: CFTypeRef], matching query: [CFString: CFTypeRef]) -> Bool{
+        var attributes = attributes
+        attributes[kSecAttrSynchronizable] = kCFBooleanFalse
+        attributes[kSecAttrIsInvisible] = kCFBooleanFalse
+        attributes[kSecAttrModificationDate] = NSDate.now as CFDate
         var status = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
         if status == errSecItemNotFound{
+            attributes[kSecAttrCreationDate] = attributes[kSecAttrModificationDate]
             status = SecItemAdd(attributes as CFDictionary, nil)
             if status != errSecSuccess{
                 os_log("Failed to add item to keychain: %d", log: logger, type: .error, status)
@@ -149,55 +178,13 @@ public class Keychain{
         return true
     }
     
-    // MARK: - Removing Items
-    
-    public func remove(login: Login) -> Bool{
-        let query = queryAttributes(for: kSecClassInternetPassword, merging: login.url.keychainAttributes)
-        return remove(query: query)
-    }
-    
-    public func remove(secret: Secret) -> Bool{
-        let query = queryAttributes(for: kSecClassGenericPassword, merging: [kSecAttrGeneric: secret.identifier.data(using: .utf8)! as CFData])
-        return remove(query: query)
-    }
-    
-    private func remove(query: [CFString: CFTypeRef]) -> Bool{
-        var query = query
-        query.removeValue(forKey: kSecMatchLimit)
-        query.removeValue(forKey: kSecReturnData)
-        query.removeValue(forKey: kSecReturnAttributes)
+    private func remove(matching query: [CFString: CFTypeRef]) -> Bool{
         let status = SecItemDelete(query as CFDictionary)
         if status != errSecSuccess{
             os_log("Failed to remove item from keychain: %d", log: logger, type: .error, status)
             return false
         }
         return true
-    }
-    
-    public struct Login{
-        public var url: URL
-        public var username: String
-        public var password: String
-        
-        public init(url: URL, username: String, password: String){
-            self.url = url
-            self.username = username
-            self.password = password
-        }
-    }
-    
-    public struct Secret{
-        public var identifier: String
-        public var value: String
-        
-        public init(url: URL, identifier: String, value: String){
-            self.init(identifier: "\(identifier);\(url.absoluteString)", value: value)
-        }
-        
-        public init(identifier: String, value: String){
-            self.identifier = identifier
-            self.value = value
-        }
     }
     
 }
