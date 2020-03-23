@@ -20,7 +20,10 @@ public class Keychain{
         self.identifier = identifier
     }
     
-    public private(set) static var shared = Keychain(identifier: "org.raisingthefloor.Morphic")
+    public private(set) static var shared: Keychain = {
+        let prefix = Bundle.main.infoDictionary?["AppIdentifierPrefix"] as? String ?? ""
+        return Keychain(identifier: "\(prefix)org.raisingthefloor.Morphic")
+    }()
     
     /// This keychain's identifier
     public private(set) var identifier: String
@@ -132,6 +135,7 @@ public class Keychain{
     
     private func first(matching query: [CFString: CFTypeRef]) -> [CFString: CFTypeRef]?{
         var query = query
+        query[kSecUseDataProtectionKeychain] = kCFBooleanTrue
         query[kSecReturnData] = kCFBooleanTrue
         query[kSecReturnAttributes] = kCFBooleanTrue
         query[kSecMatchLimit] = kSecMatchLimitOne
@@ -158,6 +162,7 @@ public class Keychain{
     
     private func save(attributes: [CFString: CFTypeRef], matching query: [CFString: CFTypeRef]) -> Bool{
         var attributes = attributes
+        attributes[kSecUseDataProtectionKeychain] = kCFBooleanTrue
         attributes[kSecAttrSynchronizable] = kCFBooleanFalse
         attributes[kSecAttrIsInvisible] = kCFBooleanFalse
         attributes[kSecAttrModificationDate] = NSDate.now as CFDate

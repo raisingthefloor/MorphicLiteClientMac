@@ -33,18 +33,22 @@ public class Session{
     public func open(completion: @escaping () -> Void){
         // TODO: check for USB key
         if let userId = currentUserIdentifier{
+            os_log("Saved user ID, fetching updated user info...", log: logger, type: .info)
             // If the user wasn't logged out, query the user info
             _ = service.fetch(user: userId){
                 user in
                 guard let user = user else{
+                    os_log("User info fetch failed", log: logger, type: .error)
                     completion()
                     return
                 }
+                os_log("Setting current user, fetching preferences...", log: logger, type: .info)
                 self.user = user
                 // Query the user's preferences
                 _ = self.service.fetch(preferences: user.preferencesId){
                     preferences in
                     self.preferences = preferences
+                    os_log("Setting current preferences...", log: logger, type: .info)
                     self.applyAllPreferences()
                     completion()
                 }
@@ -80,24 +84,23 @@ public class Session{
     ///
     /// - returns: The created task
     func runningTask<ResponseBody>(with request: URLRequest?, completion: @escaping (_ response: ResponseBody?) -> Void) -> Task where ResponseBody: Decodable{
-        if let request = request{
+        if var request = request{
+            os_log("%{public}s %{public}s", log: logger, type: .info, request.httpMethod!, request.url!.path)
             let task = Task()
             task.urlTask = urlSession.dataTask(with: request){
                 data, response, error in
-                if !(response?.morphicSuccess ?? false){
-                    os_log("%{public}s %d", log: logger, type: .error, request.url!.path, (response as? HTTPURLResponse)?.statusCode ?? 0)
-                }
+                os_log("%d %{public}s", log: logger, type: .error, (response as? HTTPURLResponse)?.statusCode ?? 0, request.url!.path)
                 if response?.requiresMorphicAuthentication ?? false{
                     // If our token expired, try to reauthenticate with saved credentials
                     task.urlTask = self.authenticate{
                         success in
                         if success{
                             // If we got a new token, try the request again
+                            os_log("%{public}s %{public}s", log: logger, type: .info, request.httpMethod!, request.url!.path)
+                            request.setValue(self.authToken, forHTTPHeaderField: "X-Morphic-Auth-Token")
                             task.urlTask = self.urlSession.dataTask(with: request){
                                 data, response, error in
-                                if !(response?.morphicSuccess ?? false){
-                                    os_log("%{public}s %d", log: logger, type: .error, request.url!.path, (response as? HTTPURLResponse)?.statusCode ?? 0)
-                                }
+                                os_log("%{public}s %d", log: logger, type: .error, request.url!.path, (response as? HTTPURLResponse)?.statusCode ?? 0)
                                 let body: ResponseBody? = response?.morphicObject(from: data)
                                 DispatchQueue.main.async {
                                     completion(body)
@@ -140,24 +143,23 @@ public class Session{
     ///
     /// - returns: The created task
     func runningTask(with request: URLRequest?, completion: @escaping (_ success: Bool) -> Void) -> Task{
-        if let request = request{
+        if var request = request{
             let task = Task()
+            os_log("%{public}s %{public}s", log: logger, type: .info, request.httpMethod!, request.url!.path)
             task.urlTask = urlSession.dataTask(with: request){
                 data, response, error in
-                if !(response?.morphicSuccess ?? false){
-                    os_log("%{public}s %d", log: logger, type: .error, request.url!.path, (response as? HTTPURLResponse)?.statusCode ?? 0)
-                }
+                os_log("%{public}s %d", log: logger, type: .error, request.url!.path, (response as? HTTPURLResponse)?.statusCode ?? 0)
                 if response?.requiresMorphicAuthentication ?? false{
                     // If our token expired, try to reauthenticate with saved credentials
                     task.urlTask = self.authenticate{
                         success in
                         if success{
                             // If we got a new token, try the request again
+                            request.setValue(self.authToken, forHTTPHeaderField: "X-Morphic-Auth-Token")
+                            os_log("%{public}s %{public}s", log: logger, type: .info, request.httpMethod!, request.url!.path)
                             task.urlTask = self.urlSession.dataTask(with: request){
                                 data, response, error in
-                                if !(response?.morphicSuccess ?? false){
-                                    os_log("%{public}s %d", log: logger, type: .error, request.url!.path, (response as? HTTPURLResponse)?.statusCode ?? 0)
-                                }
+                                os_log("%{public}s %d", log: logger, type: .error, request.url!.path, (response as? HTTPURLResponse)?.statusCode ?? 0)
                                 DispatchQueue.main.async {
                                     completion(response?.morphicSuccess ?? false)
                                 }
@@ -315,8 +317,12 @@ public class Session{
             auth in
             if let auth = auth{
                 let credentials = KeyCredentials(key: base64)
-                _ = self.keychain.save(keyCredentials: credentials, for: self.service.endpoint, userIdentifier: auth.user.identifier)
-                _ = self.keychain.save(authToken: auth.token, for: self.service.endpoint, userIdentifier: auth.user.identifier)
+                if !self.keychain.save(keyCredentials: credentials, for: self.service.endpoint, userIdentifier: auth.user.identifier){
+                    os_log("Failed to save newly registered key credentials", log: logger, type: .error)
+                }
+                if !self.keychain.save(authToken: auth.token, for: self.service.endpoint, userIdentifier: auth.user.identifier){
+                    os_log("Failed to save newly registered auth token", log: logger, type: .error)
+                }
                 self.signin(user: auth.user){
                     completion(true)
                 }
@@ -332,8 +338,12 @@ public class Session{
             auth in
             if let auth = auth{
                 let credentials = UsernameCredentials(username: username, password: password)
-                _ = self.keychain.save(usernameCredentials: credentials, for: self.service.endpoint)
-                _ = self.keychain.save(authToken: auth.token, for: self.service.endpoint, userIdentifier: auth.user.identifier)
+                if !self.keychain.save(usernameCredentials: credentials, for: self.service.endpoint){
+                    os_log("Failed to save newly registered username credentials", log: logger, type: .error)
+                }
+                if !self.keychain.save(authToken: auth.token, for: self.service.endpoint, userIdentifier: auth.user.identifier){
+                    os_log("Failed to save newly registered auth token", log: logger, type: .error)
+                }
                 UserDefaults.morphic.set(morphicUsername: username, for: auth.user.identifier)
                 self.signin(user: auth.user){
                     completion(true)
@@ -353,6 +363,7 @@ public class Session{
     /// * Applys the change to the system
     /// * Requests a cloud save
     public func save(_ value: Interoperable?, for preference: String, in solution: String){
+        os_log("Setting preference", log: logger, type: .error)
         preferences?.set(value, for: preference, in: solution)
         _ = settings.apply(value, for: preference, in: solution)
         setNeedsPreferencesSave()
@@ -371,6 +382,7 @@ public class Session{
     }
     
     public func applyAllPreferences(){
+        os_log("Applying all preferences", log: logger, type: .error)
         guard let preferences = preferences else{
             return
         }
@@ -388,11 +400,13 @@ public class Session{
     ///
     /// Allows many rapid changes to be batched into a single HTTP request
     private func setNeedsPreferencesSave(){
+        os_log("Queueing preferences save", log: logger, type: .error)
         preferencesSaveTimer?.invalidate()
-        preferencesSaveTimer = .scheduledTimer(withTimeInterval: 10, repeats: false){
+        preferencesSaveTimer = .scheduledTimer(withTimeInterval: 5, repeats: false){
             timer in
             if let preferences = self.preferences{
                 // TODO: save to storage
+                os_log("Saving prefefences to server", log: logger, type: .error)
                 _ = self.service.save(preferences){
                     success in
                     if !success{
