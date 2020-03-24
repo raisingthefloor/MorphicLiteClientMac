@@ -145,7 +145,7 @@
 		31A0A6172405D2C800166668 /* MorphicConfiguratorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicConfiguratorUITests.swift; sourceTree = "<group>"; };
 		31A0A6192405D2C800166668 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		31A0A6232405D33300166668 /* MorphicCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		31CDCF74240586EC00B99D48 /* MorphicMenuBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorphicMenuBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		31CDCF74240586EC00B99D48 /* Morphic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Morphic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31CDCF77240586EC00B99D48 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		31CDCF79240586EC00B99D48 /* QuickStripViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickStripViewController.swift; sourceTree = "<group>"; };
 		31CDCF7B240586EE00B99D48 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -280,7 +280,7 @@
 		31CDCF75240586EC00B99D48 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				31CDCF74240586EC00B99D48 /* MorphicMenuBar.app */,
+				31CDCF74240586EC00B99D48 /* Morphic.app */,
 				31CDCF86240586EE00B99D48 /* MorphicMenuBarTests.xctest */,
 				31CDCF91240586EE00B99D48 /* MorphicMenuBarUITests.xctest */,
 				31A0A5F72405D2C600166668 /* MorphicConfigurator.app */,
@@ -400,7 +400,7 @@
 			);
 			name = MorphicMenuBar;
 			productName = MorphicMenuBar;
-			productReference = 31CDCF74240586EC00B99D48 /* MorphicMenuBar.app */;
+			productReference = 31CDCF74240586EC00B99D48 /* Morphic.app */;
 			productType = "com.apple.product-type.application";
 		};
 		31CDCF85240586EE00B99D48 /* MorphicMenuBarTests */ = {
@@ -897,7 +897,7 @@
 					"@executable_path/../Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicMenuBar;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Morphic;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -917,7 +917,7 @@
 					"@executable_path/../Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicMenuBar;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Morphic;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
