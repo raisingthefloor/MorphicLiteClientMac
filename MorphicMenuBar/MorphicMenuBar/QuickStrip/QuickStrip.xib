@@ -5,7 +5,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="QuickStripViewController" customModule="MorphicMenuBar" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="QuickStripViewController" customModule="Morphic" customModuleProvider="target">
             <connections>
                 <outlet property="displayModeButton" destination="KSX-H2-uSo" id="Chc-3C-MYv"/>
                 <outlet property="view" destination="c22-O7-iKe" id="gRp-Cf-8sn"/>
@@ -17,16 +17,6 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="137"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pp7-sU-jX5">
-                    <rect key="frame" x="313" y="13" width="153" height="32"/>
-                    <buttonCell key="cell" type="push" title="Open Configurator" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="LTp-nN-Fop">
-                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                    <connections>
-                        <action selector="openConfigurator:" target="-2" id="w6W-By-MY6"/>
-                    </connections>
-                </button>
                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KSX-H2-uSo">
                     <rect key="frame" x="202" y="55" width="77" height="25"/>
                     <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="2hn-Zw-1LI" id="8yk-RV-9hg">
@@ -44,12 +34,34 @@
                         <action selector="changeDisplayMode:" target="-2" id="d4b-fs-aUP"/>
                     </connections>
                 </popUpButton>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Bsl-LT-V9Y">
+                    <rect key="frame" x="4" y="116" width="36" height="17"/>
+                    <buttonCell key="cell" type="inline" title="Quit" bezelStyle="inline" alignment="center" borderStyle="border" inset="2" id="78D-4C-UY7">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="smallSystemBold"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="terminate:" target="-1" id="SMc-KE-mG5"/>
+                    </connections>
+                </button>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rUM-iW-18R">
+                    <rect key="frame" x="48" y="116" width="117" height="17"/>
+                    <buttonCell key="cell" type="inline" title="Open Configurator" bezelStyle="inline" alignment="center" borderStyle="border" inset="2" id="PVP-ZG-myZ">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="smallSystemBold"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="openConfigurator:" target="-2" id="ppW-GC-N0s"/>
+                    </connections>
+                </button>
             </subviews>
             <constraints>
+                <constraint firstItem="Bsl-LT-V9Y" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="4" id="975-mv-4P7"/>
                 <constraint firstItem="KSX-H2-uSo" firstAttribute="centerX" secondItem="c22-O7-iKe" secondAttribute="centerX" id="Axn-nz-gYr"/>
+                <constraint firstItem="rUM-iW-18R" firstAttribute="top" secondItem="Bsl-LT-V9Y" secondAttribute="top" id="Cmk-iV-NmY"/>
                 <constraint firstItem="KSX-H2-uSo" firstAttribute="centerY" secondItem="c22-O7-iKe" secondAttribute="centerY" id="Fhb-tv-bx2"/>
-                <constraint firstAttribute="bottom" secondItem="pp7-sU-jX5" secondAttribute="bottom" constant="20" id="b7W-gd-Wd3"/>
-                <constraint firstAttribute="trailing" secondItem="pp7-sU-jX5" secondAttribute="trailing" constant="20" id="lyN-lJ-M3h"/>
+                <constraint firstItem="Bsl-LT-V9Y" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="4" id="iXa-Aq-Wzk"/>
+                <constraint firstItem="rUM-iW-18R" firstAttribute="leading" secondItem="Bsl-LT-V9Y" secondAttribute="trailing" constant="8" id="sgB-cH-axV"/>
             </constraints>
             <point key="canvasLocation" x="143" y="67"/>
         </customView>
