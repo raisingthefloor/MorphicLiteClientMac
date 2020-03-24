@@ -33,22 +33,22 @@ public class Session{
     public func open(completion: @escaping () -> Void){
         // TODO: check for USB key
         if let userId = currentUserIdentifier{
-            os_log("Saved user ID, fetching updated user info...", log: logger, type: .info)
+            os_log(.info, log: logger, "Saved user ID, fetching updated user info...")
             // If the user wasn't logged out, query the user info
             _ = service.fetch(user: userId){
                 user in
                 guard let user = user else{
-                    os_log("User info fetch failed", log: logger, type: .error)
+                    os_log(.error, log: logger, "User info fetch failed")
                     completion()
                     return
                 }
-                os_log("Setting current user, fetching preferences...", log: logger, type: .info)
+                os_log(.info, log: logger, "Setting current user, fetching preferences...")
                 self.user = user
                 // Query the user's preferences
                 _ = self.service.fetch(preferences: user.preferencesId){
                     preferences in
                     self.preferences = preferences
-                    os_log("Setting current preferences...", log: logger, type: .info)
+                    os_log(.info, log: logger, "Setting current preferences...")
                     self.applyAllPreferences()
                     completion()
                 }
@@ -85,22 +85,22 @@ public class Session{
     /// - returns: The created task
     func runningTask<ResponseBody>(with request: URLRequest?, completion: @escaping (_ response: ResponseBody?) -> Void) -> Task where ResponseBody: Decodable{
         if var request = request{
-            os_log("%{public}s %{public}s", log: logger, type: .info, request.httpMethod!, request.url!.path)
+            os_log(.info, log: logger, "%{public}s %{public}s", request.httpMethod!, request.url!.path)
             let task = Task()
             task.urlTask = urlSession.dataTask(with: request){
                 data, response, error in
-                os_log("%d %{public}s", log: logger, type: .error, (response as? HTTPURLResponse)?.statusCode ?? 0, request.url!.path)
+                os_log(.error, log: logger, "%d %{public}s", (response as? HTTPURLResponse)?.statusCode ?? 0, request.url!.path)
                 if response?.requiresMorphicAuthentication ?? false{
                     // If our token expired, try to reauthenticate with saved credentials
                     task.urlTask = self.authenticate{
                         success in
                         if success{
                             // If we got a new token, try the request again
-                            os_log("%{public}s %{public}s", log: logger, type: .info, request.httpMethod!, request.url!.path)
+                            os_log(.info, log: logger, "%{public}s %{public}s", request.httpMethod!, request.url!.path)
                             request.setValue(self.authToken, forHTTPHeaderField: "X-Morphic-Auth-Token")
                             task.urlTask = self.urlSession.dataTask(with: request){
                                 data, response, error in
-                                os_log("%{public}s %d", log: logger, type: .error, request.url!.path, (response as? HTTPURLResponse)?.statusCode ?? 0)
+                                os_log(.error, log: logger, "%d %{public}s", (response as? HTTPURLResponse)?.statusCode ?? 0, request.url!.path)
                                 let body: ResponseBody? = response?.morphicObject(from: data)
                                 DispatchQueue.main.async {
                                     completion(body)
@@ -108,7 +108,7 @@ public class Session{
                             }
                             task.urlTask?.resume()
                         }else{
-                            os_log("Authentication failed", log: logger, type: .info)
+                            os_log(.info, log: logger, "Authentication failed")
                             DispatchQueue.main.async {
                                 completion(nil)
                             }
@@ -145,10 +145,10 @@ public class Session{
     func runningTask(with request: URLRequest?, completion: @escaping (_ success: Bool) -> Void) -> Task{
         if var request = request{
             let task = Task()
-            os_log("%{public}s %{public}s", log: logger, type: .info, request.httpMethod!, request.url!.path)
+            os_log(.info, log: logger, "%{public}s %{public}s", request.httpMethod!, request.url!.path)
             task.urlTask = urlSession.dataTask(with: request){
                 data, response, error in
-                os_log("%{public}s %d", log: logger, type: .error, request.url!.path, (response as? HTTPURLResponse)?.statusCode ?? 0)
+                os_log(.error, log: logger, "%d %{public}s", (response as? HTTPURLResponse)?.statusCode ?? 0, request.url!.path)
                 if response?.requiresMorphicAuthentication ?? false{
                     // If our token expired, try to reauthenticate with saved credentials
                     task.urlTask = self.authenticate{
@@ -156,17 +156,17 @@ public class Session{
                         if success{
                             // If we got a new token, try the request again
                             request.setValue(self.authToken, forHTTPHeaderField: "X-Morphic-Auth-Token")
-                            os_log("%{public}s %{public}s", log: logger, type: .info, request.httpMethod!, request.url!.path)
+                            os_log(.info, log: logger, "%{public}s %{public}s", request.httpMethod!, request.url!.path)
                             task.urlTask = self.urlSession.dataTask(with: request){
                                 data, response, error in
-                                os_log("%{public}s %d", log: logger, type: .error, request.url!.path, (response as? HTTPURLResponse)?.statusCode ?? 0)
+                                os_log(.error, log: logger, "%d %{public}s", (response as? HTTPURLResponse)?.statusCode ?? 0, request.url!.path)
                                 DispatchQueue.main.async {
                                     completion(response?.morphicSuccess ?? false)
                                 }
                             }
                             task.urlTask?.resume()
                         }else{
-                            os_log("Authentication failed", log: logger, type: .info)
+                            os_log(.info, log: logger, "Authentication failed")
                             DispatchQueue.main.async {
                                 completion(false)
                             }
@@ -318,10 +318,10 @@ public class Session{
             if let auth = auth{
                 let credentials = KeyCredentials(key: base64)
                 if !self.keychain.save(keyCredentials: credentials, for: self.service.endpoint, userIdentifier: auth.user.identifier){
-                    os_log("Failed to save newly registered key credentials", log: logger, type: .error)
+                    os_log(.error, log: logger, "Failed to save newly registered key credentials")
                 }
                 if !self.keychain.save(authToken: auth.token, for: self.service.endpoint, userIdentifier: auth.user.identifier){
-                    os_log("Failed to save newly registered auth token", log: logger, type: .error)
+                    os_log(.error, log: logger, "Failed to save newly registered auth token")
                 }
                 self.signin(user: auth.user){
                     completion(true)
@@ -339,10 +339,10 @@ public class Session{
             if let auth = auth{
                 let credentials = UsernameCredentials(username: username, password: password)
                 if !self.keychain.save(usernameCredentials: credentials, for: self.service.endpoint){
-                    os_log("Failed to save newly registered username credentials", log: logger, type: .error)
+                    os_log(.error, log: logger, "Failed to save newly registered username credentials")
                 }
                 if !self.keychain.save(authToken: auth.token, for: self.service.endpoint, userIdentifier: auth.user.identifier){
-                    os_log("Failed to save newly registered auth token", log: logger, type: .error)
+                    os_log(.error, log: logger, "Failed to save newly registered auth token")
                 }
                 UserDefaults.morphic.set(morphicUsername: username, for: auth.user.identifier)
                 self.signin(user: auth.user){
@@ -363,7 +363,7 @@ public class Session{
     /// * Applys the change to the system
     /// * Requests a cloud save
     public func save(_ value: Interoperable?, for preference: String, in solution: String){
-        os_log("Setting preference", log: logger, type: .error)
+        os_log(.error, log: logger, "Setting preference")
         preferences?.set(value, for: preference, in: solution)
         _ = settings.apply(value, for: preference, in: solution)
         setNeedsPreferencesSave()
@@ -382,7 +382,7 @@ public class Session{
     }
     
     public func applyAllPreferences(){
-        os_log("Applying all preferences", log: logger, type: .error)
+        os_log(.error, log: logger, "Applying all preferences")
         guard let preferences = preferences else{
             return
         }
@@ -400,22 +400,22 @@ public class Session{
     ///
     /// Allows many rapid changes to be batched into a single HTTP request
     private func setNeedsPreferencesSave(){
-        os_log("Queueing preferences save", log: logger, type: .error)
+        os_log(.error, log: logger, "Queueing preferences save")
         preferencesSaveTimer?.invalidate()
         preferencesSaveTimer = .scheduledTimer(withTimeInterval: 5, repeats: false){
             timer in
             if let preferences = self.preferences{
                 // TODO: save to storage
-                os_log("Saving prefefences to server", log: logger, type: .error)
+                os_log(.error, log: logger, "Saving prefefences to server")
                 _ = self.service.save(preferences){
                     success in
                     if !success{
-                        os_log("Failed to save preference to server", log: logger, type: .error)
+                        os_log(.error, log: logger, "Failed to save preference to server")
                     }
                     self.preferencesSaveTimer = nil
                 }
             }else{
-                os_log("Save preferences timer fired with nil preferences", log: logger, type: .error)
+                os_log(.error, log: logger, "Save preferences timer fired with nil preferences")
             }
         }
     }

@@ -143,7 +143,7 @@ public class Keychain{
         let status = SecItemCopyMatching(query as CFDictionary, result)
         guard status == errSecSuccess else{
             if status != errSecItemNotFound{
-                os_log("Failed to query item in keychain: %d", log: logger, type: .error, status)
+                os_log(.error, log: logger, "Failed to query item in keychain: %d", status)
             }
             result.deallocate()
             return nil
@@ -171,13 +171,13 @@ public class Keychain{
             attributes[kSecAttrCreationDate] = attributes[kSecAttrModificationDate]
             status = SecItemAdd(attributes as CFDictionary, nil)
             if status != errSecSuccess{
-                os_log("Failed to add item to keychain: %d", log: logger, type: .error, status)
+                os_log(.error, log: logger, "Failed to add item to keychain: %d", status)
                 return false
             }
             return true
         }
         if status != errSecSuccess{
-            os_log("Failed to update item in keychain: %d", log: logger, type: .error, status)
+            os_log(.error, log: logger, "Failed to update item in keychain: %d", status)
             return false
         }
         return true
@@ -186,7 +186,7 @@ public class Keychain{
     private func remove(matching query: [CFString: CFTypeRef]) -> Bool{
         let status = SecItemDelete(query as CFDictionary)
         if status != errSecSuccess{
-            os_log("Failed to remove item from keychain: %d", log: logger, type: .error, status)
+            os_log(.error, log: logger, "Failed to remove item from keychain: %d", status)
             return false
         }
         return true

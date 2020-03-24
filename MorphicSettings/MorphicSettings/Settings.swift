@@ -28,15 +28,15 @@ public class Settings{
         if solution == "com.apple.macos.display"{
             if preference == "zoom"{
                 guard let levelName = value as? String else{
-                    os_log("Value provided for com.apple.macos.display.zoom is not a string", log: logger, type: .error)
+                    os_log(.error, log: logger, "Value provided for com.apple.macos.display.zoom is not a string")
                     return false
                 }
                 guard let level = Display.ZoomLevel(rawValue: levelName) else{
-                    os_log("Value provided for com.apple.macos.display.zoom is not valid", log: logger, type: .error)
+                    os_log(.error, log: logger, "Value provided for com.apple.macos.display.zoom is not valid")
                     return false
                 }
                 if !(mainDisplay?.zoom(level: level) ?? false){
-                    os_log("Failed to set com.apple.macos.display.zoom", log: logger, type: .error)
+                    os_log(.error, log: logger, "Failed to set com.apple.macos.display.zoom")
                     return false
                 }
                 return true
