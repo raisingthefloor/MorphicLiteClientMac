@@ -138,8 +138,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
      
     func launchConfigurator(){
         os_log(.info, log: logger, "launching configurator")
-        guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "org.raisingthefloor.MorphicConfigurator") else{
-            os_log(.error, log: logger, "Configurator app not found")
+        guard let url = Bundle.main.resourceURL?.deletingLastPathComponent().appendingPathComponent("Library").appendingPathComponent("MorphicConfigurator.app") else{
+            os_log(.error, log: logger, "Failed to construct bundled configurator app URL")
             return
         }
         let config = NSWorkspace.OpenConfiguration()
