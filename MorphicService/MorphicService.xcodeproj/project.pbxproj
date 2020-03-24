@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		311336582427FB3A00686AF6 /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 311336572427FB3A00686AF6 /* MorphicSettings.framework */; };
-		311336592427FB3A00686AF6 /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 311336572427FB3A00686AF6 /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		311E88532427D7630025DCBB /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311E88522427D7630025DCBB /* UserService.swift */; };
 		311E88552427D83E0025DCBB /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311E88542427D83E0025DCBB /* Session.swift */; };
 		316CBD672422E1AC004BD374 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316CBD662422E1AC004BD374 /* AuthService.swift */; };
@@ -17,7 +16,6 @@
 		31A0A53E2405955B00166668 /* MorphicService.h in Headers */ = {isa = PBXBuildFile; fileRef = 31A0A5302405955B00166668 /* MorphicService.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		31A0A5482405958C00166668 /* PreferencesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5472405958C00166668 /* PreferencesService.swift */; };
 		31A0A5952405972E00166668 /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5942405972E00166668 /* MorphicCore.framework */; };
-		31A0A5962405972E00166668 /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5942405972E00166668 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		31BBBA812422FB4000F368F7 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31BBBA802422FB4000F368F7 /* Service.swift */; };
 /* End PBXBuildFile section */
 
@@ -38,8 +36,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				311336592427FB3A00686AF6 /* MorphicSettings.framework in Embed Frameworks */,
-				31A0A5962405972E00166668 /* MorphicCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;

@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		3190861124297F5900DF988E /* QuickStrip.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3190861024297F5900DF988E /* QuickStrip.xib */; };
 		319086132429815B00DF988E /* Main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 319086122429815B00DF988E /* Main.xib */; };
+		319086142429869200DF988E /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A6232405D33300166668 /* MorphicCore.framework */; };
+		319086152429869200DF988E /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A6232405D33300166668 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		319086162429869A00DF988E /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5A22405B0A400166668 /* MorphicSettings.framework */; };
+		319086172429869A00DF988E /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5A22405B0A400166668 /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		31A0A5A32405B0A400166668 /* MorphicService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5A12405B0A400166668 /* MorphicService.framework */; };
 		31A0A5A42405B0A400166668 /* MorphicService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5A12405B0A400166668 /* MorphicService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		31A0A5A52405B0A400166668 /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5A22405B0A400166668 /* MorphicSettings.framework */; };
@@ -88,6 +92,7 @@
 			files = (
 				31A0A5A62405B0A400166668 /* MorphicSettings.framework in Embed Frameworks */,
 				31A0A5A42405B0A400166668 /* MorphicService.framework in Embed Frameworks */,
+				319086152429869200DF988E /* MorphicCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -99,6 +104,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				31A0A6252405D33300166668 /* MorphicCore.framework in Embed Frameworks */,
+				319086172429869A00DF988E /* MorphicSettings.framework in Embed Frameworks */,
 				31DDA6A82424311200F18A43 /* MorphicService.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -160,6 +166,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31A0A6242405D33300166668 /* MorphicCore.framework in Frameworks */,
+				319086162429869A00DF988E /* MorphicSettings.framework in Frameworks */,
 				31DDA6A72424311200F18A43 /* MorphicService.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -184,6 +191,7 @@
 			files = (
 				31A0A5A52405B0A400166668 /* MorphicSettings.framework in Frameworks */,
 				31A0A5A32405B0A400166668 /* MorphicService.framework in Frameworks */,
+				319086142429869200DF988E /* MorphicCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

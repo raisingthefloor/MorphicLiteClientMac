@@ -10,7 +10,6 @@
 		3113364D2427F01100686AF6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3113364C2427F01100686AF6 /* Settings.swift */; };
 		311336512427F33600686AF6 /* Display.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311336502427F33600686AF6 /* Display.swift */; };
 		311336542427FB3400686AF6 /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 311336532427FB3400686AF6 /* MorphicCore.framework */; };
-		311336552427FB3400686AF6 /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 311336532427FB3400686AF6 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		31A0A5812405967600166668 /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5772405967600166668 /* MorphicSettings.framework */; };
 		31A0A5862405967600166668 /* MorphicSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5852405967600166668 /* MorphicSettingsTests.swift */; };
 		31A0A5882405967600166668 /* MorphicSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = 31A0A57A2405967600166668 /* MorphicSettings.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -41,7 +40,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				311336552427FB3400686AF6 /* MorphicCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
