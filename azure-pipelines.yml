@@ -13,8 +13,8 @@ steps:
 - task: Xcode@5
   inputs:
     actions: 'build'
-    scheme: ''
+    scheme: 'MorphicMenuBar'
     sdk: 'macosx'
     configuration: 'Release'
-    xcWorkspacePath: '**/*.xcworkspace'
+    xcWorkspacePath: '**/MorphicLite.xcworkspace'
     xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
