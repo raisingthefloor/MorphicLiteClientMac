@@ -655,7 +655,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 7L65CSFSS4;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
 				INFOPLIST_FILE = MorphicConfigurator/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -675,7 +675,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 7L65CSFSS4;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
 				INFOPLIST_FILE = MorphicConfigurator/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -890,7 +890,8 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 7L65CSFSS4;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				ENABLE_HARDENED_RUNTIME = NO;
 				INFOPLIST_FILE = MorphicMenuBar/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -910,7 +911,8 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 7L65CSFSS4;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				ENABLE_HARDENED_RUNTIME = NO;
 				INFOPLIST_FILE = MorphicMenuBar/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
