@@ -22,7 +22,8 @@ pool:
 steps:
 - task: Bash@3
   inputs:
-    script: xcodebuild -showsdks
+    targetType: inline
+    script: "xcodebuild -showsdks"
 - task: Xcode@5
   displayName: Build MorphicCore
   inputs:
