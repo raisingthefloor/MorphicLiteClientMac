@@ -9,7 +9,49 @@ trigger:
 pool:
   vmImage: 'macos-latest'
 
+strategy:
+  matrix:
+    mac-10-14:
+      imageName: 'macOS-10.14'
+    mac-10-15:
+      imageName: 'macos-10.15'
+
+pool:
+  vmImage: $(imageName)
+
 steps:
+- task: Xcode@5
+  inputs:
+    actions: 'build'
+    scheme: 'MorphicService'
+    sdk: 'macosx'
+    configuration: 'Release'
+    xcWorkspacePath: '**/MorphicLite.xcworkspace'
+    xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
+- task: Xcode@5
+  inputs:
+    actions: 'build'
+    scheme: 'MorphicCore'
+    sdk: 'macosx'
+    configuration: 'Release'
+    xcWorkspacePath: '**/MorphicLite.xcworkspace'
+    xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
+- task: Xcode@5
+  inputs:
+    actions: 'build'
+    scheme: 'MorphicConfigurator'
+    sdk: 'macosx'
+    configuration: 'Release'
+    xcWorkspacePath: '**/MorphicLite.xcworkspace'
+    xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
+- task: Xcode@5
+  inputs:
+    actions: 'build'
+    scheme: 'MorphicSettings'
+    sdk: 'macosx'
+    configuration: 'Release'
+    xcWorkspacePath: '**/MorphicLite.xcworkspace'
+    xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
 - task: Xcode@5
   inputs:
     actions: 'build'
