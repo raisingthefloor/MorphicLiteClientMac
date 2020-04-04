@@ -6,24 +6,21 @@
 trigger:
 - master
 
+variables:
+  sdk: macosx10.15
+
 strategy:
   matrix:
     mac-10-14:
       imageName: 'macOS-10.14'
-      sdk: macosx10.14
     mac-10-15:
       imageName: 'macos-10.15'
-      sdk: macosx10.15
   maxParallel: 1
 
 pool:
   vmImage: $(imageName)
 
 steps:
-- task: Bash@3
-  inputs:
-    targetType: inline
-    script: "xcodebuild -showsdks"
 - task: Xcode@5
   displayName: Build MorphicCore
   inputs:
