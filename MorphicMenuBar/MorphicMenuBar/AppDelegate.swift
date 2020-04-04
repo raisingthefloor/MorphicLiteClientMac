@@ -113,7 +113,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
      
     func windowDidResignKey(_ notification: Notification) {
         os_log(.info, log: logger, "didResignKey")
-        quickStripWindow?.close()
+//        quickStripWindow?.close()
     }
      
     func windowWillClose(_ notification: Notification) {
