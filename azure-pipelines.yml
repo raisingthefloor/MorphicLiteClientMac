@@ -13,8 +13,10 @@ strategy:
   matrix:
     mac-10-14:
       imageName: 'macOS-10.14'
+      xcodeVersionNum: 10
     mac-10-15:
       imageName: 'macos-10.15'
+      xcodeVersionNum: 11
   maxParallel: 1
 
 pool:
@@ -29,7 +31,7 @@ steps:
     scheme: 'MorphicCore'
     configuration: 'Release'
     xcWorkspacePath: '**/MorphicLite.xcworkspace'
-    xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
+    xcodeVersion: $(xcodeVersionNum)
 - task: Xcode@5
   displayName: Build MorphicService
   inputs:
@@ -38,7 +40,7 @@ steps:
     scheme: 'MorphicService'
     configuration: 'Release'
     xcWorkspacePath: '**/MorphicLite.xcworkspace'
-    xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
+    xcodeVersion: $(xcodeVersionNum)
 - task: Xcode@5
   displayName: Build MorphicConfigurator
   inputs:
@@ -47,7 +49,7 @@ steps:
     scheme: 'MorphicConfigurator'
     configuration: 'Release'
     xcWorkspacePath: '**/MorphicLite.xcworkspace'
-    xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
+    xcodeVersion: $(xcodeVersionNum)
 - task: Xcode@5
   displayName: Build MorphicSettings
   inputs:
@@ -56,7 +58,7 @@ steps:
     scheme: 'MorphicSettings'
     configuration: 'Release'
     xcWorkspacePath: '**/MorphicLite.xcworkspace'
-    xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
+    xcodeVersion: $(xcodeVersionNum)
 - task: Xcode@5
   displayName: Build MorphicMenuBar
   inputs:
@@ -65,4 +67,4 @@ steps:
     scheme: 'MorphicMenuBar'
     configuration: 'Release'
     xcWorkspacePath: '**/MorphicLite.xcworkspace'
-    xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
+    xcodeVersion: $(xcodeVersionNum)
