@@ -6,15 +6,56 @@
 trigger:
 - master
 
+variables:
+  sdk: macosx
+  xcodeVersionNum: 11
+
 pool:
   vmImage: 'macos-latest'
 
 steps:
 - task: Xcode@5
+  displayName: Build MorphicCore
   inputs:
     actions: 'build'
-    scheme: 'MorphicMenuBar'
-    sdk: 'macosx'
+    sdk: $(sdk)
+    scheme: 'MorphicCore'
     configuration: 'Release'
     xcWorkspacePath: '**/MorphicLite.xcworkspace'
-    xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
+    xcodeVersion: $(xcodeVersionNum)
+- task: Xcode@5
+  displayName: Build MorphicService
+  inputs:
+    actions: 'build'
+    sdk: $(sdk)
+    scheme: 'MorphicService'
+    configuration: 'Release'
+    xcWorkspacePath: '**/MorphicLite.xcworkspace'
+    xcodeVersion: $(xcodeVersionNum)
+- task: Xcode@5
+  displayName: Build MorphicConfigurator
+  inputs:
+    actions: 'build'
+    sdk: $(sdk)
+    scheme: 'MorphicConfigurator'
+    configuration: 'Release'
+    xcWorkspacePath: '**/MorphicLite.xcworkspace'
+    xcodeVersion: $(xcodeVersionNum)
+- task: Xcode@5
+  displayName: Build MorphicSettings
+  inputs:
+    actions: 'build'
+    sdk: $(sdk)
+    scheme: 'MorphicSettings'
+    configuration: 'Release'
+    xcWorkspacePath: '**/MorphicLite.xcworkspace'
+    xcodeVersion: $(xcodeVersionNum)
+- task: Xcode@5
+  displayName: Build MorphicMenuBar
+  inputs:
+    actions: 'build'
+    sdk: $(sdk)
+    scheme: 'MorphicMenuBar'
+    configuration: 'Release'
+    xcWorkspacePath: '**/MorphicLite.xcworkspace'
+    xcodeVersion: $(xcodeVersionNum)
