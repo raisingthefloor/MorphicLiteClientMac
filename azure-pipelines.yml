@@ -6,9 +6,6 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'macos-latest'
-
 strategy:
   matrix:
     mac-10-14:
