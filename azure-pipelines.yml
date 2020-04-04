@@ -20,6 +20,8 @@ pool:
   vmImage: $(imageName)
 
 steps:
+- task: Bash@3
+  script: xcodebuild -showsdks
 - task: Xcode@5
   displayName: Build MorphicCore
   inputs:
