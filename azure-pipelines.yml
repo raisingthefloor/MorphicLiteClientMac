@@ -12,6 +12,7 @@ strategy:
       imageName: 'macOS-10.14'
     mac-10-15:
       imageName: 'macos-10.15'
+  maxParallel: 1
 
 pool:
   vmImage: $(imageName)
