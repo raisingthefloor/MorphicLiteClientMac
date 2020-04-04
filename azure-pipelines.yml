@@ -19,14 +19,7 @@ pool:
 
 steps:
 - task: Xcode@5
-  inputs:
-    actions: 'build'
-    scheme: 'MorphicService'
-    sdk: 'macosx'
-    configuration: 'Release'
-    xcWorkspacePath: '**/MorphicLite.xcworkspace'
-    xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
-- task: Xcode@5
+  displayName: Build MorphicCore
   inputs:
     actions: 'build'
     scheme: 'MorphicCore'
@@ -35,6 +28,16 @@ steps:
     xcWorkspacePath: '**/MorphicLite.xcworkspace'
     xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
 - task: Xcode@5
+  displayName: Build MorphicService
+  inputs:
+    actions: 'build'
+    scheme: 'MorphicService'
+    sdk: 'macosx'
+    configuration: 'Release'
+    xcWorkspacePath: '**/MorphicLite.xcworkspace'
+    xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
+- task: Xcode@5
+  displayName: Build MorphicConfigurator
   inputs:
     actions: 'build'
     scheme: 'MorphicConfigurator'
@@ -43,6 +46,7 @@ steps:
     xcWorkspacePath: '**/MorphicLite.xcworkspace'
     xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
 - task: Xcode@5
+  displayName: Build MorphicSettings
   inputs:
     actions: 'build'
     scheme: 'MorphicSettings'
@@ -51,6 +55,7 @@ steps:
     xcWorkspacePath: '**/MorphicLite.xcworkspace'
     xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
 - task: Xcode@5
+  displayName: Build MorphicMenuBar
   inputs:
     actions: 'build'
     scheme: 'MorphicMenuBar'
