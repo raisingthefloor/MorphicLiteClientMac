@@ -6,17 +6,16 @@
 trigger:
 - master
 
-variables:
-  sdk: macosx10.15
-
 strategy:
   matrix:
     mac-10-14:
       imageName: 'macOS-10.14'
       xcodeVersionNum: 10
+      sdk: macosx10.14
     mac-10-15:
       imageName: 'macos-10.15'
       xcodeVersionNum: 11
+      sdk: macosx10.15
   maxParallel: 1
 
 pool:
