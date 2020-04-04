@@ -21,7 +21,8 @@ pool:
 
 steps:
 - task: Bash@3
-  script: xcodebuild -showsdks
+  inputs:
+    script: xcodebuild -showsdks
 - task: Xcode@5
   displayName: Build MorphicCore
   inputs:
