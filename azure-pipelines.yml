@@ -10,8 +10,10 @@ strategy:
   matrix:
     mac-10-14:
       imageName: 'macOS-10.14'
+      sdk: foo
     mac-10-15:
       imageName: 'macos-10.15'
+      sdk: bar
   maxParallel: 1
 
 pool:
@@ -22,6 +24,7 @@ steps:
   displayName: Build MorphicCore
   inputs:
     actions: 'build'
+    sdk: $(sdk)
     scheme: 'MorphicCore'
     sdk: 'macosx'
     configuration: 'Release'
@@ -31,6 +34,7 @@ steps:
   displayName: Build MorphicService
   inputs:
     actions: 'build'
+    sdk: $(sdk)
     scheme: 'MorphicService'
     sdk: 'macosx'
     configuration: 'Release'
@@ -40,6 +44,7 @@ steps:
   displayName: Build MorphicConfigurator
   inputs:
     actions: 'build'
+    sdk: $(sdk)
     scheme: 'MorphicConfigurator'
     sdk: 'macosx'
     configuration: 'Release'
@@ -49,6 +54,7 @@ steps:
   displayName: Build MorphicSettings
   inputs:
     actions: 'build'
+    sdk: $(sdk)
     scheme: 'MorphicSettings'
     sdk: 'macosx'
     configuration: 'Release'
@@ -58,6 +64,7 @@ steps:
   displayName: Build MorphicMenuBar
   inputs:
     actions: 'build'
+    sdk: $(sdk)
     scheme: 'MorphicMenuBar'
     sdk: 'macosx'
     configuration: 'Release'
