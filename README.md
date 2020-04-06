@@ -1,4 +1,4 @@
-[![Build Status](https://dev.azure.com/janvilhuber/Morphic/_apis/build/status/MorphicLiteClientMac?branchName=master)](https://dev.azure.com/janvilhuber/Morphic/_build/latest?definitionId=3&branchName=master)
+[![Build Status](https://dev.azure.com/raisingthefloor/MorphicLite/_apis/build/status/MorphicLiteClientMac?branchName=master)](https://dev.azure.com/raisingthefloor/MorphicLite/_build/latest?definitionId=2&branchName=master)
 
 Getting Started
 ======
