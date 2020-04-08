@@ -7,7 +7,8 @@
 //
 
 import XCTest
-@testable import MorphicMenuBar
+@testable import Morphic
+import MorphicService
 
 class MorphicMenuBarTests: XCTestCase {
 
@@ -22,6 +23,8 @@ class MorphicMenuBarTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let session = Session.shared
+        XCTAssertNotNil(session)
     }
 
     func testPerformanceExample() {
