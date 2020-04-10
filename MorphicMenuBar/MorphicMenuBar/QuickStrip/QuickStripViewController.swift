@@ -26,11 +26,22 @@ import MorphicService
 import MorphicSettings
 
 class QuickStripViewController: NSViewController {
+    
+    @IBOutlet var mainMenu: NSMenu!
+    
+    @IBAction
+    func showMainMenu(_ sender: Any?){
+        guard let button = sender as? NSButton else{
+            return
+        }
+        mainMenu.popUp(positioning: nil, at: NSPoint(x: button.bounds.origin.x, y: button.bounds.origin.y + button.bounds.size.height), in: button)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.layer?.backgroundColor = .white
-        populteDisplayModeButton()
+        view.layer?.cornerRadius = 6
+//        populteDisplayModeButton()
     }
 
     override var representedObject: Any? {
@@ -41,7 +52,7 @@ class QuickStripViewController: NSViewController {
     
     @IBAction
     func openConfigurator(_ sender: Any?){
-        AppDelegate.shared.launchConfigurator()
+        AppDelegate.shared.launchConfigurator(nil)
         view.window?.close()
     }
     

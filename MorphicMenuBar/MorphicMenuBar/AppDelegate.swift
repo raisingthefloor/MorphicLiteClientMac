@@ -29,31 +29,14 @@ import MorphicSettings
 
 private let logger = OSLog(subsystem: "app", category: "delegate")
 
-// MARK: - Custom Application
-
-/// Has the responsibility of creating an `AppDelegate` since we aren't using a Main storyboard to create the delegate
-class Application: NSApplication{
-    
-    /// The application delegate
-    ///
-    /// Created at application launch and retained with a strong reference so it never gets destroyed.
-    /// Since we aren't using a Main storyboard, we have to create the delegate manually.
-    var strongDelegate = AppDelegate()
-    
-    override init() {
-        super.init()
-        delegate = strongDelegate
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-}
-
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     static var shared: AppDelegate!
+    
+    @IBOutlet var menu: NSMenu!
+    @IBOutlet weak var showQuickStripItem: NSMenuItem?
+    @IBOutlet weak var hideQuickStripItem: NSMenuItem?
     
     // MARK: - Application Lifecycle
 
@@ -61,13 +44,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         os_log(.info, log: logger, "applicationDidFinishLaunching")
         AppDelegate.shared = self
         os_log(.info, log: logger, "opening morphic session...")
+        createStatusItem()
         Session.shared.open {
-            self.createStatusItem()
             if Session.shared.user == nil{
                 os_log(.info, log: logger, "no user")
                 UserDefaults.morphic.addObserver(self, forKeyPath: .morphicDefaultsKeyUserIdentifier, options: .new, context: nil)
-                self.launchConfigurator()
+                self.launchConfigurator(nil)
             }else{
+                self.showQuickStrip(nil)
                 os_log(.info, log: logger, "session open")
             }
         }
@@ -87,13 +71,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func createStatusItem(){
         os_log(.info, log: logger, "Creating status item")
         statusItem = NSStatusBar.system.statusItem(withLength: -1)
+        statusItem.menu = menu
         guard let button = statusItem.button else {
             return
         }
         button.image = NSImage(named: "MenuIcon")
         button.alternateImage = NSImage(named: "MenuIconAlternate")
-        button.target = self
-        button.action = #selector(toggleQuickStrip(_:))
     }
      
     // MARK: - Quick Strip
@@ -104,22 +87,32 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     /// Show or hide the morphic quick strip
     ///
     /// - parameter sender: The UI element that caused this action to be invoked
-    @objc
+    @IBAction
     func toggleQuickStrip(_ sender: Any?){
-        if let window = quickStripWindow{
-            window.close()
+        if quickStripWindow != nil{
+            hideQuickStrip(nil)
         }else{
-            guard let button = sender as? NSButton else{
-                return
-            }
-            NSApplication.shared.activate(ignoringOtherApps: true)
-            quickStripWindow = QuickStripWindow()
-            let location = button.window!.convertPoint(toScreen: button.convert(NSPoint(x: 0, y: button.bounds.size.height), to: nil))
-            quickStripWindow?.level = .floating
-            quickStripWindow?.delegate = self
-            quickStripWindow?.setFrameOrigin(location)
-            quickStripWindow?.makeKeyAndOrderFront(button)
+            showQuickStrip(nil)
         }
+    }
+    
+    @IBAction
+    func showQuickStrip(_ sender: Any?){
+        if quickStripWindow == nil{
+            quickStripWindow = QuickStripWindow()
+            quickStripWindow?.delegate = self
+        }
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        quickStripWindow?.makeKeyAndOrderFront(nil)
+        showQuickStripItem?.isHidden = true
+        hideQuickStripItem?.isHidden = false
+    }
+    
+    @IBAction
+    func hideQuickStrip(_ sender: Any?){
+        quickStripWindow?.close()
+        showQuickStripItem?.isHidden = false
+        hideQuickStripItem?.isHidden = true
     }
      
     func windowDidBecomeKey(_ notification: Notification) {
@@ -151,7 +144,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
      
     // MARK: - Configurator App
      
-    func launchConfigurator(){
+    @IBAction
+    func launchConfigurator(_ sender: Any?){
         os_log(.info, log: logger, "launching configurator")
         guard let url = Bundle.main.resourceURL?.deletingLastPathComponent().appendingPathComponent("Library").appendingPathComponent("MorphicConfigurator.app") else{
             os_log(.error, log: logger, "Failed to construct bundled configurator app URL")

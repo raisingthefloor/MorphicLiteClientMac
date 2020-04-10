@@ -30,6 +30,10 @@ class QuickStripWindow: NSWindow {
         contentViewController = QuickStripViewController.init(nibName: "QuickStrip", bundle: nil)
         hasShadow = true
         isReleasedWhenClosed = false
+        level = .floating
+        backgroundColor = .clear
+        isMovableByWindowBackground = true
+        reposition()
     }
     
     override var canBecomeKey: Bool{
@@ -39,5 +43,77 @@ class QuickStripWindow: NSWindow {
     override var canBecomeMain: Bool{
         return false
     }
+    
+    enum Position{
+        case topLeft
+        case topRight
+        case bottomLeft
+        case bottomRight
+        
+        func origin(for window: QuickStripWindow) -> NSPoint{
+            guard let screen = window.screen else{
+                return .zero
+            }
+            switch self{
+            case .topLeft:
+                return NSPoint(x: screen.visibleFrame.origin.x + window.screenInsets.left, y: screen.visibleFrame.origin.y + screen.visibleFrame.size.height - window.frame.size.height - window.screenInsets.top)
+            case .topRight:
+                return NSPoint(x: screen.visibleFrame.origin.x + screen.visibleFrame.size.width - window.screenInsets.right - window.frame.size.width, y: screen.visibleFrame.origin.y + screen.visibleFrame.size.height - window.frame.size.height - window.screenInsets.top)
+            case .bottomLeft:
+                return NSPoint(x: screen.visibleFrame.origin.x + window.screenInsets.left, y: screen.visibleFrame.origin.y + window.screenInsets.bottom)
+            case .bottomRight:
+                return NSPoint(x: screen.visibleFrame.origin.x + screen.visibleFrame.size.width - window.screenInsets.right - window.frame.size.width, y: screen.visibleFrame.origin.y + window.screenInsets.bottom)
+            }
+        }
+    }
+    
+    var screenInsets = NSEdgeInsets(top: 4, left: 4, bottom: 4, right: 4){
+        didSet{
+            reposition()
+        }
+    }
+    
+    var position: Position = .topRight{
+        didSet{
+            reposition()
+        }
+    }
+    
+    var nearestPosition: Position{
+        guard let area = screen?.visibleFrame else{
+            return position
+        }
+        let windowCenter = frame.center
+        let areaCenter = area.center
+        if windowCenter.x < areaCenter.x{
+            if windowCenter.y < areaCenter.y{
+                return .bottomLeft
+            }
+            return .topLeft
+        }else{
+            if windowCenter.y < areaCenter.y{
+                return .bottomRight
+            }
+            return .topRight
+        }
+    }
+    
+    private func reposition(){
+        let origin = position.origin(for: self)
+        setFrameOrigin(origin)
+    }
+    
+    override func mouseUp(with event: NSEvent) {
+        super.mouseUp(with: event)
+        let origin = nearestPosition.origin(for: self)
+        let frame = NSRect(origin: origin, size: self.frame.size)
+        setFrame(frame, display: true, animate: true)
+    }
 
+}
+
+private extension NSRect{
+    var center: NSPoint{
+        return NSPoint(x: origin.x + size.width / 2.0, y: origin.y + size.height / 2.0)
+    }
 }

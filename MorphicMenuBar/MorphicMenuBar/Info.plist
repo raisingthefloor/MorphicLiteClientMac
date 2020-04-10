@@ -37,10 +37,10 @@
 	</dict>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2020 Raising the Floor. All rights reserved.</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
 	<key>NSMainNibFile</key>
 	<string>Main</string>
-	<key>NSPrincipalClass</key>
-	<string>Morphic.Application</string>
 	<key>NSSupportsAutomaticTermination</key>
 	<true/>
 	<key>NSSupportsSuddenTermination</key>
