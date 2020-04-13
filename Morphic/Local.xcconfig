@@ -21,24 +21,6 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Cocoa
-import MorphicService
-
-@NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate {
-
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // Insert code here to initialize your application
-    }
-
-    func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
-    }
-    
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        return true
-    }
-
-
-}
-
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+MORPHIC_SERVICE_ENDPOINT=http:/$()/localhost:5002/

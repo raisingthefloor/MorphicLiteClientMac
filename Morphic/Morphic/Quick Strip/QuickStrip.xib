@@ -40,7 +40,7 @@
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="PsU-Tp-zqY"/>
-                <menuItem title="Log In..." id="jUa-06-vgJ">
+                <menuItem title="Take Settings With Me..." id="jUa-06-vgJ">
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
                 <menuItem title="Customize Quick Strip..." keyEquivalent="," id="1rR-To-5lZ">

@@ -1,0 +1,1087 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B0C2444DE8900EEDF14 /* AppDelegate.swift */; };
+		31751B0F2444DE8B00EEDF14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31751B0E2444DE8B00EEDF14 /* Assets.xcassets */; };
+		31751B1E2444DE8B00EEDF14 /* MorphicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B1D2444DE8B00EEDF14 /* MorphicTests.swift */; };
+		31751B292444DE8B00EEDF14 /* MorphicUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B282444DE8B00EEDF14 /* MorphicUITests.swift */; };
+		31751B3C2444DFAA00EEDF14 /* Main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31751B3A2444DFAA00EEDF14 /* Main.xib */; };
+		31751B4A2444E04300EEDF14 /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B472444E04300EEDF14 /* MorphicCore.framework */; };
+		31751B4B2444E04300EEDF14 /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B472444E04300EEDF14 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		31751B4C2444E04300EEDF14 /* MorphicService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B482444E04300EEDF14 /* MorphicService.framework */; };
+		31751B4D2444E04300EEDF14 /* MorphicService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B482444E04300EEDF14 /* MorphicService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		31751B4E2444E04300EEDF14 /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B492444E04300EEDF14 /* MorphicSettings.framework */; };
+		31751B4F2444E04300EEDF14 /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B492444E04300EEDF14 /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		31751B582444E0E300EEDF14 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B572444E0E300EEDF14 /* AppDelegate.swift */; };
+		31751B5A2444E0E400EEDF14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31751B592444E0E400EEDF14 /* Assets.xcassets */; };
+		31751B5D2444E0E400EEDF14 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31751B5B2444E0E400EEDF14 /* MainMenu.xib */; };
+		31751B692444E0E400EEDF14 /* MorphicConfiguratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B682444E0E400EEDF14 /* MorphicConfiguratorTests.swift */; };
+		31751B742444E0E400EEDF14 /* MorphicConfiguratorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B732444E0E400EEDF14 /* MorphicConfiguratorUITests.swift */; };
+		31751B822444E11600EEDF14 /* Local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 31751B7F2444E11500EEDF14 /* Local.xcconfig */; };
+		31751B832444E11600EEDF14 /* Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 31751B802444E11600EEDF14 /* Release.xcconfig */; };
+		31751B842444E11600EEDF14 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 31751B812444E11600EEDF14 /* Debug.xcconfig */; };
+		31751B852444E15F00EEDF14 /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B472444E04300EEDF14 /* MorphicCore.framework */; };
+		31751B862444E15F00EEDF14 /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B472444E04300EEDF14 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		31751B872444E15F00EEDF14 /* MorphicService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B482444E04300EEDF14 /* MorphicService.framework */; };
+		31751B882444E15F00EEDF14 /* MorphicService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B482444E04300EEDF14 /* MorphicService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		31751B892444E15F00EEDF14 /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B492444E04300EEDF14 /* MorphicSettings.framework */; };
+		31751B8A2444E15F00EEDF14 /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B492444E04300EEDF14 /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		31751B8F2444E56800EEDF14 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31751B8E2444E56800EEDF14 /* ViewController.xib */; };
+		31751B942444F06100EEDF14 /* MorphicConfigurator.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 31751B552444E0E300EEDF14 /* MorphicConfigurator.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		31751B982444F21700EEDF14 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B972444F21700EEDF14 /* Session.swift */; };
+		31751B992444F21700EEDF14 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B972444F21700EEDF14 /* Session.swift */; };
+		31751B9D2444F22900EEDF14 /* QuickStrip.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31751B9A2444F22900EEDF14 /* QuickStrip.xib */; };
+		31751B9E2444F22900EEDF14 /* QuickStripViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B9B2444F22900EEDF14 /* QuickStripViewController.swift */; };
+		31751B9F2444F22900EEDF14 /* QuickStripWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B9C2444F22900EEDF14 /* QuickStripWindow.swift */; };
+		31751BA12444F24800EEDF14 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751BA02444F24800EEDF14 /* ViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		31751B1A2444DE8B00EEDF14 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 31751B012444DE8900EEDF14 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 31751B082444DE8900EEDF14;
+			remoteInfo = Morphic;
+		};
+		31751B252444DE8B00EEDF14 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 31751B012444DE8900EEDF14 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 31751B082444DE8900EEDF14;
+			remoteInfo = Morphic;
+		};
+		31751B652444E0E400EEDF14 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 31751B012444DE8900EEDF14 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 31751B542444E0E300EEDF14;
+			remoteInfo = MorphicConfigurator;
+		};
+		31751B702444E0E400EEDF14 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 31751B012444DE8900EEDF14 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 31751B542444E0E300EEDF14;
+			remoteInfo = MorphicConfigurator;
+		};
+		31751B952444F0CA00EEDF14 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 31751B012444DE8900EEDF14 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 31751B542444E0E300EEDF14;
+			remoteInfo = MorphicConfigurator;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		31751B502444E04300EEDF14 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				31751B4B2444E04300EEDF14 /* MorphicCore.framework in Embed Frameworks */,
+				31751B4F2444E04300EEDF14 /* MorphicSettings.framework in Embed Frameworks */,
+				31751B4D2444E04300EEDF14 /* MorphicService.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B8B2444E15F00EEDF14 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				31751B862444E15F00EEDF14 /* MorphicCore.framework in Embed Frameworks */,
+				31751B8A2444E15F00EEDF14 /* MorphicSettings.framework in Embed Frameworks */,
+				31751B882444E15F00EEDF14 /* MorphicService.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B932444F03900EEDF14 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library;
+			dstSubfolderSpec = 1;
+			files = (
+				31751B942444F06100EEDF14 /* MorphicConfigurator.app in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		31751B092444DE8900EEDF14 /* Morphic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Morphic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		31751B0C2444DE8900EEDF14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		31751B0E2444DE8B00EEDF14 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		31751B132444DE8B00EEDF14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		31751B142444DE8B00EEDF14 /* Morphic.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Morphic.entitlements; sourceTree = "<group>"; };
+		31751B192444DE8B00EEDF14 /* MorphicTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MorphicTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		31751B1D2444DE8B00EEDF14 /* MorphicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicTests.swift; sourceTree = "<group>"; };
+		31751B1F2444DE8B00EEDF14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		31751B242444DE8B00EEDF14 /* MorphicUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MorphicUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		31751B282444DE8B00EEDF14 /* MorphicUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicUITests.swift; sourceTree = "<group>"; };
+		31751B2A2444DE8B00EEDF14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		31751B3B2444DFAA00EEDF14 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Main.xib; sourceTree = "<group>"; };
+		31751B472444E04300EEDF14 /* MorphicCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		31751B482444E04300EEDF14 /* MorphicService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		31751B492444E04300EEDF14 /* MorphicSettings.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicSettings.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		31751B552444E0E300EEDF14 /* MorphicConfigurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorphicConfigurator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		31751B572444E0E300EEDF14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		31751B592444E0E400EEDF14 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		31751B5C2444E0E400EEDF14 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		31751B5E2444E0E400EEDF14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		31751B5F2444E0E400EEDF14 /* MorphicConfigurator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicConfigurator.entitlements; sourceTree = "<group>"; };
+		31751B642444E0E400EEDF14 /* MorphicConfiguratorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MorphicConfiguratorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		31751B682444E0E400EEDF14 /* MorphicConfiguratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicConfiguratorTests.swift; sourceTree = "<group>"; };
+		31751B6A2444E0E400EEDF14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		31751B6F2444E0E400EEDF14 /* MorphicConfiguratorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MorphicConfiguratorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		31751B732444E0E400EEDF14 /* MorphicConfiguratorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicConfiguratorUITests.swift; sourceTree = "<group>"; };
+		31751B752444E0E400EEDF14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		31751B7F2444E11500EEDF14 /* Local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Local.xcconfig; sourceTree = "<group>"; };
+		31751B802444E11600EEDF14 /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		31751B812444E11600EEDF14 /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		31751B8E2444E56800EEDF14 /* ViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewController.xib; sourceTree = "<group>"; };
+		31751B972444F21700EEDF14 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		31751B9A2444F22900EEDF14 /* QuickStrip.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuickStrip.xib; sourceTree = "<group>"; };
+		31751B9B2444F22900EEDF14 /* QuickStripViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickStripViewController.swift; sourceTree = "<group>"; };
+		31751B9C2444F22900EEDF14 /* QuickStripWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickStripWindow.swift; sourceTree = "<group>"; };
+		31751BA02444F24800EEDF14 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		31751B062444DE8900EEDF14 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31751B4A2444E04300EEDF14 /* MorphicCore.framework in Frameworks */,
+				31751B4E2444E04300EEDF14 /* MorphicSettings.framework in Frameworks */,
+				31751B4C2444E04300EEDF14 /* MorphicService.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B162444DE8B00EEDF14 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B212444DE8B00EEDF14 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B522444E0E300EEDF14 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31751B852444E15F00EEDF14 /* MorphicCore.framework in Frameworks */,
+				31751B892444E15F00EEDF14 /* MorphicSettings.framework in Frameworks */,
+				31751B872444E15F00EEDF14 /* MorphicService.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B612444E0E400EEDF14 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B6C2444E0E400EEDF14 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		31751B002444DE8900EEDF14 = {
+			isa = PBXGroup;
+			children = (
+				31751B7F2444E11500EEDF14 /* Local.xcconfig */,
+				31751B812444E11600EEDF14 /* Debug.xcconfig */,
+				31751B802444E11600EEDF14 /* Release.xcconfig */,
+				31751B0B2444DE8900EEDF14 /* Morphic */,
+				31751B562444E0E300EEDF14 /* MorphicConfigurator */,
+				31751B1C2444DE8B00EEDF14 /* MorphicTests */,
+				31751B272444DE8B00EEDF14 /* MorphicUITests */,
+				31751B672444E0E400EEDF14 /* MorphicConfiguratorTests */,
+				31751B722444E0E400EEDF14 /* MorphicConfiguratorUITests */,
+				31751B0A2444DE8900EEDF14 /* Products */,
+				31751B462444E04300EEDF14 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		31751B0A2444DE8900EEDF14 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				31751B092444DE8900EEDF14 /* Morphic.app */,
+				31751B192444DE8B00EEDF14 /* MorphicTests.xctest */,
+				31751B242444DE8B00EEDF14 /* MorphicUITests.xctest */,
+				31751B552444E0E300EEDF14 /* MorphicConfigurator.app */,
+				31751B642444E0E400EEDF14 /* MorphicConfiguratorTests.xctest */,
+				31751B6F2444E0E400EEDF14 /* MorphicConfiguratorUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		31751B0B2444DE8900EEDF14 /* Morphic */ = {
+			isa = PBXGroup;
+			children = (
+				31751B132444DE8B00EEDF14 /* Info.plist */,
+				31751B142444DE8B00EEDF14 /* Morphic.entitlements */,
+				31751B0E2444DE8B00EEDF14 /* Assets.xcassets */,
+				31751B3A2444DFAA00EEDF14 /* Main.xib */,
+				31751B0C2444DE8900EEDF14 /* AppDelegate.swift */,
+				31751B972444F21700EEDF14 /* Session.swift */,
+				31751B3F2444E01B00EEDF14 /* Quick Strip */,
+			);
+			path = Morphic;
+			sourceTree = "<group>";
+		};
+		31751B1C2444DE8B00EEDF14 /* MorphicTests */ = {
+			isa = PBXGroup;
+			children = (
+				31751B1D2444DE8B00EEDF14 /* MorphicTests.swift */,
+				31751B1F2444DE8B00EEDF14 /* Info.plist */,
+			);
+			path = MorphicTests;
+			sourceTree = "<group>";
+		};
+		31751B272444DE8B00EEDF14 /* MorphicUITests */ = {
+			isa = PBXGroup;
+			children = (
+				31751B282444DE8B00EEDF14 /* MorphicUITests.swift */,
+				31751B2A2444DE8B00EEDF14 /* Info.plist */,
+			);
+			path = MorphicUITests;
+			sourceTree = "<group>";
+		};
+		31751B3F2444E01B00EEDF14 /* Quick Strip */ = {
+			isa = PBXGroup;
+			children = (
+				31751B9A2444F22900EEDF14 /* QuickStrip.xib */,
+				31751B9B2444F22900EEDF14 /* QuickStripViewController.swift */,
+				31751B9C2444F22900EEDF14 /* QuickStripWindow.swift */,
+			);
+			path = "Quick Strip";
+			sourceTree = "<group>";
+		};
+		31751B462444E04300EEDF14 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				31751B472444E04300EEDF14 /* MorphicCore.framework */,
+				31751B482444E04300EEDF14 /* MorphicService.framework */,
+				31751B492444E04300EEDF14 /* MorphicSettings.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		31751B562444E0E300EEDF14 /* MorphicConfigurator */ = {
+			isa = PBXGroup;
+			children = (
+				31751B5E2444E0E400EEDF14 /* Info.plist */,
+				31751B5F2444E0E400EEDF14 /* MorphicConfigurator.entitlements */,
+				31751B592444E0E400EEDF14 /* Assets.xcassets */,
+				31751B5B2444E0E400EEDF14 /* MainMenu.xib */,
+				31751B572444E0E300EEDF14 /* AppDelegate.swift */,
+				31751BA02444F24800EEDF14 /* ViewController.swift */,
+				31751B8E2444E56800EEDF14 /* ViewController.xib */,
+			);
+			path = MorphicConfigurator;
+			sourceTree = "<group>";
+		};
+		31751B672444E0E400EEDF14 /* MorphicConfiguratorTests */ = {
+			isa = PBXGroup;
+			children = (
+				31751B682444E0E400EEDF14 /* MorphicConfiguratorTests.swift */,
+				31751B6A2444E0E400EEDF14 /* Info.plist */,
+			);
+			path = MorphicConfiguratorTests;
+			sourceTree = "<group>";
+		};
+		31751B722444E0E400EEDF14 /* MorphicConfiguratorUITests */ = {
+			isa = PBXGroup;
+			children = (
+				31751B732444E0E400EEDF14 /* MorphicConfiguratorUITests.swift */,
+				31751B752444E0E400EEDF14 /* Info.plist */,
+			);
+			path = MorphicConfiguratorUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		31751B082444DE8900EEDF14 /* Morphic */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 31751B2D2444DE8B00EEDF14 /* Build configuration list for PBXNativeTarget "Morphic" */;
+			buildPhases = (
+				31751B052444DE8900EEDF14 /* Sources */,
+				31751B062444DE8900EEDF14 /* Frameworks */,
+				31751B072444DE8900EEDF14 /* Resources */,
+				31751B502444E04300EEDF14 /* Embed Frameworks */,
+				31751B932444F03900EEDF14 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				31751B962444F0CA00EEDF14 /* PBXTargetDependency */,
+			);
+			name = Morphic;
+			productName = Morphic;
+			productReference = 31751B092444DE8900EEDF14 /* Morphic.app */;
+			productType = "com.apple.product-type.application";
+		};
+		31751B182444DE8B00EEDF14 /* MorphicTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 31751B302444DE8B00EEDF14 /* Build configuration list for PBXNativeTarget "MorphicTests" */;
+			buildPhases = (
+				31751B152444DE8B00EEDF14 /* Sources */,
+				31751B162444DE8B00EEDF14 /* Frameworks */,
+				31751B172444DE8B00EEDF14 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				31751B1B2444DE8B00EEDF14 /* PBXTargetDependency */,
+			);
+			name = MorphicTests;
+			productName = MorphicTests;
+			productReference = 31751B192444DE8B00EEDF14 /* MorphicTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		31751B232444DE8B00EEDF14 /* MorphicUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 31751B332444DE8B00EEDF14 /* Build configuration list for PBXNativeTarget "MorphicUITests" */;
+			buildPhases = (
+				31751B202444DE8B00EEDF14 /* Sources */,
+				31751B212444DE8B00EEDF14 /* Frameworks */,
+				31751B222444DE8B00EEDF14 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				31751B262444DE8B00EEDF14 /* PBXTargetDependency */,
+			);
+			name = MorphicUITests;
+			productName = MorphicUITests;
+			productReference = 31751B242444DE8B00EEDF14 /* MorphicUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		31751B542444E0E300EEDF14 /* MorphicConfigurator */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 31751B762444E0E400EEDF14 /* Build configuration list for PBXNativeTarget "MorphicConfigurator" */;
+			buildPhases = (
+				31751B512444E0E300EEDF14 /* Sources */,
+				31751B522444E0E300EEDF14 /* Frameworks */,
+				31751B532444E0E300EEDF14 /* Resources */,
+				31751B8B2444E15F00EEDF14 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MorphicConfigurator;
+			productName = MorphicConfigurator;
+			productReference = 31751B552444E0E300EEDF14 /* MorphicConfigurator.app */;
+			productType = "com.apple.product-type.application";
+		};
+		31751B632444E0E400EEDF14 /* MorphicConfiguratorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 31751B792444E0E400EEDF14 /* Build configuration list for PBXNativeTarget "MorphicConfiguratorTests" */;
+			buildPhases = (
+				31751B602444E0E400EEDF14 /* Sources */,
+				31751B612444E0E400EEDF14 /* Frameworks */,
+				31751B622444E0E400EEDF14 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				31751B662444E0E400EEDF14 /* PBXTargetDependency */,
+			);
+			name = MorphicConfiguratorTests;
+			productName = MorphicConfiguratorTests;
+			productReference = 31751B642444E0E400EEDF14 /* MorphicConfiguratorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		31751B6E2444E0E400EEDF14 /* MorphicConfiguratorUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 31751B7C2444E0E400EEDF14 /* Build configuration list for PBXNativeTarget "MorphicConfiguratorUITests" */;
+			buildPhases = (
+				31751B6B2444E0E400EEDF14 /* Sources */,
+				31751B6C2444E0E400EEDF14 /* Frameworks */,
+				31751B6D2444E0E400EEDF14 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				31751B712444E0E400EEDF14 /* PBXTargetDependency */,
+			);
+			name = MorphicConfiguratorUITests;
+			productName = MorphicConfiguratorUITests;
+			productReference = 31751B6F2444E0E400EEDF14 /* MorphicConfiguratorUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		31751B012444DE8900EEDF14 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1140;
+				LastUpgradeCheck = 1140;
+				ORGANIZATIONNAME = "Raising the Floor";
+				TargetAttributes = {
+					31751B082444DE8900EEDF14 = {
+						CreatedOnToolsVersion = 11.4;
+					};
+					31751B182444DE8B00EEDF14 = {
+						CreatedOnToolsVersion = 11.4;
+						TestTargetID = 31751B082444DE8900EEDF14;
+					};
+					31751B232444DE8B00EEDF14 = {
+						CreatedOnToolsVersion = 11.4;
+						TestTargetID = 31751B082444DE8900EEDF14;
+					};
+					31751B542444E0E300EEDF14 = {
+						CreatedOnToolsVersion = 11.4;
+					};
+					31751B632444E0E400EEDF14 = {
+						CreatedOnToolsVersion = 11.4;
+						TestTargetID = 31751B542444E0E300EEDF14;
+					};
+					31751B6E2444E0E400EEDF14 = {
+						CreatedOnToolsVersion = 11.4;
+						TestTargetID = 31751B542444E0E300EEDF14;
+					};
+				};
+			};
+			buildConfigurationList = 31751B042444DE8900EEDF14 /* Build configuration list for PBXProject "Morphic" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 31751B002444DE8900EEDF14;
+			productRefGroup = 31751B0A2444DE8900EEDF14 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				31751B082444DE8900EEDF14 /* Morphic */,
+				31751B182444DE8B00EEDF14 /* MorphicTests */,
+				31751B232444DE8B00EEDF14 /* MorphicUITests */,
+				31751B542444E0E300EEDF14 /* MorphicConfigurator */,
+				31751B632444E0E400EEDF14 /* MorphicConfiguratorTests */,
+				31751B6E2444E0E400EEDF14 /* MorphicConfiguratorUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		31751B072444DE8900EEDF14 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31751B822444E11600EEDF14 /* Local.xcconfig in Resources */,
+				31751B3C2444DFAA00EEDF14 /* Main.xib in Resources */,
+				31751B9D2444F22900EEDF14 /* QuickStrip.xib in Resources */,
+				31751B842444E11600EEDF14 /* Debug.xcconfig in Resources */,
+				31751B0F2444DE8B00EEDF14 /* Assets.xcassets in Resources */,
+				31751B832444E11600EEDF14 /* Release.xcconfig in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B172444DE8B00EEDF14 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B222444DE8B00EEDF14 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B532444E0E300EEDF14 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31751B5A2444E0E400EEDF14 /* Assets.xcassets in Resources */,
+				31751B8F2444E56800EEDF14 /* ViewController.xib in Resources */,
+				31751B5D2444E0E400EEDF14 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B622444E0E400EEDF14 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B6D2444E0E400EEDF14 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		31751B052444DE8900EEDF14 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31751B9F2444F22900EEDF14 /* QuickStripWindow.swift in Sources */,
+				31751B9E2444F22900EEDF14 /* QuickStripViewController.swift in Sources */,
+				31751B982444F21700EEDF14 /* Session.swift in Sources */,
+				31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B152444DE8B00EEDF14 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31751B1E2444DE8B00EEDF14 /* MorphicTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B202444DE8B00EEDF14 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31751B292444DE8B00EEDF14 /* MorphicUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B512444E0E300EEDF14 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31751BA12444F24800EEDF14 /* ViewController.swift in Sources */,
+				31751B582444E0E300EEDF14 /* AppDelegate.swift in Sources */,
+				31751B992444F21700EEDF14 /* Session.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B602444E0E400EEDF14 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31751B692444E0E400EEDF14 /* MorphicConfiguratorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		31751B6B2444E0E400EEDF14 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31751B742444E0E400EEDF14 /* MorphicConfiguratorUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		31751B1B2444DE8B00EEDF14 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 31751B082444DE8900EEDF14 /* Morphic */;
+			targetProxy = 31751B1A2444DE8B00EEDF14 /* PBXContainerItemProxy */;
+		};
+		31751B262444DE8B00EEDF14 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 31751B082444DE8900EEDF14 /* Morphic */;
+			targetProxy = 31751B252444DE8B00EEDF14 /* PBXContainerItemProxy */;
+		};
+		31751B662444E0E400EEDF14 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 31751B542444E0E300EEDF14 /* MorphicConfigurator */;
+			targetProxy = 31751B652444E0E400EEDF14 /* PBXContainerItemProxy */;
+		};
+		31751B712444E0E400EEDF14 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 31751B542444E0E300EEDF14 /* MorphicConfigurator */;
+			targetProxy = 31751B702444E0E400EEDF14 /* PBXContainerItemProxy */;
+		};
+		31751B962444F0CA00EEDF14 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 31751B542444E0E300EEDF14 /* MorphicConfigurator */;
+			targetProxy = 31751B952444F0CA00EEDF14 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		31751B3A2444DFAA00EEDF14 /* Main.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				31751B3B2444DFAA00EEDF14 /* Base */,
+			);
+			name = Main.xib;
+			sourceTree = "<group>";
+		};
+		31751B5B2444E0E400EEDF14 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				31751B5C2444E0E400EEDF14 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		31751B2B2444DE8B00EEDF14 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 31751B812444E11600EEDF14 /* Debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		31751B2C2444DE8B00EEDF14 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 31751B802444E11600EEDF14 /* Release.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		31751B2E2444DE8B00EEDF14 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Morphic/Morphic.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = Morphic/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicClient;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		31751B2F2444DE8B00EEDF14 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Morphic/Morphic.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = Morphic/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicClient;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		31751B312444DE8B00EEDF14 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				INFOPLIST_FILE = MorphicTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Morphic.app/Contents/MacOS/Morphic";
+			};
+			name = Debug;
+		};
+		31751B322444DE8B00EEDF14 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				INFOPLIST_FILE = MorphicTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Morphic.app/Contents/MacOS/Morphic";
+			};
+			name = Release;
+		};
+		31751B342444DE8B00EEDF14 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				INFOPLIST_FILE = MorphicUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = Morphic;
+			};
+			name = Debug;
+		};
+		31751B352444DE8B00EEDF14 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				INFOPLIST_FILE = MorphicUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = Morphic;
+			};
+			name = Release;
+		};
+		31751B772444E0E400EEDF14 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MorphicConfigurator/MorphicConfigurator.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = MorphicConfigurator/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		31751B782444E0E400EEDF14 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MorphicConfigurator/MorphicConfigurator.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = MorphicConfigurator/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		31751B7A2444E0E400EEDF14 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				INFOPLIST_FILE = MorphicConfiguratorTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfiguratorTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MorphicConfigurator.app/Contents/MacOS/MorphicConfigurator";
+			};
+			name = Debug;
+		};
+		31751B7B2444E0E400EEDF14 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				INFOPLIST_FILE = MorphicConfiguratorTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfiguratorTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MorphicConfigurator.app/Contents/MacOS/MorphicConfigurator";
+			};
+			name = Release;
+		};
+		31751B7D2444E0E400EEDF14 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				INFOPLIST_FILE = MorphicConfiguratorUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfiguratorUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = MorphicConfigurator;
+			};
+			name = Debug;
+		};
+		31751B7E2444E0E400EEDF14 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				INFOPLIST_FILE = MorphicConfiguratorUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfiguratorUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = MorphicConfigurator;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		31751B042444DE8900EEDF14 /* Build configuration list for PBXProject "Morphic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				31751B2B2444DE8B00EEDF14 /* Debug */,
+				31751B2C2444DE8B00EEDF14 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		31751B2D2444DE8B00EEDF14 /* Build configuration list for PBXNativeTarget "Morphic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				31751B2E2444DE8B00EEDF14 /* Debug */,
+				31751B2F2444DE8B00EEDF14 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		31751B302444DE8B00EEDF14 /* Build configuration list for PBXNativeTarget "MorphicTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				31751B312444DE8B00EEDF14 /* Debug */,
+				31751B322444DE8B00EEDF14 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		31751B332444DE8B00EEDF14 /* Build configuration list for PBXNativeTarget "MorphicUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				31751B342444DE8B00EEDF14 /* Debug */,
+				31751B352444DE8B00EEDF14 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		31751B762444E0E400EEDF14 /* Build configuration list for PBXNativeTarget "MorphicConfigurator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				31751B772444E0E400EEDF14 /* Debug */,
+				31751B782444E0E400EEDF14 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		31751B792444E0E400EEDF14 /* Build configuration list for PBXNativeTarget "MorphicConfiguratorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				31751B7A2444E0E400EEDF14 /* Debug */,
+				31751B7B2444E0E400EEDF14 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		31751B7C2444E0E400EEDF14 /* Build configuration list for PBXNativeTarget "MorphicConfiguratorUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				31751B7D2444E0E400EEDF14 /* Debug */,
+				31751B7E2444E0E400EEDF14 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 31751B012444DE8900EEDF14 /* Project object */;
+}

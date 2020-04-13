@@ -33,7 +33,7 @@
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="vgQ-je-MGT"/>
-                <menuItem title="Log In..." id="pzh-qC-88t">
+                <menuItem title="Take Settings With Me..." id="pzh-qC-88t">
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
                 <menuItem title="Customize Quick Strip..." keyEquivalent="," id="DSt-te-WFT">
