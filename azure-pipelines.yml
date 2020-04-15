@@ -51,11 +51,11 @@ steps:
     xcWorkspacePath: '**/MorphicLite.xcworkspace'
     xcodeVersion: $(xcodeVersionNum)
 - task: Xcode@5
-  displayName: Build MorphicMenuBar
+  displayName: Build Morphic
   inputs:
     actions: 'build'
     sdk: $(sdk)
-    scheme: 'MorphicMenuBar'
+    scheme: 'Morphic'
     configuration: 'Release'
     xcWorkspacePath: '**/MorphicLite.xcworkspace'
     xcodeVersion: $(xcodeVersionNum)
