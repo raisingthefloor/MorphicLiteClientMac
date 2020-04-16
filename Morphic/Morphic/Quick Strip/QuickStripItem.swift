@@ -104,6 +104,7 @@ class QuickStripControlItem: QuickStripItem{
                 QuickStripSegmentedButton.Segment(title: Bundle.main.localizedString(forKey: "control.feature.magnifier.hide", value: nil, table: "QuickStrip"), isPrimary: false)
             ]
             let view = QuickStripSegmentedButtonItemView(title: Bundle.main.localizedString(forKey: "control.feature.magnifier.title", value: nil, table: "QuickStrip"), segments: segments)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
             return view
         case .reader:
             let segments = [
@@ -111,6 +112,7 @@ class QuickStripControlItem: QuickStripItem{
                 QuickStripSegmentedButton.Segment(title: Bundle.main.localizedString(forKey: "control.feature.reader.off", value: nil, table: "QuickStrip"), isPrimary: false)
             ]
             let view = QuickStripSegmentedButtonItemView(title: Bundle.main.localizedString(forKey: "control.feature.reader.title", value: nil, table: "QuickStrip"), segments: segments)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
             return view
         case .volume:
             let segments = [
@@ -126,6 +128,7 @@ class QuickStripControlItem: QuickStripItem{
                 QuickStripSegmentedButton.Segment(title: Bundle.main.localizedString(forKey: "control.feature.contrast.off", value: nil, table: "QuickStrip"), isPrimary: false)
             ]
             let view = QuickStripSegmentedButtonItemView(title: Bundle.main.localizedString(forKey: "control.feature.contrast.title", value: nil, table: "QuickStrip"), segments: segments)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
             return view
         default:
             return nil

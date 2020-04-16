@@ -44,6 +44,7 @@ public class QuickStripWindow: NSWindow {
         level = .floating
         backgroundColor = .clear
         isMovableByWindowBackground = true
+        collectionBehavior = [.canJoinAllSpaces]
         if let savedPosition = Position(rawValue: Session.shared.string(for: .morphicQuickStripPosition) ?? ""){
             position = savedPosition
         }

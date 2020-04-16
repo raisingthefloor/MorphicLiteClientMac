@@ -115,7 +115,14 @@ class QuickStripSegmentedButton: NSControl {
     }
     
     /// Amount of inset each button segment should have
-    var contentInsets = NSEdgeInsets(top: 7, left: 9, bottom: 7, right: 9)
+    var contentInsets = NSEdgeInsets(top: 7, left: 9, bottom: 7, right: 9){
+        didSet{
+            invalidateIntrinsicContentSize()
+            for button in segmentButtons{
+                (button as? Button)?.contentInsets = contentInsets
+            }
+        }
+    }
     
     override var intrinsicContentSize: NSSize{
         var size = NSSize(width: 0, height: contentInsets.top + contentInsets.bottom + 13)
@@ -141,7 +148,11 @@ class QuickStripSegmentedButton: NSControl {
     /// NSButton subclass that provides a custom intrinsic size with content insets
     private class Button: NSButton{
         
-        public var contentInsets = NSEdgeInsetsZero
+        public var contentInsets = NSEdgeInsetsZero{
+            didSet{
+                invalidateIntrinsicContentSize()
+            }
+        }
         
         override var intrinsicContentSize: NSSize{
             var size = super.intrinsicContentSize.roundedUp()
