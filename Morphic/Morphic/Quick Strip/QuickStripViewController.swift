@@ -25,85 +25,47 @@ import Cocoa
 import MorphicService
 import MorphicSettings
 
-class QuickStripViewController: NSViewController {
+/// The View Controller for a Quick Strip showing a collection of actions the user can take
+public class QuickStripViewController: NSViewController {
     
-    @IBOutlet var mainMenu: NSMenu!
-    
-    @IBAction
-    func showMainMenu(_ sender: Any?){
-        guard let button = sender as? NSButton else{
-            return
-        }
-        mainMenu.popUp(positioning: nil, at: NSPoint(x: button.bounds.origin.x, y: button.bounds.origin.y + button.bounds.size.height), in: button)
-    }
+    // MARK: - View Lifecycle
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         view.layer?.backgroundColor = .white
         view.layer?.cornerRadius = 6
-//        populteDisplayModeButton()
-    }
-
-    override var representedObject: Any? {
-        didSet {
-        // Update the view, if already loaded.
-        }
     }
     
+    // MARK: - Logo Button & Main Menu
+    
+    /// The strip's main menu, accessible via the Logo image button
+    @IBOutlet var mainMenu: NSMenu!
+    
+    /// The button that displays the Morphic logo
+    @IBOutlet weak var logoButton: NSButton!
+    
+    /// Action to show the main menu from the logo button
     @IBAction
-    func openConfigurator(_ sender: Any?){
-        AppDelegate.shared.launchConfigurator(nil)
-        view.window?.close()
+    func showMainMenu(_ sender: Any?){
+        mainMenu.popUp(positioning: nil, at: NSPoint(x: logoButton.bounds.origin.x, y: logoButton.bounds.origin.y + logoButton.bounds.size.height), in: logoButton)
     }
     
-    @IBOutlet weak var displayModeButton: NSPopUpButton!
+    // MARK: - Items
     
-    var zoomLevels: [Display.ZoomLevel] = [
-        .normal,
-        .percent125,
-        .percent150,
-        .percent200
-    ]
+    /// The quick strip view managed by this controller
+    @IBOutlet weak var quickStripView: QuickStripView!
     
-    private func populteDisplayModeButton(){
-        displayModeButton.removeAllItems()
-        let zoomRawValue = Session.shared.string(for: "zoom", in: "com.apple.macos.display") ?? "normal"
-        let currentLevel = Display.ZoomLevel(rawValue: zoomRawValue)
-        var i = 0
-        for level in zoomLevels{
-            displayModeButton.addItem(withTitle: level.label)
-            if level == currentLevel{
-                displayModeButton.selectItem(at: i)
+    /// The items that should be shown on the quick strip
+    public var items = [QuickStripItem](){
+        didSet{
+            _ = view
+            quickStripView.removeAllItemViews()
+            for item in items{
+                if let itemView = item.view(){
+                    quickStripView.add(itemView: itemView)
+                }
             }
-            i += 1
         }
     }
 
-    @IBAction
-    func changeDisplayMode(_ sender: Any?){
-        let index = displayModeButton.indexOfSelectedItem
-        guard zoomLevels.count > 0 && index >= 0 else{
-            return
-        }
-        let level = zoomLevels[index]
-        Session.shared.save(level.rawValue, for: "zoom", in: "com.apple.macos.display")
-        AppDelegate.shared.toggleQuickStrip(nil)
-    }
-
-}
-
-extension Display.ZoomLevel{
-    
-    var label: String{
-        switch self{
-        case .normal:
-            return "Normal"
-        case .percent125:
-            return "125%"
-        case .percent150:
-            return "150%"
-        case .percent200:
-            return "200%"
-        }
-    }
 }

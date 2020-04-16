@@ -32,14 +32,14 @@
                         <action selector="hideQuickStrip:" target="-1" id="YMq-QB-Pag"/>
                     </connections>
                 </menuItem>
-                <menuItem isSeparatorItem="YES" id="vgQ-je-MGT"/>
-                <menuItem title="Take Settings With Me..." id="pzh-qC-88t">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                </menuItem>
                 <menuItem title="Customize Quick Strip..." keyEquivalent="," id="DSt-te-WFT">
                     <connections>
                         <action selector="launchConfigurator:" target="-1" id="btk-KY-xS2"/>
                     </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="vgQ-je-MGT"/>
+                <menuItem title="Take Settings With Me..." id="pzh-qC-88t">
+                    <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="yYL-r6-1AR"/>
                 <menuItem title="Quit Morphic" keyEquivalent="q" id="aYd-9o-084">

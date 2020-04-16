@@ -21,6 +21,7 @@
 		31A16BD02423E86C0081A72C /* MorphicDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A16BC62423E86C0081A72C /* MorphicDisplay.swift */; };
 		31A16BD12423E86C0081A72C /* MorphicAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A16BC82423E86C0081A72C /* MorphicAudio.swift */; };
 		31A16BD22423E86C0081A72C /* MorphicWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A16BCA2423E86C0081A72C /* MorphicWindow.swift */; };
+		31CE56E22448C8F700A52A7B /* Handler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE56E12448C8F700A52A7B /* Handler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 		31A16BC62423E86C0081A72C /* MorphicDisplay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorphicDisplay.swift; sourceTree = "<group>"; };
 		31A16BC82423E86C0081A72C /* MorphicAudio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorphicAudio.swift; sourceTree = "<group>"; };
 		31A16BCA2423E86C0081A72C /* MorphicWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorphicWindow.swift; sourceTree = "<group>"; };
+		31CE56E12448C8F700A52A7B /* Handler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +128,7 @@
 				31A0A57A2405967600166668 /* MorphicSettings.h */,
 				31A0A57B2405967600166668 /* Info.plist */,
 				3113364C2427F01100686AF6 /* Settings.swift */,
+				31CE56E12448C8F700A52A7B /* Handler.swift */,
 				311336502427F33600686AF6 /* Display.swift */,
 			);
 			path = MorphicSettings;
@@ -317,6 +320,7 @@
 				31A16BCF2423E86C0081A72C /* MorphicDisk.swift in Sources */,
 				3113364D2427F01100686AF6 /* Settings.swift in Sources */,
 				31A16BCD2423E86C0081A72C /* MorphicInput.swift in Sources */,
+				31CE56E22448C8F700A52A7B /* Handler.swift in Sources */,
 				31A16BCE2423E86C0081A72C /* MorphicLanguage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

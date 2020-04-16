@@ -50,6 +50,18 @@ public struct Preferences: Codable, Record{
     
     /// The default map of solution identifier to solution prefs
     public var defaults: PreferencesSet?
+    
+    public struct Key: Equatable, Hashable{
+        
+        public var solution: String
+        public var preference: String
+        
+        public init(solution: String, preference: String){
+            self.solution = solution
+            self.preference = preference
+        }
+        
+    }
 
     /// The preferences for a specific solution
     public struct Solution: Codable{
@@ -72,18 +84,18 @@ public struct Preferences: Codable, Record{
         
     }
     
-    public mutating func set(_ value: Interoperable?, for preference: String, in solution: String){
+    public mutating func set(_ value: Interoperable?, for key: Key){
         if defaults == nil{
             defaults = [:]
         }
-        if defaults?[solution] == nil{
-            defaults?[solution] = Solution()
+        if defaults?[key.solution] == nil{
+            defaults?[key.solution] = Solution()
         }
-        defaults?[solution]?.values[preference] = value
+        defaults?[key.solution]?.values[key.preference] = value
     }
     
-    public func get(preference: String, in solution: String) -> Interoperable?{
-        return defaults?[solution]?.values[preference] ?? nil
+    public func get(key: Key) -> Interoperable?{
+        return defaults?[key.solution]?.values[key.preference] ?? nil
     }
     
     // MARK: - Codable

@@ -46,14 +46,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         os_log(.info, log: logger, "opening morphic session...")
         createStatusItem()
         Session.shared.open {
-            if Session.shared.user == nil{
-                os_log(.info, log: logger, "no user")
-                UserDefaults.morphic.addObserver(self, forKeyPath: .morphicDefaultsKeyUserIdentifier, options: .new, context: nil)
-                self.launchConfigurator(nil)
-            }else{
+//            if Session.shared.user == nil{
+//                os_log(.info, log: logger, "no user")
+//                UserDefaults.morphic.addObserver(self, forKeyPath: .morphicDefaultsKeyUserIdentifier, options: .new, context: nil)
+//                self.launchConfigurator(nil)
+//            }else{
                 self.showQuickStrip(nil)
                 os_log(.info, log: logger, "session open")
-            }
+//            }
         }
     }
 
@@ -82,7 +82,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     // MARK: - Quick Strip
      
     /// The window controller for the morphic quick strip that is shown by clicking on the `statusItem`
-    var quickStripWindow: NSWindow?
+    var quickStripWindow: QuickStripWindow?
      
     /// Show or hide the morphic quick strip
     ///
@@ -127,6 +127,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func windowWillClose(_ notification: Notification) {
         os_log(.info, log: logger, "willClose")
         quickStripWindow = nil
+    }
+    
+    func windowDidChangeScreen(_ notification: Notification) {
+        quickStripWindow?.reposition(animated: false)
     }
      
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {

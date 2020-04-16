@@ -36,10 +36,16 @@
 		31751B942444F06100EEDF14 /* MorphicConfigurator.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 31751B552444E0E300EEDF14 /* MorphicConfigurator.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		31751B982444F21700EEDF14 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B972444F21700EEDF14 /* Session.swift */; };
 		31751B992444F21700EEDF14 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B972444F21700EEDF14 /* Session.swift */; };
-		31751B9D2444F22900EEDF14 /* QuickStrip.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31751B9A2444F22900EEDF14 /* QuickStrip.xib */; };
 		31751B9E2444F22900EEDF14 /* QuickStripViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B9B2444F22900EEDF14 /* QuickStripViewController.swift */; };
 		31751B9F2444F22900EEDF14 /* QuickStripWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B9C2444F22900EEDF14 /* QuickStripWindow.swift */; };
 		31751BA12444F24800EEDF14 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751BA02444F24800EEDF14 /* ViewController.swift */; };
+		31E1E17B24466D28009C4092 /* QuickStripItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E1E17A24466D28009C4092 /* QuickStripItem.swift */; };
+		31E1E17D24466E7C009C4092 /* QuickStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E1E17C24466E7C009C4092 /* QuickStripView.swift */; };
+		31E1E17F24466EB0009C4092 /* QuickStripItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E1E17E24466EB0009C4092 /* QuickStripItemView.swift */; };
+		31E1E183244682C2009C4092 /* QuickStripSegmentedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E1E182244682C2009C4092 /* QuickStripSegmentedButton.swift */; };
+		31E1E185244683DC009C4092 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E1E184244683DC009C4092 /* Theme.swift */; };
+		31E1E187244792D9009C4092 /* Defaults.json in Resources */ = {isa = PBXBuildFile; fileRef = 31E1E186244792D9009C4092 /* Defaults.json */; };
+		31E1E188244794EF009C4092 /* QuickStrip.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31E1E18A244794EF009C4092 /* QuickStrip.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -152,10 +158,17 @@
 		31751B812444E11600EEDF14 /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		31751B8E2444E56800EEDF14 /* ViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewController.xib; sourceTree = "<group>"; };
 		31751B972444F21700EEDF14 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
-		31751B9A2444F22900EEDF14 /* QuickStrip.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuickStrip.xib; sourceTree = "<group>"; };
 		31751B9B2444F22900EEDF14 /* QuickStripViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickStripViewController.swift; sourceTree = "<group>"; };
 		31751B9C2444F22900EEDF14 /* QuickStripWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickStripWindow.swift; sourceTree = "<group>"; };
 		31751BA02444F24800EEDF14 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		31CE56E92448E27400A52A7B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/QuickStrip.strings; sourceTree = "<group>"; };
+		31E1E17A24466D28009C4092 /* QuickStripItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickStripItem.swift; sourceTree = "<group>"; };
+		31E1E17C24466E7C009C4092 /* QuickStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickStripView.swift; sourceTree = "<group>"; };
+		31E1E17E24466EB0009C4092 /* QuickStripItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickStripItemView.swift; sourceTree = "<group>"; };
+		31E1E182244682C2009C4092 /* QuickStripSegmentedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickStripSegmentedButton.swift; sourceTree = "<group>"; };
+		31E1E184244683DC009C4092 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		31E1E186244792D9009C4092 /* Defaults.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Defaults.json; sourceTree = "<group>"; };
+		31E1E189244794EF009C4092 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/QuickStrip.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -244,11 +257,13 @@
 			isa = PBXGroup;
 			children = (
 				31751B132444DE8B00EEDF14 /* Info.plist */,
+				31E1E186244792D9009C4092 /* Defaults.json */,
 				31751B142444DE8B00EEDF14 /* Morphic.entitlements */,
 				31751B0E2444DE8B00EEDF14 /* Assets.xcassets */,
 				31751B3A2444DFAA00EEDF14 /* Main.xib */,
 				31751B0C2444DE8900EEDF14 /* AppDelegate.swift */,
 				31751B972444F21700EEDF14 /* Session.swift */,
+				31E1E184244683DC009C4092 /* Theme.swift */,
 				31751B3F2444E01B00EEDF14 /* Quick Strip */,
 			);
 			path = Morphic;
@@ -275,9 +290,13 @@
 		31751B3F2444E01B00EEDF14 /* Quick Strip */ = {
 			isa = PBXGroup;
 			children = (
-				31751B9A2444F22900EEDF14 /* QuickStrip.xib */,
-				31751B9B2444F22900EEDF14 /* QuickStripViewController.swift */,
+				31E1E18A244794EF009C4092 /* QuickStrip.xib */,
 				31751B9C2444F22900EEDF14 /* QuickStripWindow.swift */,
+				31751B9B2444F22900EEDF14 /* QuickStripViewController.swift */,
+				31E1E17C24466E7C009C4092 /* QuickStripView.swift */,
+				31E1E17E24466EB0009C4092 /* QuickStripItemView.swift */,
+				31E1E182244682C2009C4092 /* QuickStripSegmentedButton.swift */,
+				31E1E17A24466D28009C4092 /* QuickStripItem.swift */,
 			);
 			path = "Quick Strip";
 			sourceTree = "<group>";
@@ -501,10 +520,11 @@
 			files = (
 				31751B822444E11600EEDF14 /* Local.xcconfig in Resources */,
 				31751B3C2444DFAA00EEDF14 /* Main.xib in Resources */,
-				31751B9D2444F22900EEDF14 /* QuickStrip.xib in Resources */,
+				31E1E188244794EF009C4092 /* QuickStrip.xib in Resources */,
 				31751B842444E11600EEDF14 /* Debug.xcconfig in Resources */,
 				31751B0F2444DE8B00EEDF14 /* Assets.xcassets in Resources */,
 				31751B832444E11600EEDF14 /* Release.xcconfig in Resources */,
+				31E1E187244792D9009C4092 /* Defaults.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -553,10 +573,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31E1E185244683DC009C4092 /* Theme.swift in Sources */,
 				31751B9F2444F22900EEDF14 /* QuickStripWindow.swift in Sources */,
+				31E1E183244682C2009C4092 /* QuickStripSegmentedButton.swift in Sources */,
 				31751B9E2444F22900EEDF14 /* QuickStripViewController.swift in Sources */,
 				31751B982444F21700EEDF14 /* Session.swift in Sources */,
+				31E1E17F24466EB0009C4092 /* QuickStripItemView.swift in Sources */,
+				31E1E17D24466E7C009C4092 /* QuickStripView.swift in Sources */,
 				31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */,
+				31E1E17B24466D28009C4092 /* QuickStripItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -647,6 +672,15 @@
 				31751B5C2444E0E400EEDF14 /* Base */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		31E1E18A244794EF009C4092 /* QuickStrip.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				31E1E189244794EF009C4092 /* Base */,
+				31CE56E92448E27400A52A7B /* en */,
+			);
+			name = QuickStrip.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

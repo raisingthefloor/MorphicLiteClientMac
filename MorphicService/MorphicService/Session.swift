@@ -46,6 +46,9 @@ public class Session{
     
     /// Open a session, fetching the current user's data if we have saved credentials
     public func open(completion: @escaping () -> Void){
+        DispatchQueue.main.async {
+            completion()
+        }
         // TODO: check for USB key
         if let userId = currentUserIdentifier{
             os_log(.info, log: logger, "Saved user ID, fetching updated user info...")
@@ -377,23 +380,23 @@ public class Session{
     /// * Updates the local preferences
     /// * Applys the change to the system
     /// * Requests a cloud save
-    public func save(_ value: Interoperable?, for preference: String, in solution: String){
+    public func save(_ value: Interoperable?, for key: Preferences.Key){
         os_log(.error, log: logger, "Setting preference")
-        preferences?.set(value, for: preference, in: solution)
-        _ = settings.apply(value, for: preference, in: solution)
+        preferences?.set(value, for: key)
+        _ = settings.apply(value, for: key)
         setNeedsPreferencesSave()
     }
     
-    public func string(for preference: String, in solution: String) -> String?{
-        return preferences?.get(preference: preference, in: solution) as? String
+    public func string(for key: Preferences.Key) -> String?{
+        return preferences?.get(key: key) as? String
     }
     
-    public func int(for preference: String, in solution: String) -> Int?{
-        return preferences?.get(preference: preference, in: solution) as? Int
+    public func int(for key: Preferences.Key) -> Int?{
+        return preferences?.get(key: key) as? Int
     }
     
-    public func double(for preference: String, in solution: String) -> Double?{
-        return preferences?.get(preference: preference, in: solution) as? Double
+    public func double(for key: Preferences.Key) -> Double?{
+        return preferences?.get(key: key) as? Double
     }
     
     public func applyAllPreferences(){
@@ -406,7 +409,7 @@ public class Session{
         }
         for (solution, preferencesSet) in defaults{
             for (preference, value) in preferencesSet.values{
-                _ = settings.apply(value, for: preference, in: solution)
+                _ = settings.apply(value, for: Preferences.Key(solution: solution, preference: preference))
             }
         }
     }

@@ -22,31 +22,27 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
 
 public class Display{
     
-    public enum ZoomLevel: String{
-        case normal
-        case percent125
-        case percent150
-        case percent200
-    }
-    
     init(id: UInt32){
         self.id = id
+        possibleModes = findPossibleModes()
+        normalMode = possibleModes.first(where: { $0.isDefault })
     }
     
     private var id: UInt32
     
-    static var main: Display? = {
+    public static var main: Display? = {
         if let id = MorphicDisplay.getMainDisplayId(){
             return Display(id: id)
         }
         return nil
     }()
     
-    public func zoom(level: ZoomLevel) -> Bool{
-        guard let mode = self.mode(for: level) else{
+    public func zoom(to percentage: Double) -> Bool{
+        guard let mode = self.mode(for: percentage) else{
             return false
         }
         do{
@@ -57,12 +53,36 @@ public class Display{
         }
     }
     
-    public func mode(for zoomLevel: ZoomLevel) -> MorphicDisplay.DisplayMode?{
-        guard let modes = MorphicDisplay.getAllDisplayModes(for: id) else{
-            return nil
+    public func percentage(zoomingIn steps: Int) -> Double{
+        guard let currentMode = currentMode, let normalMode = normalMode else{
+            return 1
         }
-        guard let currentMode = MorphicDisplay.getCurrentDisplayMode(for: id) else{
-            return nil
+        let target = possibleModes.reversed().first(where: { $0.widthInVirtualPixels < currentMode.widthInVirtualPixels }) ?? currentMode
+        return Double(target.widthInVirtualPixels) / Double(normalMode.widthInVirtualPixels)
+    }
+    
+    public func percentage(zoomingOut steps: Int) -> Double{
+        guard let currentMode = currentMode, let normalMode = normalMode else{
+            return 1
+        }
+        let target = possibleModes.first(where: { $0.widthInVirtualPixels > currentMode.widthInVirtualPixels }) ?? currentMode
+        return Double(target.widthInVirtualPixels) / Double(normalMode.widthInVirtualPixels)
+    }
+    
+    private var possibleModes: [MorphicDisplay.DisplayMode]!
+    
+    private var normalMode: MorphicDisplay.DisplayMode?
+    
+    private var currentMode: MorphicDisplay.DisplayMode?{
+        return MorphicDisplay.getCurrentDisplayMode(for: id)
+    }
+    
+    private func findPossibleModes() -> [MorphicDisplay.DisplayMode]{
+        guard let modes = MorphicDisplay.getAllDisplayModes(for: id) else{
+            return []
+        }
+        guard let currentMode = currentMode else{
+            return []
         }
         var possibleModes = modes.filter({ $0.isUsableForDesktopGui && $0.aspectRatio == currentMode.aspectRatio && $0.integerRefresh == currentMode.integerRefresh && $0.scale == currentMode.scale }).sorted(by: <)
         for i in (1..<possibleModes.count).reversed(){
@@ -70,18 +90,28 @@ public class Display{
                 possibleModes.remove(at: i)
             }
         }
-        guard let normalMode = possibleModes.first(where: { $0.isDefault }) else{
+        return possibleModes
+    }
+    
+    private func mode(for percentage: Double) -> MorphicDisplay.DisplayMode?{
+        guard let normalMode = normalMode else{
             return nil
         }
-        switch zoomLevel{
-        case .normal:
-            return normalMode
-        case .percent125:
-            return possibleModes.reversed().first(where: { $0.widthInVirtualPixels <= Int(Double(normalMode.widthInVirtualPixels) * 4 / 5) }) ?? possibleModes.first
-        case .percent150:
-            return possibleModes.reversed().first(where: { $0.widthInVirtualPixels <= Int(Double(normalMode.widthInVirtualPixels) * 2 / 3) }) ?? possibleModes.first
-        case .percent200:
-            return possibleModes.reversed().first(where: { $0.widthInVirtualPixels <= Int(Double(normalMode.widthInVirtualPixels) / 2) }) ?? possibleModes.first
+        let targetWidth = Int(round(Double(normalMode.widthInVirtualPixels) * percentage))
+        let modes = possibleModes.map({ (abs($0.widthInVirtualPixels - targetWidth), $0) }).sorted(by: { $0.0 < $1.0 })
+        return modes.first?.1
+    }
+    
+}
+
+public class DisplayZoomHandler: Handler{
+    
+    public override func apply(_ value: Interoperable?) throws {
+        guard let percentage = value as? Double else{
+            throw ApplyError.incorrectValueType
+        }
+        if !(Display.main?.zoom(to: percentage) ?? false){
+            throw ApplyError.failed
         }
     }
     

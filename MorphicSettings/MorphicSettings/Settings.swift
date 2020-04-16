@@ -34,36 +34,34 @@ public class Settings{
     public static var shared: Settings = Settings()
     
     private init(){
+        Handler.register(type: DisplayZoomHandler.self, for: .macosDisplayZoom)
     }
     
     /// Apply a value for Morphic preference in the given solution
-    public func apply(_ value: Interoperable?, for preference: String, in solution: String) -> Bool{
-        // FIXME: Exmple only.  Real implementation should be able to apply settings by looking up solutions in
-        // a solution registry and dynamically apply them based on the solution description
-        if solution == "com.apple.macos.display"{
-            if preference == "zoom"{
-                guard let levelName = value as? String else{
-                    os_log(.error, log: logger, "Value provided for com.apple.macos.display.zoom is not a string")
-                    return false
-                }
-                guard let level = Display.ZoomLevel(rawValue: levelName) else{
-                    os_log(.error, log: logger, "Value provided for com.apple.macos.display.zoom is not valid")
-                    return false
-                }
-                if !(mainDisplay?.zoom(level: level) ?? false){
-                    os_log(.error, log: logger, "Failed to set com.apple.macos.display.zoom")
-                    return false
-                }
-                return true
-            }
+    public func apply(_ value: Interoperable?, for key: Preferences.Key) -> Bool{
+        guard let handler = Handler.matching(key: key) else{
+            os_log(.error, log: logger, "No handler found for preference")
             return false
+        }
+        do{
+            try handler.apply(value)
+            return true
+        }catch Handler.ApplyError.notImplemented{
+            os_log(.error, log: logger, "Apply function not implemented for %{public}s.%{public}s", key.solution, key.preference)
+        }catch Handler.ApplyError.incorrectValueType{
+            os_log(.error, log: logger, "Value provided is not the correct type for %{public}s.%{public}s", key.solution, key.preference)
+        }catch Handler.ApplyError.invalidValue{
+            os_log(.error, log: logger, "Value provided is not valid for %{public}s.%{public}s", key.solution, key.preference)
+        }catch Handler.ApplyError.failed{
+            os_log(.error, log: logger, "Failed to set %{public}s.%{public}s", key.solution, key.preference)
+        }catch{
+            os_log(.error, log: logger, "Uncaught error setting %{public}s.%{public}s", key.solution, key.preference)
         }
         return false
     }
     
-    // MARK: - Display
-    
-    /// The main display on this system
-    private var mainDisplay = Display.main
-    
+}
+
+public extension Preferences.Key{
+    static var macosDisplayZoom = Preferences.Key(solution: "com.apple.macos.display", preference: "zoom")
 }

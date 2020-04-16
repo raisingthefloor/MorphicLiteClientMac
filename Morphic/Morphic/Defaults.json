@@ -1,0 +1,30 @@
+{
+    "preferences": {
+        "org.raisingthefloor.morphic.quickstrip": {
+            "visible": true,
+            "position.mac": "topRight",
+            "items": [
+                {
+                    "type": "control",
+                    "feature": "resolution"
+                },
+                {
+                    "type": "control",
+                    "feature": "magnifier"
+                },
+                {
+                    "type": "control",
+                    "feature": "reader"
+                },
+                {
+                    "type": "control",
+                    "feature": "volume"
+                },
+                {
+                    "type": "control",
+                    "feature": "contrast"
+                }
+            ]
+        }
+    }
+}
