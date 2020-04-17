@@ -1,18 +1,37 @@
+// Copyright 2020 Raising the Floor - International
 //
-//  QuickHelpWindow.swift
-//  Morphic
+// Licensed under the New BSD license. You may not use this file except in
+// compliance with this License.
 //
-//  Created by Owen Shaw on 4/17/20.
-//  Copyright © 2020 Raising the Floor. All rights reserved.
+// You may obtain a copy of the License at
+// https://github.com/GPII/universal/blob/master/LICENSE.txt
 //
+// The R&D leading to these results received funding from the:
+// * Rehabilitation Services Administration, US Dept. of Education under
+//   grant H421A150006 (APCP)
+// * National Institute on Disability, Independent Living, and
+//   Rehabilitation Research (NIDILRR)
+// * Administration for Independent Living & Dept. of Education under grants
+//   H133E080022 (RERC-IT) and H133E130028/90RE5003-01-00 (UIITA-RERC)
+// * European Union's Seventh Framework Programme (FP7/2007-2013) grant
+//   agreement nos. 289016 (Cloud4all) and 610510 (Prosperity4All)
+// * William and Flora Hewlett Foundation
+// * Ontario Ministry of Research and Innovation
+// * Canadian Foundation for Innovation
+// * Adobe Foundation
+// * Consumer Electronics Association Foundation
 
 import Cocoa
 
+/// The large tooltip-like window that displays help about Quick Strip actions
+///
+/// Uses a `QuickHelpViewController` as its `contentViewController`
 class QuickHelpWindow: NSWindow {
     
+    /// A typed access to the `contentViewController`
     private var quickHelpViewController: QuickHelpViewController
     
-    /// Create a new Quick Strip Window with a `QuickStripViewController` as its `contentViewController`
+    /// Create a new Quick Help Window with a `QuickHelpViewController` as its `contentViewController`
     private init(){
         quickHelpViewController = QuickHelpViewController.init(nibName: nil, bundle: nil)
         super.init(contentRect: NSMakeRect(0, 0, 100, 100), styleMask: .borderless, backing: .buffered, defer: false)
@@ -27,8 +46,14 @@ class QuickHelpWindow: NSWindow {
         reposition()
     }
     
+    /// Only a single Quick Help Window is displayed at a time
     private static var shared: QuickHelpWindow?
     
+    /// Create or update the shared Quick Help Window with the given title and message
+    ///
+    /// - parameters:
+    ///   - title: The text to show in the view controller's `titleLabel`
+    ///   - message: The text to show in the view controller's `messageLabel`
     public static func show(title: String, message: String){
         if shared == nil{
             shared = QuickHelpWindow()
@@ -39,8 +64,14 @@ class QuickHelpWindow: NSWindow {
         shared?.hideQueued = false
     }
     
+    /// Indicates that a hide was requested and will happen soon unless a subsequent `show()` is
+    /// called resestting this flag
     private var hideQueued = false
     
+    /// Request that the shared window hide
+    ///
+    /// Since the user is likely to be moving from the button calling `hide()` to another that will call
+    /// `show()`, the window doesn't close until a short delay has passed without a `show()` call.
     public static func hide(){
         shared?.hideQueued = true
         Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false){
@@ -60,6 +91,7 @@ class QuickHelpWindow: NSWindow {
         return false
     }
     
+    /// Center the window in the screen
     func reposition(){
         guard let screen = screen else{
             return

@@ -30,7 +30,7 @@
                     </buttonCell>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="string" keyPath="helpTitle" value="Advanced Features" localized="YES"/>
-                        <userDefinedRuntimeAttribute type="string" keyPath="helpMessage" value="Customize buttons, copy your settings, or quit" localized="YES"/>
+                        <userDefinedRuntimeAttribute type="string" keyPath="helpMessage" value="Customize buttons and take your settings with you anywhere" localized="YES"/>
                     </userDefinedRuntimeAttributes>
                     <connections>
                         <action selector="showMainMenu:" target="-2" id="ZqU-v5-d0Q"/>

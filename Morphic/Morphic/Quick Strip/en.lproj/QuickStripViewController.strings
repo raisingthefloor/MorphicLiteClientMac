@@ -14,8 +14,8 @@
 /* Class = "NSButton"; ead-JY-BhL.ibExternalUserDefinedRuntimeAttributesLocalizableStrings[0] = "Advanced Features"; ObjectID = "ead-JY-BhL"; */
 "ead-JY-BhL.ibExternalUserDefinedRuntimeAttributesLocalizableStrings[0]" = "Advanced Features";
 
-/* Class = "NSButton"; ead-JY-BhL.ibExternalUserDefinedRuntimeAttributesLocalizableStrings[1] = "Customize buttons, copy your settings, or quit"; ObjectID = "ead-JY-BhL"; */
-"ead-JY-BhL.ibExternalUserDefinedRuntimeAttributesLocalizableStrings[1]" = "Customize buttons, copy your settings, or quit";
+/* Class = "NSButton"; ead-JY-BhL.ibExternalUserDefinedRuntimeAttributesLocalizableStrings[1] = "Customize buttons and take your settings with you anywhere"; ObjectID = "ead-JY-BhL"; */
+"ead-JY-BhL.ibExternalUserDefinedRuntimeAttributesLocalizableStrings[1]" = "Customize buttons and take your settings with you anywhere";
 
 /* Label for the buttons that control text size */
 "control.feature.resolution.title" = "Text Size";
