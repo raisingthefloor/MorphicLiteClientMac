@@ -291,12 +291,12 @@
 			isa = PBXGroup;
 			children = (
 				31E1E18A244794EF009C4092 /* QuickStrip.xib */,
+				31E1E17A24466D28009C4092 /* QuickStripItem.swift */,
 				31751B9C2444F22900EEDF14 /* QuickStripWindow.swift */,
 				31751B9B2444F22900EEDF14 /* QuickStripViewController.swift */,
 				31E1E17C24466E7C009C4092 /* QuickStripView.swift */,
 				31E1E17E24466EB0009C4092 /* QuickStripItemView.swift */,
 				31E1E182244682C2009C4092 /* QuickStripSegmentedButton.swift */,
-				31E1E17A24466D28009C4092 /* QuickStripItem.swift */,
 			);
 			path = "Quick Strip";
 			sourceTree = "<group>";

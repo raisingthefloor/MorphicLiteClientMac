@@ -121,6 +121,8 @@ class QuickStripControlItem: QuickStripItem{
                 QuickStripSegmentedButton.Segment(title: Bundle.main.localizedString(forKey: "control.feature.volume.mute", value: nil, table: "QuickStrip"), isPrimary: true)
             ]
             let view = QuickStripSegmentedButtonItemView(title: Bundle.main.localizedString(forKey: "control.feature.volume.title", value: nil, table: "QuickStrip"), segments: segments)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(QuickStripControlItem.volume(_:))
             return view
         case .contrast:
             let segments = [
@@ -150,6 +152,25 @@ class QuickStripControlItem: QuickStripItem{
             percentage = display.percentage(zoomingOut: 1)
         }
         Session.shared.save(percentage, for: .macosDisplayZoom)
+    }
+    
+    @objc
+    func volume(_ sender: Any?){
+        guard let segment = (sender as? QuickStripSegmentedButton)?.integerValue else{
+            return
+        }
+        guard let output = AudioOutput.main else{
+            return
+        }
+        if segment == 0{
+            _ = output.setMuted(false)
+            _ = output.setVolume(output.volume + 0.1)
+        }else if segment == 1{
+            _ = output.setMuted(false)
+            _ = output.setVolume(output.volume - 0.1)
+        }else if segment == 2{
+            _ = output.setMuted(true)
+        }
     }
     
 }

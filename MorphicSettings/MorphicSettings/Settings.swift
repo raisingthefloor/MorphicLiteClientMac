@@ -35,6 +35,8 @@ public class Settings{
     
     private init(){
         Handler.register(type: DisplayZoomHandler.self, for: .macosDisplayZoom)
+        Handler.register(type: AudioVolumeHandler.self, for: .macosAudioVolume)
+        Handler.register(type: AudioMuteHandler.self, for: .macosAudioMuted)
     }
     
     /// Apply a value for Morphic preference in the given solution
@@ -64,4 +66,6 @@ public class Settings{
 
 public extension Preferences.Key{
     static var macosDisplayZoom = Preferences.Key(solution: "com.apple.macos.display", preference: "zoom")
+    static var macosAudioVolume = Preferences.Key(solution: "com.apple.macos.audio", preference: "volume")
+    static var macosAudioMuted = Preferences.Key(solution: "com.apple.macos.audio", preference: "muted")
 }

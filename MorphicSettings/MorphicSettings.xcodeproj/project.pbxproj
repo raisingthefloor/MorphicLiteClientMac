@@ -22,6 +22,7 @@
 		31A16BD12423E86C0081A72C /* MorphicAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A16BC82423E86C0081A72C /* MorphicAudio.swift */; };
 		31A16BD22423E86C0081A72C /* MorphicWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A16BCA2423E86C0081A72C /* MorphicWindow.swift */; };
 		31CE56E22448C8F700A52A7B /* Handler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE56E12448C8F700A52A7B /* Handler.swift */; };
+		31CE56EB244A149B00A52A7B /* Audio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE56EA244A149B00A52A7B /* Audio.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,7 @@
 		31A16BC82423E86C0081A72C /* MorphicAudio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorphicAudio.swift; sourceTree = "<group>"; };
 		31A16BCA2423E86C0081A72C /* MorphicWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorphicWindow.swift; sourceTree = "<group>"; };
 		31CE56E12448C8F700A52A7B /* Handler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handler.swift; sourceTree = "<group>"; };
+		31CE56EA244A149B00A52A7B /* Audio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Audio.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +132,7 @@
 				3113364C2427F01100686AF6 /* Settings.swift */,
 				31CE56E12448C8F700A52A7B /* Handler.swift */,
 				311336502427F33600686AF6 /* Display.swift */,
+				31CE56EA244A149B00A52A7B /* Audio.swift */,
 			);
 			path = MorphicSettings;
 			sourceTree = "<group>";
@@ -311,6 +314,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31CE56EB244A149B00A52A7B /* Audio.swift in Sources */,
 				31A16BD22423E86C0081A72C /* MorphicWindow.swift in Sources */,
 				31A16BD12423E86C0081A72C /* MorphicAudio.swift in Sources */,
 				31A16BCC2423E86C0081A72C /* MorphicProcess.swift in Sources */,
