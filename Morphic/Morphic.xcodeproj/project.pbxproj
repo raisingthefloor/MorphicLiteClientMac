@@ -44,7 +44,7 @@
 		31E1E17F24466EB0009C4092 /* QuickStripItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E1E17E24466EB0009C4092 /* QuickStripItemView.swift */; };
 		31E1E183244682C2009C4092 /* QuickStripSegmentedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E1E182244682C2009C4092 /* QuickStripSegmentedButton.swift */; };
 		31E1E185244683DC009C4092 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E1E184244683DC009C4092 /* Theme.swift */; };
-		31E1E187244792D9009C4092 /* Defaults.json in Resources */ = {isa = PBXBuildFile; fileRef = 31E1E186244792D9009C4092 /* Defaults.json */; };
+		31E1E187244792D9009C4092 /* DefaultPreferences.json in Resources */ = {isa = PBXBuildFile; fileRef = 31E1E186244792D9009C4092 /* DefaultPreferences.json */; };
 		31E1E188244794EF009C4092 /* QuickStrip.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31E1E18A244794EF009C4092 /* QuickStrip.xib */; };
 /* End PBXBuildFile section */
 
@@ -167,7 +167,7 @@
 		31E1E17E24466EB0009C4092 /* QuickStripItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickStripItemView.swift; sourceTree = "<group>"; };
 		31E1E182244682C2009C4092 /* QuickStripSegmentedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickStripSegmentedButton.swift; sourceTree = "<group>"; };
 		31E1E184244683DC009C4092 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
-		31E1E186244792D9009C4092 /* Defaults.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Defaults.json; sourceTree = "<group>"; };
+		31E1E186244792D9009C4092 /* DefaultPreferences.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = DefaultPreferences.json; sourceTree = "<group>"; };
 		31E1E189244794EF009C4092 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/QuickStrip.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -257,13 +257,13 @@
 			isa = PBXGroup;
 			children = (
 				31751B132444DE8B00EEDF14 /* Info.plist */,
-				31E1E186244792D9009C4092 /* Defaults.json */,
 				31751B142444DE8B00EEDF14 /* Morphic.entitlements */,
 				31751B0E2444DE8B00EEDF14 /* Assets.xcassets */,
 				31751B3A2444DFAA00EEDF14 /* Main.xib */,
 				31751B0C2444DE8900EEDF14 /* AppDelegate.swift */,
 				31751B972444F21700EEDF14 /* Session.swift */,
 				31E1E184244683DC009C4092 /* Theme.swift */,
+				31E1E186244792D9009C4092 /* DefaultPreferences.json */,
 				31751B3F2444E01B00EEDF14 /* Quick Strip */,
 			);
 			path = Morphic;
@@ -524,7 +524,7 @@
 				31751B842444E11600EEDF14 /* Debug.xcconfig in Resources */,
 				31751B0F2444DE8B00EEDF14 /* Assets.xcassets in Resources */,
 				31751B832444E11600EEDF14 /* Release.xcconfig in Resources */,
-				31E1E187244792D9009C4092 /* Defaults.json in Resources */,
+				31E1E187244792D9009C4092 /* DefaultPreferences.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

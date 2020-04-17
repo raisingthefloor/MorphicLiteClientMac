@@ -48,28 +48,9 @@ public class QuickStripWindow: NSWindow {
         if let savedPosition = Position(rawValue: Session.shared.string(for: .morphicQuickStripPosition) ?? ""){
             position = savedPosition
         }
-        quickStripViewController.items = QuickStripItem.items(from: [
-            [
-                "type": "control",
-                "feature": "resolution"
-            ],
-            [
-                "type": "control",
-                "feature": "magnifier"
-            ],
-            [
-                "type": "control",
-                "feature": "reader"
-            ],
-            [
-                "type": "control",
-                "feature": "volume"
-            ],
-            [
-                "type": "control",
-                "feature": "contrast"
-            ]
-        ])
+        if let preferredItems = Session.shared.array(for: .morphicQuickStripItems){
+            quickStripViewController.items = QuickStripItem.items(from: preferredItems)
+        }
         reposition(animated: false)
     }
     
@@ -180,4 +161,10 @@ public extension Preferences.Key{
     /// controls tend to be at the bottom.  A user who works between platforms can move the strip
     /// on one platform without affecting the strip's location on the other.
     static var morphicQuickStripPosition = Preferences.Key(solution: "org.raisingthefloor.morphic.quickstrip", preference: "position.mac")
+    
+    /// The preference key that stores whether the quick strip should appear by default
+    static var morphicQuickStripVisible = Preferences.Key(solution: "org.raisingthefloor.morphic.quickstrip", preference: "visible")
+    
+    /// The preference key that stores which items appear on the quick strip
+    static var morphicQuickStripItems = Preferences.Key(solution: "org.raisingthefloor.morphic.quickstrip", preference: "items")
 }

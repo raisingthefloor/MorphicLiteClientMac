@@ -45,19 +45,49 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         AppDelegate.shared = self
         os_log(.info, log: logger, "opening morphic session...")
         createStatusItem()
-        Session.shared.open {
-//            if Session.shared.user == nil{
-//                os_log(.info, log: logger, "no user")
-//                UserDefaults.morphic.addObserver(self, forKeyPath: .morphicDefaultsKeyUserIdentifier, options: .new, context: nil)
-//                self.launchConfigurator(nil)
-//            }else{
-                self.showQuickStrip(nil)
+        copyDefaultPreferences{
+            Session.shared.open {
                 os_log(.info, log: logger, "session open")
-//            }
+                if Session.shared.bool(for: .morphicQuickStripVisible) ?? true{
+                    self.showQuickStrip(nil)
+                }
+            }
         }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
+    }
+    
+    // MARK: - Default Preferences
+    
+    func copyDefaultPreferences(completion: @escaping () -> Void){
+        var prefs = Preferences(identifier: "__default__")
+        guard !Storage.shared.contains(identifier: prefs.identifier, type: Preferences.self) else{
+            completion()
+            return
+        }
+        guard let url = Bundle.main.url(forResource: "DefaultPreferences", withExtension: ".json") else{
+            os_log(.error, log: logger, "Failed to find default preferences")
+            return
+        }
+        guard let json = FileManager.default.contents(atPath: url.path) else{
+            os_log(.error, log: logger, "Failed to read default preferences")
+            return
+        }
+        do{
+            let decoder = JSONDecoder()
+            prefs.defaults = try decoder.decode(Preferences.PreferencesSet.self, from: json)
+        }catch{
+            os_log(.error, log: logger, "Failed to decode default preferences")
+            return
+        }
+        Storage.shared.save(record: prefs){
+            success in
+            if !success{
+                os_log(.error, log: logger, "Failed to save default preferences")
+            }
+            completion()
+        }
     }
      
     // MARK: - Status Bar Item
@@ -106,6 +136,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         quickStripWindow?.makeKeyAndOrderFront(nil)
         showQuickStripItem?.isHidden = true
         hideQuickStripItem?.isHidden = false
+        if sender != nil{
+            Session.shared.save(true, for: .morphicQuickStripVisible)
+        }
     }
     
     @IBAction
@@ -113,6 +146,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         quickStripWindow?.close()
         showQuickStripItem?.isHidden = false
         hideQuickStripItem?.isHidden = true
+        if sender != nil{
+            Session.shared.save(false, for: .morphicQuickStripVisible)
+        }
     }
      
     func windowDidBecomeKey(_ notification: Notification) {

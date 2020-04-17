@@ -46,36 +46,21 @@ public class Session{
     
     /// Open a session, fetching the current user's data if we have saved credentials
     public func open(completion: @escaping () -> Void){
-        DispatchQueue.main.async {
-            completion()
-        }
-        // TODO: check for USB key
-        if let userId = currentUserIdentifier{
-            os_log(.info, log: logger, "Saved user ID, fetching updated user info...")
-            // If the user wasn't logged out, query the user info
-            _ = service.fetch(user: userId){
-                user in
-                guard let user = user else{
-                    os_log(.error, log: logger, "User info fetch failed")
-                    completion()
-                    return
-                }
-                os_log(.info, log: logger, "Setting current user, fetching preferences...")
-                self.user = user
-                // Query the user's preferences
-                _ = self.service.fetch(preferences: user.preferencesId){
-                    preferences in
-                    self.preferences = preferences
-                    os_log(.info, log: logger, "Setting current preferences...")
-                    self.applyAllPreferences()
-                    completion()
-                }
-            }
-        }else{
-            // If the user isn't logged, we're going to need to prompt
-            DispatchQueue.main.async {
+        let loadPreferences = {
+            self.storage.load(identifier: self.user?.preferencesId ?? "__default__"){
+                (prefs: Preferences?) in
+                self.preferences = prefs
                 completion()
             }
+        }
+        if let userId = currentUserIdentifier{
+            storage.load(identifier: userId){
+                (user: User?) in
+                self.user = user
+                loadPreferences()
+            }
+        }else{
+            loadPreferences()
         }
     }
     
@@ -381,7 +366,7 @@ public class Session{
     /// * Applys the change to the system
     /// * Requests a cloud save
     public func save(_ value: Interoperable?, for key: Preferences.Key){
-        os_log(.error, log: logger, "Setting preference")
+        os_log(.error, log: logger, "Setting preference %{public}s.%{public}s", key.solution, key.preference)
         preferences?.set(value, for: key)
         _ = settings.apply(value, for: key)
         setNeedsPreferencesSave()
@@ -397,6 +382,18 @@ public class Session{
     
     public func double(for key: Preferences.Key) -> Double?{
         return preferences?.get(key: key) as? Double
+    }
+    
+    public func bool(for key: Preferences.Key) -> Bool?{
+        return preferences?.get(key: key) as? Bool
+    }
+    
+    public func array(for key: Preferences.Key) -> [Interoperable?]?{
+        return preferences?.get(key: key) as? [Interoperable?]
+    }
+    
+    public func dictionary(for key: Preferences.Key) -> [String: Interoperable?]?{
+        return preferences?.get(key: key) as? [String: Interoperable?]
     }
     
     public func applyAllPreferences(){
@@ -422,15 +419,27 @@ public class Session{
         preferencesSaveTimer?.invalidate()
         preferencesSaveTimer = .scheduledTimer(withTimeInterval: 5, repeats: false){
             timer in
+            self.preferencesSaveTimer = nil
             if let preferences = self.preferences{
-                // TODO: save to storage
-                os_log(.error, log: logger, "Saving prefefences to server")
-                _ = self.service.save(preferences){
+                os_log(.info, log: logger, "Saving prefefences to disk")
+                self.storage.save(record: preferences){
                     success in
-                    if !success{
-                        os_log(.error, log: logger, "Failed to save preference to server")
+                    if success{
+                        os_log(.info, log: logger, "Saved preferences to disk")
+                    }else{
+                        os_log(.error, log: logger, "Failed to save preferences to disk")
                     }
-                    self.preferencesSaveTimer = nil
+                    if self.user != nil{
+                        os_log(.info, log: logger, "Saving prefefences to server")
+                        _ = self.service.save(preferences){
+                            success in
+                            if success{
+                                os_log(.info, log: logger, "Saved preferences to server")
+                            }else{
+                                os_log(.error, log: logger, "Failed to save preference to server")
+                            }
+                        }
+                    }
                 }
             }else{
                 os_log(.error, log: logger, "Save preferences timer fired with nil preferences")

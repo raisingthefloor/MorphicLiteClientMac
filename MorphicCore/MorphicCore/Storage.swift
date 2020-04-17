@@ -82,6 +82,15 @@ public class Storage{
                 }
                 return
             }
+            do{
+                try self.fileManager.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: nil)
+            }catch{
+                os_log(.error, log: logger, "Failed to create directory")
+                DispatchQueue.main.async {
+                    completion(false)
+                }
+                return
+            }
             let success = self.fileManager.createFile(atPath: url.path, contents: json, attributes: nil)
             DispatchQueue.main.async {
                 completion(success)
@@ -123,6 +132,18 @@ public class Storage{
                 completion(record)
             }
         }
+    }
+    
+    /// Check if a record exists
+    /// - parameters:
+    ///   - identifier: The identifier of the object to load
+    ///   - type: The type of record
+    public func contains(identifier: String, type: Record.Type) -> Bool{
+        guard let url = self.url(for: identifier, type: type) else{
+            os_log(.error, log: logger, "Could not obtain a valid file url for loading")
+            return false
+        }
+        return fileManager.fileExists(atPath: url.path)
     }
     
 }
