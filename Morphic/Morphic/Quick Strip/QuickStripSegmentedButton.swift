@@ -78,7 +78,6 @@ class QuickStripSegmentedButton: NSControl {
         ///   the `title` property takes precedence
         var title: String?
         
-        
         /// The icon to be shown on the segment, if any
         ///
         /// - important: `title` and `icon` are mutually exclusive.  If both sare specified,
@@ -88,15 +87,25 @@ class QuickStripSegmentedButton: NSControl {
         /// Indicates the segment is a primary button and should be colored differently from non-primary buttons
         var isPrimary: Bool = false
         
+        /// The help title text to be shown in the Quick Help Window
+        var helpTitle: String?
+        
+        /// The help message text to be shown in the Quick Help Window
+        var helpMessage: String?
+        
         /// Create a segment with a title
-        init(title: String, isPrimary: Bool = false){
+        init(title: String, helpTitle: String, helpMessage: String, isPrimary: Bool){
             self.title = title
+            self.helpTitle = helpTitle
+            self.helpMessage = helpMessage
             self.isPrimary = isPrimary
         }
         
         /// Create a segment with an icon
-        init(icon: NSImage, isPrimary: Bool = false){
+        init(icon: NSImage, helpTitle: String, helpMessage: String, isPrimary: Bool){
             self.icon = icon
+            self.helpTitle = helpTitle
+            self.helpMessage = helpMessage
             self.isPrimary = isPrimary
         }
     }
@@ -148,6 +157,18 @@ class QuickStripSegmentedButton: NSControl {
     /// NSButton subclass that provides a custom intrinsic size with content insets
     private class Button: NSButton{
         
+        private var boundsTrackingArea: NSTrackingArea!
+        
+        public override init(frame frameRect: NSRect) {
+            super.init(frame: frameRect)
+            boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
+            addTrackingArea(boundsTrackingArea)
+        }
+        
+        required init?(coder: NSCoder) {
+            return nil
+        }
+        
         public var contentInsets = NSEdgeInsetsZero{
             didSet{
                 invalidateIntrinsicContentSize()
@@ -159,6 +180,27 @@ class QuickStripSegmentedButton: NSControl {
             size.width += contentInsets.left + contentInsets.right
             size.height += contentInsets.top + contentInsets.bottom
             return size
+        }
+        
+        var helpTitle: String?
+        var helpMessage: String?
+        
+        override func mouseEntered(with event: NSEvent) {
+            guard let title = helpTitle, let message = helpMessage else{
+                return
+            }
+            QuickHelpWindow.show(title: title, message: message)
+        }
+        
+        override func mouseExited(with event: NSEvent) {
+            QuickHelpWindow.hide()
+        }
+        
+        override func updateTrackingAreas() {
+            super.updateTrackingAreas()
+            removeTrackingArea(boundsTrackingArea)
+            boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
+            addTrackingArea(boundsTrackingArea)
         }
         
     }
@@ -190,6 +232,8 @@ class QuickStripSegmentedButton: NSControl {
         }else if let icon = segment.icon{
             button.image = icon
         }
+        button.helpTitle = segment.helpTitle
+        button.helpMessage = segment.helpMessage
         (button.cell as? NSButtonCell)?.backgroundColor = segment.isPrimary ? primarySegmentColor : secondarySegmentColor
         button.font = font
         return button

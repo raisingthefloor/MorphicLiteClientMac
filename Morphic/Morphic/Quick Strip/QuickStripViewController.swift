@@ -69,3 +69,36 @@ public class QuickStripViewController: NSViewController {
     }
 
 }
+
+class LogoButton: NSButton{
+    
+    private var boundsTrackingArea: NSTrackingArea!
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
+        addTrackingArea(boundsTrackingArea)
+    }
+    
+    @IBInspectable var helpTitle: String?
+    @IBInspectable var helpMessage: String?
+    
+    override func mouseEntered(with event: NSEvent) {
+        guard let title = helpTitle, let message = helpMessage else{
+            return
+        }
+        QuickHelpWindow.show(title: title, message: message)
+    }
+    
+    override func mouseExited(with event: NSEvent) {
+        QuickHelpWindow.hide()
+    }
+    
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        removeTrackingArea(boundsTrackingArea)
+        boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
+        addTrackingArea(boundsTrackingArea)
+    }
+    
+}

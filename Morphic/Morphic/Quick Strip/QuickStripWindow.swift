@@ -34,10 +34,12 @@ import MorphicService
 /// locations on a screen, and will snap to the closest corner whenever the user moves the window.
 public class QuickStripWindow: NSWindow {
     
+    public var quickStripViewController: QuickStripViewController
+    
     /// Create a new Quick Strip Window with a `QuickStripViewController` as its `contentViewController`
     public init(){
-        super.init(contentRect: NSMakeRect(0, 0, 137, 137), styleMask: .borderless, backing: .buffered, defer: false)
-        let quickStripViewController = QuickStripViewController.init(nibName: "QuickStrip", bundle: nil)
+        quickStripViewController = QuickStripViewController.init(nibName: nil, bundle: nil)
+        super.init(contentRect: NSMakeRect(0, 0, 100, 100), styleMask: .borderless, backing: .buffered, defer: false)
         contentViewController = quickStripViewController
         hasShadow = true
         isReleasedWhenClosed = false

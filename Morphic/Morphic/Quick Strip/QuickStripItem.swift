@@ -87,49 +87,69 @@ class QuickStripControlItem: QuickStripItem{
         super.init(interoperable: interoperable)
     }
     
+    struct LocalizedStrings{
+        
+        var prefix: String
+        var table = "QuickStripViewController"
+        var bundle = Bundle.main
+        
+        init(prefix: String){
+            self.prefix = prefix
+        }
+        
+        func string(for suffix: String) -> String{
+            return bundle.localizedString(forKey: prefix + "." + suffix, value: nil, table: table)
+        }
+    }
+    
     override func view() -> QuickStripItemView? {
         switch feature{
         case .resolution:
+            let localized = LocalizedStrings(prefix: "control.feature.resolution")
             let segments = [
-                QuickStripSegmentedButton.Segment(icon: .plus(), isPrimary: true),
-                QuickStripSegmentedButton.Segment(icon: .minus(), isPrimary: false)
+                QuickStripSegmentedButton.Segment(icon: .plus(), helpTitle: localized.string(for: "bigger.help.title"), helpMessage: localized.string(for: "bigger.help.message"), isPrimary: true),
+                QuickStripSegmentedButton.Segment(icon: .minus(), helpTitle: localized.string(for: "smaller.help.title"), helpMessage: localized.string(for: "smaller.help.message"), isPrimary: false)
             ]
-            let view = QuickStripSegmentedButtonItemView(title: Bundle.main.localizedString(forKey: "control.feature.resolution.title", value: nil, table: "QuickStrip"), segments: segments)
+            let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(QuickStripControlItem.zoom(_:))
             return view
         case .magnifier:
+            let localized = LocalizedStrings(prefix: "control.feature.magnifier")
             let segments = [
-                QuickStripSegmentedButton.Segment(title: Bundle.main.localizedString(forKey: "control.feature.magnifier.show", value: nil, table: "QuickStrip"), isPrimary: true),
-                QuickStripSegmentedButton.Segment(title: Bundle.main.localizedString(forKey: "control.feature.magnifier.hide", value: nil, table: "QuickStrip"), isPrimary: false)
+                QuickStripSegmentedButton.Segment(title: localized.string(for: "show"), helpTitle: localized.string(for: "show.help.title"), helpMessage: localized.string(for: "show.help.message"), isPrimary: true),
+                QuickStripSegmentedButton.Segment(title: localized.string(for: "hide"), helpTitle: localized.string(for: "hide.help.title"), helpMessage: localized.string(for: "hide.help.message"), isPrimary: false)
             ]
-            let view = QuickStripSegmentedButtonItemView(title: Bundle.main.localizedString(forKey: "control.feature.magnifier.title", value: nil, table: "QuickStrip"), segments: segments)
+            let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
             return view
         case .reader:
+            let localized = LocalizedStrings(prefix: "control.feature.reader")
             let segments = [
-                QuickStripSegmentedButton.Segment(title: Bundle.main.localizedString(forKey: "control.feature.reader.on", value: nil, table: "QuickStrip"), isPrimary: true),
-                QuickStripSegmentedButton.Segment(title: Bundle.main.localizedString(forKey: "control.feature.reader.off", value: nil, table: "QuickStrip"), isPrimary: false)
+                QuickStripSegmentedButton.Segment(title: localized.string(for: "on"), helpTitle: localized.string(for: "on.help.title"), helpMessage: localized.string(for: "on.help.message"),  isPrimary: true),
+                QuickStripSegmentedButton.Segment(title: localized.string(for: "off"), helpTitle: localized.string(for: "off.help.title"), helpMessage: localized.string(for: "off.help.message"),  isPrimary: false)
             ]
-            let view = QuickStripSegmentedButtonItemView(title: Bundle.main.localizedString(forKey: "control.feature.reader.title", value: nil, table: "QuickStrip"), segments: segments)
+            let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
             return view
         case .volume:
+            let localized = LocalizedStrings(prefix: "control.feature.volume")
             let segments = [
-                QuickStripSegmentedButton.Segment(icon: .plus(), isPrimary: true),
-                QuickStripSegmentedButton.Segment(icon: .minus(), isPrimary: false),
-                QuickStripSegmentedButton.Segment(title: Bundle.main.localizedString(forKey: "control.feature.volume.mute", value: nil, table: "QuickStrip"), isPrimary: true)
+                QuickStripSegmentedButton.Segment(icon: .plus(), helpTitle: localized.string(for: "up.help.title"), helpMessage: localized.string(for: "up.help.message"), isPrimary: true),
+                QuickStripSegmentedButton.Segment(icon: .minus(), helpTitle: localized.string(for: "down.help.title"), helpMessage: localized.string(for: "down.help.message"), isPrimary: false),
+                QuickStripSegmentedButton.Segment(title: localized.string(for: "mute"), helpTitle: localized.string(for: "mute.help.title"), helpMessage: localized.string(for: "mute.help.message"), isPrimary: true)
             ]
-            let view = QuickStripSegmentedButtonItemView(title: Bundle.main.localizedString(forKey: "control.feature.volume.title", value: nil, table: "QuickStrip"), segments: segments)
+            let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(QuickStripControlItem.volume(_:))
             return view
         case .contrast:
+            let localized = LocalizedStrings(prefix: "control.feature.contrast")
             let segments = [
-                QuickStripSegmentedButton.Segment(title: Bundle.main.localizedString(forKey: "control.feature.contrast.on", value: nil, table: "QuickStrip"), isPrimary: true),
-                QuickStripSegmentedButton.Segment(title: Bundle.main.localizedString(forKey: "control.feature.contrast.off", value: nil, table: "QuickStrip"), isPrimary: false)
+                QuickStripSegmentedButton.Segment(title: localized.string(for: "on"), helpTitle: localized.string(for: "on.help.title"), helpMessage: localized.string(for: "on.help.message"), isPrimary: true),
+                QuickStripSegmentedButton.Segment(title: localized.string(for: "off"), helpTitle: localized.string(for: "off.help.title"), helpMessage: localized.string(for: "off.help.message"), isPrimary: false)
             ]
-            let view = QuickStripSegmentedButtonItemView(title: Bundle.main.localizedString(forKey: "control.feature.contrast.title", value: nil, table: "QuickStrip"), segments: segments)
+            let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
             return view
         default:
@@ -163,11 +183,17 @@ class QuickStripControlItem: QuickStripItem{
             return
         }
         if segment == 0{
-            _ = output.setMuted(false)
-            _ = output.setVolume(output.volume + 0.1)
+            if output.isMuted{
+                _ = output.setMuted(false)
+            }else{
+                _ = output.setVolume(output.volume + 0.1)
+            }
         }else if segment == 1{
-            _ = output.setMuted(false)
-            _ = output.setVolume(output.volume - 0.1)
+            if output.isMuted{
+                _ = output.setMuted(false)
+            }else{
+                _ = output.setVolume(output.volume - 0.1)
+            }
         }else if segment == 2{
             _ = output.setMuted(true)
         }

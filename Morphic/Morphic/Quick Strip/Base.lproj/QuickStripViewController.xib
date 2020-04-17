@@ -18,7 +18,7 @@
         <customView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c22-O7-iKe">
             <rect key="frame" x="0.0" y="0.0" width="440" height="58"/>
             <subviews>
-                <button translatesAutoresizingMaskIntoConstraints="NO" id="ead-JY-BhL">
+                <button translatesAutoresizingMaskIntoConstraints="NO" id="ead-JY-BhL" customClass="LogoButton" customModule="Morphic" customModuleProvider="target">
                     <rect key="frame" x="389" y="7" width="44" height="44"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="44" id="Zbh-CS-oIG"/>
@@ -28,6 +28,10 @@
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="string" keyPath="helpTitle" value="Advanced Features" localized="YES"/>
+                        <userDefinedRuntimeAttribute type="string" keyPath="helpMessage" value="Customize buttons, copy your settings, or quit" localized="YES"/>
+                    </userDefinedRuntimeAttributes>
                     <connections>
                         <action selector="showMainMenu:" target="-2" id="ZqU-v5-d0Q"/>
                     </connections>
