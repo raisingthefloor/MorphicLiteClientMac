@@ -27,6 +27,8 @@ public class QuickStripItemView: NSView {
     
     public weak var quickStripView: QuickStripView?
     
+    public var showsHelp: Bool = true
+    
     public override var isFlipped: Bool{
         return true
     }
@@ -48,6 +50,12 @@ class QuickStripSegmentedButtonItemView: QuickStripItemView{
         addSubview(titleLabel)
         addSubview(segmentedButton)
         self.needsLayout = true
+    }
+    
+    override var showsHelp: Bool{
+        didSet{
+            segmentedButton.showsHelp = showsHelp
+        }
     }
     
     private var titleYAdjustment: CGFloat{

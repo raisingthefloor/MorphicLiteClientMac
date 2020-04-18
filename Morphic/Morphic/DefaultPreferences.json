@@ -2,6 +2,7 @@
     "org.raisingthefloor.morphic.quickstrip": {
         "visible": true,
         "position.mac": "topRight",
+        "showsHelp": true,
         "items": [
             {
                 "type": "control",

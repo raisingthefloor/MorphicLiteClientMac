@@ -177,6 +177,9 @@ public extension Preferences.Key{
     /// The preference key that stores whether the quick strip should appear by default
     static var morphicQuickStripVisible = Preferences.Key(solution: "org.raisingthefloor.morphic.quickstrip", preference: "visible")
     
+    /// The preference key that stores whether the quick strip buttons should show giant help tips
+    static var morphicQuickStripShowsHelp = Preferences.Key(solution: "org.raisingthefloor.morphic.quickstrip", preference: "showsHelp")
+    
     /// The preference key that stores which items appear on the quick strip
     static var morphicQuickStripItems = Preferences.Key(solution: "org.raisingthefloor.morphic.quickstrip", preference: "items")
 }

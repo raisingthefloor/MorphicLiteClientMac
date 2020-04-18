@@ -128,7 +128,7 @@ class QuickStripSegmentedButton: NSControl {
         didSet{
             invalidateIntrinsicContentSize()
             for button in segmentButtons{
-                (button as? Button)?.contentInsets = contentInsets
+                button.contentInsets = contentInsets
             }
         }
     }
@@ -161,8 +161,7 @@ class QuickStripSegmentedButton: NSControl {
         
         public override init(frame frameRect: NSRect) {
             super.init(frame: frameRect)
-            boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
-            addTrackingArea(boundsTrackingArea)
+            createBoundsTrackingArea()
         }
         
         required init?(coder: NSCoder) {
@@ -182,6 +181,12 @@ class QuickStripSegmentedButton: NSControl {
             return size
         }
         
+        var showsHelp: Bool = true{
+            didSet{
+                createBoundsTrackingArea()
+            }
+        }
+        
         var helpTitle: String?
         var helpMessage: String?
         
@@ -198,15 +203,31 @@ class QuickStripSegmentedButton: NSControl {
         
         override func updateTrackingAreas() {
             super.updateTrackingAreas()
-            removeTrackingArea(boundsTrackingArea)
-            boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
-            addTrackingArea(boundsTrackingArea)
+            createBoundsTrackingArea()
+        }
+        
+        private func createBoundsTrackingArea(){
+            if boundsTrackingArea != nil{
+                removeTrackingArea(boundsTrackingArea)
+            }
+            if showsHelp{
+                boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
+                addTrackingArea(boundsTrackingArea)
+            }
         }
         
     }
     
+    public var showsHelp: Bool = true{
+        didSet{
+            for button in segmentButtons{
+                button.showsHelp = showsHelp
+            }
+        }
+    }
+    
     /// The list of buttons corresponding to the segments
-    private var segmentButtons = [NSButton]()
+    private var segmentButtons = [Button]()
     
     /// Update the segment buttons
     private func updateButtons(){
@@ -221,7 +242,7 @@ class QuickStripSegmentedButton: NSControl {
     }
     
     /// Create a button for a segment
-    private func createButton(for segment: Segment) -> NSButton{
+    private func createButton(for segment: Segment) -> Button{
         let button = Button()
         button.bezelStyle = .regularSquare
         button.isBordered = false
@@ -262,7 +283,7 @@ class QuickStripSegmentedButton: NSControl {
     ///
     /// - parameters:
     ///   - button: The button to add to the end of the list
-    private func add(button: NSButton){
+    private func add(button: Button){
         let index = segmentButtons.count
         button.tag = index
         button.target = self

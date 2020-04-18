@@ -34,6 +34,7 @@ public class QuickStripViewController: NSViewController {
         super.viewDidLoad()
         view.layer?.backgroundColor = .white
         view.layer?.cornerRadius = 6
+        showsHelp = Session.shared.bool(for: .morphicQuickStripShowsHelp) ?? true
     }
     
     // MARK: - Logo Button & Main Menu
@@ -42,7 +43,7 @@ public class QuickStripViewController: NSViewController {
     @IBOutlet var mainMenu: NSMenu!
     
     /// The button that displays the Morphic logo
-    @IBOutlet weak var logoButton: NSButton!
+    @IBOutlet weak var logoButton: LogoButton!
     
     /// Action to show the main menu from the logo button
     @IBAction
@@ -62,8 +63,18 @@ public class QuickStripViewController: NSViewController {
             quickStripView.removeAllItemViews()
             for item in items{
                 if let itemView = item.view(){
+                    itemView.showsHelp = showsHelp
                     quickStripView.add(itemView: itemView)
                 }
+            }
+        }
+    }
+    
+    var showsHelp: Bool = true{
+        didSet{
+            logoButton.showsHelp = showsHelp
+            for itemView in quickStripView.itemViews{
+                itemView.showsHelp = showsHelp
             }
         }
     }
@@ -76,8 +87,13 @@ class LogoButton: NSButton{
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
-        addTrackingArea(boundsTrackingArea)
+        createBoundsTrackingArea()
+    }
+    
+    var showsHelp: Bool = true{
+        didSet{
+            createBoundsTrackingArea()
+        }
     }
     
     @IBInspectable var helpTitle: String?
@@ -96,9 +112,17 @@ class LogoButton: NSButton{
     
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
-        removeTrackingArea(boundsTrackingArea)
-        boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
-        addTrackingArea(boundsTrackingArea)
+        createBoundsTrackingArea()
+    }
+    
+    private func createBoundsTrackingArea(){
+        if boundsTrackingArea != nil{
+            removeTrackingArea(boundsTrackingArea)
+        }
+        if showsHelp{
+            boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
+            addTrackingArea(boundsTrackingArea)
+        }
     }
     
 }
