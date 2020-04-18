@@ -153,16 +153,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
      
     func windowDidBecomeKey(_ notification: Notification) {
-        os_log(.info, log: logger, "didBecomeKey")
     }
      
     func windowDidResignKey(_ notification: Notification) {
-        os_log(.info, log: logger, "didResignKey")
-//        quickStripWindow?.close()
     }
      
     func windowWillClose(_ notification: Notification) {
-        os_log(.info, log: logger, "willClose")
         quickStripWindow = nil
     }
     
