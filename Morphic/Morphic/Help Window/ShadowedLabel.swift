@@ -30,7 +30,7 @@ public class ShadowedLabel: NSTextField {
     @IBInspectable public var textShadowColor: NSColor = .black
     
     /// The offset of the text shadow to add
-    @IBInspectable public var textShadowOffset = NSSize(width: 1, height: 2)
+    @IBInspectable public var textShadowOffset: CGSize = NSSize(width: 1, height: 2)
     
     /// The blur radius of the text shadow to add
     @IBInspectable public var textShadowBlurRadius: CGFloat = 0
