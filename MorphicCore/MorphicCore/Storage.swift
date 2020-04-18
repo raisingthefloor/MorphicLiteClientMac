@@ -56,7 +56,7 @@ public class Storage{
     // MARK: - Preferences
     
     private func url(for identifier: String, type: Record.Type) -> URL?{
-        return root?.appendingPathComponent(type.typeName, isDirectory: true).appendingPathComponent(identifier).appendingPathExtension(".json")
+        return root?.appendingPathComponent(type.typeName, isDirectory: true).appendingPathComponent(identifier).appendingPathExtension("json")
     }
     
     /// Save the object

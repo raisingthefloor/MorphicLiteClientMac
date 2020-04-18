@@ -66,7 +66,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             completion()
             return
         }
-        guard let url = Bundle.main.url(forResource: "DefaultPreferences", withExtension: ".json") else{
+        guard let url = Bundle.main.url(forResource: "DefaultPreferences", withExtension: "json") else{
             os_log(.error, log: logger, "Failed to find default preferences")
             return
         }
