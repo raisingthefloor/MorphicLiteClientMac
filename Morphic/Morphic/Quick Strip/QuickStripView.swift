@@ -94,6 +94,12 @@ public class QuickStripView: NSView {
         return size
     }
     
+    public override func acceptsFirstMouse(for event: NSEvent?) -> Bool {
+        // accept first mouse so the event propagates up to the window and we
+        // can intercept mouseUp to snap the window to a corner
+        return true
+    }
+    
 }
 
 extension NSSize{

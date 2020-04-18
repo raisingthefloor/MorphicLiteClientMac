@@ -146,6 +146,16 @@ public class QuickStripWindow: NSWindow {
 
 }
 
+/// Custom `NSView` that accepts first mouse to ensure proper window movement behavior
+class QuickStripWindowContentView: NSView{
+    
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool {
+        // accept first mouse so the event propagates up to the window and we
+        // can intercept mouseUp to snap the window to a corner
+        return true
+    }
+}
+
 private extension NSRect{
     
     /// The center point of the rectangle

@@ -75,4 +75,10 @@ class QuickStripSegmentedButtonItemView: QuickStripItemView{
         return NSSize(width: ceil(max(labelSize.width, buttonSize.width)), height: NSView.noIntrinsicMetric)
     }
     
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool {
+        // accept first mouse so the event propagates up to the window and we
+        // can intercept mouseUp to snap the window to a corner
+        return true
+    }
+    
 }
