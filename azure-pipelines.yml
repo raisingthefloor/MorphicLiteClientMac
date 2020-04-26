@@ -7,55 +7,107 @@ trigger:
 - master
 
 variables:
-  sdk: macosx
-  xcodeVersionNum: 11
+# must be created in the azure UI under Pipelines > Library and specify accessKey, secretKey, region, and bucket
+- group: 's3-public-bucket-upload'
+- key: sdk
+  value: macosx
+- key: xcodeVersionNum
+  value: 11
 
 pool:
   vmImage: 'macos-latest'
 
-steps:
-- task: Xcode@5
-  displayName: Build MorphicCore
-  inputs:
-    actions: 'build'
-    sdk: $(sdk)
-    scheme: 'MorphicCore'
-    configuration: 'Release'
-    xcWorkspacePath: '**/MorphicLite.xcworkspace'
-    xcodeVersion: $(xcodeVersionNum)
-- task: Xcode@5
-  displayName: Build MorphicService
-  inputs:
-    actions: 'build'
-    sdk: $(sdk)
-    scheme: 'MorphicService'
-    configuration: 'Release'
-    xcWorkspacePath: '**/MorphicLite.xcworkspace'
-    xcodeVersion: $(xcodeVersionNum)
-- task: Xcode@5
-  displayName: Build MorphicConfigurator
-  inputs:
-    actions: 'build'
-    sdk: $(sdk)
-    scheme: 'MorphicConfigurator'
-    configuration: 'Release'
-    xcWorkspacePath: '**/MorphicLite.xcworkspace'
-    xcodeVersion: $(xcodeVersionNum)
-- task: Xcode@5
-  displayName: Build MorphicSettings
-  inputs:
-    actions: 'build'
-    sdk: $(sdk)
-    scheme: 'MorphicSettings'
-    configuration: 'Release'
-    xcWorkspacePath: '**/MorphicLite.xcworkspace'
-    xcodeVersion: $(xcodeVersionNum)
-- task: Xcode@5
-  displayName: Build Morphic
-  inputs:
-    actions: 'build'
-    sdk: $(sdk)
-    scheme: 'Morphic'
-    configuration: 'Release'
-    xcWorkspacePath: '**/MorphicLite.xcworkspace'
-    xcodeVersion: $(xcodeVersionNum)
+stages:
+  - stage: build
+    jobs:
+      - job: build
+        steps:
+        - task: Xcode@5
+          displayName: Build MorphicCore
+          inputs:
+            actions: 'build'
+            sdk: $(sdk)
+            scheme: 'MorphicCore'
+            configuration: 'Release'
+            xcWorkspacePath: '**/MorphicLite.xcworkspace'
+            xcodeVersion: $(xcodeVersionNum)
+        - task: Xcode@5
+          displayName: Build MorphicService
+          inputs:
+            actions: 'build'
+            sdk: $(sdk)
+            scheme: 'MorphicService'
+            configuration: 'Release'
+            xcWorkspacePath: '**/MorphicLite.xcworkspace'
+            xcodeVersion: $(xcodeVersionNum)
+        - task: Xcode@5
+          displayName: Build MorphicConfigurator
+          inputs:
+            actions: 'build'
+            sdk: $(sdk)
+            scheme: 'MorphicConfigurator'
+            configuration: 'Release'
+            xcWorkspacePath: '**/MorphicLite.xcworkspace'
+            xcodeVersion: $(xcodeVersionNum)
+        - task: Xcode@5
+          displayName: Build MorphicSettings
+          inputs:
+            actions: 'build'
+            sdk: $(sdk)
+            scheme: 'MorphicSettings'
+            configuration: 'Release'
+            xcWorkspacePath: '**/MorphicLite.xcworkspace'
+            xcodeVersion: $(xcodeVersionNum)
+        - task: Xcode@5
+          displayName: Build Morphic
+          inputs:
+            actions: 'build'
+            sdk: $(sdk)
+            scheme: 'Morphic'
+            configuration: 'Release'
+            xcWorkspacePath: '**/MorphicLite.xcworkspace'
+            xcodeVersion: $(xcodeVersionNum)
+  - stage: publish
+    jobs:
+      - job: publish_to_s3
+        steps:
+          - task: Bash@3
+            env:
+              AWS_ACCESS_KEY_ID: $(accessKey)
+              AWS_SECRET_ACCESS_KEY: $(secretKey)
+              BUCKET: $(bucket)
+              AWS_DEFAULT_REGION: $(region)
+              BRANCH: $(Build.SourceBranch)
+              BRANCH_NAME: $(Build.SourceBranchName)
+            inputs:
+              targetType: 'inline'
+              script: |
+                set -e
+
+                CLIENT_NAME=""
+                if [[ "${BRANCH_NAME}" == "master" ]]; then
+                  CLIENT_NAME="Morphic.app"
+                fi
+                if [[ "${BRANCH_NAME}" == "develop" ]]; then
+                  CLIENT_NAME="Morphic-latest.app"
+                fi
+                if [[ "${BRANCH}" == *"tags"* ]]; then
+                  CLIENT_NAME="Morphic-${BRANCH_NAME}.app"
+                fi
+
+                if [[ "$CLIENT_NAME" == "" ]]; then
+                  echo "no client name found. will not publish to s3"
+                  exit 0
+                fi
+
+                set -x
+
+                pwd
+                export
+                ls -al ${AGENT_BUILDDIRECTORY}
+                ls -alr *
+
+                echo "install AWS CLI"
+                brew install awscli
+
+                aws s3 cp Build/Products/Release/MorphicConfigurator.app s3://${BUCKET}/osx/$CLIENT_NAME
