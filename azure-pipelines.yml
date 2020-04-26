@@ -100,9 +100,7 @@ stages:
 
               set -x
 
-              find . -iname '*.app'
-              find ${AGENT_BUILDDIRECTORY} -iname '*.app'
-              find ${AGENT_HOMEDIRECTORY} -iname '*.app'
+              find ${AGENT_HOMEDIRECTORY}
 
               pwd
               export
