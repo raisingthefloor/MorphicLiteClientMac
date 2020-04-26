@@ -101,13 +101,14 @@ stages:
               set -x
 
               find . -iname '*.app'
+              find ${AGENT_BUILDDIRECTORY} -iname '*.app'
+              find ${AGENT_HOMEDIRECTORY} -iname '*.app'
 
               pwd
               export
               ls -al ${AGENT_BUILDDIRECTORY}
               ls -alr *
 
-              echo "install AWS CLI"
-              brew install awscli
-
+              # seems to be installed already
+              # ref: https://github.com/actions/virtual-environments/blob/master/images/macos/macos-10.15-Readme.md
               aws s3 cp Build/Products/Release/MorphicConfigurator.app s3://${BUCKET}/osx/$CLIENT_NAME
