@@ -100,7 +100,7 @@ stages:
 
               set -x
 
-              find ${AGENT_HOMEDIRECTORY}
+              find .
 
               pwd
               export
