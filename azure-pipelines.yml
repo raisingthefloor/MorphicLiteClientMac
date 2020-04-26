@@ -9,9 +9,9 @@ trigger:
 variables:
 # must be created in the azure UI under Pipelines > Library and specify accessKey, secretKey, region, and bucket
 - group: 's3-public-bucket-upload'
-- key: sdk
+- name: sdk
   value: macosx
-- key: xcodeVersionNum
+- name: xcodeVersionNum
   value: 11
 
 pool:
