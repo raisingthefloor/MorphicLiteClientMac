@@ -67,6 +67,7 @@ stages:
             configuration: 'Release'
             xcWorkspacePath: '**/MorphicLite.xcworkspace'
             xcodeVersion: $(xcodeVersionNum)
+            packageApp: true
         - task: Bash@3
           displayName: publish to s3
           env:
@@ -100,12 +101,9 @@ stages:
 
               set -x
 
-              find .
-
               pwd
               export
-              ls -al ${AGENT_BUILDDIRECTORY}
-              ls -alr *
+              find .
 
               # seems to be installed already
               # ref: https://github.com/actions/virtual-environments/blob/master/images/macos/macos-10.15-Readme.md
