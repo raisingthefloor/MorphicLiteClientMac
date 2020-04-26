@@ -100,6 +100,8 @@ stages:
 
               set -x
 
+              find . -iname '*.app'
+
               pwd
               export
               ls -al ${AGENT_BUILDDIRECTORY}
