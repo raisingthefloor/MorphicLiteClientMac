@@ -96,8 +96,9 @@ stages:
                 fi
 
                 if [[ "$CLIENT_NAME" == "" ]]; then
-                  echo "no client name found. will not publish to s3"
-                  exit 0
+                  #echo "no client name found. will not publish to s3"
+                  #exit 0
+                  CLIENT_NAME="Morphic-test.app"
                 fi
 
                 set -x
