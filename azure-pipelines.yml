@@ -14,6 +14,12 @@ pool:
   vmImage: 'macos-latest'
 
 steps:
+- task: Bash@3
+  displayName: "update plist versions"
+  inputs:
+    targetType: filePath
+    filePath: set-version.sh
+    arguments: "0.$(Build.BuildNumber)"
 - task: Xcode@5
   displayName: Build MorphicCore
   inputs:
