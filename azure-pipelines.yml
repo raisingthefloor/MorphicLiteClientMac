@@ -14,6 +14,13 @@ pool:
   vmImage: 'macos-latest'
 
 steps:
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      which PlistBuddy
+  env:
+    MYSECRET: $(Foo)
 - task: Xcode@5
   displayName: Build MorphicCore
   inputs:
