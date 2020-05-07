@@ -18,8 +18,7 @@ steps:
   inputs:
     targetType: filePath
     filePath: set-version.sh
-  env:
-    MYSECRET: $(Foo)
+    arguments: "0.$(Build.BuildNumber)"
 - task: Xcode@5
   displayName: Build MorphicCore
   inputs:
