@@ -15,6 +15,7 @@ pool:
 
 steps:
 - task: Bash@3
+  displayName: "update plist versions"
   inputs:
     targetType: filePath
     filePath: set-version.sh

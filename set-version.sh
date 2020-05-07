@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-set -x
 
 # ref: https://crunchybagel.com/auto-incrementing-build-numbers-in-xcode/
 
