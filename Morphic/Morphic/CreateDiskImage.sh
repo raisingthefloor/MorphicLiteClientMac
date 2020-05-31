@@ -6,6 +6,9 @@
 #  Created by Owen Shaw on 5/29/20.
 #  Copyright © 2020 Raising the Floor. All rights reserved.
 
+set -e
+set -x
+
 TEMPLATE_NAME="MorphicTemplate.dmg"
 MOUNT_PATH="MorphicInstaller"
 APP_NAME="${PRODUCT_NAME}.app"
