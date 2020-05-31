@@ -95,6 +95,9 @@ steps:
     targetType: 'inline'
     script: |
       set -e
+      set -x
+
+      pwd
 
       find . -iname '*.dmg*'
       exit 0
