@@ -82,6 +82,7 @@ steps:
     configuration: '$(configuration)'
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
+    useXcpretty: false
 - task: Bash@3
   displayName: publish to s3
   env:
