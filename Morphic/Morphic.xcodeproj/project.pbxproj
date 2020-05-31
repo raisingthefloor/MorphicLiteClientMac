@@ -608,7 +608,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"${SRCROOT}/Morphic/CreateDiskImage.sh\"";
+			shellScript = "echo 'test!'; sh \"${SRCROOT}/Morphic/CreateDiskImage.sh\";";
 		};
 /* End PBXShellScriptBuildPhase section */
 
