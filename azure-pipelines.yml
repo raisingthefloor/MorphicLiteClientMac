@@ -4,15 +4,28 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/xcode
 
 trigger:
-- master
+  branches:
+    include:
+      - master
+      - develop
+  tags:
+    include:
+      - "v*"
 
 variables:
-  sdk: macosx
-  xcodeVersionNum: 11
-  configuration: 'Release'
-  workspacePath: '**/MorphicLite.xcworkspace'
+# must be created in the azure UI under Pipelines > Library and specify accessKey, secretKey, region, and bucket
+- group: 's3-public-bucket-upload'
+- name: sdk
+  value: macosx
+- name: xcodeVersionNum
+  value: 11
+- name: configuration
+  value: 'Release'
+- name: workspacePath
+  value: '**/MorphicLite.xcworkspace'
   # The major version for semver in the client (X in X.Y.Z)
-  majorVersion: '0'
+- name: majorVersion
+  value: '0'
 
 pool:
   vmImage: 'macos-latest'
@@ -70,8 +83,38 @@ steps:
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
 - task: Bash@3
-  displayName: debug
+  displayName: publish to s3
+  env:
+    AWS_ACCESS_KEY_ID: $(accessKey)
+    AWS_SECRET_ACCESS_KEY: $(secretKey)
+    BUCKET: $(bucket)
+    AWS_DEFAULT_REGION: $(region)
+    BRANCH: $(Build.SourceBranch)
+    BRANCH_NAME: $(Build.SourceBranchName)
   inputs:
-    targetType: inline
+    targetType: 'inline'
     script: |
-      find . -iname '*.dmg'
+      set -e
+
+      find . -iname '*.dmg*'
+      exit 0
+
+      CLIENT_NAME=""
+      if [[ "${BRANCH_NAME}" == "master" ]]; then
+        CLIENT_NAME="Morphic.dmg"
+      fi
+      if [[ "${BRANCH_NAME}" == "develop" ]]; then
+        CLIENT_NAME="Morphic-latest.dmg"
+      fi
+      if [[ "${BRANCH}" == *"tags"* ]]; then
+        CLIENT_NAME="Morphic-${BRANCH_NAME}.dmg"
+      fi
+      if [[ "$CLIENT_NAME" == "" ]]; then
+        #echo "no client name found. will not publish to s3"
+        #exit 0
+        CLIENT_NAME="Morphic-test.dmg"
+
+
+      # seems to be installed already
+      # ref: https://github.com/actions/virtual-environments/blob/master/images/macos/macos-10.15-Readme.md
+      aws s3 cp Build/Products/Release/Morphic.dmg s3://${BUCKET}/osx/$CLIENT_NAME
