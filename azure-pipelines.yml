@@ -9,6 +9,10 @@ trigger:
 variables:
   sdk: macosx
   xcodeVersionNum: 11
+  configuration: 'Release'
+  workspacePath: '**/MorphicLite.xcworkspace'
+  # The major version for semver in the client (X in X.Y.Z)
+  majorVersion: '0'
 
 pool:
   vmImage: 'macos-latest'
@@ -19,15 +23,15 @@ steps:
   inputs:
     targetType: filePath
     filePath: set-version.sh
-    arguments: "0.$(Build.BuildNumber)"
+    arguments: "$(majorVersion).$(Build.BuildNumber)"
 - task: Xcode@5
   displayName: Build MorphicCore
   inputs:
     actions: 'build'
     sdk: $(sdk)
     scheme: 'MorphicCore'
-    configuration: 'Release'
-    xcWorkspacePath: '**/MorphicLite.xcworkspace'
+    configuration: '$(configuration)'
+    xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
 - task: Xcode@5
   displayName: Build MorphicService
@@ -35,8 +39,8 @@ steps:
     actions: 'build'
     sdk: $(sdk)
     scheme: 'MorphicService'
-    configuration: 'Release'
-    xcWorkspacePath: '**/MorphicLite.xcworkspace'
+    configuration: '$(configuration)'
+    xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
 - task: Xcode@5
   displayName: Build MorphicConfigurator
@@ -44,8 +48,8 @@ steps:
     actions: 'build'
     sdk: $(sdk)
     scheme: 'MorphicConfigurator'
-    configuration: 'Release'
-    xcWorkspacePath: '**/MorphicLite.xcworkspace'
+    configuration: '$(configuration)'
+    xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
 - task: Xcode@5
   displayName: Build MorphicSettings
@@ -53,8 +57,8 @@ steps:
     actions: 'build'
     sdk: $(sdk)
     scheme: 'MorphicSettings'
-    configuration: 'Release'
-    xcWorkspacePath: '**/MorphicLite.xcworkspace'
+    configuration: '$(configuration)'
+    xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
 - task: Xcode@5
   displayName: Build Morphic
@@ -62,6 +66,12 @@ steps:
     actions: 'build'
     sdk: $(sdk)
     scheme: 'Morphic'
-    configuration: 'Release'
-    xcWorkspacePath: '**/MorphicLite.xcworkspace'
+    configuration: '$(configuration)'
+    xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
+- task: Bash@3
+  displayName: debug
+  inputs:
+    targetType: inline
+    script: |
+      find . -iname '*.dmg'
