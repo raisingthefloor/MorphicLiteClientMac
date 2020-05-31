@@ -608,7 +608,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo 'test!'; sh \"${SRCROOT}/Morphic/CreateDiskImage.sh\";";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    sh \"${SRCROOT}/Morphic/CreateDiskImage.sh\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
