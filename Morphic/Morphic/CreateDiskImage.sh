@@ -24,7 +24,9 @@ hdiutil attach "${TEMPLATE_NAME}" -noautoopen -quiet -mountpoint "${MOUNT_PATH}"
 ditto "${CONFIGURATION_BUILD_DIR}/${APP_NAME}" "${MOUNT_PATH}/${APP_NAME}" && echo "[dmg] copied ${APP_NAME} to ${MOUNT_PATH}" || exit
 hdiutil detach "${MOUNT_PATH}" -quiet -force && echo "[dmg] unmounted ${MOUNT_PATH}" || exit
 rm -f "${CONFIGURATION_BUILD_DIR}/${PRODUCT_NAME}.dmg"
-hdiutil convert "${TEMPLATE_NAME}" -quiet -format UDZO -imagekey -zlib-level=9 -o "${CONFIGURATION_BUILD_DIR}/${PRODUCT_NAME}.dmg" && echo "[dmg] created ${CONFIGURATION_BUILD_DIR}/${PRODUCT_NAME}.dmg" || exit
+
+# This outputs to the Morphic root in the git repo structure, rather than DerivedData
+hdiutil convert "${TEMPLATE_NAME}" -quiet -format UDZO -imagekey -zlib-level=9 -o "${SRCROOT}/${PRODUCT_NAME}.dmg" && echo "[dmg] created ${SRCROOT}/${PRODUCT_NAME}.dmg" || exit
 cd ..
 rm -rf "${TEMP_FOLDER}" && echo "[dmg] cleaned up ${TEMP_FOLDER}" || exit
 echo "[dmg] done"
