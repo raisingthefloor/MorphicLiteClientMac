@@ -46,6 +46,7 @@ steps:
     configuration: '$(configuration)'
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
+    useXcpretty: false
 - task: Xcode@5
   displayName: Build MorphicService
   inputs:
@@ -55,6 +56,7 @@ steps:
     configuration: '$(configuration)'
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
+    useXcpretty: false
 - task: Xcode@5
   displayName: Build MorphicConfigurator
   inputs:
@@ -64,6 +66,7 @@ steps:
     configuration: '$(configuration)'
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
+    useXcpretty: false
 - task: Xcode@5
   displayName: Build MorphicSettings
   inputs:
@@ -73,6 +76,7 @@ steps:
     configuration: '$(configuration)'
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
+    useXcpretty: false
 - task: Xcode@5
   displayName: Build Morphic
   inputs:

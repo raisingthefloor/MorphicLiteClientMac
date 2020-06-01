@@ -8,6 +8,8 @@
 
 echo "---- Running CreateDiskImage.sh -----"
 
+export
+
 TEMPLATE_NAME="MorphicTemplate.dmg"
 MOUNT_PATH="MorphicInstaller"
 APP_NAME="${PRODUCT_NAME}.app"
