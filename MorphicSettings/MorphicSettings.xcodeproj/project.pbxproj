@@ -23,6 +23,7 @@
 		31A16BD22423E86C0081A72C /* MorphicWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A16BCA2423E86C0081A72C /* MorphicWindow.swift */; };
 		31CE56E22448C8F700A52A7B /* Handler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE56E12448C8F700A52A7B /* Handler.swift */; };
 		31CE56EB244A149B00A52A7B /* Audio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE56EA244A149B00A52A7B /* Audio.swift */; };
+		9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,7 @@
 		31A16BCA2423E86C0081A72C /* MorphicWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorphicWindow.swift; sourceTree = "<group>"; };
 		31CE56E12448C8F700A52A7B /* Handler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handler.swift; sourceTree = "<group>"; };
 		31CE56EA244A149B00A52A7B /* Audio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Audio.swift; sourceTree = "<group>"; };
+		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +128,7 @@
 				31A16BBF2423E86B0081A72C /* Input */,
 				31A16BC12423E86C0081A72C /* Language */,
 				31A16BBC2423E86B0081A72C /* Process */,
+				9D5EC22A24927EE200AC77B5 /* PropertyList */,
 				31A16BC92423E86C0081A72C /* Window */,
 				31A0A57A2405967600166668 /* MorphicSettings.h */,
 				31A0A57B2405967600166668 /* Info.plist */,
@@ -201,6 +204,14 @@
 				31A16BCA2423E86C0081A72C /* MorphicWindow.swift */,
 			);
 			path = Window;
+			sourceTree = "<group>";
+		};
+		9D5EC22A24927EE200AC77B5 /* PropertyList */ = {
+			isa = PBXGroup;
+			children = (
+				9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */,
+			);
+			path = PropertyList;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -320,6 +331,7 @@
 				31A16BCC2423E86C0081A72C /* MorphicProcess.swift in Sources */,
 				31A16BCB2423E86C0081A72C /* MorphicLaunchDaemonsAndAgents.swift in Sources */,
 				311336512427F33600686AF6 /* Display.swift in Sources */,
+				9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */,
 				31A16BD02423E86C0081A72C /* MorphicDisplay.swift in Sources */,
 				31A16BCF2423E86C0081A72C /* MorphicDisk.swift in Sources */,
 				3113364D2427F01100686AF6 /* Settings.swift in Sources */,
