@@ -98,6 +98,20 @@ public struct Preferences: Codable, Record{
         return defaults?[key.solution]?.values[key.preference] ?? nil
     }
     
+    public func valuesByKeys() -> [Key: Interoperable?]{
+        var map = [Key: Interoperable?]()
+        guard let defaults = defaults else{
+            return map
+        }
+        for (identifier, solution) in defaults{
+            for (name, value) in solution.values{
+                let key = Key(solution: identifier, preference: name)
+                map[key] = value
+            }
+        }
+        return map
+    }
+    
     // MARK: - Codable
     
     enum CodingKeys: String, CodingKey{

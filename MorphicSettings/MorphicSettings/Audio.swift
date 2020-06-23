@@ -68,29 +68,3 @@ public class AudioOutput{
     }
     
 }
-
-public class AudioVolumeHandler: Handler{
-    
-    public override func apply(_ value: Interoperable?) throws {
-        guard let percentage = value as? Double else{
-            throw ApplyError.incorrectValueType
-        }
-        if !(AudioOutput.main?.setVolume(percentage) ?? false){
-            throw ApplyError.failed
-        }
-    }
-    
-}
-
-public class AudioMuteHandler: Handler{
-    
-    public override func apply(_ value: Interoperable?) throws {
-        guard let muted = value as? Bool else{
-            throw ApplyError.incorrectValueType
-        }
-        if !(AudioOutput.main?.setMuted(muted) ?? false){
-            throw ApplyError.failed
-        }
-    }
-    
-}
