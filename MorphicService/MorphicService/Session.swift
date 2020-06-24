@@ -410,6 +410,11 @@ public class Session{
         settings.apply(value, for: key, completion: completion)
     }
     
+    public func set(_ value: Interoperable?, for key: Preferences.Key){
+        preferences?.set(value, for: key)
+        setNeedsPreferencesSave()
+    }
+    
     public func string(for key: Preferences.Key) -> String?{
         return preferences?.get(key: key) as? String
     }
