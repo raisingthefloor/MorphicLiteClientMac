@@ -103,11 +103,11 @@
 			children = (
 				31A0A5302405955B00166668 /* MorphicService.h */,
 				31A0A5312405955B00166668 /* Info.plist */,
+				311E88542427D83E0025DCBB /* Session.swift */,
 				31A0A5472405958C00166668 /* PreferencesService.swift */,
 				311E88522427D7630025DCBB /* UserService.swift */,
 				316CBD662422E1AC004BD374 /* AuthService.swift */,
 				31BBBA802422FB4000F368F7 /* Service.swift */,
-				311E88542427D83E0025DCBB /* Session.swift */,
 			);
 			path = MorphicService;
 			sourceTree = "<group>";

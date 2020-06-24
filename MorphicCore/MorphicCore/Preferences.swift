@@ -128,9 +128,9 @@ public struct Preferences: Codable, Record{
     // MARK: - Codable
     
     enum CodingKeys: String, CodingKey{
-        case identifier = "Id"
-        case userId = "UserId"
-        case defaults = "Default"
+        case identifier = "id"
+        case userId = "user_id"
+        case defaults = "default"
     }
     
     public init(from decoder: Decoder) throws {
