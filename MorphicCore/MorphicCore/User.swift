@@ -48,26 +48,28 @@ public struct User: Codable, Record{
     // MARK: - Codable
     
     enum CodingKeys: String, CodingKey{
-        case identifier = "Id"
-        case preferencesId = "PreferencesId"
-        case firstName = "FirstName"
-        case lastName = "LastName"
+        case identifier = "id"
+        case preferencesId = "preferences_id"
+        case firstName = "first_name"
+        case lastName = "last_name"
+        case email = "email"
     }
     
     public init(from decoder: Decoder) throws{
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        identifier = try container.decode(String.self, forKey: CodingKeys.identifier)
-        preferencesId = try container.decode(String?.self, forKey: CodingKeys.preferencesId)
-        firstName = try container.decode(String?.self, forKey: CodingKeys.firstName)
-        lastName = try container.decode(String?.self, forKey: CodingKeys.lastName)
+        identifier = try container.decode(String.self, forKey: .identifier)
+        preferencesId = try container.decode(String?.self, forKey: .preferencesId)
+        firstName = try container.decode(String?.self, forKey: .firstName)
+        lastName = try container.decode(String?.self, forKey: .lastName)
+        email = try container.decode(String?.self, forKey: .email)
     }
     
     public func encode(to encoder: Encoder) throws{
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(identifier, forKey: CodingKeys.identifier)
-        try container.encode(preferencesId, forKey: CodingKeys.preferencesId)
-        try container.encode(firstName, forKey: CodingKeys.firstName)
-        try container.encode(lastName, forKey: CodingKeys.lastName)
+        try container.encode(identifier, forKey: .identifier)
+        try container.encode(preferencesId, forKey: .preferencesId)
+        try container.encode(firstName, forKey: .firstName)
+        try container.encode(lastName, forKey: .lastName)
     }
     
     // MARK: - Identification
@@ -84,6 +86,8 @@ public struct User: Codable, Record{
     
     /// The user's last name
     public var lastName: String?
+    
+    public var email: String?
     
     // MARK: - Preferences
     

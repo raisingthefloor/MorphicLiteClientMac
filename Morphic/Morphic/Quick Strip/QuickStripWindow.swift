@@ -105,7 +105,7 @@ public class QuickStripWindow: NSWindow {
         self.position = position
         reposition(animated: animated)
         if changed{
-            Session.shared.save(position.rawValue, for: .morphicQuickStripPosition)
+            Session.shared.set(position.rawValue, for: .morphicQuickStripPosition)
         }
     }
     

@@ -45,19 +45,10 @@ class ViewController: NSViewController {
     @IBAction
     func createTestUser(_ sender: Any){
         createUserButton.isEnabled = false
-        Session.shared.registerUser(){
-            success in
-            if success{
-                NSApplication.shared.terminate(sender)
-            }else{
-                self.createUserButton.isEnabled = true
-            }
-        }
     }
     
     @IBAction
     func clearUser(_ sender: Any){
-        Session.shared.signout()
         NSApplication.shared.terminate(sender)
     }
 

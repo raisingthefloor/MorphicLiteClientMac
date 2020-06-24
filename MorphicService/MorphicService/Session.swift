@@ -72,7 +72,7 @@ public class Session{
     // MARK: - Settings
     
     /// The local storage of cached Morphic data
-    lazy var settings = Settings.shared
+    lazy var settings = SettingsManager.shared
     
     // MARK: - Requests
     
@@ -275,6 +275,22 @@ public class Session{
         return keychain.keyCredentials(for: service.endpoint, userIdentifier: identifier)
     }
     
+    public func authenticate(usingUsername credentials: UsernameCredentials, completion: @escaping (_ success: Bool) -> Void) -> URLSessionTask?{
+        let task = service.authenticate(username: credentials.username, password: credentials.password){
+            auth in
+            if let auth = auth{
+                _ = self.keychain.save(usernameCredentials: credentials, for: self.service.endpoint)
+                self.authToken = auth.token
+                self.signin(user: auth.user, preFetchedPreferences: nil){
+                    completion(true)
+                }
+            }else{
+                completion(false)
+            }
+        }
+        return task.urlTask
+    }
+    
     // MARK: - User Info
     
     /// The identifier of the current user
@@ -294,61 +310,91 @@ public class Session{
         }
     }
     
-    private func signin(user: User, completion: @escaping () -> Void){
-        self.user = user
-        _ = self.service.fetch(preferences: user.preferencesId){
-            preferences in
-            self.preferences = preferences
-            self.applyAllPreferences()
-            completion()
-        }
-    }
-    
-    public func signout(){
-        self.user = nil
-        self.preferences = nil
-    }
-    
-    public func registerUser(completion: @escaping (_ success: Bool) -> Void){
-        let user = User()
-        let key = SymmetricKey(size: .init(bitCount: 512))
-        let base64 = key.withUnsafeBytes{
-            (bytes: UnsafeRawBufferPointer) in
-            Data(Array(bytes)).base64EncodedString()
-        }
-        _ = service.register(user: user, key: base64){
-            auth in
-            if let auth = auth{
-                let credentials = KeyCredentials(key: base64)
-                if !self.keychain.save(keyCredentials: credentials, for: self.service.endpoint, userIdentifier: auth.user.identifier){
-                    os_log(.error, log: logger, "Failed to save newly registered key credentials")
-                }
-                if !self.keychain.save(authToken: auth.token, for: self.service.endpoint, userIdentifier: auth.user.identifier){
-                    os_log(.error, log: logger, "Failed to save newly registered auth token")
-                }
-                self.signin(user: auth.user){
-                    completion(true)
+    private func signin(user: User, preFetchedPreferences: Preferences?, completion: @escaping () -> Void){
+        let saveDefaultPreferencesIfNeeded: (@escaping () -> Void) -> Void = {
+            completion in
+            if self.user == nil{
+                // If we're going from no user to a logged in user, capture the
+                // computer's current settings as the default preference that will
+                // be applied back when the user logs out.
+                if let preferences = self.preferences{
+                    if preferences.identifier == "__default__"{
+                        let capture = CaptureSession(settingsManager: self.settings, preferences: preferences)
+                        capture.addAllSolutions()
+                        capture.run {
+                            self.storage.save(record: capture.preferences){
+                                success in
+                                completion()
+                            }
+                        }
+                    }
                 }
             }else{
-                completion(false)
+                // If we are going from one user to another, we don't want to do
+                // anything because the computer's current settings are the first
+                // user's rather than whatever the computer was before that user
+                // logged in
+                completion()
+            }
+        }
+        let fetchPreferencesIfNeeded: (@escaping (_ preferences: Preferences?) -> Void) -> Void = {
+            completion in
+            if let preferences = preFetchedPreferences{
+                completion(preferences)
+            }else{
+                _ = self.service.fetch(preferences: user.preferencesId, completion: completion)
+            }
+        }
+        
+        saveDefaultPreferencesIfNeeded {
+            self.user = user
+            fetchPreferencesIfNeeded{
+                preferences in
+                self.preferences = preferences
+                self.storage.save(record: user){
+                    success in
+                    if preferences != nil{
+                        self.storage.save(record: preferences!){
+                            success in
+                            completion()
+                        }
+                    }else{
+                        completion()
+                    }
+                }
             }
         }
     }
     
-    public func registerUser(username: String, password: String, completion: @escaping (_ success: Bool) -> Void){
-        let user = User()
-        _ = service.register(user: user, username: username, password: password){
+    public func signout(completion: @escaping () -> Void){
+        user = nil
+        storage.load(identifier: "__default__"){
+            (defautPreferences: Preferences?) in
+            self.preferences = defautPreferences
+            let apply = ApplySession(settingsManager: self.settings, preferences: defautPreferences!)
+            apply.run {
+                completion()
+            }
+        }
+    }
+    
+    public func register(user: User, credentials: UsernameCredentials, preferences: Preferences, completion: @escaping (_ success: Bool) -> Void){
+        _ = service.register(user: user, username: credentials.username, password: credentials.password){
             auth in
             if let auth = auth{
-                let credentials = UsernameCredentials(username: username, password: password)
                 if !self.keychain.save(usernameCredentials: credentials, for: self.service.endpoint){
                     os_log(.error, log: logger, "Failed to save newly registered username credentials")
                 }
                 if !self.keychain.save(authToken: auth.token, for: self.service.endpoint, userIdentifier: auth.user.identifier){
                     os_log(.error, log: logger, "Failed to save newly registered auth token")
                 }
-                UserDefaults.morphic.set(morphicUsername: username, for: auth.user.identifier)
-                self.signin(user: auth.user){
+                var createdUser = auth.user
+                createdUser.email = createdUser.email ?? user.email
+                var createdPreferences = preferences
+                createdPreferences.identifier = createdUser.preferencesId
+                createdPreferences.userId = createdUser.identifier
+                UserDefaults.morphic.set(morphicUsername: credentials.username, for: auth.user.identifier)
+                self.signin(user: createdUser, preFetchedPreferences: preferences){
                     completion(true)
                 }
             }else{
@@ -360,15 +406,12 @@ public class Session{
     /// The current user's preferences
     public var preferences: Preferences?
     
-    /// Save a preference change
-    ///
-    /// * Updates the local preferences
-    /// * Applys the change to the system
-    /// * Requests a cloud save
-    public func save(_ value: Interoperable?, for key: Preferences.Key){
-        os_log(.error, log: logger, "Setting preference %{public}s.%{public}s", key.solution, key.preference)
+    public func apply(_ value: Interoperable?, for key: Preferences.Key, completion: @escaping (_ success: Bool) -> Void){
+        settings.apply(value, for: key, completion: completion)
+    }
+    
+    public func set(_ value: Interoperable?, for key: Preferences.Key){
         preferences?.set(value, for: key)
-        _ = settings.apply(value, for: key)
         setNeedsPreferencesSave()
     }
     
@@ -396,19 +439,13 @@ public class Session{
         return preferences?.get(key: key) as? [String: Interoperable?]
     }
     
-    public func applyAllPreferences(){
-        os_log(.error, log: logger, "Applying all preferences")
-        guard let preferences = preferences else{
+    public func applyAllPreferences(completion: @escaping () -> Void){
+        guard let preferences = self.preferences else{
+            completion()
             return
         }
-        guard let defaults = preferences.defaults else{
-            return
-        }
-        for (solution, preferencesSet) in defaults{
-            for (preference, value) in preferencesSet.values{
-                _ = settings.apply(value, for: Preferences.Key(solution: solution, preference: preference))
-            }
-        }
+        let apply = ApplySession(settingsManager: settings, preferences: preferences)
+        apply.run(completion: completion)
     }
     
     /// Save the preferences after a delay
