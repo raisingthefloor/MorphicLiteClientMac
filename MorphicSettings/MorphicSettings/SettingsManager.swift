@@ -33,13 +33,11 @@ public class SettingsManager{
     /// The singleton object representing this system's settings
     public static var shared: SettingsManager = SettingsManager()
     
-    /// Create the singleton instance and register default handlers
     private init(){
-        clientSettingHandlersByKey[.macosDisplayZoom] = DisplayZoomHandler.self
     }
     
-    /// The client handler types registered in this manager
-    private var clientSettingHandlersByKey = [Preferences.Key: SettingHandler.Type]()
+    /// All known solutions
+    public private(set) var solutions = [Solution]()
     
     /// The solutions registered in this manager
     private var solutionsById = [String: Solution]()
@@ -51,6 +49,7 @@ public class SettingsManager{
             os_log(.error, log: logger, "Failed to decode JSON from solutions file")
             return
         }
+        self.solutions = solutions
         for solution in solutions{
             solutionsById[solution.identifier] = solution
         }
@@ -66,32 +65,40 @@ public class SettingsManager{
         return solution.setting(for: key.preference)
     }
     
-    /// Create a new handler instance for the given setting
-    ///
-    /// - parameter setting: The setting to use when creating a handler
-    public func handler(for setting: Setting) -> SettingHandler?{
-        switch setting.handlerDescription.type{
-        case .client:
-            return clientSettingHandlersByKey[(setting.handlerDescription as! ClientSettingHandler.Description).key]?.init(setting: setting)
-        case .defaultsReadUIWrite:
-            return DefaultsReadUIWriteSettingHandler(setting: setting)
+    /// Apply a value for Morphic preference in the given solution
+    public func apply(_ value: Interoperable?, for key: Preferences.Key, completion: @escaping (_ success: Bool) -> Void){
+        apply(values: [key: value]){
+            results in
+            completion(results[key] ?? false)
         }
     }
     
-    /// Apply a value for Morphic preference in the given solution
-    public func apply(_ value: Interoperable?, for key: Preferences.Key, completion: @escaping (_ success: Bool) -> Void){
-    }
-    
     /// Apply several values at once
-    public func apply(values: [Preferences.Key: Interoperable?]){
+    public func apply(values: [Preferences.Key: Interoperable?], completion: @escaping (_ results: [Preferences.Key: Bool]) -> Void){
+        let session = ApplySession(settingsManager: self, valuesByKey: values)
+        session.applyDefaultValues = false
+        session.run{
+            completion(session.results)
+        }
     }
     
     /// Capture a value for the given preference
-    public func capture(valueFor key: Preferences.Key, completion: @escaping (_ result: SettingHandler.Result) -> Void){
+    public func capture(valueFor key: Preferences.Key, completion: @escaping (_ result: Interoperable?) -> Void){
+        capture(valuesFor: [key]){
+            results in
+            completion(results[key] ?? nil)
+        }
     }
     
     /// Capture many values at once
-    public func capture(valuesFor keys: [Preferences.Key], completion: @escaping(_ results: [Preferences.Key: SettingHandler.Result]) -> Void){
+    public func capture(valuesFor keys: [Preferences.Key], completion: @escaping(_ results: [Preferences.Key: Interoperable?]) -> Void){
+        let prefs = Preferences(identifier: "")
+        let session = CaptureSession(settingsManager: self, preferences: prefs)
+        session.captureDefaultValues = true
+        session.keys = keys
+        session.run{
+            completion(session.preferences.valuesByKey())
+        }
     }
     
 }

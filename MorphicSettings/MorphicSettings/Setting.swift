@@ -111,4 +111,41 @@ public struct Setting: Decodable{
             finalizerDescription = nil
         }
     }
+    
+    public func isDefault(_ value: Interoperable?) -> Bool{
+        switch type {
+        case .boolean:
+            guard let defaultValue = defaultValue as? Bool else{
+                return false
+            }
+            guard let value = value as? Bool else{
+                return false
+            }
+            return value == defaultValue
+        case .integer:
+            guard let defaultValue = defaultValue as? Int else{
+                return false
+            }
+            guard let value = value as? Int else{
+                return false
+            }
+            return value == defaultValue
+        case .string:
+            guard let defaultValue = defaultValue as? String else{
+                return false
+            }
+            guard let value = value as? String else{
+                return false
+            }
+            return value == defaultValue
+        case .double:
+            guard let defaultValue = defaultValue as? Double else{
+                return false
+            }
+            guard let value = value as? Double else{
+                return false
+            }
+            return value == defaultValue
+        }
+    }
 }

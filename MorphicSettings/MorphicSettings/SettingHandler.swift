@@ -44,7 +44,7 @@ public class SettingHandler{
     ///   - value: The value to save for `setting`
     ///   - completion: Called when the write completes
     ///   - success: Whether the write succeeded
-    public func apply(_ value: Interoperable?, completion: @escaping (_ success: Bool) -> Void) throws{
+    public func apply(_ value: Interoperable?, completion: @escaping (_ success: Bool) -> Void){
         completion(false)
     }
     
@@ -74,5 +74,18 @@ public class SettingHandler{
 public protocol SettingHandlerDescription: Decodable{
     
     var type: Setting.HandlerType { get }
+    
+}
+
+public extension Setting{
+    
+    func createHandler() -> SettingHandler?{
+        switch handlerDescription.type{
+        case .client:
+            return ClientSettingHandler.create(for: self)
+        case .defaultsReadUIWrite:
+            return DefaultsReadUIWriteSettingHandler(setting: self)
+        }
+    }
     
 }

@@ -15,6 +15,8 @@
 		312DBFF324A28556002FB951 /* DefaultsReadUIWriteSettingHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DBFF224A28556002FB951 /* DefaultsReadUIWriteSettingHandler.swift */; };
 		312DBFF724A28AFD002FB951 /* SettingFinalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DBFF624A28AFD002FB951 /* SettingFinalizer.swift */; };
 		312DBFF924A2B200002FB951 /* ClientSettingHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DBFF824A2B200002FB951 /* ClientSettingHandler.swift */; };
+		312DBFFB24A2C66A002FB951 /* ApplySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DBFFA24A2C66A002FB951 /* ApplySession.swift */; };
+		312DBFFD24A2C683002FB951 /* CaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DBFFC24A2C683002FB951 /* CaptureSession.swift */; };
 		31A0A5812405967600166668 /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A0A5772405967600166668 /* MorphicSettings.framework */; };
 		31A0A5862405967600166668 /* MorphicSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5852405967600166668 /* MorphicSettingsTests.swift */; };
 		31A0A5882405967600166668 /* MorphicSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = 31A0A57A2405967600166668 /* MorphicSettings.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -63,6 +65,8 @@
 		312DBFF224A28556002FB951 /* DefaultsReadUIWriteSettingHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsReadUIWriteSettingHandler.swift; sourceTree = "<group>"; };
 		312DBFF624A28AFD002FB951 /* SettingFinalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingFinalizer.swift; sourceTree = "<group>"; };
 		312DBFF824A2B200002FB951 /* ClientSettingHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientSettingHandler.swift; sourceTree = "<group>"; };
+		312DBFFA24A2C66A002FB951 /* ApplySession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplySession.swift; sourceTree = "<group>"; };
+		312DBFFC24A2C683002FB951 /* CaptureSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSession.swift; sourceTree = "<group>"; };
 		31A0A5772405967600166668 /* MorphicSettings.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MorphicSettings.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		31A0A57A2405967600166668 /* MorphicSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MorphicSettings.h; sourceTree = "<group>"; };
 		31A0A57B2405967600166668 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -149,6 +153,8 @@
 				312DBFF824A2B200002FB951 /* ClientSettingHandler.swift */,
 				312DBFF224A28556002FB951 /* DefaultsReadUIWriteSettingHandler.swift */,
 				312DBFF624A28AFD002FB951 /* SettingFinalizer.swift */,
+				312DBFFC24A2C683002FB951 /* CaptureSession.swift */,
+				312DBFFA24A2C66A002FB951 /* ApplySession.swift */,
 				311336502427F33600686AF6 /* Display.swift */,
 				31CE56EA244A149B00A52A7B /* Audio.swift */,
 			);
@@ -343,6 +349,7 @@
 				31CE56EB244A149B00A52A7B /* Audio.swift in Sources */,
 				31A16BD22423E86C0081A72C /* MorphicWindow.swift in Sources */,
 				31A16BD12423E86C0081A72C /* MorphicAudio.swift in Sources */,
+				312DBFFD24A2C683002FB951 /* CaptureSession.swift in Sources */,
 				31A16BCC2423E86C0081A72C /* MorphicProcess.swift in Sources */,
 				312973EF24A275D7000F5ED1 /* Setting.swift in Sources */,
 				312DBFF024A27BCF002FB951 /* Solution.swift in Sources */,
@@ -357,6 +364,7 @@
 				31A16BCD2423E86C0081A72C /* MorphicInput.swift in Sources */,
 				31CE56E22448C8F700A52A7B /* SettingHandler.swift in Sources */,
 				31A16BCE2423E86C0081A72C /* MorphicLanguage.swift in Sources */,
+				312DBFFB24A2C66A002FB951 /* ApplySession.swift in Sources */,
 				312DBFF324A28556002FB951 /* DefaultsReadUIWriteSettingHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

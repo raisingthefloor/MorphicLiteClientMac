@@ -28,6 +28,13 @@ public class SettingFinalizer{
         completion(false)
     }
     
+    public static func create(from description: SettingFinalizerDescription) -> SettingFinalizer?{
+        switch description.type{
+        case .notImplemented:
+            return nil
+        }
+    }
+    
 }
 
 /// A data model describing the finalizer's behavior

@@ -21,6 +21,7 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler{
         defaults = UserDefaults(suiteName: description.defaultsDomain)
     }
     
+    /// The user defaults object to use, based on the `defaultsDomain` from the setting's `handlerDescription`
     private var defaults: UserDefaults?
     
     /// The data model describing the properties for this kind of setting handler
@@ -53,7 +54,7 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler{
         return setting.handlerDescription as! Description
     }
     
-    public override func apply(_ value: Interoperable?, completion: @escaping (_ success: Bool) -> Void) throws {
+    public override func apply(_ value: Interoperable?, completion: @escaping (_ success: Bool) -> Void) {
         completion(false)
     }
     
