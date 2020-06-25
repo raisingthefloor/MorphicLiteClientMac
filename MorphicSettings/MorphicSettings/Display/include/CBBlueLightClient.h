@@ -23,8 +23,8 @@
 
 // NOTE: this is a partially-reverse-engineered header (i.e. not the complete original header)
 //
-// Tools: nm; Ghidra; Runtime Browser; manual tuning
-// Path: /System/Library/PrivateFrameworks/CoreBrightness.framework//CoreBrightness
+// Tools: nm; Ghidra; RuntimeBrowser; manual analysis
+// Path: /System/Library/PrivateFrameworks/CoreBrightness.framework/CoreBrightness
 // OS: macOS 10.15.5
 
 #import <Foundation/Foundation.h>

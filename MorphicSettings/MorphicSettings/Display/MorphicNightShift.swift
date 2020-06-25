@@ -54,6 +54,15 @@ public struct MorphicNightShift {
         let blueLightClient = CBBlueLightClient()
         blueLightClient.setActive(active)
     }
+    
+    public static func getLocationPermissionGranted() -> Bool {
+        let blueLightClient = CBBlueLightClient()
+        
+        var blueLightStatus = CBBlueLight_Status()
+        blueLightClient.getBlueLightStatus(&blueLightStatus)
+        
+        return blueLightStatus.locationPermissionGranted.boolValue
+    }
 
     // NOTE: "enabled" means that the feature is currently in effect; however if active==false then ENABLED has no effect
     // NOTE: the "enabled" state corresponds to the "Manual" checkbox in System Preferences > ... > Night Shift (but "manual" is really a toggle, auto-updated if triggered by sunset/sunrise)
