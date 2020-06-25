@@ -104,15 +104,15 @@ public class Display{
     
 }
 
-public class DisplayZoomHandler: Handler{
+public class DisplayZoomHandler: ClientSettingHandler{
     
-    public override func apply(_ value: Interoperable?) throws {
+    public override func apply(_ value: Interoperable?, completion: @escaping (_ success: Bool) -> Void) {
         guard let percentage = value as? Double else{
-            throw ApplyError.incorrectValueType
+            completion(false)
+            return
         }
-        if !(Display.main?.zoom(to: percentage) ?? false){
-            throw ApplyError.failed
-        }
+        let success = Display.main?.zoom(to: percentage) ?? false
+        completion(success)
     }
     
 }

@@ -137,7 +137,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         showQuickStripItem?.isHidden = true
         hideQuickStripItem?.isHidden = false
         if sender != nil{
-            Session.shared.save(true, for: .morphicQuickStripVisible)
+            Session.shared.set(true, for: .morphicQuickStripVisible)
         }
     }
     
@@ -148,7 +148,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         hideQuickStripItem?.isHidden = true
         QuickHelpWindow.hide()
         if sender != nil{
-            Session.shared.save(false, for: .morphicQuickStripVisible)
+            Session.shared.set(false, for: .morphicQuickStripVisible)
         }
     }
      

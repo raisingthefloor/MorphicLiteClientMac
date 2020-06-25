@@ -8,9 +8,9 @@
       location = "group:MorphicCore/MorphicCore.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:MorphicService/MorphicService.xcodeproj">
+      location = "group:MorphicSettings/MorphicSettings.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:MorphicSettings/MorphicSettings.xcodeproj">
+      location = "group:MorphicService/MorphicService.xcodeproj">
    </FileRef>
 </Workspace>

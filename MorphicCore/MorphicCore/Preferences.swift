@@ -98,12 +98,39 @@ public struct Preferences: Codable, Record{
         return defaults?[key.solution]?.values[key.preference] ?? nil
     }
     
+    public func remove(key: Key){
+        guard var defaults = defaults else{
+            return
+        }
+        guard var solution = defaults[key.solution] else{
+            return
+        }
+        solution.values.removeValue(forKey: key.preference)
+        if solution.values.count == 0{
+            defaults.removeValue(forKey: key.solution)
+        }
+    }
+    
+    public func valuesByKey() -> [Key: Interoperable?]{
+        var map = [Key: Interoperable?]()
+        guard let defaults = defaults else{
+            return map
+        }
+        for (identifier, solution) in defaults{
+            for (name, value) in solution.values{
+                let key = Key(solution: identifier, preference: name)
+                map[key] = value
+            }
+        }
+        return map
+    }
+    
     // MARK: - Codable
     
     enum CodingKeys: String, CodingKey{
-        case identifier = "Id"
-        case userId = "UserId"
-        case defaults = "Default"
+        case identifier = "id"
+        case userId = "user_id"
+        case defaults = "default"
     }
     
     public init(from decoder: Decoder) throws {

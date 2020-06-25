@@ -171,7 +171,7 @@ class QuickStripControlItem: QuickStripItem{
         }else{
             percentage = display.percentage(zoomingOut: 1)
         }
-        Session.shared.save(percentage, for: .macosDisplayZoom)
+        Session.shared.set(percentage, for: .macosDisplayZoom)
     }
     
     @objc
