@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="LoginWindowController" customModule="MorphicConfigurator" customModuleProvider="target">
+            <connections>
+                <outlet property="passwordField" destination="Asd-3x-WoL" id="Pol-Ks-iIu"/>
+                <outlet property="submitButton" destination="DPw-YJ-xy4" id="MDw-s8-CjL"/>
+                <outlet property="usernameField" destination="uyh-EF-acZ" id="W5c-iF-38J"/>
+                <outlet property="window" destination="QvC-M9-y7g" id="LvL-cA-j0t"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Log in to Morphic" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
+            <rect key="contentRect" x="196" y="240" width="438" height="219"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
+            <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
+                <rect key="frame" x="0.0" y="0.0" width="438" height="231"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fpW-pE-kTi">
+                        <rect key="frame" x="78" y="115" width="90" height="16"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" title="Email Address" id="iha-2b-OCz">
+                            <font key="font" usesAppearanceFont="YES"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pFS-jC-Yas">
+                        <rect key="frame" x="189" y="151" width="60" height="60"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="pFS-jC-Yas" secondAttribute="height" multiplier="1:1" id="0DA-q0-Jvo"/>
+                            <constraint firstAttribute="width" constant="60" id="Nff-SS-wv8"/>
+                        </constraints>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Icon" id="awi-aB-9me"/>
+                    </imageView>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uyh-EF-acZ">
+                        <rect key="frame" x="174" y="112" width="184" height="21"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="TAV-qL-19c">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PZH-Ub-Mco">
+                        <rect key="frame" x="78" y="84" width="90" height="16"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" title="Password" id="qTa-36-w6E">
+                            <font key="font" usesAppearanceFont="YES"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <secureTextField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Asd-3x-WoL">
+                        <rect key="frame" x="174" y="81" width="184" height="21"/>
+                        <secureTextFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="XdI-I6-Wdn">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            <allowedInputSourceLocales>
+                                <string>NSAllRomanInputSourcesLocaleIdentifier</string>
+                            </allowedInputSourceLocales>
+                        </secureTextFieldCell>
+                    </secureTextField>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DPw-YJ-xy4">
+                        <rect key="frame" x="168" y="33" width="81" height="32"/>
+                        <buttonCell key="cell" type="push" title="Sign in" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="CK2-4d-Of0">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="login:" target="-2" id="uP1-kW-ygF"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="DPw-YJ-xy4" firstAttribute="leading" secondItem="Asd-3x-WoL" secondAttribute="leading" id="7n0-uG-hYS"/>
+                    <constraint firstItem="uyh-EF-acZ" firstAttribute="leading" secondItem="fpW-pE-kTi" secondAttribute="trailing" constant="8" id="SCt-gp-1Ia"/>
+                    <constraint firstItem="PZH-Ub-Mco" firstAttribute="width" secondItem="fpW-pE-kTi" secondAttribute="width" id="Tep-al-XCt"/>
+                    <constraint firstItem="fpW-pE-kTi" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="80" id="WdU-Ng-EeO"/>
+                    <constraint firstItem="fpW-pE-kTi" firstAttribute="top" secondItem="pFS-jC-Yas" secondAttribute="bottom" constant="20" id="aOp-37-EqI"/>
+                    <constraint firstItem="pFS-jC-Yas" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" constant="20" id="cWd-b7-Hqj"/>
+                    <constraint firstItem="pFS-jC-Yas" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" id="cZF-5M-riQ"/>
+                    <constraint firstItem="uyh-EF-acZ" firstAttribute="firstBaseline" secondItem="fpW-pE-kTi" secondAttribute="firstBaseline" id="d8H-4w-m1C"/>
+                    <constraint firstItem="Asd-3x-WoL" firstAttribute="leading" secondItem="PZH-Ub-Mco" secondAttribute="trailing" constant="8" id="mQA-t7-uoe"/>
+                    <constraint firstAttribute="trailing" secondItem="uyh-EF-acZ" secondAttribute="trailing" constant="80" id="nE8-YE-EWS"/>
+                    <constraint firstItem="Asd-3x-WoL" firstAttribute="width" secondItem="uyh-EF-acZ" secondAttribute="width" id="nST-x7-vHc"/>
+                    <constraint firstItem="Asd-3x-WoL" firstAttribute="leading" secondItem="uyh-EF-acZ" secondAttribute="leading" id="oB1-bN-nEz"/>
+                    <constraint firstAttribute="bottom" secondItem="DPw-YJ-xy4" secondAttribute="bottom" constant="40" id="p8b-gu-2cX"/>
+                    <constraint firstItem="PZH-Ub-Mco" firstAttribute="leading" secondItem="fpW-pE-kTi" secondAttribute="leading" id="q8a-1U-XUi"/>
+                    <constraint firstItem="DPw-YJ-xy4" firstAttribute="top" secondItem="Asd-3x-WoL" secondAttribute="bottom" constant="20" id="tZO-qt-N3F"/>
+                    <constraint firstItem="Asd-3x-WoL" firstAttribute="top" secondItem="uyh-EF-acZ" secondAttribute="bottom" constant="10" id="ts9-5t-BBw"/>
+                    <constraint firstItem="PZH-Ub-Mco" firstAttribute="firstBaseline" secondItem="Asd-3x-WoL" secondAttribute="firstBaseline" id="ttC-Cc-qbs"/>
+                </constraints>
+            </view>
+            <connections>
+                <outlet property="initialFirstResponder" destination="uyh-EF-acZ" id="XAN-p0-dYt"/>
+            </connections>
+            <point key="canvasLocation" x="118" y="146.5"/>
+        </window>
+    </objects>
+    <resources>
+        <image name="Icon" width="512" height="512"/>
+    </resources>
+</document>

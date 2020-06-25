@@ -180,9 +180,20 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
      
     // MARK: - Configurator App
-     
+    
     @IBAction
-    func launchConfigurator(_ sender: Any?){
+    func launchCapture(_ sender: Any?){
+        launchConfigurator(argument: "capture")
+    }
+    
+    @IBAction
+    func launchLogin(_ sender: Any?){
+        launchConfigurator(argument: "login")
+    }
+    
+    func launchConfigurator(argument: String){
+//        let url = URL(string: "morphicconfig:\(argument)")!
+//        NSWorkspace.shared.open(url)
         os_log(.info, log: logger, "launching configurator")
         guard let url = Bundle.main.resourceURL?.deletingLastPathComponent().appendingPathComponent("Library").appendingPathComponent("MorphicConfigurator.app") else{
             os_log(.error, log: logger, "Failed to construct bundled configurator app URL")
@@ -190,6 +201,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
         let config = NSWorkspace.OpenConfiguration()
         config.activates = true
+        config.arguments = [argument]
         NSWorkspace.shared.openApplication(at: url, configuration: config){
             (app, error) in
             guard error == nil else{
