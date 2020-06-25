@@ -30,6 +30,8 @@
 		31A16BD22423E86C0081A72C /* MorphicWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A16BCA2423E86C0081A72C /* MorphicWindow.swift */; };
 		31CE56E22448C8F700A52A7B /* SettingHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE56E12448C8F700A52A7B /* SettingHandler.swift */; };
 		31CE56EB244A149B00A52A7B /* Audio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE56EA244A149B00A52A7B /* Audio.swift */; };
+		9D0AF77324A460A9007E177E /* CoreBrightness.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0AF77224A460A9007E177E /* CoreBrightness.framework */; };
+		9D0AF77724A4616E007E177E /* MorphicNightShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF77624A4616E007E177E /* MorphicNightShift.swift */; };
 		9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */; };
 /* End PBXBuildFile section */
 
@@ -83,6 +85,10 @@
 		31A16BCA2423E86C0081A72C /* MorphicWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorphicWindow.swift; sourceTree = "<group>"; };
 		31CE56E12448C8F700A52A7B /* SettingHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingHandler.swift; sourceTree = "<group>"; };
 		31CE56EA244A149B00A52A7B /* Audio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Audio.swift; sourceTree = "<group>"; };
+		9D0AF77224A460A9007E177E /* CoreBrightness.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBrightness.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/PrivateFrameworks/CoreBrightness.framework; sourceTree = DEVELOPER_DIR; };
+		9D0AF77524A4613D007E177E /* CBBlueLightClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBBlueLightClient.h; sourceTree = "<group>"; };
+		9D0AF77624A4616E007E177E /* MorphicNightShift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicNightShift.swift; sourceTree = "<group>"; };
+		9D0AF78824A46313007E177E /* MorphicSettings-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MorphicSettings-Bridging-Header.h"; sourceTree = "<group>"; };
 		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -91,6 +97,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D0AF77324A460A9007E177E /* CoreBrightness.framework in Frameworks */,
 				311336542427FB3400686AF6 /* MorphicCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -109,6 +116,7 @@
 		311336522427FB3400686AF6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9D0AF77224A460A9007E177E /* CoreBrightness.framework */,
 				311336532427FB3400686AF6 /* MorphicCore.framework */,
 			);
 			name = Frameworks;
@@ -157,6 +165,7 @@
 				312DBFFA24A2C66A002FB951 /* ApplySession.swift */,
 				311336502427F33600686AF6 /* Display.swift */,
 				31CE56EA244A149B00A52A7B /* Audio.swift */,
+				9D0AF78824A46313007E177E /* MorphicSettings-Bridging-Header.h */,
 			);
 			path = MorphicSettings;
 			sourceTree = "<group>";
@@ -206,7 +215,9 @@
 		31A16BC52423E86C0081A72C /* Display */ = {
 			isa = PBXGroup;
 			children = (
+				9D0AF77424A46131007E177E /* include */,
 				31A16BC62423E86C0081A72C /* MorphicDisplay.swift */,
+				9D0AF77624A4616E007E177E /* MorphicNightShift.swift */,
 			);
 			path = Display;
 			sourceTree = "<group>";
@@ -225,6 +236,14 @@
 				31A16BCA2423E86C0081A72C /* MorphicWindow.swift */,
 			);
 			path = Window;
+			sourceTree = "<group>";
+		};
+		9D0AF77424A46131007E177E /* include */ = {
+			isa = PBXGroup;
+			children = (
+				9D0AF77524A4613D007E177E /* CBBlueLightClient.h */,
+			);
+			path = include;
 			sourceTree = "<group>";
 		};
 		9D5EC22A24927EE200AC77B5 /* PropertyList */ = {
@@ -298,7 +317,7 @@
 				TargetAttributes = {
 					31A0A5762405967600166668 = {
 						CreatedOnToolsVersion = 11.3.1;
-						LastSwiftMigration = 1130;
+						LastSwiftMigration = 1150;
 					};
 					31A0A57F2405967600166668 = {
 						CreatedOnToolsVersion = 11.3.1;
@@ -350,6 +369,7 @@
 				31A16BD22423E86C0081A72C /* MorphicWindow.swift in Sources */,
 				31A16BD12423E86C0081A72C /* MorphicAudio.swift in Sources */,
 				312DBFFD24A2C683002FB951 /* CaptureSession.swift in Sources */,
+				9D0AF77724A4616E007E177E /* MorphicNightShift.swift in Sources */,
 				31A16BCC2423E86C0081A72C /* MorphicProcess.swift in Sources */,
 				312973EF24A275D7000F5ED1 /* Setting.swift in Sources */,
 				312DBFF024A27BCF002FB951 /* Solution.swift in Sources */,
@@ -517,6 +537,11 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = MorphicSettings/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -528,6 +553,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OBJC_BRIDGING_HEADER = "MorphicMacOS/MorphicMacOS-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -542,6 +568,11 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = MorphicSettings/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -552,6 +583,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicSettings;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "MorphicMacOS/MorphicMacOS-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
