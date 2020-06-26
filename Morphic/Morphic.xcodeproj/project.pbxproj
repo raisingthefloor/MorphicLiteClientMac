@@ -377,6 +377,7 @@
 				31751B072444DE8900EEDF14 /* Resources */,
 				31751B502444E04300EEDF14 /* Embed Frameworks */,
 				31751B932444F03900EEDF14 /* CopyFiles */,
+				9D0AF79024A57FC2007E177E /* ShellScript */,
 				318744F52481B38C00AE3954 /* ShellScript */,
 			);
 			buildRules = (
@@ -609,6 +610,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    sh \"${SRCROOT}/Morphic/CreateDiskImage.sh\"\nfi\n";
+		};
+		9D0AF79024A57FC2007E177E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    codesign --timestamp --force --options=runtime --sign \"Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)\" \"${CONFIGURATION_BUILD_DIR}/Morphic.app/Contents/MacOS/Morphic\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -853,8 +871,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Morphic/Morphic.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 5AAXYGZ428;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -863,8 +881,9 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicClient;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicClient2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Morphic Client for macOS (morphicclient2)";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -874,8 +893,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Morphic/Morphic.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 5AAXYGZ428;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -884,8 +903,9 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicClient;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicClient2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Morphic Client for macOS (morphicclient2)";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -979,8 +999,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = MorphicConfigurator/MorphicConfigurator.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 5AAXYGZ428;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -989,8 +1009,9 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Morphic Configurator for macOS (mc2)";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -1000,8 +1021,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = MorphicConfigurator/MorphicConfigurator.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 5AAXYGZ428;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1010,8 +1031,9 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Morphic Configurator for macOS (mc2)";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
