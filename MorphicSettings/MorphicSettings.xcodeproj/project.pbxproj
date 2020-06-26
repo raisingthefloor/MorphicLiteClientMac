@@ -32,6 +32,8 @@
 		31CE56EB244A149B00A52A7B /* Audio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE56EA244A149B00A52A7B /* Audio.swift */; };
 		9D0AF77324A460A9007E177E /* CoreBrightness.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0AF77224A460A9007E177E /* CoreBrightness.framework */; };
 		9D0AF77724A4616E007E177E /* MorphicNightShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF77624A4616E007E177E /* MorphicNightShift.swift */; };
+		9D0AF73724A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF73624A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift */; };
+		9D0AF73924A0FB78007E177E /* MorphicA11yUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */; };
 		9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */; };
 /* End PBXBuildFile section */
 
@@ -89,6 +91,8 @@
 		9D0AF77524A4613D007E177E /* CBBlueLightClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBBlueLightClient.h; sourceTree = "<group>"; };
 		9D0AF77624A4616E007E177E /* MorphicNightShift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicNightShift.swift; sourceTree = "<group>"; };
 		9D0AF78924A4F471007E177E /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		9D0AF73624A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yUIAttributeValueCompatible.swift; sourceTree = "<group>"; };
+		9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yUIElement.swift; sourceTree = "<group>"; };
 		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -144,6 +148,7 @@
 		31A0A5792405967600166668 /* MorphicSettings */ = {
 			isa = PBXGroup;
 			children = (
+				9D0AF73524A0FB49007E177E /* AccessibilityUI */,
 				31A16BC72423E86C0081A72C /* Audio */,
 				31A16BC32423E86C0081A72C /* Disk */,
 				31A16BC52423E86C0081A72C /* Display */,
@@ -244,6 +249,13 @@
 				9D0AF77524A4613D007E177E /* CBBlueLightClient.h */,
 			);
 			path = include;
+		9D0AF73524A0FB49007E177E /* AccessibilityUI */ = {
+			isa = PBXGroup;
+			children = (
+				9D0AF73624A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift */,
+				9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */,
+			);
+			path = AccessibilityUI;
 			sourceTree = "<group>";
 		};
 		9D5EC22A24927EE200AC77B5 /* PropertyList */ = {
@@ -366,6 +378,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D0AF73924A0FB78007E177E /* MorphicA11yUIElement.swift in Sources */,
 				31CE56EB244A149B00A52A7B /* Audio.swift in Sources */,
 				31A16BD22423E86C0081A72C /* MorphicWindow.swift in Sources */,
 				31A16BD12423E86C0081A72C /* MorphicAudio.swift in Sources */,
@@ -383,6 +396,7 @@
 				31A16BCF2423E86C0081A72C /* MorphicDisk.swift in Sources */,
 				3113364D2427F01100686AF6 /* SettingsManager.swift in Sources */,
 				31A16BCD2423E86C0081A72C /* MorphicInput.swift in Sources */,
+				9D0AF73724A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift in Sources */,
 				31CE56E22448C8F700A52A7B /* SettingHandler.swift in Sources */,
 				31A16BCE2423E86C0081A72C /* MorphicLanguage.swift in Sources */,
 				312DBFFB24A2C66A002FB951 /* ApplySession.swift in Sources */,
