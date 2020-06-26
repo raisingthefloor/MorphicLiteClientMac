@@ -44,6 +44,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         os_log(.info, log: logger, "applicationDidFinishLaunching")
         AppDelegate.shared = self
         os_log(.info, log: logger, "opening morphic session...")
+        populateSolutions()
         createStatusItem()
         copyDefaultPreferences{
             Session.shared.open {
@@ -62,7 +63,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     func copyDefaultPreferences(completion: @escaping () -> Void){
         var prefs = Preferences(identifier: "__default__")
-        guard !Storage.shared.contains(identifier: prefs.identifier, type: Preferences.self) else{
+        guard !Session.shared.storage.contains(identifier: prefs.identifier, type: Preferences.self) else{
             completion()
             return
         }
@@ -81,13 +82,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             os_log(.error, log: logger, "Failed to decode default preferences")
             return
         }
-        Storage.shared.save(record: prefs){
+        Session.shared.storage.save(record: prefs){
             success in
             if !success{
                 os_log(.error, log: logger, "Failed to save default preferences")
             }
             completion()
         }
+    }
+    
+    // MARK: - Solutions
+    
+    func populateSolutions(){
+        Session.shared.settings.populateSolutions(fromResource: "macos.solutions")
     }
      
     // MARK: - Status Bar Item

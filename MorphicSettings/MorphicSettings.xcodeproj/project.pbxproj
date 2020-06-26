@@ -17,6 +17,9 @@
 		312DBFF924A2B200002FB951 /* ClientSettingHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DBFF824A2B200002FB951 /* ClientSettingHandler.swift */; };
 		312DBFFB24A2C66A002FB951 /* ApplySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DBFFA24A2C66A002FB951 /* ApplySession.swift */; };
 		312DBFFD24A2C683002FB951 /* CaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DBFFC24A2C683002FB951 /* CaptureSession.swift */; };
+		314EB6DE24A6A67700CF3D48 /* UIAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314EB6DD24A6A67700CF3D48 /* UIAutomation.swift */; };
+		314EB6E024A6A69B00CF3D48 /* ContrastUIAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314EB6DF24A6A69B00CF3D48 /* ContrastUIAutomation.swift */; };
+		314EB6E224A6B34300CF3D48 /* TabElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314EB6E124A6B34300CF3D48 /* TabElement.swift */; };
 		315EEC8324A530970039C61D /* SystemPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315EEC8224A530970039C61D /* SystemPreferences.swift */; };
 		315EEC8524A536290039C61D /* UIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315EEC8424A536290039C61D /* UIElement.swift */; };
 		315EEC8724A536A60039C61D /* TabGroupElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315EEC8624A536A60039C61D /* TabGroupElement.swift */; };
@@ -84,6 +87,9 @@
 		312DBFF824A2B200002FB951 /* ClientSettingHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientSettingHandler.swift; sourceTree = "<group>"; };
 		312DBFFA24A2C66A002FB951 /* ApplySession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplySession.swift; sourceTree = "<group>"; };
 		312DBFFC24A2C683002FB951 /* CaptureSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSession.swift; sourceTree = "<group>"; };
+		314EB6DD24A6A67700CF3D48 /* UIAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAutomation.swift; sourceTree = "<group>"; };
+		314EB6DF24A6A69B00CF3D48 /* ContrastUIAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContrastUIAutomation.swift; sourceTree = "<group>"; };
+		314EB6E124A6B34300CF3D48 /* TabElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabElement.swift; sourceTree = "<group>"; };
 		315EEC8224A530970039C61D /* SystemPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPreferences.swift; sourceTree = "<group>"; };
 		315EEC8424A536290039C61D /* UIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIElement.swift; sourceTree = "<group>"; };
 		315EEC8624A536A60039C61D /* TabGroupElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabGroupElement.swift; sourceTree = "<group>"; };
@@ -148,6 +154,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		314EB6DC24A6A65F00CF3D48 /* Automations */ = {
+			isa = PBXGroup;
+			children = (
+				314EB6DD24A6A67700CF3D48 /* UIAutomation.swift */,
+				314EB6DF24A6A69B00CF3D48 /* ContrastUIAutomation.swift */,
+			);
+			path = Automations;
+			sourceTree = "<group>";
+		};
 		315EECA024A5839F0039C61D /* Tables */ = {
 			isa = PBXGroup;
 			children = (
@@ -162,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				315EEC8624A536A60039C61D /* TabGroupElement.swift */,
+				314EB6E124A6B34300CF3D48 /* TabElement.swift */,
 				315EEC8824A536FB0039C61D /* CheckboxElement.swift */,
 				315EEC9424A554580039C61D /* ButtonElement.swift */,
 				315EEC9C24A576180039C61D /* LabelElement.swift */,
@@ -210,6 +226,7 @@
 			isa = PBXGroup;
 			children = (
 				9D0AF73524A0FB49007E177E /* AccessibilityUI */,
+				314EB6DC24A6A65F00CF3D48 /* Automations */,
 				31A16BC72423E86C0081A72C /* Audio */,
 				31A16BC32423E86C0081A72C /* Disk */,
 				31A16BC52423E86C0081A72C /* Display */,
@@ -449,6 +466,7 @@
 				312973EF24A275D7000F5ED1 /* Setting.swift in Sources */,
 				312DBFF024A27BCF002FB951 /* Solution.swift in Sources */,
 				31A16BCB2423E86C0081A72C /* MorphicLaunchDaemonsAndAgents.swift in Sources */,
+				314EB6E224A6B34300CF3D48 /* TabElement.swift in Sources */,
 				315EEC8924A536FB0039C61D /* CheckboxElement.swift in Sources */,
 				311336512427F33600686AF6 /* Display.swift in Sources */,
 				315EEC9B24A573A80039C61D /* TableElement.swift in Sources */,
@@ -468,11 +486,13 @@
 				31CE56E22448C8F700A52A7B /* SettingHandler.swift in Sources */,
 				315EEC8724A536A60039C61D /* TabGroupElement.swift in Sources */,
 				315EEC9924A5714F0039C61D /* RowElement.swift in Sources */,
+				314EB6E024A6A69B00CF3D48 /* ContrastUIAutomation.swift in Sources */,
 				315EEC9324A5520F0039C61D /* SystemPreferencesElement.swift in Sources */,
 				315EECA524A5890B0039C61D /* WorkspaceElement.swift in Sources */,
 				315EEC9D24A576180039C61D /* LabelElement.swift in Sources */,
 				31A16BCE2423E86C0081A72C /* MorphicLanguage.swift in Sources */,
 				312DBFFB24A2C66A002FB951 /* ApplySession.swift in Sources */,
+				314EB6DE24A6A67700CF3D48 /* UIAutomation.swift in Sources */,
 				312DBFF324A28556002FB951 /* DefaultsReadUIWriteSettingHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

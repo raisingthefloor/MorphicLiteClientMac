@@ -10,13 +10,13 @@ import Foundation
 
 public class TableElement: UIElement{
     
-    public func select(rowTitled title: String) -> Bool{
+    public func row(titled: String) -> RowElement?{
         for row in rows{
-            if row.cell(at: 0)?.text == title{
-                return row.select()
+            if row.cell(at: 0)?.text == titled{
+                return row
             }
         }
-        return false
+        return nil
     }
     
     public var rows: [RowElement]{

@@ -25,7 +25,7 @@ import Foundation
 import MorphicCore
 import OSLog
 
-private let logger = OSLog(subsystem: "MorphicSettings", category: "Settings")
+private let logger = OSLog(subsystem: "MorphicSettings", category: "SettingsManager")
 
 /// Manages system settings based on morphic preferences
 public class SettingsManager{
@@ -34,6 +34,7 @@ public class SettingsManager{
     public static var shared: SettingsManager = SettingsManager()
     
     private init(){
+        DefaultsReadUIWriteSettingHandler.register(automation: ContrastUIAutomation.self, for: .macosDisplayContrastEnabled)
     }
     
     /// All known solutions
@@ -43,7 +44,23 @@ public class SettingsManager{
     private var solutionsById = [String: Solution]()
     
     /// Add solutions to the settings manager by parsing JSON
-    public func populateSolutions(fromJSON data: Data){
+    public func populateSolutions(fromResource resource: String, in bundle: Bundle = Bundle.main){
+        guard let url = bundle.url(forResource: resource, withExtension: "json") else{
+            os_log(.error, log: logger, "Failed to find solutions json resource")
+            return
+        }
+        populateSolutions(from: url)
+    }
+    
+    public func populateSolutions(from url: URL){
+        guard let data = FileManager.default.contents(atPath: url.path) else{
+            os_log(.error, log: logger, "Failed to read contents of solutions json resource")
+            return
+        }
+        populateSolutions(from: data)
+    }
+    
+    public func populateSolutions(from data: Data){
         let decoder = JSONDecoder()
         guard let solutions = try? decoder.decode([Solution].self, from: data) else{
             os_log(.error, log: logger, "Failed to decode JSON from solutions file")
@@ -105,4 +122,5 @@ public class SettingsManager{
 
 public extension Preferences.Key{
     static var macosDisplayZoom = Preferences.Key(solution: "com.apple.macos.display", preference: "zoom")
+    static var macosDisplayContrastEnabled = Preferences.Key(solution: "com.apple.macos.display", preference: "contrast.enabled")
 }

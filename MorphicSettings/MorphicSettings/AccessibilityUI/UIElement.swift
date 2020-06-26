@@ -8,6 +8,9 @@
 
 import Foundation
 import Cocoa
+import OSLog
+
+private let logger = OSLog(subsystem: "MorphicSettings", category: "UIElement")
 
 public class UIElement{
     
@@ -60,7 +63,7 @@ public class UIElement{
         while i < stack.count{
             let candidate = stack[i]
             if candidate.role == role{
-                if candidate.value(forAttribute: .title) == title{
+                if candidate.value(forAttribute: .title) == title || candidate.value(forAttribute: .description) == title{
                     return candidate
                 }
             }
@@ -92,6 +95,10 @@ public class UIElement{
     }
     
     public func wait(atMost: TimeInterval, for condition: @escaping () -> Bool, completion: @escaping (_ success: Bool) -> Void){
+        guard !condition() else{
+            completion(true)
+            return
+        }
         var checkTimer: Timer?
         let timeoutTimer = Timer.scheduledTimer(withTimeInterval: atMost, repeats: false){
             _ in

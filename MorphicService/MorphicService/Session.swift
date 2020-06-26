@@ -67,12 +67,12 @@ public class Session{
     // MARK: - Storage
     
     /// The local storage of cached Morphic data
-    lazy var storage = Storage.shared
+    lazy public private(set) var storage = Storage.shared
     
     // MARK: - Settings
     
     /// The local storage of cached Morphic data
-    lazy var settings = SettingsManager.shared
+    lazy public private(set) var settings = SettingsManager.shared
     
     // MARK: - Requests
     

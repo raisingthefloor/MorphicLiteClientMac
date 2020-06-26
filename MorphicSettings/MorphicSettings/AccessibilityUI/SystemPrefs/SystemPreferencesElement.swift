@@ -40,44 +40,48 @@ public class SystemPreferencesElement: ApplicationElement{
         }
     }
     
-    public func show(pane identifier: PaneIdentifier, completion: @escaping (_ success: Bool) -> Void){
+    public func showAccessibility(completion: @escaping (_ success: Bool, _ pane: AccessibilityPreferencesElement?) -> Void){
+        return show(pane: .accessibility, completion: completion)
+    }
+    
+    public func show<ElementType: UIElement>(pane identifier: PaneIdentifier, completion: @escaping (_ success: Bool, _ pane: ElementType?) -> Void){
         guard let window = mainWindow else{
-            completion(false)
+            completion(false, nil)
             return
         }
         guard window.raise() else{
-            completion(false)
+            completion(false, nil)
             return
         }
         guard window.title != identifier.windowTitle else{
-            completion(true)
+            completion(true, ElementType(accessibilityElement: window.accessibilityElement))
             return
         }
         guard let showAllButton = window.toolbar?.button(titled: "Show All") else{
-            completion(false)
+            completion(false, nil)
             return
         }
         guard showAllButton.press() else{
-            completion(false)
+            completion(false, nil)
             return
         }
         wait(atMost: 3.0, for: { window.title == "System Preferences" }){
             success in
             guard success else{
-                completion(false)
+                completion(false, nil)
                 return
             }
             guard let paneButton = window.button(titled: identifier.buttonTitle) else{
-                completion(false)
+                completion(false, nil)
                 return
             }
             guard paneButton.press() else{
-                completion(false)
+                completion(false, nil)
                 return
             }
             self.wait(atMost: 3.0, for: { window.title == identifier.windowTitle }){
                 success in
-                completion(success)
+                completion(success, ElementType(accessibilityElement: window.accessibilityElement))
             }
         }
     }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		314EB6DB24A697C300CF3D48 /* macos.solutions.json in Resources */ = {isa = PBXBuildFile; fileRef = 314EB6DA24A697C300CF3D48 /* macos.solutions.json */; };
 		31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B0C2444DE8900EEDF14 /* AppDelegate.swift */; };
 		31751B0F2444DE8B00EEDF14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31751B0E2444DE8B00EEDF14 /* Assets.xcassets */; };
 		31751B1E2444DE8B00EEDF14 /* MorphicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B1D2444DE8B00EEDF14 /* MorphicTests.swift */; };
@@ -130,6 +131,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		314EB6DA24A697C300CF3D48 /* macos.solutions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = macos.solutions.json; sourceTree = "<group>"; };
 		31751B092444DE8900EEDF14 /* Morphic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Morphic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31751B0C2444DE8900EEDF14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		31751B0E2444DE8B00EEDF14 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -232,6 +234,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		314EB6D924A6978200CF3D48 /* Solutions */ = {
+			isa = PBXGroup;
+			children = (
+				314EB6DA24A697C300CF3D48 /* macos.solutions.json */,
+			);
+			path = Solutions;
+			sourceTree = "<group>";
+		};
 		31751B002444DE8900EEDF14 = {
 			isa = PBXGroup;
 			children = (
@@ -275,6 +285,7 @@
 				31E1E186244792D9009C4092 /* DefaultPreferences.json */,
 				31751B3F2444E01B00EEDF14 /* Quick Strip */,
 				31CE56EC244A3C9800A52A7B /* Help Window */,
+				314EB6D924A6978200CF3D48 /* Solutions */,
 				318744F32481A2DA00AE3954 /* CreateDiskImage.sh */,
 			);
 			path = Morphic;
@@ -548,6 +559,7 @@
 				31751B842444E11600EEDF14 /* Debug.xcconfig in Resources */,
 				31751B0F2444DE8B00EEDF14 /* Assets.xcassets in Resources */,
 				31751B832444E11600EEDF14 /* Release.xcconfig in Resources */,
+				314EB6DB24A697C300CF3D48 /* macos.solutions.json in Resources */,
 				31E1E187244792D9009C4092 /* DefaultPreferences.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -863,7 +875,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicClient;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicClient3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -884,7 +896,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicClient;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicClient3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -989,7 +1001,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1010,7 +1022,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};

@@ -1,0 +1,29 @@
+[
+  {
+    "id": "com.apple.macos.display",
+    "settings": [
+      {
+        "name": "zoom",
+        "type": "double",
+        "default": 1,
+        "handler": {
+          "type": "org.raisingthefloor.morphic.client",
+          "solution": "com.apple.macos.display",
+          "preference": "zoom"
+        }
+      },
+      {
+        "name": "contrast.enabled",
+        "type": "boolean",
+        "default": false,
+        "handler": {
+          "type": "com.apple.macos.defaults-read-ui-write",
+          "defaults_domain": "com.apple.Accessibility",
+          "defaults_key": "DarkenSystemColors",
+          "solution": "com.apple.macos.display",
+          "preference": "contrast.enabled"
+        }
+      }
+    ]
+  }
+]

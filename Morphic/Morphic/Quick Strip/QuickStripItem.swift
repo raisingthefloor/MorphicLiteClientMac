@@ -151,6 +151,8 @@ class QuickStripControlItem: QuickStripItem{
             ]
             let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(QuickStripControlItem.contrast(_:))
             return view
         default:
             return nil
@@ -196,6 +198,22 @@ class QuickStripControlItem: QuickStripItem{
             }
         }else if segment == 2{
             _ = output.setMuted(true)
+        }
+    }
+    
+    @objc
+    func contrast(_ sender: Any?){
+        guard let segment = (sender as? QuickStripSegmentedButton)?.integerValue else{
+            return
+        }
+        if segment == 0{
+            Session.shared.apply(true, for: .macosDisplayContrastEnabled){
+                _ in
+            }
+        }else{
+            Session.shared.apply(false, for: .macosDisplayContrastEnabled){
+                _ in
+            }
         }
     }
     

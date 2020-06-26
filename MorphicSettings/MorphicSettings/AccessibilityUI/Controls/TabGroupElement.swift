@@ -11,7 +11,20 @@ import Foundation
 public class TabGroupElement: UIElement{
     
     public func select(tabTitled title: String) -> Bool{
-        return false
+        guard let tab = self.tab(titled: title) else{
+            return false
+        }
+        return tab.select()
     }
-
+    
+    public func tab(titled: String) -> TabElement?{
+        guard let tabs: [MorphicA11yUIElement] = accessibilityElement.values(forAttribute: .tabs) else{
+            return nil
+        }
+        guard let tab = tabs.first(where: { $0.value(forAttribute: .title) == titled }) else{
+            return nil
+        }
+        return TabElement(accessibilityElement: tab)
+    }
+    
 }

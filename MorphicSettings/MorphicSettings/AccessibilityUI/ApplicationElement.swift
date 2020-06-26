@@ -8,6 +8,9 @@
 
 import Foundation
 import Cocoa
+import OSLog
+
+private let logger = OSLog(subsystem: "MorphicSettings", category: "ApplicationElement")
 
 public class ApplicationElement: UIElement{
     
@@ -34,7 +37,8 @@ public class ApplicationElement: UIElement{
     private var runningApplication: NSRunningApplication?
     
     public func open(completion: @escaping (_ success: Bool) -> Void){
-        guard let bundle = Bundle(identifier: bundleIdentifier) else{
+        guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleIdentifier) else{
+            os_log(.error, log: logger, "Failed to find url for application %{public}s", bundleIdentifier)
             completion(false)
             return
         }
@@ -43,27 +47,40 @@ public class ApplicationElement: UIElement{
             return
         }
         let complete = {
-            guard let runningApplication = self.runningApplication else{
-                completion(false)
-                return
+            let runningApplication: NSRunningApplication! = self.runningApplication
+            self.wait(atMost: 5.0, for: { runningApplication.isFinishedLaunching }){
+                success in
+                guard success else{
+                    os_log(.error, log: logger, "Timeout waiting for isFinishLaunching")
+                    completion(false)
+                    return
+                }
+                guard let accessibilityElement = MorphicA11yUIElement.createFromProcess(processIdentifier: runningApplication.processIdentifier) else{
+                    os_log(.error, log: logger, "Failed to get automation element for application")
+                    completion(false)
+                    return
+                }
+                self.accessibilityElement = accessibilityElement
+                completion(true)
             }
-            guard let accessibilityElement = MorphicA11yUIElement.createFromProcess(processIdentifier: runningApplication.processIdentifier) else{
-                completion(false)
-                return
-            }
-            self.runningApplication = nil
-            self.accessibilityElement = accessibilityElement
-            completion(true)
         }
         runningApplication = NSRunningApplication.runningApplications(withBundleIdentifier: bundleIdentifier).first
         if runningApplication == nil{
             let config = NSWorkspace.OpenConfiguration()
             config.activates = false
             config.hides = true
-            NSWorkspace.shared.openApplication(at: bundle.bundleURL, configuration: config){
+            NSWorkspace.shared.openApplication(at: url, configuration: config){
                 (runningApplication, error) in
-                self.runningApplication = runningApplication
-                complete()
+                DispatchQueue.main.async {
+                    guard runningApplication != nil else{
+                        os_log(.error, log: logger, "Failed to launch application")
+                        completion(false)
+                        return
+                    }
+                    WorkspaceElement.shared.launchedApplications.append(self)
+                    self.runningApplication = runningApplication
+                    complete()
+                }
             }
         }else{
             complete()
@@ -71,7 +88,13 @@ public class ApplicationElement: UIElement{
     }
     
     public func terminate() -> Bool{
-        runningApplication?.terminate() ?? false
+        guard let runningApplication = runningApplication else{
+            return true
+        }
+        guard !runningApplication.isTerminated else{
+            return true
+        }
+        return runningApplication.terminate()
     }
     
     public var mainWindow: WindowElement?{

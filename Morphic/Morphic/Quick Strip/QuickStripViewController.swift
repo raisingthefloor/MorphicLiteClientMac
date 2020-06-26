@@ -34,7 +34,7 @@ public class QuickStripViewController: NSViewController {
         super.viewDidLoad()
         view.layer?.backgroundColor = .white
         view.layer?.cornerRadius = 6
-        showsHelp = Session.shared.bool(for: .morphicQuickStripShowsHelp) ?? true
+        showsHelp = false //Session.shared.bool(for: .morphicQuickStripShowsHelp) ?? true
     }
     
     // MARK: - Logo Button & Main Menu

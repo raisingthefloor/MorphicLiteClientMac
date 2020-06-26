@@ -7,6 +7,9 @@
 //
 
 import Foundation
+import OSLog
+
+private var logger = OSLog(subsystem: "MorphicSettings", category: "WorkspaceElement")
 
 public class WorkspaceElement: UIElement{
     
@@ -23,6 +26,17 @@ public class WorkspaceElement: UIElement{
         default:
             completion(false, nil)
         }
+    }
+    
+    public var launchedApplications = [ApplicationElement]()
+    
+    public func closeLaunchedApplications(){
+        for application in launchedApplications{
+            if !application.terminate(){
+                os_log(.error, log: logger, "Failed to terminate application %{public}s", application.bundleIdentifier)
+            }
+        }
+        launchedApplications = []
     }
     
 }

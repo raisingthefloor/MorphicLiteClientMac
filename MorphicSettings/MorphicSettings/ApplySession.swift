@@ -8,6 +8,9 @@
 
 import Foundation
 import MorphicCore
+import OSLog
+
+private let logger = OSLog(subsystem: "MorphicSettings", category: "ApplySession")
 
 /// Apply many settings in one session
 ///
@@ -61,8 +64,11 @@ public class ApplySession{
     ///   - completion: Called when all the setting apply calls have completed
     public func run(completion: @escaping () -> Void){
         guard keyQueue == nil else{
+            os_log(.info, log: logger, "Calling .run() before previous run finished")
             return
         }
+        
+        WorkspaceElement.shared.launchedApplications = []
         
         // populate valuesByKey with defaults if requested
         if (applyDefaultValues){
@@ -84,6 +90,7 @@ public class ApplySession{
         let keys = valuesByKey.keys.reversed()
         for key in keys{
             guard let setting = settingsManager.setting(for: key) else{
+                os_log(.info, log: logger, "Cannot find setting for %{public}s.%{public}s", key.solution, key.preference)
                 continue
             }
             if let description = setting.finalizerDescription{
@@ -107,15 +114,20 @@ public class ApplySession{
         }
         let key = keyQueue.removeLast()
         guard let setting = settingsManager.setting(for: key) else{
+            os_log(.info, log: logger, "Cannot find setting for %{public}s.%{public}s", key.solution, key.preference)
             applyNextKey(completion: completion)
             return
         }
         guard let handler = setting.createHandler() else{
+            os_log(.info, log: logger, "Cannot create handler for %{public}s.%{public}s", key.solution, key.preference)
             applyNextKey(completion: completion)
             return
         }
         handler.apply(valuesByKey[key] ?? nil){
             success in
+            if !success{
+                os_log(.info, log: logger, "Failed to apply %{public}s.%{public}s", key.solution, key.preference)
+            }
             self.results[key] = success
             self.applyNextKey(completion: completion)
         }
@@ -126,6 +138,7 @@ public class ApplySession{
         guard finalizerQueue.count > 0 else{
             keyQueue = nil
             finalizerQueue = nil
+            WorkspaceElement.shared.closeLaunchedApplications()
             completion()
             return
         }
