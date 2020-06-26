@@ -88,7 +88,7 @@
 		9D0AF77224A460A9007E177E /* CoreBrightness.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBrightness.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/PrivateFrameworks/CoreBrightness.framework; sourceTree = DEVELOPER_DIR; };
 		9D0AF77524A4613D007E177E /* CBBlueLightClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBBlueLightClient.h; sourceTree = "<group>"; };
 		9D0AF77624A4616E007E177E /* MorphicNightShift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicNightShift.swift; sourceTree = "<group>"; };
-		9D0AF78824A46313007E177E /* MorphicSettings-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MorphicSettings-Bridging-Header.h"; sourceTree = "<group>"; };
+		9D0AF78924A4F471007E177E /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -165,7 +165,7 @@
 				312DBFFA24A2C66A002FB951 /* ApplySession.swift */,
 				311336502427F33600686AF6 /* Display.swift */,
 				31CE56EA244A149B00A52A7B /* Audio.swift */,
-				9D0AF78824A46313007E177E /* MorphicSettings-Bridging-Header.h */,
+				9D0AF78924A4F471007E177E /* module.modulemap */,
 			);
 			path = MorphicSettings;
 			sourceTree = "<group>";
@@ -262,6 +262,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31A0A5882405967600166668 /* MorphicSettings.h in Headers */,
+				9D59F47E24A6B3040004C35B /* CBBlueLightClient.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -549,11 +550,11 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MODULEMAP_FILE = MorphicSettings/module.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicSettings;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_OBJC_BRIDGING_HEADER = "MorphicMacOS/MorphicMacOS-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -580,10 +581,10 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MODULEMAP_FILE = MorphicSettings/module.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicSettings;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "MorphicMacOS/MorphicMacOS-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
