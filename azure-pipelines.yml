@@ -29,7 +29,7 @@ variables:
 - name: majorVersion
   value: '0'
 - name: signingOption
-  value: 'default'
+  value: 'manual'
 - name: extraArgs
   value: ''
 
