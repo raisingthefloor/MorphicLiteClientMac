@@ -40,8 +40,8 @@ pool:
 steps:
 - task: InstallAppleCertificate@2
   inputs:
-    certSecureFile: 'Developer ID Application_ Raising the Floor - US Inc. (5AAXYGZ428).cer'
-    certPwd: $(P12_PASSWORD)
+    certSecureFile: 'president-rtf dev key - private.p12'
+    certPwd: '$(P12_PASSWORD)'
 - task: Bash@3
   displayName: "update plist versions"
   inputs:
