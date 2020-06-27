@@ -15,6 +15,8 @@ trigger:
 variables:
 # must be created in the azure UI under Pipelines > Library and specify accessKey, secretKey, region, and bucket
 - group: 's3-public-bucket-upload'
+# Provides: P12_PASSWORD, SIGNING_IDENTITY
+- group: 'osx-signing'
 - name: sdk
   value: macosx
 - name: xcodeVersionNum
@@ -26,6 +28,10 @@ variables:
   # The major version for semver in the client (X in X.Y.Z)
 - name: majorVersion
   value: '0'
+- name: signingOption
+  value: 'default'
+- name: extraArgs
+  value: ''
 
 pool:
   vmImage: 'macos-latest'
@@ -47,6 +53,9 @@ steps:
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
     useXcpretty: false
+    signingOption: '$(signingOption)'
+    signingIdentity: '$(SIGNING_IDENTITY)'
+    args: '$(extraArgs)'
 - task: Xcode@5
   displayName: Build MorphicService
   inputs:
