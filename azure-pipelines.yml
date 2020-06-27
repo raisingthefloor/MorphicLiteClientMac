@@ -38,6 +38,12 @@ pool:
   vmImage: 'macos-latest'
 
 steps:
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provProfileSecureFile: 'Morphic_Client_for_macOS_morphicclient2.provisionprofile'
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provProfileSecureFile: 'Morphic_Configurator_for_macOS_mc2.provisionprofile'
 - task: InstallAppleCertificate@2
   inputs:
     certSecureFile: 'president-rtf dev key - private.p12'
