@@ -28,6 +28,7 @@ variables:
   # The major version for semver in the client (X in X.Y.Z)
 - name: majorVersion
   value: '0'
+# This means the pipeline will configure all signing options
 - name: signingOption
   value: 'manual'
 - name: extraArgs
@@ -37,6 +38,10 @@ pool:
   vmImage: 'macos-latest'
 
 steps:
+- task: InstallAppleCertificate@2
+  inputs:
+    certSecureFile: 'president-rtf dev key - private.p12'
+    certPwd: $(P12_PASSWORD)
 - task: Bash@3
   displayName: "update plist versions"
   inputs:
