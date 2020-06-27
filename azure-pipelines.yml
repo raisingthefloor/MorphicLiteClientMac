@@ -50,17 +50,29 @@ steps:
   name: appleCa # The name with which to reference the secure file's path on the agent, like $(appleCa.secureFilePath)
   inputs:
     secureFile: "Developer ID Certification Authority.pem"
-- script: |
-    echo Installing $(appleCa.secureFilePath) to the trusted CA directory...
-    sudo chown root:root $(appleCa.secureFilePath)
-    sudo chmod a+r $(appleCa.secureFilePath)
-    sudo ln -s -t /etc/ssl/certs/ $(appleCa.secureFilePath)
-
-
-- task: InstallAppleCertificate@2
+- task: DownloadSecureFile@1
+  name: appleP12 # The name with which to reference the secure file's path on the agent, like $(appleCa.secureFilePath)
   inputs:
-    certSecureFile: 'president-rtf dev key - private.p12'
-    certPwd: '$(P12_PASSWORD)'
+    secureFile: "president-rtf dev key - private.p12"
+
+- task: Bash@3
+  displayName: install P12 to keychain
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo Installing $(appleCa.secureFilePath) to the trusted CA directory...
+      sudo chown root:root $(appleCa.secureFilePath)
+      sudo chmod a+r $(appleCa.secureFilePath)
+      sudo ln -s -t /etc/ssl/certs/ $(appleCa.secureFilePath)
+
+      security import "$(appleP12.secureFilePath)"
+      -P '$(P12_PASSWORD)' 
+      -k ~/Library/Keychains/login.keychain
+
+#- task: InstallAppleCertificate@2
+#  inputs:
+#    certSecureFile: 'president-rtf dev key - private.p12'
+#    certPwd: '$(P12_PASSWORD)'
 - task: Bash@3
   displayName: "update plist versions"
   inputs:
