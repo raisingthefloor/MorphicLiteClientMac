@@ -48,6 +48,8 @@
 		31A16BD22423E86C0081A72C /* MorphicWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A16BCA2423E86C0081A72C /* MorphicWindow.swift */; };
 		31CE56E22448C8F700A52A7B /* SettingHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE56E12448C8F700A52A7B /* SettingHandler.swift */; };
 		31CE56EB244A149B00A52A7B /* Audio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE56EA244A149B00A52A7B /* Audio.swift */; };
+		31F9AEDD24A7F2D90026EBDA /* AccessibilityUIAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F9AEDC24A7F2D90026EBDA /* AccessibilityUIAutomation.swift */; };
+		31F9AEE324A7F7EA0026EBDA /* VoiceOverUIAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F9AEE224A7F7EA0026EBDA /* VoiceOverUIAutomation.swift */; };
 		9D0AF73724A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF73624A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift */; };
 		9D0AF73924A0FB78007E177E /* MorphicA11yUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */; };
 		9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */; };
@@ -121,6 +123,8 @@
 		31A16BCA2423E86C0081A72C /* MorphicWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorphicWindow.swift; sourceTree = "<group>"; };
 		31CE56E12448C8F700A52A7B /* SettingHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingHandler.swift; sourceTree = "<group>"; };
 		31CE56EA244A149B00A52A7B /* Audio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Audio.swift; sourceTree = "<group>"; };
+		31F9AEDC24A7F2D90026EBDA /* AccessibilityUIAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityUIAutomation.swift; sourceTree = "<group>"; };
+		31F9AEE224A7F7EA0026EBDA /* VoiceOverUIAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceOverUIAutomation.swift; sourceTree = "<group>"; };
 		9D0AF73624A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yUIAttributeValueCompatible.swift; sourceTree = "<group>"; };
 		9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yUIElement.swift; sourceTree = "<group>"; };
 		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
@@ -158,7 +162,9 @@
 			isa = PBXGroup;
 			children = (
 				314EB6DD24A6A67700CF3D48 /* UIAutomation.swift */,
+				31F9AEDC24A7F2D90026EBDA /* AccessibilityUIAutomation.swift */,
 				314EB6DF24A6A69B00CF3D48 /* ContrastUIAutomation.swift */,
+				31F9AEE224A7F7EA0026EBDA /* VoiceOverUIAutomation.swift */,
 			);
 			path = Automations;
 			sourceTree = "<group>";
@@ -467,6 +473,7 @@
 				312DBFF024A27BCF002FB951 /* Solution.swift in Sources */,
 				31A16BCB2423E86C0081A72C /* MorphicLaunchDaemonsAndAgents.swift in Sources */,
 				314EB6E224A6B34300CF3D48 /* TabElement.swift in Sources */,
+				31F9AEE324A7F7EA0026EBDA /* VoiceOverUIAutomation.swift in Sources */,
 				315EEC8924A536FB0039C61D /* CheckboxElement.swift in Sources */,
 				311336512427F33600686AF6 /* Display.swift in Sources */,
 				315EEC9B24A573A80039C61D /* TableElement.swift in Sources */,
@@ -478,6 +485,7 @@
 				31A16BD02423E86C0081A72C /* MorphicDisplay.swift in Sources */,
 				315EEC8B24A546AE0039C61D /* ToolbarElement.swift in Sources */,
 				315EEC9524A554580039C61D /* ButtonElement.swift in Sources */,
+				31F9AEDD24A7F2D90026EBDA /* AccessibilityUIAutomation.swift in Sources */,
 				315EEC8324A530970039C61D /* SystemPreferences.swift in Sources */,
 				31A16BCF2423E86C0081A72C /* MorphicDisk.swift in Sources */,
 				3113364D2427F01100686AF6 /* SettingsManager.swift in Sources */,

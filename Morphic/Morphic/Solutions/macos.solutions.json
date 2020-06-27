@@ -25,5 +25,22 @@
         }
       }
     ]
+  },
+  {
+    "id": "com.apple.macos.voiceover",
+    "settings": [
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "default": false,
+        "handler": {
+          "type": "com.apple.macos.defaults-read-ui-write",
+          "defaults_domain": "com.apple.universalaccess",
+          "defaults_key": "voiceOverOnOffKey",
+          "solution": "com.apple.macos.voiceover",
+          "preference": "enabled"
+        }
+      }
+    ]
   }
 ]

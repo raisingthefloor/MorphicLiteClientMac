@@ -131,6 +131,8 @@ class QuickStripControlItem: QuickStripItem{
             ]
             let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(QuickStripControlItem.reader(_:))
             return view
         case .volume:
             let localized = LocalizedStrings(prefix: "control.feature.volume")
@@ -212,6 +214,22 @@ class QuickStripControlItem: QuickStripItem{
             }
         }else{
             Session.shared.apply(false, for: .macosDisplayContrastEnabled){
+                _ in
+            }
+        }
+    }
+    
+    @objc
+    func reader(_ sender: Any?){
+        guard let segment = (sender as? QuickStripSegmentedButton)?.integerValue else{
+            return
+        }
+        if segment == 0{
+            Session.shared.apply(true, for: .macosVoiceOverEnabled){
+                _ in
+            }
+        }else{
+            Session.shared.apply(false, for: .macosVoiceOverEnabled){
                 _ in
             }
         }

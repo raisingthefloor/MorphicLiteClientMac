@@ -13,12 +13,18 @@ public class AccessibilityPreferencesElement: UIElement{
     public enum CategoryIdentifier{
         
         case display
+        case zoom
+        case voiceOver
         
         public var rowTitle: String{
             get{
                 switch self {
                 case .display:
                     return "Display"
+                case .zoom:
+                    return "Zoom"
+                case .voiceOver:
+                    return "VoiceOver"
                 }
             }
         }
@@ -37,6 +43,20 @@ public class AccessibilityPreferencesElement: UIElement{
                 return
             }
             self.wait(atMost: 1.0, for: { self.tabGroup?.tab(titled: "Display") != nil}){
+                success in
+                completion(success)
+            }
+        }
+    }
+    
+    public func selectVoiceOver(completion: @escaping (_ success: Bool) -> Void){
+        select(category: .voiceOver){
+            success in
+            guard success else{
+                completion(false)
+                return
+            }
+            self.wait(atMost: 1.0, for: { self.checkbox(titled: "Enable VoiceOver") != nil}){
                 success in
                 completion(success)
             }

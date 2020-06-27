@@ -35,6 +35,7 @@ public class SettingsManager{
     
     private init(){
         DefaultsReadUIWriteSettingHandler.register(automation: ContrastUIAutomation.self, for: .macosDisplayContrastEnabled)
+        DefaultsReadUIWriteSettingHandler.register(automation: VoiceOverUIAutomation.self, for: .macosVoiceOverEnabled)
     }
     
     /// All known solutions
@@ -123,4 +124,5 @@ public class SettingsManager{
 public extension Preferences.Key{
     static var macosDisplayZoom = Preferences.Key(solution: "com.apple.macos.display", preference: "zoom")
     static var macosDisplayContrastEnabled = Preferences.Key(solution: "com.apple.macos.display", preference: "contrast.enabled")
+    static var macosVoiceOverEnabled = Preferences.Key(solution: "com.apple.macos.voiceover", preference: "enabled")
 }

@@ -6,14 +6,14 @@
 //  Copyright © 2020 Raising the Floor. All rights reserved.
 //
 
-import Foundation
+import Cocoa
 import MorphicCore
 import OSLog
 
-private let logger = OSLog(subsystem: "MorphicSettings", category: "ContrastUIAutomation")
+private let logger = OSLog(subsystem: "MorphicSettings", category: "VoiceOverUIAutomation")
 
 
-public class ContrastUIAutomation: AccessibilityUIAutomation{
+public class VoiceOverUIAutomation: AccessibilityUIAutomation{
     
     public override func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
         guard let checked = value as? Bool else{
@@ -21,30 +21,29 @@ public class ContrastUIAutomation: AccessibilityUIAutomation{
             completion(false)
             return
         }
-        showAccessibilityDisplayPreferences(tab: "Display"){
+        showAccessibilityVoiceOverPreferences{
             accessibility in
             guard let accessibility = accessibility else{
                 completion(false)
                 return
             }
-            guard let checkbox = accessibility.checkbox(titled: "Increase contrast") else{
-                os_log(.error, log: logger, "Failed to find contrast checkbox")
+            guard let checkbox = accessibility.checkbox(titled: "Enable VoiceOver") else{
+                os_log(.error, log: logger, "Failed to find VoiceOver checkbox")
                 completion(false)
                 return
             }
             guard checkbox.setChecked(checked) else{
-                os_log(.error, log: logger, "Failed to press contrast checkbox")
+                os_log(.error, log: logger, "Failed to press VoiceOver checkbox")
                 completion(false)
                 return
             }
-            if !checked{
-                if let transparencyCheckbox = accessibility.checkbox(titled: "Reduce transparency"){
-                    if !transparencyCheckbox.uncheck(){
-                        os_log(.info, log: logger, "Failed to uncheck reduce transparency when turning off high contrast")
-                    }
-                }
+            accessibility.wait(atMost: 5.0, for: {
+                let running = NSWorkspace.shared.runningApplications.contains(where: { $0.bundleIdentifier == "com.apple.VoiceOver" })
+                return running == checked
+            }){
+                success in
+                completion(success)
             }
-            completion(true)
         }
     }
     
