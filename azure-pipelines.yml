@@ -44,6 +44,19 @@ steps:
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provProfileSecureFile: 'Morphic_Configurator_for_macOS_mc2.provisionprofile'
+
+
+- task: DownloadSecureFile@1
+  name: appleCa # The name with which to reference the secure file's path on the agent, like $(appleCa.secureFilePath)
+  inputs:
+    secureFile: "Developer ID Certification Authority.pem"
+- script: |
+    echo Installing $(appleCa.secureFilePath) to the trusted CA directory...
+    sudo chown root:root $(appleCa.secureFilePath)
+    sudo chmod a+r $(appleCa.secureFilePath)
+    sudo ln -s -t /etc/ssl/certs/ $(appleCa.secureFilePath)
+
+
 - task: InstallAppleCertificate@2
   inputs:
     certSecureFile: 'president-rtf dev key - private.p12'
