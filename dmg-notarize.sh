@@ -4,13 +4,13 @@ BRANCH="${BRANCH}"
 BRANCH_NAME="${BRANCH_NAME}"
 
 if [[ "${BRANCH_NAME}" == "master" ]]; then
-  echo "detected master build. will sign"
+  echo "detected master build. will notarize"
 elif [[ "${BRANCH}" == *"staging/"* ]]; then
-  echo "detected staging build. will sign"
+  echo "detected staging build. will notarize"
 elif [[ "${BRANCH}" == *"release/"* ]]; then
-  echo "detected release build. will sign"
+  echo "detected release build. will notarize"
 else
-  echo "detected PR build. Will not sign"
+  echo "detected PR build. Will not notarize"
   exit 0
 fi
 
@@ -101,4 +101,4 @@ fi
 echo "stapling notarization to dmg"
 xcrun stapler staple "${DMG_PATH}"
 
-echo "successfully stapled DMG"
+echo "successfully stapled notarize to DMG"
