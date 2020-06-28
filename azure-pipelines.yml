@@ -32,7 +32,7 @@ variables:
 - name: signingOption
   value: 'manual'
 - name: extraArgs
-  value: 'CODE_SIGNING_ALLOWED=YES'
+  value: 'OTHER_CODE_SIGN_FLAGS=--keychain "~/Library/Keychains/morphic.keychain"'
   #value: 'OTHER_CODE_SIGN_FLAGS=--timestamp'
 
 pool:
@@ -71,10 +71,12 @@ steps:
       echo "Installing '$(appleCa.secureFilePath)' to the trusted CA directory..."
       sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain '$(appleCa.secureFilePath)'
 
+      security create-keychain -p '' morphic.keychain
+
       echo "importing p12"
-      security import '$(appleP12.secureFilePath)' -P '$(P12_PASSWORD)' -k ~/Library/Keychains/login.keychain
+      security import '$(appleP12.secureFilePath)' -P '$(P12_PASSWORD)' -k ~/Library/Keychains/morphic.keychain
       echo "importing signing identity cert"
-      security import '$(signingIdentityCert.secureFilePath)' -k ~/Library/Keychains/login.keychain
+      security import '$(signingIdentityCert.secureFilePath)' -k ~/Library/Keychains/morphic.keychain
 
 - task: Bash@3
   displayName: "update plist versions"
