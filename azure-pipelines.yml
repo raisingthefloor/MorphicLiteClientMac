@@ -66,10 +66,8 @@ steps:
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
     useXcpretty: false
-    signingOption: '$(signingOption)'
-    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
-    args: '$(extraArgs)'
+    signingOption: 'auto'
+
 - task: Xcode@5
   displayName: Build MorphicService
   inputs:
