@@ -49,7 +49,7 @@ steps:
 - task: DownloadSecureFile@1
   name: appleCa # The name with which to reference the secure file's path on the agent, like $(appleCa.secureFilePath)
   inputs:
-    secureFile: "Developer ID Certification Authority.pem"
+    secureFile: "Developer ID Certification Authority.cer"
 - task: DownloadSecureFile@1
   name: appleP12 # The name with which to reference the secure file's path on the agent, like $(appleCa.secureFilePath)
   inputs:
@@ -61,6 +61,7 @@ steps:
     targetType: 'inline'
     script: |
       set -e
+      set -x
       echo "Installing '$(appleCa.secureFilePath)' to the trusted CA directory..."
       sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain '$(appleCa.secureFilePath)'
 
