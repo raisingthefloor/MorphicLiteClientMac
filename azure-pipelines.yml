@@ -54,9 +54,13 @@ steps:
   name: appleP12 # The name with which to reference the secure file's path on the agent, like $(appleCa.secureFilePath)
   inputs:
     secureFile: "president-rtf dev key - private.p12"
+- task: DownloadSecureFile@1
+  name: signingIdentityCert # The name with which to reference the secure file's path on the agent, like $(appleCa.secureFilePath)
+  inputs:
+    secureFile: "$(SIGNING_IDENTITY).cer"
 
 - task: Bash@3
-  displayName: install P12 to keychain
+  displayName: import keychain files
   inputs:
     targetType: 'inline'
     script: |
@@ -66,9 +70,9 @@ steps:
       sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain '$(appleCa.secureFilePath)'
 
       echo "importing p12"
-      ls -al ~/Library/Keychains/
       security import '$(appleP12.secureFilePath)' -P '$(P12_PASSWORD)' -k ~/Library/Keychains/login.keychain
-      ls -al ~/Library/Keychains/
+      echo "importing signing identity cert"
+      security import '$(signingIdentityCert.secureFilePath)' -k ~/Library/Keychains/login.keychain
 
 #- task: InstallAppleCertificate@2
 #  inputs:
