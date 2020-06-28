@@ -42,6 +42,9 @@ steps:
   inputs:
     certSecureFile: 'raising_the_floor_5AAXYGZ428.p12'
     certPwd: '$(P12_PASSWORD)'
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provProfileSecureFile: 'Morphic_Configurator_for_macOS_mc2.provisionprofile'
 
 - task: Bash@3
   displayName: "update plist versions"
@@ -59,7 +62,7 @@ steps:
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
     useXcpretty: false
-    signingOption: 'manual'
+    signingOption: '$(signingOption)'
     signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
 - task: Xcode@5
   displayName: Build MorphicService
@@ -71,26 +74,8 @@ steps:
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
     useXcpretty: false
-- task: InstallAppleProvisioningProfile@1
-  inputs:
-    provProfileSecureFile: 'Morphic_Configurator_for_macOS_mc2.provisionprofile'
-- task: InstallAppleProvisioningProfile@1
-  inputs:
-    provProfileSecureFile: 'Morphic_Client_for_macOS_morphicclient2.provisionprofile'
-- task: Xcode@5
-  displayName: Build MorphicConfigurator
-  inputs:
-    actions: 'build'
-    sdk: $(sdk)
-    scheme: 'MorphicConfigurator'
-    configuration: '$(configuration)'
-    xcWorkspacePath: '$(workspacePath)'
-    xcodeVersion: $(xcodeVersionNum)
-    useXcpretty: false
-    signingOption: 'auto'
+    signingOption: '$(signingOption)'
     signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
-    args: '$(extraArgs)'
 - task: Xcode@5
   displayName: Build MorphicSettings
   inputs:
@@ -101,6 +86,25 @@ steps:
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
     useXcpretty: false
+    signingOption: '$(signingOption)'
+    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
+- task: Xcode@5
+  displayName: Build MorphicConfigurator
+  inputs:
+    actions: 'build'
+    sdk: $(sdk)
+    scheme: 'MorphicConfigurator'
+    configuration: '$(configuration)'
+    xcWorkspacePath: '$(workspacePath)'
+    xcodeVersion: $(xcodeVersionNum)
+    useXcpretty: false
+    signingOption: 'manual'
+    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
+    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+    args: '$(extraArgs)'
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provProfileSecureFile: 'Morphic_Client_for_macOS_morphicclient2.provisionprofile'
 - task: Xcode@5
   displayName: Build Morphic
   inputs:
