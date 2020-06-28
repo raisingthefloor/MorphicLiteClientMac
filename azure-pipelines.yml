@@ -32,7 +32,7 @@ variables:
 - name: signingOption
   value: 'manual'
 - name: extraArgs
-  value: 'OTHER_CODE_SIGN_FLAGS=--keychain "~/Library/Keychains/morphic.keychain"'
+  value: 'OTHER_CODE_SIGN_FLAGS="--keychain=~/Library/Keychains/morphic.keychain"'
   #value: 'OTHER_CODE_SIGN_FLAGS=--timestamp'
 
 pool:
