@@ -60,6 +60,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
+      set -e
       echo "Installing '$(appleCa.secureFilePath)' to the trusted CA directory..."
       security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain '$(appleCa.secureFilePath)'
 
