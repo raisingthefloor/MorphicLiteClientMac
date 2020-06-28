@@ -30,7 +30,7 @@ variables:
   value: '0'
 # This means the pipeline will configure all signing options
 - name: signingOption
-  value: 'default'
+  value: 'default' # this setting uses the builtin project configuration options for signing
 - name: extraArgs
   value: 'OTHER_CODE_SIGN_FLAGS="--timestamp"'
 
@@ -102,8 +102,7 @@ steps:
     xcodeVersion: $(xcodeVersionNum)
     useXcpretty: false
     signingOption: 'default'
-    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-    #provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+    signingOption: '$(signingOption)'
     args: '$(extraArgs)'
 - task: Xcode@5
   displayName: Build Morphic
@@ -115,9 +114,7 @@ steps:
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
     useXcpretty: false
-    signingOption: 'default'
-    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-    #provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+    signingOption: '$(signingOption)'
     args: '$(extraArgs)'
 - task: Bash@3
   displayName: publish to s3
