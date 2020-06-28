@@ -101,7 +101,6 @@ steps:
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
     useXcpretty: false
-    signingOption: 'default'
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
 - task: Xcode@5
