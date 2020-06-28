@@ -80,7 +80,7 @@ steps:
       echo "importing signing identity cert"
       security import '$(signingIdentityCert.secureFilePath)' -k ~/Library/Keychains/morphic.keychain
       echo "Showing identities"
-      security -k ~/Library/Keychains/morphic.keychain find-identity
+      security find-identity ~/Library/Keychains/morphic.keychain
 
 - task: Bash@3
   displayName: "update plist versions"
