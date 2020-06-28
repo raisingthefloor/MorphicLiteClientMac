@@ -73,6 +73,9 @@ steps:
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provProfileSecureFile: 'Morphic_Configurator_for_macOS_mc2.provisionprofile'
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provProfileSecureFile: 'Morphic_Client_for_macOS_morphicclient2.provisionprofile'
 - task: Xcode@5
   displayName: Build MorphicConfigurator
   inputs:
@@ -83,9 +86,9 @@ steps:
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
     useXcpretty: false
-    signingOption: 'manual'
+    signingOption: 'auto'
     signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-    #provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
     args: '$(extraArgs)'
 - task: Xcode@5
   displayName: Build MorphicSettings
@@ -97,9 +100,6 @@ steps:
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
     useXcpretty: false
-- task: InstallAppleProvisioningProfile@1
-  inputs:
-    provProfileSecureFile: 'Morphic_Client_for_macOS_morphicclient2.provisionprofile'
 - task: Xcode@5
   displayName: Build Morphic
   inputs:
@@ -110,9 +110,9 @@ steps:
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
     useXcpretty: false
-    signingOption: 'manual'
+    signingOption: 'auto'
     signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-    #provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
     args: '$(extraArgs)'
 - task: Bash@3
   displayName: publish to s3
