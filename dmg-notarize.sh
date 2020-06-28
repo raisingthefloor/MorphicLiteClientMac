@@ -35,7 +35,7 @@ parseStatus()
 # Parse the RequestUUID field from output
 parseRequestUuid()
 {
-  echo "$1" | awk -F ': ' '/RequestUUID:/ { print $2; }'
+  echo "$1" | awk '/RequestUUID/ { print $NF; }'
 }
 
 toLower()
@@ -70,6 +70,9 @@ NOTARIZE_REQUST=$(xcrun altool --notarize-app \
 echo "${NOTARIZE_REQUST}"
 
 REQUEST_UUID=$(parseRequestUuid "${NOTARIZE_REQUST}")
+if [[ "${REQUEST_UUID}" == "" ]]; then
+  exitWithErr "failed to parse request_UUID"
+fi
 
 # Poll for completion
 
