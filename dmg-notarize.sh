@@ -73,7 +73,7 @@ REQUEST_UUID=$(parseRequestUuid "${NOTARIZE_REQUST}")
 
 REQUEST_STATUS="in progress"
 while [[ "$REQUEST_STATUS" == "in progress" ]]; do
-  echo "Polling for completin of notarization request"
+  echo "Polling for completion of notarization request"
   sleep 20
   NOTARY_INFO=$(xcrun altool \
     --notarization-info ${REQUEST_UUID} \
@@ -89,8 +89,8 @@ done
 echo "Final notarization status:"
 echo "${NOTARY_INFO}"
 
-if [[ "$REQUEST_STATUS" == "invalid" ]]; then
-  exitWithErr "failed to get notarization"
+if [[ "$REQUEST_STATUS" != "success" ]]; then
+  exitWithErr "failed to get notarization. Status is not 'success'"
 fi
 
 # Now staple the notarization to the DMG

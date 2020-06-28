@@ -122,7 +122,7 @@ steps:
     APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
     SIGNING_IDENTITY: '$(SIGNING_IDENTITY)'
   inputs:
-    targetType: 'file'
+    targetType: 'filePath'
     filePath: dmg-notarize.sh
 - task: Bash@3
   displayName: publish to s3
@@ -135,5 +135,5 @@ steps:
     BRANCH_NAME: $(Build.SourceBranchName)
     VERSION: '$(finalVersion)'
   inputs:
-    targetType: 'file'
+    targetType: 'filePath'
     filePath: push-to-s3.sh
