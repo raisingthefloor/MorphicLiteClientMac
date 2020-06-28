@@ -52,11 +52,11 @@ steps:
   inputs:
     secureFile: "Developer ID Certification Authority.cer"
 - task: DownloadSecureFile@1
-  name: appleP12 # The name with which to reference the secure file's path on the agent, like $(appleCa.secureFilePath)
+  name: appleP12 # The name with which to reference the secure file's path on the agent, like $(appleP12.secureFilePath)
   inputs:
     secureFile: "president-rtf dev key - private.p12"
 - task: DownloadSecureFile@1
-  name: signingIdentityCert # The name with which to reference the secure file's path on the agent, like $(appleCa.secureFilePath)
+  name: signingIdentityCert # The name with which to reference the secure file's path on the agent, like $(signingIdentityCert.secureFilePath)
   inputs:
     secureFile: "$(SIGNING_IDENTITY_FILENAME)"
 
@@ -73,10 +73,14 @@ steps:
 
       security create-keychain -p '' morphic.keychain
 
+      echo "Info about p12 '$(appleP12.secureFilePath)'"
+      openssl pkcs12 -in '$(appleP12.secureFilePath)' -passin 'pass:$(P12_PASSWORD)' -nokeys
       echo "importing p12"
       security import '$(appleP12.secureFilePath)' -P '$(P12_PASSWORD)' -k ~/Library/Keychains/morphic.keychain
       echo "importing signing identity cert"
       security import '$(signingIdentityCert.secureFilePath)' -k ~/Library/Keychains/morphic.keychain
+      echo "Showing identities"
+      security find-identity
 
 - task: Bash@3
   displayName: "update plist versions"
