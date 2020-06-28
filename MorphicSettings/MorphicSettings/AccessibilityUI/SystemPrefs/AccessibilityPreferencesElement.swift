@@ -77,6 +77,21 @@ public class AccessibilityPreferencesElement: UIElement{
             }
         }
     }
+    
+    public func selectZoom(completion: @escaping (_ success: Bool) -> Void){
+        select(category: .zoom){
+            success in
+            guard success else{
+                completion(false)
+                return
+            }
+            self.wait(atMost: 1.0, for: { self.checkbox(titled: "Use keyboard shortcuts to zoom") != nil}){
+                success in
+                completion(success)
+            }
+        }
+        
+    }
 
     public func select(category identifier: CategoryIdentifier, completion: @escaping (_ success: Bool) -> Void){
         wait(atMost: 1.0, for: { self.categoriesTable != nil }){

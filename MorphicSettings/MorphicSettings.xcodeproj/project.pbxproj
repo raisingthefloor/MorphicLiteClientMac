@@ -50,6 +50,9 @@
 		31CE56EB244A149B00A52A7B /* Audio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE56EA244A149B00A52A7B /* Audio.swift */; };
 		31F9AEDD24A7F2D90026EBDA /* AccessibilityUIAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F9AEDC24A7F2D90026EBDA /* AccessibilityUIAutomation.swift */; };
 		31F9AEE324A7F7EA0026EBDA /* VoiceOverUIAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F9AEE224A7F7EA0026EBDA /* VoiceOverUIAutomation.swift */; };
+		31F9AEE524A803B90026EBDA /* ZoomUIAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F9AEE424A803B90026EBDA /* ZoomUIAutomation.swift */; };
+		31F9AEE924A80C7C0026EBDA /* KeyEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = 31F9AEE724A80C7C0026EBDA /* KeyEvents.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		31F9AEEA24A80C7C0026EBDA /* KeyEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 31F9AEE824A80C7C0026EBDA /* KeyEvents.m */; };
 		9D0AF73724A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF73624A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift */; };
 		9D0AF73924A0FB78007E177E /* MorphicA11yUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */; };
 		9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */; };
@@ -125,6 +128,9 @@
 		31CE56EA244A149B00A52A7B /* Audio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Audio.swift; sourceTree = "<group>"; };
 		31F9AEDC24A7F2D90026EBDA /* AccessibilityUIAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityUIAutomation.swift; sourceTree = "<group>"; };
 		31F9AEE224A7F7EA0026EBDA /* VoiceOverUIAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceOverUIAutomation.swift; sourceTree = "<group>"; };
+		31F9AEE424A803B90026EBDA /* ZoomUIAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomUIAutomation.swift; sourceTree = "<group>"; };
+		31F9AEE724A80C7C0026EBDA /* KeyEvents.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyEvents.h; sourceTree = "<group>"; };
+		31F9AEE824A80C7C0026EBDA /* KeyEvents.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KeyEvents.m; sourceTree = "<group>"; };
 		9D0AF73624A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yUIAttributeValueCompatible.swift; sourceTree = "<group>"; };
 		9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yUIElement.swift; sourceTree = "<group>"; };
 		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
@@ -165,6 +171,7 @@
 				31F9AEDC24A7F2D90026EBDA /* AccessibilityUIAutomation.swift */,
 				314EB6DF24A6A69B00CF3D48 /* ContrastUIAutomation.swift */,
 				31F9AEE224A7F7EA0026EBDA /* VoiceOverUIAutomation.swift */,
+				31F9AEE424A803B90026EBDA /* ZoomUIAutomation.swift */,
 			);
 			path = Automations;
 			sourceTree = "<group>";
@@ -337,6 +344,8 @@
 				315EECA124A583AE0039C61D /* Controls */,
 				315EECA024A5839F0039C61D /* Tables */,
 				315EECA324A583C00039C61D /* SystemPrefs */,
+				31F9AEE724A80C7C0026EBDA /* KeyEvents.h */,
+				31F9AEE824A80C7C0026EBDA /* KeyEvents.m */,
 			);
 			path = AccessibilityUI;
 			sourceTree = "<group>";
@@ -357,6 +366,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31A0A5882405967600166668 /* MorphicSettings.h in Headers */,
+				31F9AEE924A80C7C0026EBDA /* KeyEvents.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,7 +422,7 @@
 				TargetAttributes = {
 					31A0A5762405967600166668 = {
 						CreatedOnToolsVersion = 11.3.1;
-						LastSwiftMigration = 1130;
+						LastSwiftMigration = 1150;
 					};
 					31A0A57F2405967600166668 = {
 						CreatedOnToolsVersion = 11.3.1;
@@ -468,8 +478,10 @@
 				315EEC9724A56DF20039C61D /* AccessibilityPreferencesElement.swift in Sources */,
 				312DBFFD24A2C683002FB951 /* CaptureSession.swift in Sources */,
 				31A16BCC2423E86C0081A72C /* MorphicProcess.swift in Sources */,
+				31F9AEEA24A80C7C0026EBDA /* KeyEvents.m in Sources */,
 				315EEC9124A547B70039C61D /* WindowElement.swift in Sources */,
 				312973EF24A275D7000F5ED1 /* Setting.swift in Sources */,
+				31F9AEE524A803B90026EBDA /* ZoomUIAutomation.swift in Sources */,
 				312DBFF024A27BCF002FB951 /* Solution.swift in Sources */,
 				31A16BCB2423E86C0081A72C /* MorphicLaunchDaemonsAndAgents.swift in Sources */,
 				314EB6E224A6B34300CF3D48 /* TabElement.swift in Sources */,

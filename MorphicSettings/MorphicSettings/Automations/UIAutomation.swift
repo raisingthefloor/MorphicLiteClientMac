@@ -29,5 +29,5 @@ public protocol UIAutomation{
     init()
     
     func apply(_ value: Interoperable?, completion: @escaping (_ success: Bool) -> Void)
-    
+
 }

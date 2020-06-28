@@ -101,4 +101,23 @@ public class AccessibilityUIAutomation: UIAutomation{
         }
     }
     
+    public func showAccessibilityZoomPreferences(completion: @escaping (_ accessibility: AccessibilityPreferencesElement?) -> Void){
+        showAccessibilityPreferences{
+            accessibility in
+            guard let accessibility = accessibility else{
+                completion(nil)
+                return
+            }
+            accessibility.selectZoom{
+                success in
+                guard success else{
+                    os_log(.error, log: logger, "Failed to select Zoom category")
+                    completion(nil)
+                    return
+                }
+                completion(accessibility)
+            }
+        }
+    }
+    
 }
