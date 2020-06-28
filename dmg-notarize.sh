@@ -11,7 +11,7 @@ elif [[ "${BRANCH}" == *"release/"* ]]; then
   echo "detected release build. will sign"
 else
   echo "detected PR build. Will not sign"
-  #exit 0
+  exit 0
 fi
 
 USERNAME="${USERNAME}"
