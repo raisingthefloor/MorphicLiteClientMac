@@ -67,6 +67,8 @@ NOTARIZE_REQUST=$(xcrun altool --notarize-app \
   --password "${APP_PASSWORD}" \
   --file "${DMG_PATH}")
 
+echo "${NOTARIZE_REQUST}"
+
 REQUEST_UUID=$(parseRequestUuid "${NOTARIZE_REQUST}")
 
 # Poll for completion
