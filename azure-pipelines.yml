@@ -85,7 +85,7 @@ steps:
     useXcpretty: false
     signingOption: 'manual'
     signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+    #provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
     args: '$(extraArgs)'
 - task: Xcode@5
   displayName: Build MorphicSettings
@@ -112,7 +112,7 @@ steps:
     useXcpretty: false
     signingOption: 'manual'
     signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+    #provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
     args: '$(extraArgs)'
 - task: Bash@3
   displayName: publish to s3
