@@ -15,7 +15,7 @@ trigger:
 variables:
 # must be created in the azure UI under Pipelines > Library and specify accessKey, secretKey, region, and bucket
 - group: 's3-public-bucket-upload'
-# Provides: P12_PASSWORD, SIGNING_IDENTITY
+# Provides: P12_PASSWORD, SIGNING_IDENTITY, SIGNING_IDENTITY_FILENAME
 - group: 'osx-signing'
 - name: sdk
   value: macosx
@@ -32,7 +32,8 @@ variables:
 - name: signingOption
   value: 'manual'
 - name: extraArgs
-  value: 'OTHER_CODE_SIGN_FLAGS=--timestamp'
+  value: ''
+  #value: 'OTHER_CODE_SIGN_FLAGS=--timestamp'
 
 pool:
   vmImage: 'macos-latest'
@@ -57,8 +58,9 @@ steps:
 - task: DownloadSecureFile@1
   name: signingIdentityCert # The name with which to reference the secure file's path on the agent, like $(appleCa.secureFilePath)
   inputs:
-    secureFile: "Developer ID Application_ Raising the Floor - US Inc. (5AAXYGZ428).cer"
+    secureFile: "$(SIGNING_IDENTITY_FILENAME)"
 
+# We use this instead of InstallAppleCertificate@2 because that currently breaks on some pre-job task.
 - task: Bash@3
   displayName: import keychain files
   inputs:
@@ -74,10 +76,6 @@ steps:
       echo "importing signing identity cert"
       security import '$(signingIdentityCert.secureFilePath)' -k ~/Library/Keychains/login.keychain
 
-#- task: InstallAppleCertificate@2
-#  inputs:
-#    certSecureFile: 'president-rtf dev key - private.p12'
-#    certPwd: '$(P12_PASSWORD)'
 - task: Bash@3
   displayName: "update plist versions"
   inputs:
