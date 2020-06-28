@@ -45,38 +45,10 @@ steps:
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provProfileSecureFile: 'Morphic_Configurator_for_macOS_mc2.provisionprofile'
-
-
-- task: DownloadSecureFile@1
-  name: appleCa # The name with which to reference the secure file's path on the agent, like $(appleCa.secureFilePath)
+- task: InstallAppleCertificate@2
   inputs:
-    secureFile: "Developer ID Certification Authority.cer"
-- task: DownloadSecureFile@1
-  name: appleP12 # The name with which to reference the secure file's path on the agent, like $(appleCa.secureFilePath)
-  inputs:
-    secureFile: "president-rtf dev key - private.p12"
-- task: DownloadSecureFile@1
-  name: signingIdentityCert # The name with which to reference the secure file's path on the agent, like $(appleCa.secureFilePath)
-  inputs:
-    secureFile: "$(SIGNING_IDENTITY_FILENAME)"
-
-# We use this instead of InstallAppleCertificate@2 because that currently breaks on some pre-job task.
-- task: Bash@3
-  displayName: import keychain files
-  inputs:
-    targetType: 'inline'
-    script: |
-      set -e
-      set -x
-      echo "Installing '$(appleCa.secureFilePath)' to the trusted CA directory..."
-      sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain '$(appleCa.secureFilePath)'
-
-      security create-keychain -p '' morphic.keychain
-
-      echo "importing p12"
-      security import '$(appleP12.secureFilePath)' -P '$(P12_PASSWORD)' -k ~/Library/Keychains/morphic.keychain
-      echo "importing signing identity cert"
-      security import '$(signingIdentityCert.secureFilePath)' -k ~/Library/Keychains/morphic.keychain
+    certSecureFile: 'raising_the_floor_5AAXYGZ428.p12'
+    certPwd: '$(P12_PASSWORD)'
 
 - task: Bash@3
   displayName: "update plist versions"
@@ -95,7 +67,8 @@ steps:
     xcodeVersion: $(xcodeVersionNum)
     useXcpretty: false
     signingOption: '$(signingOption)'
-    signingIdentity: '$(SIGNING_IDENTITY)'
+    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
+    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
     args: '$(extraArgs)'
 - task: Xcode@5
   displayName: Build MorphicService
