@@ -11,7 +11,7 @@ elif [[ "${BRANCH}" == *"release/"* ]]; then
   echo "detected release build. will sign"
 else
   echo "detected PR build. Will not sign"
-  exit 0
+  #exit 0
 fi
 
 USERNAME="${USERNAME}"
@@ -58,7 +58,7 @@ set -x
 
 codesign --timestamp \
   --sign "${SIGNING_IDENTITY}" \
-   ./Morphic/Morphic.dmg
+   "${DMG_PATH}"
 
 # this will return a “RequestUUID”...which is used as a command-line argument for polling
 NOTARIZE_REQUST=$(xcrun altool --notarize-app \
@@ -93,7 +93,7 @@ if [[ "$REQUEST_STATUS" != "success" ]]; then
   exitWithErr "failed to get notarization. Status is not 'success'"
 fi
 
-# Now staple the notarization to the DMG
+echo "stapling notarization to dmg"
 xcrun stapler staple "${DMG_PATH}"
 
 echo "successfully stapled DMG"
