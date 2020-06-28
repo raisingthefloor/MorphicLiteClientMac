@@ -57,7 +57,7 @@ steps:
 - task: DownloadSecureFile@1
   name: signingIdentityCert # The name with which to reference the secure file's path on the agent, like $(appleCa.secureFilePath)
   inputs:
-    secureFile: "$(SIGNING_IDENTITY).cer"
+    secureFile: "Developer ID Application_ Raising the Floor - US Inc. (5AAXYGZ428).cer"
 
 - task: Bash@3
   displayName: import keychain files
