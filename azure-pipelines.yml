@@ -32,7 +32,7 @@ variables:
 - name: signingOption
   value: 'manual'
 - name: extraArgs
-  value: ''
+  value: 'CODE_SIGNING_ALLOWED=YES'
   #value: 'OTHER_CODE_SIGN_FLAGS=--timestamp'
 
 pool:
