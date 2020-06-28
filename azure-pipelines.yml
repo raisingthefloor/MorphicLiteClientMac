@@ -45,6 +45,9 @@ steps:
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provProfileSecureFile: 'Morphic_Configurator_for_macOS_mc2.provisionprofile'
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provProfileSecureFile: 'Morphic_Client_for_macOS_morphicclient2.provisionprofile'
 
 - task: Bash@3
   displayName: "update plist versions"
@@ -100,11 +103,8 @@ steps:
     useXcpretty: false
     signingOption: 'manual'
     signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+    #provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
     args: '$(extraArgs)'
-- task: InstallAppleProvisioningProfile@1
-  inputs:
-    provProfileSecureFile: 'Morphic_Client_for_macOS_morphicclient2.provisionprofile'
 - task: Xcode@5
   displayName: Build Morphic
   inputs:
@@ -117,7 +117,7 @@ steps:
     useXcpretty: false
     signingOption: 'auto'
     signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+    #provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
     args: '$(extraArgs)'
 - task: Bash@3
   displayName: publish to s3
