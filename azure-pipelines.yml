@@ -32,7 +32,7 @@ variables:
 - name: signingOption
   value: 'default'
 - name: extraArgs
-  value: 'OTHER_CODE_SIGN_FLAGS="--timestamp" CODE_SIGNING_ALLOWED=YES'
+  value: 'OTHER_CODE_SIGN_FLAGS="--timestamp"'
 
 pool:
   vmImage: 'macos-latest'
