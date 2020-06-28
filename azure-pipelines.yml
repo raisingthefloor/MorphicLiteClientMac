@@ -32,8 +32,7 @@ variables:
 - name: signingOption
   value: 'manual'
 - name: extraArgs
-  value: ''
-  #value: 'OTHER_CODE_SIGN_FLAGS=--timestamp'
+  value: 'OTHER_CODE_SIGN_FLAGS=--timestamp'
 
 pool:
   vmImage: 'macos-latest'
@@ -60,6 +59,8 @@ steps:
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
     useXcpretty: false
+    signingOption: 'manual'
+    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
 - task: Xcode@5
   displayName: Build MorphicService
   inputs:
