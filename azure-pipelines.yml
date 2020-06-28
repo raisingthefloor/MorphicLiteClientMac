@@ -66,8 +66,9 @@ steps:
       sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain '$(appleCa.secureFilePath)'
 
       echo "importing p12"
+      ls -al ~/Library/Keychains/login.keychain
       security import '$(appleP12.secureFilePath)' -P '$(P12_PASSWORD)' -k ~/Library/Keychains/login.keychain
-      ls -al ~/Library/Keychains
+      ls -al ~/Library/Keychains/login.keychain
 
 #- task: InstallAppleCertificate@2
 #  inputs:
