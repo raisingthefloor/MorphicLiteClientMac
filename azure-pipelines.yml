@@ -62,7 +62,7 @@ steps:
     script: |
       set -e
       echo "Installing '$(appleCa.secureFilePath)' to the trusted CA directory..."
-      security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain '$(appleCa.secureFilePath)'
+      sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain '$(appleCa.secureFilePath)'
 
       echo "importing p12"
       security import '$(appleP12.secureFilePath)' -P '$(P12_PASSWORD)' -k ~/Library/Keychains/login.keychain
