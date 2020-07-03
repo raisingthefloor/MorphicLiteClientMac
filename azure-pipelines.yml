@@ -42,10 +42,10 @@ steps:
     certPwd: '$(P12_PASSWORD)'
 - task: InstallAppleProvisioningProfile@1
   inputs:
-    provProfileSecureFile: 'Morphic_Configurator_for_macOS_mc2.provisionprofile'
+    provProfileSecureFile: 'Morphic_Configurator_for_macOS.provisionprofile'
 - task: InstallAppleProvisioningProfile@1
   inputs:
-    provProfileSecureFile: 'Morphic_Client_for_macOS_morphicclient2.provisionprofile'
+    provProfileSecureFile: 'Morphic_Client_for_macOS.provisionprofile'
 
 - task: Bash@3
   displayName: "update plist versions"
