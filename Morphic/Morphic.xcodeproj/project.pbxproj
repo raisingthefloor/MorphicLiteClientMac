@@ -881,9 +881,9 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicClient2;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.Morphic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Morphic Client for macOS (morphicclient2)";
+				PROVISIONING_PROFILE_SPECIFIER = "Morphic Client for macOS";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -903,9 +903,9 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicClient2;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.Morphic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Morphic Client for macOS (morphicclient2)";
+				PROVISIONING_PROFILE_SPECIFIER = "Morphic Client for macOS";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -1009,9 +1009,9 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator2;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Morphic Configurator for macOS (mc2)";
+				PROVISIONING_PROFILE_SPECIFIER = "Morphic Configurator for macOS";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -1031,9 +1031,9 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator2;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Morphic Configurator for macOS (mc2)";
+				PROVISIONING_PROFILE_SPECIFIER = "Morphic Configurator for macOS";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
