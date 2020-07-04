@@ -55,6 +55,14 @@ public class UIElement{
         return descendant(role: .tabGroup)
     }
     
+    public func popUpButton(titled: String) -> PopUpButtonElement?{
+        return descendant(role: .popUpButton, title: titled)
+    }
+    
+    public func slider(titled: String) -> SliderElement?{
+        return descendant(role: .slider, title: titled)
+    }
+    
     private func descendant<ElementType: UIElement>(role: NSAccessibility.Role, title: String) -> ElementType?{
         guard let accessibilityElement = accessibilityDescendant(role: role, title: title) else{
             return nil
@@ -80,6 +88,11 @@ public class UIElement{
             if candidate.role == role{
                 if candidate.value(forAttribute: .title) == title || candidate.value(forAttribute: .description) == title{
                     return candidate
+                }
+                if let titleElement: MorphicA11yUIElement = candidate.value(forAttribute: .titleUIElement){
+                    if titleElement.value(forAttribute: .value) == title{
+                        return candidate
+                    }
                 }
             }
             if let children = candidate.children(){

@@ -26,10 +26,77 @@ import MorphicCore
 import OSLog
 import Carbon.HIToolbox
 
-private let logger = OSLog(subsystem: "MorphicSettings", category: "ZoomUIAutomation")
+private let logger = OSLog(subsystem: "MorphicSettings", category: "ZoomUIAutomations")
 
 
-public class ZoomUIAutomation: AccessibilityUIAutomation{
+public class ZoomCheckboxUIAutomation: AccessibilityUIAutomation{
+    
+    var checkboxTitle: String! { nil }
+    
+    public override func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
+        guard let checked = value as? Bool else{
+            os_log(.error, log: logger, "Passed non-boolean value")
+            completion(false)
+            return
+        }
+        showAccessibilityZoomPreferences{
+            accessibility in
+            guard let accessibility = accessibility else{
+                completion(false)
+                return
+            }
+            guard let checkbox = accessibility.checkbox(titled: self.checkboxTitle) else{
+                os_log(.error, log: logger, "Failed to find checkbox")
+                completion(false)
+                return
+            }
+            guard checkbox.setChecked(checked) else{
+                os_log(.error, log: logger, "Failed to check checkbox")
+                completion(false)
+                return
+            }
+            completion(true)
+        }
+        
+    }
+    
+}
+
+public class ZoomPopupButtonUIAutomation: AccessibilityUIAutomation{
+    
+    var buttonTitle: String! { nil }
+    
+    public override func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
+        guard let value = value as? Int else{
+            os_log(.error, log: logger, "Passed non-int value")
+            completion(false)
+            return
+        }
+        showAccessibilityZoomPreferences{
+            accessibility in
+            guard let accessibility = accessibility else{
+                completion(false)
+                return
+            }
+            guard let button = accessibility.popUpButton(titled: self.buttonTitle) else{
+                os_log(.error, log: logger, "Failed to find popup button")
+                completion(false)
+                return
+            }
+            guard button.setValue(value) else{
+                os_log(.error, log: logger, "Failed to set popup button value")
+                completion(false)
+                return
+            }
+            completion(true)
+        }
+        
+    }
+    
+}
+
+
+public class ZoomEnabledUIAutomation: AccessibilityUIAutomation{
     
     public override func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
         guard let checked = value as? Bool else{
@@ -74,5 +141,29 @@ public class ZoomUIAutomation: AccessibilityUIAutomation{
         }
         
     }
+    
+}
+
+public class ScrollToZoomEnabledUIAutomation: ZoomCheckboxUIAutomation{
+    
+    override var checkboxTitle: String! { "Use scroll gesture with modifier keys to zoom:" }
+    
+}
+
+public class HoverTextEnabledUIAutomation: ZoomCheckboxUIAutomation{
+    
+    override var checkboxTitle: String! { "Enable Hover Text" }
+    
+}
+
+public class TouchbarZoomEnabledUIAutomation: ZoomCheckboxUIAutomation{
+    
+    override var checkboxTitle: String! { "Enable Touch Bar zoom" }
+    
+}
+
+public class ZoomStyleUIAutomation: ZoomPopupButtonUIAutomation{
+    
+    override var buttonTitle: String! { "Zoom style:" }
     
 }

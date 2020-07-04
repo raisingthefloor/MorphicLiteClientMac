@@ -35,8 +35,18 @@ public class SettingsManager{
     
     private init(){
         DefaultsReadUIWriteSettingHandler.register(automation: ContrastUIAutomation.self, for: .macosDisplayContrastEnabled)
+        DefaultsReadUIWriteSettingHandler.register(automation: InvertColorsUIAutomation.self, for: .macosDisplayInvertColors)
+        DefaultsReadUIWriteSettingHandler.register(automation: InvertClassicUIAutomation.self, for: .macosDisplayClassicInvert)
+        DefaultsReadUIWriteSettingHandler.register(automation: ReduceMotionUIAutomation.self, for: .macosDisplayReduceMotion)
+        DefaultsReadUIWriteSettingHandler.register(automation: ReduceTransparencyUIAutomation.self, for: .macosDisplayReduceTransparency)
+        DefaultsReadUIWriteSettingHandler.register(automation: DifferentiateWithoutColorUIAutomation.self, for: .macosDisplayDifferentiateWithoutColor)
+        DefaultsReadUIWriteSettingHandler.register(automation: CursorShakeUIAutomation.self, for: .macosCursorShake)
+        DefaultsReadUIWriteSettingHandler.register(automation: CursorSizeUIAutomation.self, for: .macosCursorSize)
         DefaultsReadUIWriteSettingHandler.register(automation: VoiceOverUIAutomation.self, for: .macosVoiceOverEnabled)
-        DefaultsReadUIWriteSettingHandler.register(automation: ZoomUIAutomation.self, for: .macosZoomEnabled)
+        DefaultsReadUIWriteSettingHandler.register(automation: ZoomEnabledUIAutomation.self, for: .macosZoomEnabled)
+        DefaultsReadUIWriteSettingHandler.register(automation: HoverTextEnabledUIAutomation.self, for: .macosHoverTextEnabled)
+        DefaultsReadUIWriteSettingHandler.register(automation: TouchbarZoomEnabledUIAutomation.self, for: .macosTouchbarZoomEnabled)
+        DefaultsReadUIWriteSettingHandler.register(automation: ZoomStyleUIAutomation.self, for: .macosZoomStyle)
     }
     
     /// All known solutions
@@ -123,8 +133,25 @@ public class SettingsManager{
 }
 
 public extension Preferences.Key{
+    // Display
     static var macosDisplayZoom = Preferences.Key(solution: "com.apple.macos.display", preference: "zoom")
     static var macosDisplayContrastEnabled = Preferences.Key(solution: "com.apple.macos.display", preference: "contrast.enabled")
+    static var macosDisplayInvertColors = Preferences.Key(solution: "com.apple.macos.display", preference: "invert")
+    static var macosDisplayClassicInvert = Preferences.Key(solution: "com.apple.macos.display", preference: "invert.classic")
+    static var macosDisplayReduceMotion = Preferences.Key(solution: "com.apple.macos.display", preference: "reduce.motion")
+    static var macosDisplayReduceTransparency = Preferences.Key(solution: "com.apple.macos.display", preference: "reduce.transparency")
+    static var macosDisplayDifferentiateWithoutColor = Preferences.Key(solution: "com.apple.macos.display", preference: "differentiate-without-color")
+    static var macosCursorShake = Preferences.Key(solution: "com.apple.macos.display", preference: "cursor.shake")
+    static var macosCursorSize = Preferences.Key(solution: "com.apple.macos.display", preference: "cursor.size")
+    
+    // Voice Over
     static var macosVoiceOverEnabled = Preferences.Key(solution: "com.apple.macos.voiceover", preference: "enabled")
+    
+    // Zoom
     static var macosZoomEnabled = Preferences.Key(solution: "com.apple.macos.zoom", preference: "enabled")
+    static var macosScrollToZoomEnabled = Preferences.Key(solution: "com.apple.macos.zoom", preference: "scroll.enabled")
+    static var macosScrollToZoomKey = Preferences.Key(solution: "com.apple.macos.zoom", preference: "scroll.modifier-key")
+    static var macosZoomStyle = Preferences.Key(solution: "com.apple.macos.zoom", preference: "style")
+    static var macosHoverTextEnabled = Preferences.Key(solution: "com.apple.macos.zoom", preference: "hovertext.enabled")
+    static var macosTouchbarZoomEnabled = Preferences.Key(solution: "com.apple.macos.zoom", preference: "touchbar.zoom")
 }

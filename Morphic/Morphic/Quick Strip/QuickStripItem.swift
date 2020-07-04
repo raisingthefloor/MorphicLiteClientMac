@@ -242,13 +242,39 @@ class QuickStripControlItem: QuickStripItem{
         guard let segment = (sender as? QuickStripSegmentedButton)?.integerValue else{
             return
         }
+        let session = Session.shared
         if segment == 0{
-            Session.shared.apply(true, for: .macosZoomEnabled){
-                _ in
+            let preferences = Preferences(identifier: "__magnifier__")
+            let capture = CaptureSession(settingsManager: session.settings, preferences: preferences)
+            capture.keys = [
+                .macosZoomStyle
+            ]
+            capture.captureDefaultValues = true
+            capture.run {
+                session.storage.save(record: capture.preferences){
+                    _ in
+                    session.settings.apply(values: [
+                        .macosZoomStyle: 2,
+                        .macosZoomEnabled: true
+                    ]){
+                        _ in
+                    }
+                }
             }
         }else{
-            Session.shared.apply(false, for: .macosZoomEnabled){
-                _ in
+            session.storage.load(identifier: "__magnifier__"){
+                (preferences: Preferences?) in
+                if let preferences = preferences{
+                    let apply = ApplySession(settingsManager: session.settings, preferences: preferences)
+                    apply.valuesByKey[.macosZoomEnabled] = false
+                    apply.applyDefaultValues = false
+                    apply.run {
+                    }
+                }else{
+                    session.apply(false, for: .macosZoomEnabled){
+                        _ in
+                    }
+                }
             }
         }
     }
