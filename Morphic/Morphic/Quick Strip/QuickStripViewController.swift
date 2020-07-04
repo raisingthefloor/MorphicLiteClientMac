@@ -34,7 +34,7 @@ public class QuickStripViewController: NSViewController {
         super.viewDidLoad()
         view.layer?.backgroundColor = .white
         view.layer?.cornerRadius = 6
-        showsHelp = false //Session.shared.bool(for: .morphicQuickStripShowsHelp) ?? true
+        showsHelp = Session.shared.bool(for: .morphicQuickStripShowsHelp) ?? true
     }
     
     // MARK: - Logo Button & Main Menu
@@ -103,7 +103,10 @@ class LogoButton: NSButton{
         guard let title = helpTitle, let message = helpMessage else{
             return
         }
-        QuickHelpWindow.show(title: title, message: message)
+        let viewController = QuickHelpViewController(nibName: "QuickHelpViewController", bundle: nil)
+        viewController.titleText = title
+        viewController.messageText = message
+        QuickHelpWindow.show(viewController: viewController)
     }
     
     override func mouseExited(with event: NSEvent) {

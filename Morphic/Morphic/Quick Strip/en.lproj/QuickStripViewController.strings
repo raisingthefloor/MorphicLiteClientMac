@@ -26,11 +26,23 @@
 /* Message for the help window for the larger text size button */
 "control.feature.resolution.bigger.help.message" = "Make all the text and icons bigger";
 
+/* Title for the help window for the larger text size button when at its limit */
+"control.feature.resolution.bigger.limit.help.title" = "Text Size Cannot Go Bigger";
+
+/* Message for the help window for the larger text size button when at its limit */
+"control.feature.resolution.bigger.limit.help.message" = "The current text size is as big as possible";
+
 /* Title for the help window for the smaller text size button */
 "control.feature.resolution.smaller.help.title" = "Decrease Text Size";
 
 /* Message for the help window for the smaller text size button */
 "control.feature.resolution.smaller.help.message" = "Make all the text and icons smaller";
+
+/* Title for the help window for the smaller text size button when at its limit */
+"control.feature.resolution.smaller.limit.help.title" = "Text Size Cannot Go Smaller";
+
+/* Message for the help window for the smaller text size button when at its limit */
+"control.feature.resolution.smaller.limit.help.message" = "The current text size is as small as possible";
 
 /* Label for the buttons that control the magnifier */
 "control.feature.magnifier.title" = "Magnifier";
@@ -77,35 +89,56 @@
 /* Label for the buttons that control the volume */
 "control.feature.volume.title" = "Volume";
 
-/* Title for the help window for the hide magnifier button */
+/* Title for the help window for the volume up button */
 "control.feature.volume.up.help.title" = "Turn the Volume Up";
 
-/* Message for the help window for the hide magnifier button */
+/* Message for the help window for the volume up button */
 "control.feature.volume.up.help.message" = "Make all the sounds louder";
 
-/* Title for the help window for the hide magnifier button */
+/* Title for the help window for the volume up button at its limit */
+"control.feature.volume.up.limit.help.title" = "Volume Cannot Go Higher";
+
+/* Message for the help window for the volume up button at its limit */
+"control.feature.volume.up.limit.help.message" = "Your computer's sounds are as loud as they can go";
+
+/* Title for the help window for the volume up button when muted */
+"control.feature.volume.up.muted.help.title" = "Unmute All Sounds";
+
+/* Message for the help window for the volume up button when muted */
+"control.feature.volume.up.muted.help.message" = "Return the volume to its previous level";
+
+/* Title for the help window for the volume down button */
 "control.feature.volume.down.help.title" = "Turn the Volume Down";
 
-/* Message for the help window for the hide magnifier button */
+/* Message for the help window for the volume down button */
 "control.feature.volume.down.help.message" = "Make all the sounds quieter";
+
+/* Title for the help window for the volume down button at its limit */
+"control.feature.volume.down.limit.help.title" = "Volume Cannot Go Lower";
+
+/* Message for the help window for the volume down button at its limit */
+"control.feature.volume.down.limit.help.message" = "Your computer's sounds are as low as they can go";
+
+/* Title for the help window for the volume down button at its limit */
+"control.feature.volume.down.muted.help.title" = "Unmute All Sounds";
+
+/* Message for the help window for the volume down button at its limit */
+"control.feature.volume.down.muted.help.message" = "Return the volume to its previous level";
 
 /* Label for the button that mutes the volume */
 "control.feature.volume.mute" = "Mute";
 
-/* Title for the help window for the hide magnifier button */
+/* Title for the help window for the mute button */
 "control.feature.volume.mute.help.title" = "Mute All Sounds";
 
-/* Message for the help window for the hide magnifier button */
+/* Message for the help window for the mute button */
 "control.feature.volume.mute.help.message" = "Turn off all sounds from the computer";
 
-/* Label for the button that unmutes the volume */
-"control.feature.volumne.unmute" = "Unmute";
+/* Title for the help window for the mute button when muted */
+"control.feature.volume.muted.help.title" = "All Sounds Are Muted";
 
-/* Title for the help window for the hide magnifier button */
-"control.feature.volume.unmute.help.title" = "Unmute All Sounds";
-
-/* Message for the help window for the hide magnifier button */
-"control.feature.volume.unmute.help.message" = "Turn sounds back on";
+/* Message for the help window for the mute button when muted */
+"control.feature.volume.muted.help.message" = "Use the plus or minus button to unmute";
 
 /* Label for the buttons that control the contrast */
 "control.feature.contrast.title" = "High Contrast";

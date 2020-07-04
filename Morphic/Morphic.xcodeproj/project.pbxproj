@@ -40,6 +40,13 @@
 		31751B9E2444F22900EEDF14 /* QuickStripViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B9B2444F22900EEDF14 /* QuickStripViewController.swift */; };
 		31751B9F2444F22900EEDF14 /* QuickStripWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B9C2444F22900EEDF14 /* QuickStripWindow.swift */; };
 		31751BA12444F24800EEDF14 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751BA02444F24800EEDF14 /* ViewController.swift */; };
+		31C12CB824B1174900B617A8 /* QuickHelpContentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C12CB724B1174900B617A8 /* QuickHelpContentProvider.swift */; };
+		31C12CBB24B11F5A00B617A8 /* QuickHelpVolumeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C12CB924B11F5A00B617A8 /* QuickHelpVolumeViewController.swift */; };
+		31C12CBC24B11F5A00B617A8 /* QuickHelpVolumeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C12CBA24B11F5A00B617A8 /* QuickHelpVolumeViewController.xib */; };
+		31C12CBE24B138D000B617A8 /* ProgressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C12CBD24B138D000B617A8 /* ProgressIndicator.swift */; };
+		31C12CC124B143A000B617A8 /* QuickHelpStepViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C12CBF24B143A000B617A8 /* QuickHelpStepViewController.swift */; };
+		31C12CC224B143A000B617A8 /* QuickHelpStepViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C12CC024B143A000B617A8 /* QuickHelpStepViewController.xib */; };
+		31C12CC424B1441E00B617A8 /* PageControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C12CC324B1441E00B617A8 /* PageControl.swift */; };
 		31CE56F3244A3CDB00A52A7B /* QuickHelpWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE56F2244A3CDB00A52A7B /* QuickHelpWindow.swift */; };
 		31CE56F5244A407000A52A7B /* QuickHelpViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31CE56F4244A407000A52A7B /* QuickHelpViewController.xib */; };
 		31CE56F7244A408000A52A7B /* QuickHelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE56F6244A408000A52A7B /* QuickHelpViewController.swift */; };
@@ -168,6 +175,13 @@
 		31751B9C2444F22900EEDF14 /* QuickStripWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickStripWindow.swift; sourceTree = "<group>"; };
 		31751BA02444F24800EEDF14 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		318744F32481A2DA00AE3954 /* CreateDiskImage.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = CreateDiskImage.sh; sourceTree = "<group>"; };
+		31C12CB724B1174900B617A8 /* QuickHelpContentProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickHelpContentProvider.swift; sourceTree = "<group>"; };
+		31C12CB924B11F5A00B617A8 /* QuickHelpVolumeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickHelpVolumeViewController.swift; sourceTree = "<group>"; };
+		31C12CBA24B11F5A00B617A8 /* QuickHelpVolumeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QuickHelpVolumeViewController.xib; sourceTree = "<group>"; };
+		31C12CBD24B138D000B617A8 /* ProgressIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressIndicator.swift; sourceTree = "<group>"; };
+		31C12CBF24B143A000B617A8 /* QuickHelpStepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickHelpStepViewController.swift; sourceTree = "<group>"; };
+		31C12CC024B143A000B617A8 /* QuickHelpStepViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QuickHelpStepViewController.xib; sourceTree = "<group>"; };
+		31C12CC324B1441E00B617A8 /* PageControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageControl.swift; sourceTree = "<group>"; };
 		31CE56E92448E27400A52A7B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/QuickStripViewController.strings; sourceTree = "<group>"; };
 		31CE56F2244A3CDB00A52A7B /* QuickHelpWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickHelpWindow.swift; sourceTree = "<group>"; };
 		31CE56F4244A407000A52A7B /* QuickHelpViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QuickHelpViewController.xib; sourceTree = "<group>"; };
@@ -372,6 +386,13 @@
 				31CE56F4244A407000A52A7B /* QuickHelpViewController.xib */,
 				31CE56F6244A408000A52A7B /* QuickHelpViewController.swift */,
 				31CE56F8244A428500A52A7B /* ShadowedLabel.swift */,
+				31C12CB724B1174900B617A8 /* QuickHelpContentProvider.swift */,
+				31C12CB924B11F5A00B617A8 /* QuickHelpVolumeViewController.swift */,
+				31C12CBA24B11F5A00B617A8 /* QuickHelpVolumeViewController.xib */,
+				31C12CBD24B138D000B617A8 /* ProgressIndicator.swift */,
+				31C12CBF24B143A000B617A8 /* QuickHelpStepViewController.swift */,
+				31C12CC024B143A000B617A8 /* QuickHelpStepViewController.xib */,
+				31C12CC324B1441E00B617A8 /* PageControl.swift */,
 			);
 			path = "Help Window";
 			sourceTree = "<group>";
@@ -552,6 +573,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31C12CC224B143A000B617A8 /* QuickHelpStepViewController.xib in Resources */,
 				31751B822444E11600EEDF14 /* Local.xcconfig in Resources */,
 				31CE56F5244A407000A52A7B /* QuickHelpViewController.xib in Resources */,
 				31751B3C2444DFAA00EEDF14 /* Main.xib in Resources */,
@@ -561,6 +583,7 @@
 				31751B832444E11600EEDF14 /* Release.xcconfig in Resources */,
 				314EB6DB24A697C300CF3D48 /* macos.solutions.json in Resources */,
 				31E1E187244792D9009C4092 /* DefaultPreferences.json in Resources */,
+				31C12CBC24B11F5A00B617A8 /* QuickHelpVolumeViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -636,10 +659,15 @@
 				31751B9E2444F22900EEDF14 /* QuickStripViewController.swift in Sources */,
 				31CE56F9244A428500A52A7B /* ShadowedLabel.swift in Sources */,
 				31751B982444F21700EEDF14 /* Session.swift in Sources */,
+				31C12CC124B143A000B617A8 /* QuickHelpStepViewController.swift in Sources */,
 				31E1E17F24466EB0009C4092 /* QuickStripItemView.swift in Sources */,
+				31C12CB824B1174900B617A8 /* QuickHelpContentProvider.swift in Sources */,
+				31C12CBB24B11F5A00B617A8 /* QuickHelpVolumeViewController.swift in Sources */,
 				31CE56F3244A3CDB00A52A7B /* QuickHelpWindow.swift in Sources */,
 				31E1E17D24466E7C009C4092 /* QuickStripView.swift in Sources */,
 				31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */,
+				31C12CBE24B138D000B617A8 /* ProgressIndicator.swift in Sources */,
+				31C12CC424B1441E00B617A8 /* PageControl.swift in Sources */,
 				31E1E17B24466D28009C4092 /* QuickStripItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

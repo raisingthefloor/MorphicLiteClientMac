@@ -69,6 +69,17 @@ public class Display{
         return Double(target.widthInVirtualPixels) / Double(normalMode.widthInVirtualPixels)
     }
     
+    public var numberOfSteps: Int {
+        possibleModes.count
+    }
+    
+    public var currentStep: Int{
+        guard let current = currentMode else{
+            return -1
+        }
+        return possibleModes.firstIndex(of: current) ?? -1
+    }
+    
     private var possibleModes: [MorphicDisplay.DisplayMode]!
     
     private var normalMode: MorphicDisplay.DisplayMode?
