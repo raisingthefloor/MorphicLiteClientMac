@@ -10,17 +10,29 @@ import Foundation
 
 public class PopUpButtonElement: UIElement{
     
-    public var value: Int?{
+    public var value: String?{
         get{
             accessibilityElement.value(forAttribute: .value)
         }
     }
     
-    public func setValue(_ value: Int) -> Bool{
-        guard accessibilityElement.setValue(value, forAttribute: .value) else{
-            return false
+    public func setValue(_ value: String, completion: @escaping (_ success: Bool) -> Void){
+        guard accessibilityElement.perform(action: .showMenu) else{
+            completion(false)
+            return
         }
-        return true
+        guard let menu = self.menu else{
+            completion(false)
+            return
+        }
+        guard menu.select(itemTitled: value) else{
+            completion(false)
+            return
+        }
+        self.wait(atMost: 2.0, for: { self.value == value }){
+            success in
+            completion(success)
+        }
     }
     
 }

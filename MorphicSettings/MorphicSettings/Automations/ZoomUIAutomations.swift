@@ -66,9 +66,16 @@ public class ZoomPopupButtonUIAutomation: AccessibilityUIAutomation{
     
     var buttonTitle: String! { nil }
     
+    var optionTitles: [Int: String]! { nil }
+    
     public override func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
         guard let value = value as? Int else{
-            os_log(.error, log: logger, "Passed non-int value")
+            os_log(.error, log: logger, "Passed non-int value to popup")
+            completion(false)
+            return
+        }
+        guard let stringValue = optionTitles[value] else{
+            os_log(.error, log: logger, "Passed invalid int value to popup")
             completion(false)
             return
         }
@@ -83,12 +90,15 @@ public class ZoomPopupButtonUIAutomation: AccessibilityUIAutomation{
                 completion(false)
                 return
             }
-            guard button.setValue(value) else{
-                os_log(.error, log: logger, "Failed to set popup button value")
-                completion(false)
-                return
+            button.setValue(stringValue){
+                success in
+                guard success else{
+                    os_log(.error, log: logger, "Failed to set popup button value")
+                    completion(false)
+                    return
+                }
+                completion(true)
             }
-            completion(true)
         }
         
     }
@@ -166,4 +176,11 @@ public class ZoomStyleUIAutomation: ZoomPopupButtonUIAutomation{
     
     override var buttonTitle: String! { "Zoom style:" }
     
+    override var optionTitles: [Int : String]! {
+        [
+            0: "Full screen",
+            1: "Picture-in-picture",
+            2: "Split screen",
+        ]
+    }
 }

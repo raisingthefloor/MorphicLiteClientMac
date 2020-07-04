@@ -63,6 +63,10 @@ public class UIElement{
         return descendant(role: .slider, title: titled)
     }
     
+    public var menu: MenuElement?{
+        return descendant(role: .menu)
+    }
+    
     private func descendant<ElementType: UIElement>(role: NSAccessibility.Role, title: String) -> ElementType?{
         guard let accessibilityElement = accessibilityDescendant(role: role, title: title) else{
             return nil

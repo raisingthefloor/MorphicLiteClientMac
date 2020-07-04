@@ -244,20 +244,19 @@ class QuickStripControlItem: QuickStripItem{
         }
         let session = Session.shared
         if segment == 0{
+            let keyValuesToSet: [(Preferences.Key, Interoperable?)] = [
+                (.macosZoomStyle, 1)
+            ]
             let preferences = Preferences(identifier: "__magnifier__")
             let capture = CaptureSession(settingsManager: session.settings, preferences: preferences)
-            capture.keys = [
-                .macosZoomStyle
-            ]
+            capture.keys = keyValuesToSet.map{ $0.0 }
             capture.captureDefaultValues = true
             capture.run {
                 session.storage.save(record: capture.preferences){
                     _ in
-                    session.settings.apply(values: [
-                        .macosZoomStyle: 2,
-                        .macosZoomEnabled: true
-                    ]){
-                        _ in
+                    let apply = ApplySession(settingsManager: session.settings, keyValueTuples: keyValuesToSet)
+                    apply.add(key: .macosZoomEnabled, value: true)
+                    apply.run {
                     }
                 }
             }
@@ -266,8 +265,7 @@ class QuickStripControlItem: QuickStripItem{
                 (preferences: Preferences?) in
                 if let preferences = preferences{
                     let apply = ApplySession(settingsManager: session.settings, preferences: preferences)
-                    apply.valuesByKey[.macosZoomEnabled] = false
-                    apply.applyDefaultValues = false
+                    apply.addFirst(key: .macosZoomEnabled, value: false)
                     apply.run {
                     }
                 }else{

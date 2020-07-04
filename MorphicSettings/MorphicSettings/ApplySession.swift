@@ -40,70 +40,74 @@ public class ApplySession{
     /// - parameters:
     ///   - settingsManager: The settings manager to use when looking up `Setting`s
     ///   - valuesByKey: The values to apply in this session
-    public required init(settingsManager: SettingsManager, valuesByKey: [Preferences.Key: Interoperable?]){
+    public required init(settingsManager: SettingsManager, keyValueTuples: [(Preferences.Key, Interoperable?)]){
         self.settingsManager = settingsManager
-        self.valuesByKey = valuesByKey
+        self.keyValueTuples = keyValueTuples
     }
     
     /// Create an apply session for the given settings manager and preferences
     ///
     /// Convenience method that extracts values from preferences
     public convenience init(settingsManager: SettingsManager, preferences: Preferences){
-        self.init(settingsManager: settingsManager, valuesByKey: preferences.valuesByKey())
+        self.init(settingsManager: settingsManager, keyValueTuples: preferences.keyValueTuples())
     }
     
     /// The values to apply for in session
-    public var valuesByKey: [Preferences.Key: Interoperable?]
+    public var keyValueTuples: [(Preferences.Key, Interoperable?)]
+    
+    public func add(key: Preferences.Key, value: Interoperable?){
+        keyValueTuples.append((key, value))
+    }
+    
+    public func addFirst(key: Preferences.Key, value: Interoperable?){
+        keyValueTuples.insert((key, value), at: 0)
+    }
     
     /// The results for each individual setting
     ///
     /// - note: if a key doesn't have a result, you can assume it failed
     public private(set) var results = [Preferences.Key: Bool]()
-    
-    /// In addition to `valuesByKeys`, should the apply session also set default values for
-    /// every other known setting?
-    public var applyDefaultValues = true
        
     /// The settings manager to use to lookup `Setting` objects
     public private(set) var settingsManager: SettingsManager
     
     /// The remaining keys to apply
-    private var keyQueue: [Preferences.Key]!
+    private var keyValueQueue: [(Preferences.Key, Interoperable?)]!
     
     /// The remaining finalizers to run
     private var finalizerQueue: [SettingFinalizerDescription]!
+    
+    public func addDefaultValuesFromAllSolutions(){
+        let valuesByKey = [Preferences.Key: Interoperable?].init(uniqueKeysWithValues: keyValueTuples)
+        for solution in settingsManager.solutions{
+            for setting in solution.settings{
+                let key = Preferences.Key(solution: solution.identifier, preference: setting.name)
+                if valuesByKey[key] == nil{
+                    if let defaultValue = setting.defaultValue{
+                        keyValueTuples.append((key, defaultValue))
+                    }
+                }
+            }
+        }
+    }
     
     /// Apply each setting and then call the completion handler
     ///
     /// - parameters:
     ///   - completion: Called when all the setting apply calls have completed
     public func run(completion: @escaping () -> Void){
-        guard keyQueue == nil else{
+        guard keyValueQueue == nil else{
             os_log(.info, log: logger, "Calling .run() before previous run finished")
             return
         }
         
         WorkspaceElement.shared.launchedApplications = []
         
-        // populate valuesByKey with defaults if requested
-        if (applyDefaultValues){
-            for solution in settingsManager.solutions{
-                for setting in solution.settings{
-                    let key = Preferences.Key(solution: solution.identifier, preference: setting.name)
-                    if valuesByKey[key] == nil{
-                        if let defaultValue = setting.defaultValue{
-                            valuesByKey[key] = defaultValue
-                        }
-                    }
-                }
-            }
-        }
-        
         // Figure out which unique finalizers need to run
         finalizerQueue = [SettingFinalizerDescription]()
         var seenFinalizers = Set<String>()
-        let keys = valuesByKey.keys.reversed()
-        for key in keys{
+        for pair in keyValueTuples{
+            let key = pair.0
             guard let setting = settingsManager.setting(for: key) else{
                 os_log(.info, log: logger, "Cannot find setting for %{public}s.%{public}s", key.solution, key.preference)
                 continue
@@ -117,17 +121,19 @@ public class ApplySession{
         }
         
         // Start applying
-        keyQueue = keys
+        keyValueQueue = keyValueTuples.reversed()
         applyNextKey(completion: completion)
     }
     
     /// Apply a single setting
     private func applyNextKey(completion: @escaping () -> Void){
-        guard keyQueue.count > 0 else{
+        guard keyValueQueue.count > 0 else{
             callNextFinalizer(completion: completion)
             return
         }
-        let key = keyQueue.removeLast()
+        let pair = keyValueQueue.removeLast()
+        let key = pair.0
+        let value = pair.1
         guard let setting = settingsManager.setting(for: key) else{
             os_log(.info, log: logger, "Cannot find setting for %{public}s.%{public}s", key.solution, key.preference)
             applyNextKey(completion: completion)
@@ -138,7 +144,7 @@ public class ApplySession{
             applyNextKey(completion: completion)
             return
         }
-        handler.apply(valuesByKey[key] ?? nil){
+        handler.apply(value){
             success in
             if !success{
                 os_log(.info, log: logger, "Failed to apply %{public}s.%{public}s", key.solution, key.preference)
@@ -151,7 +157,7 @@ public class ApplySession{
     /// Call a single finalizer
     private func callNextFinalizer(completion: @escaping () -> Void){
         guard finalizerQueue.count > 0 else{
-            keyQueue = nil
+            keyValueQueue = nil
             finalizerQueue = nil
             WorkspaceElement.shared.closeLaunchedApplications()
             completion()

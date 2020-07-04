@@ -96,16 +96,15 @@ public class SettingsManager{
     
     /// Apply a value for Morphic preference in the given solution
     public func apply(_ value: Interoperable?, for key: Preferences.Key, completion: @escaping (_ success: Bool) -> Void){
-        apply(values: [key: value]){
+        apply(values: [(key, value)]){
             results in
             completion(results[key] ?? false)
         }
     }
     
     /// Apply several values at once
-    public func apply(values: [Preferences.Key: Interoperable?], completion: @escaping (_ results: [Preferences.Key: Bool]) -> Void){
-        let session = ApplySession(settingsManager: self, valuesByKey: values)
-        session.applyDefaultValues = false
+    public func apply(values: [(Preferences.Key, Interoperable?)], completion: @escaping (_ results: [Preferences.Key: Bool]) -> Void){
+        let session = ApplySession(settingsManager: self, keyValueTuples: values)
         session.run{
             completion(session.results)
         }
@@ -126,7 +125,8 @@ public class SettingsManager{
         session.captureDefaultValues = true
         session.keys = keys
         session.run{
-            completion(session.preferences.valuesByKey())
+            let keyValueTuples = session.preferences.keyValueTuples()
+            completion([Preferences.Key: Interoperable?].init(uniqueKeysWithValues: keyValueTuples))
         }
     }
     

@@ -17,6 +17,8 @@
 		312DBFF924A2B200002FB951 /* ClientSettingHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DBFF824A2B200002FB951 /* ClientSettingHandler.swift */; };
 		312DBFFB24A2C66A002FB951 /* ApplySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DBFFA24A2C66A002FB951 /* ApplySession.swift */; };
 		312DBFFD24A2C683002FB951 /* CaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DBFFC24A2C683002FB951 /* CaptureSession.swift */; };
+		3137AC4224B0FB9600CE3808 /* MenuElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3137AC4124B0FB9600CE3808 /* MenuElement.swift */; };
+		3137AC4424B0FBC600CE3808 /* MenuItemElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3137AC4324B0FBC600CE3808 /* MenuItemElement.swift */; };
 		314EB6DE24A6A67700CF3D48 /* UIAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314EB6DD24A6A67700CF3D48 /* UIAutomation.swift */; };
 		314EB6E024A6A69B00CF3D48 /* DisplayUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314EB6DF24A6A69B00CF3D48 /* DisplayUIAutomations.swift */; };
 		314EB6E224A6B34300CF3D48 /* TabElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314EB6E124A6B34300CF3D48 /* TabElement.swift */; };
@@ -94,6 +96,8 @@
 		312DBFF824A2B200002FB951 /* ClientSettingHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientSettingHandler.swift; sourceTree = "<group>"; };
 		312DBFFA24A2C66A002FB951 /* ApplySession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplySession.swift; sourceTree = "<group>"; };
 		312DBFFC24A2C683002FB951 /* CaptureSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSession.swift; sourceTree = "<group>"; };
+		3137AC4124B0FB9600CE3808 /* MenuElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuElement.swift; sourceTree = "<group>"; };
+		3137AC4324B0FBC600CE3808 /* MenuItemElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemElement.swift; sourceTree = "<group>"; };
 		314EB6DD24A6A67700CF3D48 /* UIAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAutomation.swift; sourceTree = "<group>"; };
 		314EB6DF24A6A69B00CF3D48 /* DisplayUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayUIAutomations.swift; sourceTree = "<group>"; };
 		314EB6E124A6B34300CF3D48 /* TabElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabElement.swift; sourceTree = "<group>"; };
@@ -166,6 +170,15 @@
 				311336532427FB3400686AF6 /* MorphicCore.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3137AC4524B0FC0D00CE3808 /* Menus */ = {
+			isa = PBXGroup;
+			children = (
+				3137AC4124B0FB9600CE3808 /* MenuElement.swift */,
+				3137AC4324B0FBC600CE3808 /* MenuItemElement.swift */,
+			);
+			path = Menus;
 			sourceTree = "<group>";
 		};
 		314EB6DC24A6A65F00CF3D48 /* Automations */ = {
@@ -348,6 +361,7 @@
 				315EEC8E24A5477E0039C61D /* ApplicationElement.swift */,
 				315EECA224A583B80039C61D /* Windows */,
 				315EECA124A583AE0039C61D /* Controls */,
+				3137AC4524B0FC0D00CE3808 /* Menus */,
 				315EECA024A5839F0039C61D /* Tables */,
 				315EECA324A583C00039C61D /* SystemPrefs */,
 				31F9AEE724A80C7C0026EBDA /* KeyEvents.h */,
@@ -506,6 +520,7 @@
 				315EEC8B24A546AE0039C61D /* ToolbarElement.swift in Sources */,
 				315EEC9524A554580039C61D /* ButtonElement.swift in Sources */,
 				31F9AEDD24A7F2D90026EBDA /* AccessibilityUIAutomation.swift in Sources */,
+				3137AC4424B0FBC600CE3808 /* MenuItemElement.swift in Sources */,
 				315EEC8324A530970039C61D /* SystemPreferences.swift in Sources */,
 				31A16BCF2423E86C0081A72C /* MorphicDisk.swift in Sources */,
 				3113364D2427F01100686AF6 /* SettingsManager.swift in Sources */,
@@ -513,6 +528,7 @@
 				9D0AF73724A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift in Sources */,
 				31CE56E22448C8F700A52A7B /* SettingHandler.swift in Sources */,
 				315EEC8724A536A60039C61D /* TabGroupElement.swift in Sources */,
+				3137AC4224B0FB9600CE3808 /* MenuElement.swift in Sources */,
 				315EEC9924A5714F0039C61D /* RowElement.swift in Sources */,
 				314EB6E024A6A69B00CF3D48 /* DisplayUIAutomations.swift in Sources */,
 				315EEC9324A5520F0039C61D /* SystemPreferencesElement.swift in Sources */,
