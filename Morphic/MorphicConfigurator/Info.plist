@@ -52,5 +52,7 @@
 	<true/>
 	<key>NSSupportsSuddenTermination</key>
 	<true/>
+	<key>FrontEndURL</key>
+	<string>$(FRONT_END_URL)</string>
 </dict>
 </plist>

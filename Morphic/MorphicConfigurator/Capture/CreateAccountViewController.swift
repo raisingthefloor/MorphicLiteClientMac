@@ -8,6 +8,12 @@
 
 import Cocoa
 
+protocol CreateAccountViewControllerDelegate{
+    
+    func createAccountDidComplete()
+
+}
+
 class CreateAccountViewController: NSViewController {
 
     override func viewDidLoad() {

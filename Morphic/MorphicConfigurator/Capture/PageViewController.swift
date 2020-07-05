@@ -9,10 +9,32 @@
 import Cocoa
 
 class PageViewController: NSViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do view setup here.
+    }
+    
+    func show(viewController: NSViewController, animated: Bool){
+        let shown = children.first
+        shown?.removeFromParent()
+        addChild(viewController)
+        viewController.view.frame = view.bounds
+        view.addSubview(viewController.view)
+        if animated{
+            let dismissing = shown?.view.layer
+            let presenting = viewController.view.layer
+            presenting?.setAffineTransform(CGAffineTransform(translationX: view.bounds.width, y: 0))
+            CATransaction.begin()
+            CATransaction.setAnimationDuration(0.3)
+            CATransaction.setCompletionBlock{
+                shown?.view.removeFromSuperview()
+            }
+            presenting?.setAffineTransform(.identity)
+            dismissing?.setAffineTransform(CGAffineTransform(translationX: -view.bounds.width, y: 0))
+            CATransaction.commit()
+        }else{
+            shown?.view.removeFromSuperview()
+        }
     }
     
 }

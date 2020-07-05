@@ -8,11 +8,34 @@
 
 import Cocoa
 
+protocol CaptureViewControllerDelegate{
+    
+    func captureDidComplete()
+
+}
+
 class CaptureViewController: NSViewController {
+    
+    @IBOutlet weak var gearImage: NSImageView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do view setup here.
+    }
+    
+    var animation: CABasicAnimation!
+    
+    func startAnimating(){
+        animation = CABasicAnimation(keyPath: "transform.rotation.z")
+        animation.fromValue = 0
+        animation.toValue = CGFloat.pi * 2
+        animation.repeatCount = .infinity
+        animation.duration = 4
+        gearImage.layer?.add(animation, forKey: "spin")
+    }
+    
+    func stopAnimating(){
+        gearImage.layer?.removeAnimation(forKey: "spin")
+        animation = nil
     }
     
 }

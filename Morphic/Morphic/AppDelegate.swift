@@ -52,6 +52,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 if Session.shared.bool(for: .morphicQuickStripVisible) ?? true{
                     self.showQuickStrip(nil)
                 }
+                UserDefaults.morphic.addObserver(self, forKeyPath: .morphicDefaultsKeyUserIdentifier, options: [], context: nil)
             }
         }
     }
@@ -174,8 +175,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
      
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        toggleQuickStrip(statusItem.button!)
-        UserDefaults.morphic.removeObserver(self, forKeyPath: .morphicDefaultsKeyUserIdentifier)
         os_log(.info, log: logger, "Configurator set user identifier, retrying session open")
         Session.shared.open {
             if Session.shared.user == nil{

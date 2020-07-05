@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		314EB6DB24A697C300CF3D48 /* macos.solutions.json in Resources */ = {isa = PBXBuildFile; fileRef = 314EB6DA24A697C300CF3D48 /* macos.solutions.json */; };
+		3103974024B15DB600F5AA84 /* CustomCursorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3103973F24B15DB600F5AA84 /* CustomCursorButton.swift */; };
+		3103974424B1702800F5AA84 /* PageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3103974324B1702800F5AA84 /* PageViewController.xib */; };
 		3130B0EB24A41A05003864DD /* LoginWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3130B0EA24A41A05003864DD /* LoginWindow.xib */; };
 		3130B0ED24A41CCF003864DD /* CaptureWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3130B0EC24A41CCF003864DD /* CaptureWindow.xib */; };
 		3130B0EF24A41E8D003864DD /* LoginWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3130B0EE24A41E8D003864DD /* LoginWindowController.swift */; };
@@ -19,6 +20,7 @@
 		3130B0FD24A4202E003864DD /* CreateAccountViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3130B0FB24A4202E003864DD /* CreateAccountViewController.xib */; };
 		3130B10024A42037003864DD /* DoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3130B0FE24A42037003864DD /* DoneViewController.swift */; };
 		3130B10124A42037003864DD /* DoneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3130B0FF24A42037003864DD /* DoneViewController.xib */; };
+		314EB6DB24A697C300CF3D48 /* macos.solutions.json in Resources */ = {isa = PBXBuildFile; fileRef = 314EB6DA24A697C300CF3D48 /* macos.solutions.json */; };
 		31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B0C2444DE8900EEDF14 /* AppDelegate.swift */; };
 		31751B0F2444DE8B00EEDF14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31751B0E2444DE8B00EEDF14 /* Assets.xcassets */; };
 		31751B1E2444DE8B00EEDF14 /* MorphicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B1D2444DE8B00EEDF14 /* MorphicTests.swift */; };
@@ -49,7 +51,6 @@
 		31751B992444F21700EEDF14 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B972444F21700EEDF14 /* Session.swift */; };
 		31751B9E2444F22900EEDF14 /* QuickStripViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B9B2444F22900EEDF14 /* QuickStripViewController.swift */; };
 		31751B9F2444F22900EEDF14 /* QuickStripWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B9C2444F22900EEDF14 /* QuickStripWindow.swift */; };
-		31751BA12444F24800EEDF14 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751BA02444F24800EEDF14 /* ViewController.swift */; };
 		31C12CB824B1174900B617A8 /* QuickHelpContentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C12CB724B1174900B617A8 /* QuickHelpContentProvider.swift */; };
 		31C12CBB24B11F5A00B617A8 /* QuickHelpVolumeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C12CB924B11F5A00B617A8 /* QuickHelpVolumeViewController.swift */; };
 		31C12CBC24B11F5A00B617A8 /* QuickHelpVolumeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C12CBA24B11F5A00B617A8 /* QuickHelpVolumeViewController.xib */; };
@@ -148,7 +149,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		314EB6DA24A697C300CF3D48 /* macos.solutions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = macos.solutions.json; sourceTree = "<group>"; };
+		3103973F24B15DB600F5AA84 /* CustomCursorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCursorButton.swift; sourceTree = "<group>"; };
+		3103974324B1702800F5AA84 /* PageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PageViewController.xib; sourceTree = "<group>"; };
 		3130B0EA24A41A05003864DD /* LoginWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginWindow.xib; sourceTree = "<group>"; };
 		3130B0EC24A41CCF003864DD /* CaptureWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CaptureWindow.xib; sourceTree = "<group>"; };
 		3130B0EE24A41E8D003864DD /* LoginWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWindowController.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 		3130B0FB24A4202E003864DD /* CreateAccountViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CreateAccountViewController.xib; sourceTree = "<group>"; };
 		3130B0FE24A42037003864DD /* DoneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoneViewController.swift; sourceTree = "<group>"; };
 		3130B0FF24A42037003864DD /* DoneViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DoneViewController.xib; sourceTree = "<group>"; };
+		314EB6DA24A697C300CF3D48 /* macos.solutions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = macos.solutions.json; sourceTree = "<group>"; };
 		31751B092444DE8900EEDF14 /* Morphic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Morphic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31751B0C2444DE8900EEDF14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		31751B0E2444DE8B00EEDF14 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -267,19 +270,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		314EB6D924A6978200CF3D48 /* Solutions */ = {
-			isa = PBXGroup;
-			children = (
-				314EB6DA24A697C300CF3D48 /* macos.solutions.json */,
-			);
-			path = Solutions;
-			sourceTree = "<group>";
-		};
 		3130B0F224A41FB0003864DD /* Login */ = {
 			isa = PBXGroup;
 			children = (
 				3130B0EE24A41E8D003864DD /* LoginWindowController.swift */,
 				3130B0EA24A41A05003864DD /* LoginWindow.xib */,
+				3103973F24B15DB600F5AA84 /* CustomCursorButton.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -290,6 +286,7 @@
 				3130B0F024A41FA6003864DD /* CaptureWindowController.swift */,
 				3130B0EC24A41CCF003864DD /* CaptureWindow.xib */,
 				3130B0F424A42006003864DD /* PageViewController.swift */,
+				3103974324B1702800F5AA84 /* PageViewController.xib */,
 				3130B0F624A42020003864DD /* CaptureViewController.swift */,
 				3130B0F724A42020003864DD /* CaptureViewController.xib */,
 				3130B0FA24A4202E003864DD /* CreateAccountViewController.swift */,
@@ -298,6 +295,14 @@
 				3130B0FF24A42037003864DD /* DoneViewController.xib */,
 			);
 			path = Capture;
+			sourceTree = "<group>";
+		};
+		314EB6D924A6978200CF3D48 /* Solutions */ = {
+			isa = PBXGroup;
+			children = (
+				314EB6DA24A697C300CF3D48 /* macos.solutions.json */,
+			);
+			path = Solutions;
 			sourceTree = "<group>";
 		};
 		31751B002444DE8900EEDF14 = {
@@ -652,6 +657,7 @@
 				3130B0F924A42020003864DD /* CaptureViewController.xib in Resources */,
 				31751B5A2444E0E400EEDF14 /* Assets.xcassets in Resources */,
 				3130B10124A42037003864DD /* DoneViewController.xib in Resources */,
+				3103974424B1702800F5AA84 /* PageViewController.xib in Resources */,
 				3130B0FD24A4202E003864DD /* CreateAccountViewController.xib in Resources */,
 				3130B0EB24A41A05003864DD /* LoginWindow.xib in Resources */,
 				31751B5D2444E0E400EEDF14 /* MainMenu.xib in Resources */,
@@ -743,6 +749,7 @@
 				3130B10024A42037003864DD /* DoneViewController.swift in Sources */,
 				3130B0FC24A4202E003864DD /* CreateAccountViewController.swift in Sources */,
 				31751B582444E0E300EEDF14 /* AppDelegate.swift in Sources */,
+				3103974024B15DB600F5AA84 /* CustomCursorButton.swift in Sources */,
 				3130B0F824A42020003864DD /* CaptureViewController.swift in Sources */,
 				3130B0F524A42006003864DD /* PageViewController.swift in Sources */,
 				31751B992444F21700EEDF14 /* Session.swift in Sources */,

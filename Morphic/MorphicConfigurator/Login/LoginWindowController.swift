@@ -7,20 +7,68 @@
 //
 
 import Cocoa
+import MorphicCore
+import MorphicSettings
+import MorphicService
 
 class LoginWindowController: NSWindowController {
 
     override func windowDidLoad() {
         super.windowDidLoad()
+        forgotPasswordButton.cursor = .pointingHand
     }
     
     @IBOutlet weak var usernameField: NSTextField!
     @IBOutlet weak var passwordField: NSSecureTextField!
     @IBOutlet weak var submitButton: NSButton!
+    @IBOutlet weak var activityIndicator: NSProgressIndicator!
+    @IBOutlet weak var statusLabel: NSTextField!
+    @IBOutlet weak var errorLabel: NSTextField!
+    @IBOutlet weak var forgotPasswordButton: CustomCursorButton!
     
     @IBAction
     func login(_ sender: Any?){
-        
+        errorLabel.isHidden = true
+        setFieldsEnabled(false)
+        let creds = UsernameCredentials(username: usernameField.stringValue, password: passwordField.stringValue)
+        _ = Session.shared.authenticate(usingUsername: creds){
+            success in
+            guard success else{
+                self.setFieldsEnabled(true)
+                self.errorLabel.isHidden = false
+                return
+            }
+            self.indicateActivity(withStatusText: "Applying your settings...")
+            Session.shared.applyAllPreferences {
+                NSApplication.shared.terminate(nil)
+            }
+        }
+    }
+    
+    @IBAction
+    func forgotPassword(_ sender: Any?){
+        guard let urlString = Bundle.main.infoDictionary?["FrontEndURL"] as? String else{
+            return
+        }
+        let url = URL(string: urlString)!.appendingPathComponent("password").appendingPathComponent("reset")
+        NSWorkspace.shared.open(url)
+    }
+    
+    func setFieldsEnabled(_ enabled: Bool){
+        usernameField.isEnabled = enabled
+        passwordField.isEnabled = enabled
+        submitButton.isEnabled = enabled
+    }
+    
+    func indicateActivity(withStatusText text: String?){
+        statusLabel.isHidden = false
+        statusLabel.stringValue = text ?? ""
+        activityIndicator.startAnimation(nil)
+    }
+    
+    func stopActivity(){
+        statusLabel.isHidden = true
+        activityIndicator.stopAnimation(nil)
     }
 
 }

@@ -1,19 +1,68 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11134" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11134"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="CaptureViewController" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="CaptureViewController" customModule="MorphicConfigurator" customModuleProvider="target">
             <connections>
+                <outlet property="gearImage" destination="fGC-Hf-MCy" id="6du-Bn-1tf"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customView id="Hz6-mo-xeY">
-            <rect key="frame" x="0.0" y="0.0" width="480" height="272"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+        <customView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Hz6-mo-xeY">
+            <rect key="frame" x="0.0" y="0.0" width="480" height="328"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="F08-eL-7oT">
+                    <rect key="frame" x="89" y="284" width="303" height="24"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="Capturing your current settings..." id="wET-NY-bnQ">
+                        <font key="font" metaFont="system" size="21"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="usX-cP-cpv">
+                    <rect key="frame" x="137" y="260" width="207" height="16"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="...so you can take them anywhere" id="dSf-jm-qws">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <imageView wantsLayer="YES" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fGC-Hf-MCy">
+                    <rect key="frame" x="140" y="30" width="200" height="200"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="fGC-Hf-MCy" secondAttribute="height" multiplier="1:1" id="Dey-2s-X5E"/>
+                        <constraint firstAttribute="height" constant="200" id="gce-kB-WdL"/>
+                    </constraints>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Icon-gear" id="dSo-Dn-70t"/>
+                </imageView>
+                <imageView wantsLayer="YES" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="51D-rM-qU6">
+                    <rect key="frame" x="140" y="30" width="200" height="200"/>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Icon-nogear" id="7vK-xj-fcX"/>
+                </imageView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="fGC-Hf-MCy" firstAttribute="top" secondItem="usX-cP-cpv" secondAttribute="bottom" constant="30" id="5XJ-32-shM"/>
+                <constraint firstAttribute="bottom" secondItem="fGC-Hf-MCy" secondAttribute="bottom" constant="30" id="5zj-j7-GZJ"/>
+                <constraint firstItem="F08-eL-7oT" firstAttribute="centerX" secondItem="Hz6-mo-xeY" secondAttribute="centerX" id="9ny-Up-Hjz"/>
+                <constraint firstItem="usX-cP-cpv" firstAttribute="centerX" secondItem="Hz6-mo-xeY" secondAttribute="centerX" id="DwE-8m-IGQ"/>
+                <constraint firstItem="fGC-Hf-MCy" firstAttribute="centerX" secondItem="Hz6-mo-xeY" secondAttribute="centerX" id="G4G-sG-62A"/>
+                <constraint firstItem="51D-rM-qU6" firstAttribute="centerY" secondItem="fGC-Hf-MCy" secondAttribute="centerY" id="OOh-kJ-umK"/>
+                <constraint firstItem="51D-rM-qU6" firstAttribute="height" secondItem="fGC-Hf-MCy" secondAttribute="height" id="P55-QU-jtL"/>
+                <constraint firstItem="51D-rM-qU6" firstAttribute="centerX" secondItem="fGC-Hf-MCy" secondAttribute="centerX" id="T5g-3V-f6R"/>
+                <constraint firstItem="51D-rM-qU6" firstAttribute="width" secondItem="fGC-Hf-MCy" secondAttribute="width" id="cIj-RY-igN"/>
+                <constraint firstItem="usX-cP-cpv" firstAttribute="firstBaseline" secondItem="F08-eL-7oT" secondAttribute="baseline" constant="25" id="e44-8T-PC8"/>
+                <constraint firstItem="F08-eL-7oT" firstAttribute="top" secondItem="Hz6-mo-xeY" secondAttribute="top" constant="20" id="zol-UX-NdQ"/>
+            </constraints>
+            <point key="canvasLocation" x="193" y="219"/>
         </customView>
     </objects>
+    <resources>
+        <image name="Icon-gear" width="512" height="512"/>
+        <image name="Icon-nogear" width="512" height="512"/>
+    </resources>
 </document>

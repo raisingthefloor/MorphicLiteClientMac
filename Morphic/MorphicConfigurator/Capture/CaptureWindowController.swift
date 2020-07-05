@@ -7,23 +7,43 @@
 //
 
 import Cocoa
+import MorphicService
 
-class CaptureWindowController: NSWindowController {
+class CaptureWindowController: NSWindowController, CaptureViewControllerDelegate, CreateAccountViewControllerDelegate {
     
-    var pageViewController = PageViewController()
+    var pageViewController = PageViewController(nibName: "PageViewController", bundle: nil)
 
     override func windowDidLoad() {
         super.windowDidLoad()
         window?.contentViewController = pageViewController
+        showCapture(animated: false)
     }
     
-    func showCapture(){
+    func showCapture(animated: Bool){
+        let captureViewController = CaptureViewController(nibName: "CaptureViewController", bundle: nil)
+        pageViewController.show(viewController: captureViewController, animated: animated)
     }
     
-    func showCreateAccount(){
+    func captureDidComplete() {
+        if Session.shared.user == nil{
+            showCreateAccount(animated: true)
+        }else{
+            showDone(animated: true)
+        }
     }
     
-    func showDone(){
+    func showCreateAccount(animated: Bool){
+        let createAccountViewController = CreateAccountViewController(nibName: "CreateAccountViewController", bundle: nil)
+        pageViewController.show(viewController: createAccountViewController, animated: animated)
+    }
+    
+    func createAccountDidComplete() {
+        showDone(animated: true)
+    }
+    
+    func showDone(animated: Bool){
+        let doneViewController = DoneViewController(nibName: "DoneViewController", bundle: nil)
+        pageViewController.show(viewController: doneViewController, animated: animated)
     }
 
 }
