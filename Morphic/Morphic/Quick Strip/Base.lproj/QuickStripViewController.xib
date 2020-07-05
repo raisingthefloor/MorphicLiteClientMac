@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16096" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16096"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -59,14 +59,18 @@
                         <action selector="hideQuickStrip:" target="-1" id="8CC-hU-78U"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Customize Quick Strip..." keyEquivalent="," id="1rR-To-5lZ">
-                    <connections>
-                        <action selector="launchConfigurator:" target="-1" id="U4w-OL-RLo"/>
-                    </connections>
-                </menuItem>
                 <menuItem isSeparatorItem="YES" id="PsU-Tp-zqY"/>
                 <menuItem title="Take Settings With Me..." id="jUa-06-vgJ">
                     <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="launchCapture:" target="-1" id="cWb-3v-CO3"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Apply My Settings..." id="iGo-my-5Ga">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="launchLogin:" target="-1" id="iDp-T7-VY1"/>
+                    </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="vgL-Lb-axj"/>
                 <menuItem title="Quit Morphic" keyEquivalent="q" id="tHP-m8-Lto">

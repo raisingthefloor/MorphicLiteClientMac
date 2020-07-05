@@ -8,6 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		314EB6DB24A697C300CF3D48 /* macos.solutions.json in Resources */ = {isa = PBXBuildFile; fileRef = 314EB6DA24A697C300CF3D48 /* macos.solutions.json */; };
+		3130B0EB24A41A05003864DD /* LoginWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3130B0EA24A41A05003864DD /* LoginWindow.xib */; };
+		3130B0ED24A41CCF003864DD /* CaptureWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3130B0EC24A41CCF003864DD /* CaptureWindow.xib */; };
+		3130B0EF24A41E8D003864DD /* LoginWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3130B0EE24A41E8D003864DD /* LoginWindowController.swift */; };
+		3130B0F124A41FA6003864DD /* CaptureWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3130B0F024A41FA6003864DD /* CaptureWindowController.swift */; };
+		3130B0F524A42006003864DD /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3130B0F424A42006003864DD /* PageViewController.swift */; };
+		3130B0F824A42020003864DD /* CaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3130B0F624A42020003864DD /* CaptureViewController.swift */; };
+		3130B0F924A42020003864DD /* CaptureViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3130B0F724A42020003864DD /* CaptureViewController.xib */; };
+		3130B0FC24A4202E003864DD /* CreateAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3130B0FA24A4202E003864DD /* CreateAccountViewController.swift */; };
+		3130B0FD24A4202E003864DD /* CreateAccountViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3130B0FB24A4202E003864DD /* CreateAccountViewController.xib */; };
+		3130B10024A42037003864DD /* DoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3130B0FE24A42037003864DD /* DoneViewController.swift */; };
+		3130B10124A42037003864DD /* DoneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3130B0FF24A42037003864DD /* DoneViewController.xib */; };
 		31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B0C2444DE8900EEDF14 /* AppDelegate.swift */; };
 		31751B0F2444DE8B00EEDF14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31751B0E2444DE8B00EEDF14 /* Assets.xcassets */; };
 		31751B1E2444DE8B00EEDF14 /* MorphicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B1D2444DE8B00EEDF14 /* MorphicTests.swift */; };
@@ -33,7 +44,6 @@
 		31751B882444E15F00EEDF14 /* MorphicService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B482444E04300EEDF14 /* MorphicService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		31751B892444E15F00EEDF14 /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B492444E04300EEDF14 /* MorphicSettings.framework */; };
 		31751B8A2444E15F00EEDF14 /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B492444E04300EEDF14 /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		31751B8F2444E56800EEDF14 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31751B8E2444E56800EEDF14 /* ViewController.xib */; };
 		31751B942444F06100EEDF14 /* MorphicConfigurator.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 31751B552444E0E300EEDF14 /* MorphicConfigurator.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		31751B982444F21700EEDF14 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B972444F21700EEDF14 /* Session.swift */; };
 		31751B992444F21700EEDF14 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B972444F21700EEDF14 /* Session.swift */; };
@@ -139,6 +149,17 @@
 
 /* Begin PBXFileReference section */
 		314EB6DA24A697C300CF3D48 /* macos.solutions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = macos.solutions.json; sourceTree = "<group>"; };
+		3130B0EA24A41A05003864DD /* LoginWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginWindow.xib; sourceTree = "<group>"; };
+		3130B0EC24A41CCF003864DD /* CaptureWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CaptureWindow.xib; sourceTree = "<group>"; };
+		3130B0EE24A41E8D003864DD /* LoginWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWindowController.swift; sourceTree = "<group>"; };
+		3130B0F024A41FA6003864DD /* CaptureWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureWindowController.swift; sourceTree = "<group>"; };
+		3130B0F424A42006003864DD /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
+		3130B0F624A42020003864DD /* CaptureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureViewController.swift; sourceTree = "<group>"; };
+		3130B0F724A42020003864DD /* CaptureViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CaptureViewController.xib; sourceTree = "<group>"; };
+		3130B0FA24A4202E003864DD /* CreateAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountViewController.swift; sourceTree = "<group>"; };
+		3130B0FB24A4202E003864DD /* CreateAccountViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CreateAccountViewController.xib; sourceTree = "<group>"; };
+		3130B0FE24A42037003864DD /* DoneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoneViewController.swift; sourceTree = "<group>"; };
+		3130B0FF24A42037003864DD /* DoneViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DoneViewController.xib; sourceTree = "<group>"; };
 		31751B092444DE8900EEDF14 /* Morphic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Morphic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31751B0C2444DE8900EEDF14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		31751B0E2444DE8B00EEDF14 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -169,11 +190,9 @@
 		31751B7F2444E11500EEDF14 /* Local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Local.xcconfig; sourceTree = "<group>"; };
 		31751B802444E11600EEDF14 /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		31751B812444E11600EEDF14 /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
-		31751B8E2444E56800EEDF14 /* ViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewController.xib; sourceTree = "<group>"; };
 		31751B972444F21700EEDF14 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		31751B9B2444F22900EEDF14 /* QuickStripViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickStripViewController.swift; sourceTree = "<group>"; };
 		31751B9C2444F22900EEDF14 /* QuickStripWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickStripWindow.swift; sourceTree = "<group>"; };
-		31751BA02444F24800EEDF14 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		318744F32481A2DA00AE3954 /* CreateDiskImage.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = CreateDiskImage.sh; sourceTree = "<group>"; };
 		31C12CB724B1174900B617A8 /* QuickHelpContentProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickHelpContentProvider.swift; sourceTree = "<group>"; };
 		31C12CB924B11F5A00B617A8 /* QuickHelpVolumeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickHelpVolumeViewController.swift; sourceTree = "<group>"; };
@@ -254,6 +273,31 @@
 				314EB6DA24A697C300CF3D48 /* macos.solutions.json */,
 			);
 			path = Solutions;
+			sourceTree = "<group>";
+		};
+		3130B0F224A41FB0003864DD /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				3130B0EE24A41E8D003864DD /* LoginWindowController.swift */,
+				3130B0EA24A41A05003864DD /* LoginWindow.xib */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		3130B0F324A41FBB003864DD /* Capture */ = {
+			isa = PBXGroup;
+			children = (
+				3130B0F024A41FA6003864DD /* CaptureWindowController.swift */,
+				3130B0EC24A41CCF003864DD /* CaptureWindow.xib */,
+				3130B0F424A42006003864DD /* PageViewController.swift */,
+				3130B0F624A42020003864DD /* CaptureViewController.swift */,
+				3130B0F724A42020003864DD /* CaptureViewController.xib */,
+				3130B0FA24A4202E003864DD /* CreateAccountViewController.swift */,
+				3130B0FB24A4202E003864DD /* CreateAccountViewController.xib */,
+				3130B0FE24A42037003864DD /* DoneViewController.swift */,
+				3130B0FF24A42037003864DD /* DoneViewController.xib */,
+			);
+			path = Capture;
 			sourceTree = "<group>";
 		};
 		31751B002444DE8900EEDF14 = {
@@ -355,8 +399,8 @@
 				31751B592444E0E400EEDF14 /* Assets.xcassets */,
 				31751B5B2444E0E400EEDF14 /* MainMenu.xib */,
 				31751B572444E0E300EEDF14 /* AppDelegate.swift */,
-				31751BA02444F24800EEDF14 /* ViewController.swift */,
-				31751B8E2444E56800EEDF14 /* ViewController.xib */,
+				3130B0F224A41FB0003864DD /* Login */,
+				3130B0F324A41FBB003864DD /* Capture */,
 			);
 			path = MorphicConfigurator;
 			sourceTree = "<group>";
@@ -605,9 +649,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3130B0F924A42020003864DD /* CaptureViewController.xib in Resources */,
 				31751B5A2444E0E400EEDF14 /* Assets.xcassets in Resources */,
-				31751B8F2444E56800EEDF14 /* ViewController.xib in Resources */,
+				3130B10124A42037003864DD /* DoneViewController.xib in Resources */,
+				3130B0FD24A4202E003864DD /* CreateAccountViewController.xib in Resources */,
+				3130B0EB24A41A05003864DD /* LoginWindow.xib in Resources */,
 				31751B5D2444E0E400EEDF14 /* MainMenu.xib in Resources */,
+				3130B0ED24A41CCF003864DD /* CaptureWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -692,9 +740,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				31751BA12444F24800EEDF14 /* ViewController.swift in Sources */,
+				3130B10024A42037003864DD /* DoneViewController.swift in Sources */,
+				3130B0FC24A4202E003864DD /* CreateAccountViewController.swift in Sources */,
 				31751B582444E0E300EEDF14 /* AppDelegate.swift in Sources */,
+				3130B0F824A42020003864DD /* CaptureViewController.swift in Sources */,
+				3130B0F524A42006003864DD /* PageViewController.swift in Sources */,
 				31751B992444F21700EEDF14 /* Session.swift in Sources */,
+				3130B0F124A41FA6003864DD /* CaptureWindowController.swift in Sources */,
+				3130B0EF24A41E8D003864DD /* LoginWindowController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
