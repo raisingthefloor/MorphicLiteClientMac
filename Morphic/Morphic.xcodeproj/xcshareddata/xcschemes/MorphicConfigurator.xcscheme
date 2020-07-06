@@ -92,7 +92,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "capture"
+            argument = "login"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

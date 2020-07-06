@@ -87,7 +87,59 @@ public class Session{
     ///
     /// - returns: The created task
     func runningTask<ResponseBody>(with request: URLRequest?, completion: @escaping (_ response: ResponseBody?) -> Void) -> Task where ResponseBody: Decodable{
+        return runningTask(with: request){
+            (response: Service.Response<ResponseBody, EmptyBadRequestBody>) in
+            switch response{
+            case .success(let body):
+                completion(body)
+            case .badRequest, .failed:
+                completion(nil)
+            }
+        }
+    }
+    
+    /// Create a data task that decodes a JSON object from the response, or decodes an error response from a 400 result
+    ///
+    /// Expects the `Content-Type` response header to be `application/json; charset=utf-8`
+    ///
+    /// - parameters:
+    ///   - request: The URL request
+    ///   - completion: The block to call when the request completes
+    ///   - response: The respone status
+    ///
+    /// - returns: The created task
+    func runningTask<ResponseBody, BadRequestBody>(with request: URLRequest?, completion: @escaping (_ response: Service.Response<ResponseBody, BadRequestBody>) -> Void) -> Task where ResponseBody: Decodable, BadRequestBody: Decodable{
         if var request = request{
+            let handleResponse: (_ response: URLResponse?, _ data: Data?) -> Void = {
+                response, data in
+                guard let response = response else{
+                    DispatchQueue.main.async {
+                        completion(.failed)
+                    }
+                    return
+                }
+                if response.morphicBadRequest{
+                    if let body: BadRequestBody = response.morphicObject(from: data, for: 400){
+                        DispatchQueue.main.async {
+                            completion(.badRequest(body: body))
+                        }
+                        return
+                    }
+                    DispatchQueue.main.async {
+                        completion(.failed)
+                    }
+                    return
+                }
+                if let body: ResponseBody = response.morphicObject(from: data){
+                    DispatchQueue.main.async {
+                        completion(.success(body: body))
+                    }
+                    return
+                }
+                DispatchQueue.main.async {
+                    completion(.failed)
+                }
+            }
             os_log(.info, log: logger, "%{public}s %{public}s", request.httpMethod!, request.url!.path)
             let task = Task()
             task.urlTask = urlSession.dataTask(with: request){
@@ -104,33 +156,30 @@ public class Session{
                             task.urlTask = self.urlSession.dataTask(with: request){
                                 data, response, error in
                                 os_log(.error, log: logger, "%d %{public}s", (response as? HTTPURLResponse)?.statusCode ?? 0, request.url!.path)
-                                let body: ResponseBody? = response?.morphicObject(from: data)
-                                DispatchQueue.main.async {
-                                    completion(body)
-                                }
+                                handleResponse(response, data)
                             }
                             task.urlTask?.resume()
                         }else{
                             os_log(.info, log: logger, "Authentication failed")
                             DispatchQueue.main.async {
-                                completion(nil)
+                                completion(.failed)
                             }
                         }
                     }
                 }else{
-                    let body: ResponseBody? = response?.morphicObject(from: data)
-                    DispatchQueue.main.async {
-                        completion(body)
-                    }
+                    handleResponse(response, data)
                 }
             }
             task.urlTask?.resume()
             return task
         }
         DispatchQueue.main.async {
-            completion(nil)
+            completion(.failed)
         }
         return Task()
+    }
+    
+    private struct EmptyBadRequestBody: Decodable{
     }
     
     /// Create a data task that results in a yes/no response
@@ -218,13 +267,15 @@ public class Session{
     /// The keychain to use for user secrets
     lazy var keychain = Keychain.shared
     
+    private var temporarAuthToken: String?
+    
     /// Get the saved secret key login from the keychain
     public var authToken: String?{
         get{
             if let identifier = currentUserIdentifier{
-                return keychain.authToken(for: service.endpoint, userIdentifier: identifier)
+                return temporarAuthToken ?? keychain.authToken(for: service.endpoint, userIdentifier: identifier)
             }
-            return nil
+            return temporarAuthToken
         }
         set{
             guard let identifier = currentUserIdentifier else{
@@ -342,7 +393,7 @@ public class Session{
             if let preferences = preFetchedPreferences{
                 completion(preferences)
             }else{
-                _ = self.service.fetch(preferences: user.preferencesId, completion: completion)
+                _ = self.service.fetch(userPreferences: user, completion: completion)
             }
         }
         
@@ -378,10 +429,11 @@ public class Session{
         }
     }
     
-    public func register(user: User, credentials: UsernameCredentials, preferences: Preferences, completion: @escaping (_ success: Bool) -> Void){
+    public func register(user: User, credentials: UsernameCredentials, preferences: Preferences, completion: @escaping (_ result: RegistrationResult) -> Void){
         _ = service.register(user: user, username: credentials.username, password: credentials.password){
-            auth in
-            if let auth = auth{
+            result in
+            switch result{
+            case .success(let auth):
                 if !self.keychain.save(usernameCredentials: credentials, for: self.service.endpoint){
                     os_log(.error, log: logger, "Failed to save newly registered username credentials")
                 }
@@ -393,12 +445,17 @@ public class Session{
                 var createdPreferences = preferences
                 createdPreferences.identifier = createdUser.preferencesId
                 createdPreferences.userId = createdUser.identifier
-                UserDefaults.morphic.set(morphicUsername: credentials.username, for: auth.user.identifier)
-                self.signin(user: createdUser, preFetchedPreferences: preferences){
-                    completion(true)
+                self.temporarAuthToken = auth.token
+                _ = self.service.save(createdPreferences){
+                    _ in
+                    self.temporarAuthToken = nil
+                    UserDefaults.morphic.set(morphicUsername: credentials.username, for: auth.user.identifier)
+                    self.signin(user: createdUser, preFetchedPreferences: createdPreferences){
+                        completion(result)
+                    }
                 }
-            }else{
-                completion(false)
+            default:
+                completion(result)
             }
         }
     }
@@ -505,7 +562,7 @@ extension URLRequest{
         self.init(url: url)
         httpMethod = method.rawValue
         if let token = session.authToken{
-            self.addValue(token, forHTTPHeaderField: "X-Morphic-Auth-Token")
+            self.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
     }
     
@@ -561,11 +618,11 @@ extension URLResponse{
     ///   - data: The response data
     ///
     /// - returns: The decoded object, or `nil` if either the response or decoding failed
-    func morphicObject<T>(from data: Data?) -> T? where T : Decodable{
+    func morphicObject<T>(from data: Data?, for status: Int = 200) -> T? where T : Decodable{
         guard let response = self as? HTTPURLResponse else{
             return nil
         }
-        guard response.statusCode == 200 else{
+        guard response.statusCode == status else{
             return nil
         }
         guard let contentType = response.value(forHTTPHeaderField: "Content-Type")?.lowercased() else{
@@ -596,6 +653,18 @@ extension URLResponse{
             return false
         }
         return response.statusCode / 100 == 2
+    }
+    
+    /// Check if the Morphic HTTP request succeeded
+    ///
+    /// In order to be considered a success:
+    /// * The response object must be an `HTTPURLResponse`
+    /// * The HTTP `statusCode` must be `2xx`
+    var morphicBadRequest: Bool{
+        guard let response = self as? HTTPURLResponse else{
+            return false
+        }
+        return response.statusCode == 400
     }
     
     /// Check if the Morphic HTTP request failed because of authentication required

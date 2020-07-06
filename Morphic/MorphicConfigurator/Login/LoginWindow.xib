@@ -19,12 +19,12 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <window title="Log in to Morphic" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
+        <window title="Log in to Morphic" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" titlebarAppearsTransparent="YES" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <rect key="contentRect" x="196" y="240" width="438" height="301"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
-            <view key="contentView" wantsLayer="YES" misplaced="YES" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="438" height="264"/>
+            <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
+                <rect key="frame" x="0.0" y="0.0" width="438" height="257"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fpW-pE-kTi">
@@ -50,6 +50,10 @@
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
+                        <connections>
+                            <outlet property="delegate" destination="-2" id="o3m-gz-WWh"/>
+                            <outlet property="nextKeyView" destination="Asd-3x-WoL" id="Kpz-4k-9Dr"/>
+                        </connections>
                     </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PZH-Ub-Mco">
                         <rect key="frame" x="78" y="110" width="90" height="16"/>
@@ -69,10 +73,14 @@
                                 <string>NSAllRomanInputSourcesLocaleIdentifier</string>
                             </allowedInputSourceLocales>
                         </secureTextFieldCell>
+                        <connections>
+                            <outlet property="delegate" destination="-2" id="ssQ-bZ-EMm"/>
+                            <outlet property="nextKeyView" destination="uyh-EF-acZ" id="dUf-Dz-BI0"/>
+                        </connections>
                     </secureTextField>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DPw-YJ-xy4">
                         <rect key="frame" x="168" y="59" width="81" height="32"/>
-                        <buttonCell key="cell" type="push" title="Sign in" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="CK2-4d-Of0">
+                        <buttonCell key="cell" type="push" title="Sign in" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="CK2-4d-Of0">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>

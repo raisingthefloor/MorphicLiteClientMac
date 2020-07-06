@@ -61,7 +61,7 @@ public struct User: Codable, Record{
         preferencesId = try container.decode(String?.self, forKey: .preferencesId)
         firstName = try container.decode(String?.self, forKey: .firstName)
         lastName = try container.decode(String?.self, forKey: .lastName)
-        email = try container.decode(String?.self, forKey: .email)
+        email = try container.decodeIfPresent(String.self, forKey: .email)
     }
     
     public func encode(to encoder: Encoder) throws{

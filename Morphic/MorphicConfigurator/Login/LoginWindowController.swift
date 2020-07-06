@@ -11,10 +11,11 @@ import MorphicCore
 import MorphicSettings
 import MorphicService
 
-class LoginWindowController: NSWindowController {
+class LoginWindowController: NSWindowController, NSTextFieldDelegate {
 
     override func windowDidLoad() {
         super.windowDidLoad()
+        window?.backgroundColor = .white
         forgotPasswordButton.cursor = .pointingHand
     }
     
@@ -54,6 +55,10 @@ class LoginWindowController: NSWindowController {
         NSWorkspace.shared.open(url)
     }
     
+    func controlTextDidChange(_ obj: Notification) {
+        updateValid()
+    }
+    
     func setFieldsEnabled(_ enabled: Bool){
         usernameField.isEnabled = enabled
         passwordField.isEnabled = enabled
@@ -64,6 +69,10 @@ class LoginWindowController: NSWindowController {
         statusLabel.isHidden = false
         statusLabel.stringValue = text ?? ""
         activityIndicator.startAnimation(nil)
+    }
+    
+    func updateValid(){
+        submitButton.isEnabled = usernameField.stringValue.trimmingCharacters(in: .whitespaces).count > 0 && passwordField.stringValue.count > 0
     }
     
     func stopActivity(){

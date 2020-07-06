@@ -28,16 +28,23 @@ import MorphicService
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        for arg in ProcessInfo.processInfo.arguments[1...]{
-            if arg == "login"{
-                showLoginWindow(nil)
-                break
-            }
-            if arg == "capture"{
-                showCaptureWindow(nil)
-                break
+        populateSolutions()
+        Session.shared.open {
+            for arg in ProcessInfo.processInfo.arguments[1...]{
+                if arg == "login"{
+                    self.showLoginWindow(nil)
+                    break
+                }
+                if arg == "capture"{
+                    self.showCaptureWindow(nil)
+                    break
+                }
             }
         }
+    }
+    
+    func populateSolutions(){
+        Session.shared.settings.populateSolutions(fromResource: "macos.solutions")
     }
     
 //    func application(_ application: NSApplication, open urls: [URL]) {

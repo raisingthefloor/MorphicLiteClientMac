@@ -7,12 +7,20 @@
 //
 
 import Cocoa
+import MorphicCore
+import MorphicService
 
 class DoneViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do view setup here.
+        emailLabel.stringValue = Session.shared.user?.email ?? ""
     }
     
+    @IBOutlet weak var emailLabel: NSTextField!
+    
+    @IBAction
+    func done(_ sender: Any?){
+        NSApplication.shared.terminate(nil)
+    }
 }

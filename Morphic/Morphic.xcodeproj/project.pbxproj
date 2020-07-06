@@ -21,6 +21,7 @@
 		3130B10024A42037003864DD /* DoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3130B0FE24A42037003864DD /* DoneViewController.swift */; };
 		3130B10124A42037003864DD /* DoneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3130B0FF24A42037003864DD /* DoneViewController.xib */; };
 		314EB6DB24A697C300CF3D48 /* macos.solutions.json in Resources */ = {isa = PBXBuildFile; fileRef = 314EB6DA24A697C300CF3D48 /* macos.solutions.json */; };
+		316E681E24B28D8900FA09D5 /* macos.solutions.json in Resources */ = {isa = PBXBuildFile; fileRef = 314EB6DA24A697C300CF3D48 /* macos.solutions.json */; };
 		31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B0C2444DE8900EEDF14 /* AppDelegate.swift */; };
 		31751B0F2444DE8B00EEDF14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31751B0E2444DE8B00EEDF14 /* Assets.xcassets */; };
 		31751B1E2444DE8B00EEDF14 /* MorphicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B1D2444DE8B00EEDF14 /* MorphicTests.swift */; };
@@ -661,6 +662,7 @@
 				3130B0FD24A4202E003864DD /* CreateAccountViewController.xib in Resources */,
 				3130B0EB24A41A05003864DD /* LoginWindow.xib in Resources */,
 				31751B5D2444E0E400EEDF14 /* MainMenu.xib in Resources */,
+				316E681E24B28D8900FA09D5 /* macos.solutions.json in Resources */,
 				3130B0ED24A41CCF003864DD /* CaptureWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

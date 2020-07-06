@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import MorphicCore
 import MorphicService
 
 class CaptureWindowController: NSWindowController, CaptureViewControllerDelegate, CreateAccountViewControllerDelegate {
@@ -15,29 +16,33 @@ class CaptureWindowController: NSWindowController, CaptureViewControllerDelegate
 
     override func windowDidLoad() {
         super.windowDidLoad()
+        window?.backgroundColor = .white
         window?.contentViewController = pageViewController
         showCapture(animated: false)
     }
     
     func showCapture(animated: Bool){
         let captureViewController = CaptureViewController(nibName: "CaptureViewController", bundle: nil)
+        captureViewController.delegate = self
         pageViewController.show(viewController: captureViewController, animated: animated)
     }
     
-    func captureDidComplete() {
+    func capture(_ viewController: CaptureViewController, didCapture preferences: Preferences) {
         if Session.shared.user == nil{
-            showCreateAccount(animated: true)
+            showCreateAccount(preferences: preferences, animated: true)
         }else{
             showDone(animated: true)
         }
     }
     
-    func showCreateAccount(animated: Bool){
+    func showCreateAccount(preferences: Preferences, animated: Bool){
         let createAccountViewController = CreateAccountViewController(nibName: "CreateAccountViewController", bundle: nil)
+        createAccountViewController.preferences = preferences
+        createAccountViewController.delegate = self
         pageViewController.show(viewController: createAccountViewController, animated: animated)
     }
     
-    func createAccountDidComplete() {
+    func createAccount(_ viewController: CreateAccountViewController, didCreate user: User) {
         showDone(animated: true)
     }
     

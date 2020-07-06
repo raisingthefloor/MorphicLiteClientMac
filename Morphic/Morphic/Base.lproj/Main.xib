@@ -8,6 +8,7 @@
         <customObject id="ZNk-5q-oDb" customClass="AppDelegate" customModule="Morphic" customModuleProvider="target">
             <connections>
                 <outlet property="hideQuickStripItem" destination="gOm-Gw-nLp" id="f86-ih-DaC"/>
+                <outlet property="logoutItem" destination="fdS-ef-rqr" id="2v2-vJ-y1T"/>
                 <outlet property="menu" destination="iDk-eb-5cB" id="OjZ-YL-Pes"/>
                 <outlet property="showQuickStripItem" destination="4BS-cA-IvL" id="elS-Jc-raC"/>
             </connections>
@@ -43,6 +44,12 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="launchLogin:" target="ZNk-5q-oDb" id="mYB-Jp-6w7"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Logout" hidden="YES" id="fdS-ef-rqr">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="logout:" target="ZNk-5q-oDb" id="VNp-5s-w1f"/>
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="yYL-r6-1AR"/>

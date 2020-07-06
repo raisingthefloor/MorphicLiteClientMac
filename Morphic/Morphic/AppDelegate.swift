@@ -37,6 +37,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     @IBOutlet var menu: NSMenu!
     @IBOutlet weak var showQuickStripItem: NSMenuItem?
     @IBOutlet weak var hideQuickStripItem: NSMenuItem?
+    @IBOutlet weak var logoutItem: NSMenuItem?
     
     // MARK: - Application Lifecycle
 
@@ -49,6 +50,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         copyDefaultPreferences{
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
+                self.logoutItem?.isHidden = Session.shared.user == nil
                 if Session.shared.bool(for: .morphicQuickStripVisible) ?? true{
                     self.showQuickStrip(nil)
                 }
@@ -157,6 +159,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         QuickHelpWindow.hide()
         if sender != nil{
             Session.shared.set(false, for: .morphicQuickStripVisible)
+        }
+    }
+    
+    @IBAction
+    func logout(_ sender: Any){
+        Session.shared.signout {
+            self.logoutItem?.isHidden = true
         }
     }
      
