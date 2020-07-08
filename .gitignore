@@ -1,4 +1,4 @@
 *.xcuserdatad
 .DS_Store
-MorphicMenuBar/MorphicMenuBar/Local.xcconfig
+Morphic/Local.xcconfig
 .idea
