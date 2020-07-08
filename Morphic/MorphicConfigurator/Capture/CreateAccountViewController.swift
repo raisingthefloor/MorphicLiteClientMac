@@ -47,6 +47,7 @@ class CreateAccountViewController: NSViewController, NSTextFieldDelegate, Presen
             result in
             switch result{
             case .success(let auth):
+                DistributedNotificationCenter.default().postNotificationName(.morphicSignin, object: nil, userInfo: ["isRegister": true], deliverImmediately: true)
                 self.delegate?.createAccount(self, didCreate: auth.user)
             case .badPassword:
                 self.showError(message: "Password too short or easily guessed", pointingTo: self.passwordField)

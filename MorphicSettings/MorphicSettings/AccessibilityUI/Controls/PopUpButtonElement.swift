@@ -21,17 +21,20 @@ public class PopUpButtonElement: UIElement{
             completion(false)
             return
         }
-        guard let menu = self.menu else{
-            completion(false)
-            return
-        }
-        guard menu.select(itemTitled: value) else{
-            completion(false)
-            return
-        }
-        self.wait(atMost: 2.0, for: { self.value == value }){
-            success in
-            completion(success)
+        self.wait(atMost: 2.0, for: { self.menu != nil }){
+            sucess in
+            guard let menu = self.menu else{
+                completion(false)
+                return
+            }
+            guard menu.select(itemTitled: value) else{
+                completion(false)
+                return
+            }
+            self.wait(atMost: 2.0, for: { self.value == value }){
+                success in
+                completion(success)
+            }
         }
     }
     

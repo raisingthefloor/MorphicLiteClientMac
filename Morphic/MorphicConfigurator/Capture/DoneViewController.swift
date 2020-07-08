@@ -14,10 +14,16 @@ class DoneViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        emailLabel.stringValue = Session.shared.user?.email ?? ""
+        if let email = Session.shared.user?.email{
+            emailLabel.stringValue = email
+        }else{
+            emailLabel.isHidden = true
+            emailIntroLabel.isHidden = true
+        }
     }
     
     @IBOutlet weak var emailLabel: NSTextField!
+    @IBOutlet weak var emailIntroLabel: NSTextField!
     
     @IBAction
     func done(_ sender: Any?){

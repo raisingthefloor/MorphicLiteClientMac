@@ -408,9 +408,11 @@ public class Session{
                         self.storage.save(record: preferences!){
                             success in
                             completion()
+                            NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: self)
                         }
                     }else{
                         completion()
+                        NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: self)
                     }
                 }
             }
@@ -425,6 +427,7 @@ public class Session{
             let apply = ApplySession(settingsManager: self.settings, preferences: defautPreferences!)
             apply.run {
                 completion()
+                NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: self)
             }
         }
     }
@@ -678,5 +681,11 @@ extension URLResponse{
         }
         return response.statusCode == 401
     }
+    
+}
+
+public extension NSNotification.Name{
+    
+    static let morphicSessionUserDidChange = NSNotification.Name(rawValue: "org.raisingthefloor.morphicSessionUserDidChange")
     
 }

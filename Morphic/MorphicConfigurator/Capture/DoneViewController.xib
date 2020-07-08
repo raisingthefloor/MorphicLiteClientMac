@@ -7,6 +7,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="DoneViewController" customModule="MorphicConfigurator" customModuleProvider="target">
             <connections>
+                <outlet property="emailIntroLabel" destination="Q17-uX-R9A" id="T50-gt-7IG"/>
                 <outlet property="emailLabel" destination="lW4-DV-CbI" id="hY8-tO-OyO"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
             </connections>

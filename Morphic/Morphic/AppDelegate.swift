@@ -54,12 +54,46 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 if Session.shared.bool(for: .morphicQuickStripVisible) ?? true{
                     self.showQuickStrip(nil)
                 }
-                UserDefaults.morphic.addObserver(self, forKeyPath: .morphicDefaultsKeyUserIdentifier, options: [], context: nil)
+                DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.userDidSignin), name: .morphicSignin, object: nil)
+                NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
             }
         }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
+    }
+    
+    // MARK: - Notifications
+    
+    @objc
+    func userDidSignin(_ notification: NSNotification){
+        os_log(.info, log: logger, "Got signin notification from configurator")
+        Session.shared.open {
+            NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: Session.shared)
+            let userInfo = notification.userInfo ?? [:]
+            if !(userInfo["isRegister"] as? Bool ?? false){
+                os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
+                Session.shared.applyAllPreferences {
+                }
+            }
+        }
+    }
+    
+    @objc
+    func sessionUserDidChange(_ notification: NSNotification){
+        guard let session = notification.object as? Session else{
+            return
+        }
+        self.logoutItem?.isHidden = session.user == nil
+    }
+    
+    // MARK: - Actions
+    
+    @IBAction
+    func logout(_ sender: Any){
+        Session.shared.signout {
+            self.logoutItem?.isHidden = true
+        }
     }
     
     // MARK: - Default Preferences
@@ -161,13 +195,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             Session.shared.set(false, for: .morphicQuickStripVisible)
         }
     }
-    
-    @IBAction
-    func logout(_ sender: Any){
-        Session.shared.signout {
-            self.logoutItem?.isHidden = true
-        }
-    }
      
     func windowDidBecomeKey(_ notification: Notification) {
     }
@@ -181,17 +208,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     func windowDidChangeScreen(_ notification: Notification) {
         quickStripWindow?.reposition(animated: false)
-    }
-     
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        os_log(.info, log: logger, "Configurator set user identifier, retrying session open")
-        Session.shared.open {
-            if Session.shared.user == nil{
-                os_log(.error, log: logger, "no user, launching configurator")
-            }else{
-                os_log(.info, log: logger, "session open")
-            }
-        }
     }
      
     // MARK: - Configurator App

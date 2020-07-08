@@ -39,10 +39,9 @@ class LoginWindowController: NSWindowController, NSTextFieldDelegate {
                 self.errorLabel.isHidden = false
                 return
             }
-            self.indicateActivity(withStatusText: "Applying your settings...")
-            Session.shared.applyAllPreferences {
-                NSApplication.shared.terminate(nil)
-            }
+//            self.indicateActivity(withStatusText: "Applying your settings...")
+            DistributedNotificationCenter.default().postNotificationName(.morphicSignin, object: nil, userInfo: nil, deliverImmediately: true)
+            NSApplication.shared.terminate(nil)
         }
     }
     

@@ -34,13 +34,26 @@ public class QuickStripViewController: NSViewController {
         super.viewDidLoad()
         view.layer?.backgroundColor = .white
         view.layer?.cornerRadius = 6
-        showsHelp = Session.shared.bool(for: .morphicQuickStripShowsHelp) ?? true
+        self.logoutMenuItem?.isHidden = Session.shared.user == nil
+        NotificationCenter.default.addObserver(self, selector: #selector(QuickStripViewController.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
+    }
+    
+    // MARK: - Notifications
+    
+    @objc
+    func sessionUserDidChange(_ notification: NSNotification){
+        guard let session = notification.object as? Session else{
+            return
+        }
+        self.logoutMenuItem?.isHidden = session.user == nil
     }
     
     // MARK: - Logo Button & Main Menu
     
     /// The strip's main menu, accessible via the Logo image button
     @IBOutlet var mainMenu: NSMenu!
+    
+    @IBOutlet var logoutMenuItem: NSMenuItem!
     
     /// The button that displays the Morphic logo
     @IBOutlet weak var logoButton: LogoButton!
