@@ -25,14 +25,42 @@ import Cocoa
 import MorphicService
 
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate {
-    
-    @IBOutlet weak var window: NSWindow!
+class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        window.contentViewController = ViewController(nibName: "ViewController", bundle: nil)
-        window.makeKeyAndOrderFront(nil)
+        populateSolutions()
+        Session.shared.open {
+            for arg in ProcessInfo.processInfo.arguments[1...]{
+                if arg == "login"{
+                    self.showLoginWindow(nil)
+                    break
+                }
+                if arg == "capture"{
+                    self.showCaptureWindow(nil)
+                    break
+                }
+            }
+        }
     }
+    
+    func populateSolutions(){
+        Session.shared.settings.populateSolutions(fromResource: "macos.solutions")
+    }
+    
+//    func application(_ application: NSApplication, open urls: [URL]) {
+//        if let url = urls.first{
+//            switch url.path{
+//            case "login":
+//                captureWindowController?.close()
+//                showLoginWindow(nil)
+//            case "capture":
+//                loginWindowController?.close()
+//                showCaptureWindow(nil)
+//            default:
+//                break
+//            }
+//        }
+//    }
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
@@ -41,7 +69,37 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return true
     }
-
-
+    
+    var loginWindowController: NSWindowController?
+    
+    func showLoginWindow(_ sender: Any?){
+        if loginWindowController == nil{
+            loginWindowController = LoginWindowController(windowNibName: "LoginWindow")
+        }
+        loginWindowController?.window?.makeKeyAndOrderFront(sender)
+        loginWindowController?.window?.delegate = self
+    }
+    
+    var captureWindowController: NSWindowController?
+    
+    func showCaptureWindow(_ sender: Any?){
+        if captureWindowController == nil{
+            captureWindowController = CaptureWindowController(windowNibName: "CaptureWindow")
+        }
+        captureWindowController?.window?.makeKeyAndOrderFront(sender)
+        captureWindowController?.window?.delegate = self
+    }
+    
+    func windowWillClose(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow else{
+            return
+        }
+        if window == captureWindowController?.window{
+            captureWindowController = nil
+        }
+        if window == loginWindowController?.window{
+            loginWindowController = nil
+        }
+    }
 }
 

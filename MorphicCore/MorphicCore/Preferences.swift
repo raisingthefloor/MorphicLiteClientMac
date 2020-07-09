@@ -111,18 +111,18 @@ public struct Preferences: Codable, Record{
         }
     }
     
-    public func valuesByKey() -> [Key: Interoperable?]{
-        var map = [Key: Interoperable?]()
+    public func keyValueTuples() -> [(Key, Interoperable?)]{
+        var tuples = [(Key, Interoperable?)]()
         guard let defaults = defaults else{
-            return map
+            return tuples
         }
         for (identifier, solution) in defaults{
             for (name, value) in solution.values{
                 let key = Key(solution: identifier, preference: name)
-                map[key] = value
+                tuples.append((key, value))
             }
         }
-        return map
+        return tuples
     }
     
     // MARK: - Codable

@@ -25,7 +25,7 @@ import Foundation
 import MorphicCore
 import OSLog
 
-private let logger = OSLog(subsystem: "MorphicSettings", category: "Settings")
+private let logger = OSLog(subsystem: "MorphicSettings", category: "SettingsManager")
 
 /// Manages system settings based on morphic preferences
 public class SettingsManager{
@@ -34,6 +34,27 @@ public class SettingsManager{
     public static var shared: SettingsManager = SettingsManager()
     
     private init(){
+        ClientSettingHandler.register(type: DisplayZoomHandler.self, for: .macosDisplayZoom)
+        DefaultsReadUIWriteSettingHandler.register(automation: ContrastUIAutomation.self, for: .macosDisplayContrastEnabled)
+        DefaultsReadUIWriteSettingHandler.register(automation: InvertColorsUIAutomation.self, for: .macosDisplayInvertColors)
+        DefaultsReadUIWriteSettingHandler.register(automation: InvertClassicUIAutomation.self, for: .macosDisplayClassicInvert)
+        DefaultsReadUIWriteSettingHandler.register(automation: ReduceMotionUIAutomation.self, for: .macosDisplayReduceMotion)
+        DefaultsReadUIWriteSettingHandler.register(automation: ReduceTransparencyUIAutomation.self, for: .macosDisplayReduceTransparency)
+        DefaultsReadUIWriteSettingHandler.register(automation: DifferentiateWithoutColorUIAutomation.self, for: .macosDisplayDifferentiateWithoutColor)
+        DefaultsReadUIWriteSettingHandler.register(automation: CursorShakeUIAutomation.self, for: .macosCursorShake)
+        DefaultsReadUIWriteSettingHandler.register(automation: CursorSizeUIAutomation.self, for: .macosCursorSize)
+        DefaultsReadUIWriteSettingHandler.register(automation: ColorFilterEnabledAutomation.self, for: .macosColorFilterEnabled)
+        DefaultsReadUIWriteSettingHandler.register(automation: ColorFilterTypeAutomation.self, for: .macosColorFilterType)
+        DefaultsReadUIWriteSettingHandler.register(automation: ColorFilterIntensityUIAutomation.self, for: .macosColorFilterIntensity)
+        
+        DefaultsReadUIWriteSettingHandler.register(automation: VoiceOverUIAutomation.self, for: .macosVoiceOverEnabled)
+        
+        DefaultsReadUIWriteSettingHandler.register(automation: ZoomEnabledUIAutomation.self, for: .macosZoomEnabled)
+        DefaultsReadUIWriteSettingHandler.register(automation: ScrollToZoomEnabledUIAutomation.self, for: .macosScrollToZoomEnabled)
+        DefaultsReadUIWriteSettingHandler.register(automation: HoverTextEnabledUIAutomation.self, for: .macosHoverTextEnabled)
+        DefaultsReadUIWriteSettingHandler.register(automation: TouchbarZoomEnabledUIAutomation.self, for: .macosTouchbarZoomEnabled)
+        DefaultsReadUIWriteSettingHandler.register(automation: ZoomStyleUIAutomation.self, for: .macosZoomStyle)
+        
     }
     
     /// All known solutions
@@ -43,7 +64,23 @@ public class SettingsManager{
     private var solutionsById = [String: Solution]()
     
     /// Add solutions to the settings manager by parsing JSON
-    public func populateSolutions(fromJSON data: Data){
+    public func populateSolutions(fromResource resource: String, in bundle: Bundle = Bundle.main){
+        guard let url = bundle.url(forResource: resource, withExtension: "json") else{
+            os_log(.error, log: logger, "Failed to find solutions json resource")
+            return
+        }
+        populateSolutions(from: url)
+    }
+    
+    public func populateSolutions(from url: URL){
+        guard let data = FileManager.default.contents(atPath: url.path) else{
+            os_log(.error, log: logger, "Failed to read contents of solutions json resource")
+            return
+        }
+        populateSolutions(from: data)
+    }
+    
+    public func populateSolutions(from data: Data){
         let decoder = JSONDecoder()
         guard let solutions = try? decoder.decode([Solution].self, from: data) else{
             os_log(.error, log: logger, "Failed to decode JSON from solutions file")
@@ -67,16 +104,15 @@ public class SettingsManager{
     
     /// Apply a value for Morphic preference in the given solution
     public func apply(_ value: Interoperable?, for key: Preferences.Key, completion: @escaping (_ success: Bool) -> Void){
-        apply(values: [key: value]){
+        apply(values: [(key, value)]){
             results in
             completion(results[key] ?? false)
         }
     }
     
     /// Apply several values at once
-    public func apply(values: [Preferences.Key: Interoperable?], completion: @escaping (_ results: [Preferences.Key: Bool]) -> Void){
-        let session = ApplySession(settingsManager: self, valuesByKey: values)
-        session.applyDefaultValues = false
+    public func apply(values: [(Preferences.Key, Interoperable?)], completion: @escaping (_ results: [Preferences.Key: Bool]) -> Void){
+        let session = ApplySession(settingsManager: self, keyValueTuples: values)
         session.run{
             completion(session.results)
         }
@@ -97,12 +133,36 @@ public class SettingsManager{
         session.captureDefaultValues = true
         session.keys = keys
         session.run{
-            completion(session.preferences.valuesByKey())
+            let keyValueTuples = session.preferences.keyValueTuples()
+            completion([Preferences.Key: Interoperable?].init(uniqueKeysWithValues: keyValueTuples))
         }
     }
     
 }
 
 public extension Preferences.Key{
+    // Display
     static var macosDisplayZoom = Preferences.Key(solution: "com.apple.macos.display", preference: "zoom")
+    static var macosDisplayContrastEnabled = Preferences.Key(solution: "com.apple.macos.display", preference: "contrast.enabled")
+    static var macosDisplayInvertColors = Preferences.Key(solution: "com.apple.macos.display", preference: "invert")
+    static var macosDisplayClassicInvert = Preferences.Key(solution: "com.apple.macos.display", preference: "invert.classic")
+    static var macosDisplayReduceMotion = Preferences.Key(solution: "com.apple.macos.display", preference: "reduce.motion")
+    static var macosDisplayReduceTransparency = Preferences.Key(solution: "com.apple.macos.display", preference: "reduce.transparency")
+    static var macosDisplayDifferentiateWithoutColor = Preferences.Key(solution: "com.apple.macos.display", preference: "differentiate-without-color")
+    static var macosCursorShake = Preferences.Key(solution: "com.apple.macos.display", preference: "cursor.shake")
+    static var macosCursorSize = Preferences.Key(solution: "com.apple.macos.display", preference: "cursor.size")
+    static var macosColorFilterEnabled = Preferences.Key(solution: "com.apple.macos.display", preference: "colorfilter.enabled")
+    static var macosColorFilterType = Preferences.Key(solution: "com.apple.macos.display", preference: "colorfilter.type")
+    static var macosColorFilterIntensity = Preferences.Key(solution: "com.apple.macos.display", preference: "colorfilter.intensity")
+    
+    // Voice Over
+    static var macosVoiceOverEnabled = Preferences.Key(solution: "com.apple.macos.voiceover", preference: "enabled")
+    
+    // Zoom
+    static var macosZoomEnabled = Preferences.Key(solution: "com.apple.macos.zoom", preference: "enabled")
+    static var macosScrollToZoomEnabled = Preferences.Key(solution: "com.apple.macos.zoom", preference: "scroll.enabled")
+    static var macosScrollToZoomKey = Preferences.Key(solution: "com.apple.macos.zoom", preference: "scroll.modifier-key")
+    static var macosZoomStyle = Preferences.Key(solution: "com.apple.macos.zoom", preference: "style")
+    static var macosHoverTextEnabled = Preferences.Key(solution: "com.apple.macos.zoom", preference: "hovertext.enabled")
+    static var macosTouchbarZoomEnabled = Preferences.Key(solution: "com.apple.macos.zoom", preference: "touchbar.zoom")
 }

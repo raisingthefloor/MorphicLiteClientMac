@@ -50,6 +50,17 @@ public class QuickStripWindow: NSWindow {
         if let savedPosition = Position(rawValue: Session.shared.string(for: .morphicQuickStripPosition) ?? ""){
             position = savedPosition
         }
+        updateQuickStrip()
+        NotificationCenter.default.addObserver(self, selector: #selector(QuickStripWindow.userDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
+    }
+    
+    @objc
+    func userDidChange(_ notification: NSNotification){
+        updateQuickStrip()
+    }
+    
+    func updateQuickStrip(){
+        quickStripViewController.showsHelp = Session.shared.bool(for: .morphicQuickStripShowsHelp) ?? true
         if let preferredItems = Session.shared.array(for: .morphicQuickStripItems){
             quickStripViewController.items = QuickStripItem.items(from: preferredItems)
         }

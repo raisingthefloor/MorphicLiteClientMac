@@ -8,6 +8,7 @@
         <customObject id="ZNk-5q-oDb" customClass="AppDelegate" customModule="Morphic" customModuleProvider="target">
             <connections>
                 <outlet property="hideQuickStripItem" destination="gOm-Gw-nLp" id="f86-ih-DaC"/>
+                <outlet property="logoutItem" destination="fdS-ef-rqr" id="2v2-vJ-y1T"/>
                 <outlet property="menu" destination="iDk-eb-5cB" id="OjZ-YL-Pes"/>
                 <outlet property="showQuickStripItem" destination="4BS-cA-IvL" id="elS-Jc-raC"/>
             </connections>
@@ -32,14 +33,24 @@
                         <action selector="hideQuickStrip:" target="-1" id="YMq-QB-Pag"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Customize Quick Strip..." keyEquivalent="," id="DSt-te-WFT">
-                    <connections>
-                        <action selector="launchConfigurator:" target="-1" id="btk-KY-xS2"/>
-                    </connections>
-                </menuItem>
                 <menuItem isSeparatorItem="YES" id="vgQ-je-MGT"/>
                 <menuItem title="Take Settings With Me..." id="pzh-qC-88t">
                     <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="launchCapture:" target="ZNk-5q-oDb" id="c6m-rl-T73"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Apply My Settings..." id="S6R-h6-1Yz">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="launchLogin:" target="ZNk-5q-oDb" id="mYB-Jp-6w7"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Logout" hidden="YES" id="fdS-ef-rqr">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="logout:" target="ZNk-5q-oDb" id="VNp-5s-w1f"/>
+                    </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="yYL-r6-1AR"/>
                 <menuItem title="Quit Morphic" keyEquivalent="q" id="aYd-9o-084">

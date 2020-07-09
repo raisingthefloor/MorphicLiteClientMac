@@ -56,3 +56,9 @@ extension Session{
     }()
     
 }
+
+extension NSNotification.Name{
+    
+    static let morphicSignin = NSNotification.Name("org.raisingthefloor.morphicSignin")
+    
+}

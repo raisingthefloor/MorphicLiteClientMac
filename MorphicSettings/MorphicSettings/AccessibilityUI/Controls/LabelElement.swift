@@ -21,37 +21,16 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Cocoa
-import MorphicCore
-import MorphicService
+import Foundation
 
-class ViewController: NSViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        createUserButton.isHidden = UserDefaults.morphic.string(forKey: .morphicDefaultsKeyUserIdentifier) != nil
-        clearUserButton.isHidden = !createUserButton.isHidden
-        
-    }
-
-    override var representedObject: Any? {
-        didSet {
+public class LabelElement: UIElement{
+    
+    public var text: String?{
+        get{
+            guard let value: String = accessibilityElement.value(forAttribute: .value) else{
+                return nil
+            }
+            return value
         }
     }
-    
-    @IBOutlet weak var createUserButton: NSButton!
-    @IBOutlet weak var clearUserButton: NSButton!
-    
-    @IBAction
-    func createTestUser(_ sender: Any){
-        createUserButton.isEnabled = false
-    }
-    
-    @IBAction
-    func clearUser(_ sender: Any){
-        NSApplication.shared.terminate(sender)
-    }
-
-
 }
-

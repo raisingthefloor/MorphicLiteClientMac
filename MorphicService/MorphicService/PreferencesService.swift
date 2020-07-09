@@ -36,8 +36,8 @@ public extension Service{
     ///   - completion: The block to call when the task has loaded
     ///   - preferences: The preferences for the user, if the load was successful
     /// - returns: The URL session task that is making the remote request for preferences data
-    func fetch(preferences identifier: String, completion: @escaping (_ preferences: Preferences?) -> Void) -> Session.Task{
-        let request = URLRequest(session: session, path: "preferences/\(identifier)", method: .get)
+    func fetch(userPreferences user: User, completion: @escaping (_ preferences: Preferences?) -> Void) -> Session.Task{
+        let request = URLRequest(session: session, path: "v1/users/\(user.identifier)/preferences/\(user.preferencesId!)", method: .get)
         return session.runningTask(with: request, completion: completion)
     }
     
@@ -50,7 +50,7 @@ public extension Service{
     ///   - success: Whether the save request succeeded
     /// - returns: The URL session task that is making the remote request for preferences data
     func save(_ preferences: Preferences, completion: @escaping (_ success: Bool) -> Void) -> Session.Task{
-        let request = URLRequest(session: session, path: "preferences/\(preferences.identifier)", method: .put, body: preferences)
+        let request = URLRequest(session: session, path: "v1/users/\(preferences.userId!)/preferences/\(preferences.identifier)", method: .put, body: preferences)
         return session.runningTask(with: request, completion: completion)
     }
     

@@ -87,28 +87,13 @@ class QuickStripControlItem: QuickStripItem{
         super.init(interoperable: interoperable)
     }
     
-    struct LocalizedStrings{
-        
-        var prefix: String
-        var table = "QuickStripViewController"
-        var bundle = Bundle.main
-        
-        init(prefix: String){
-            self.prefix = prefix
-        }
-        
-        func string(for suffix: String) -> String{
-            return bundle.localizedString(forKey: prefix + "." + suffix, value: nil, table: table)
-        }
-    }
-    
     override func view() -> QuickStripItemView? {
         switch feature{
         case .resolution:
             let localized = LocalizedStrings(prefix: "control.feature.resolution")
             let segments = [
-                QuickStripSegmentedButton.Segment(icon: .plus(), helpTitle: localized.string(for: "bigger.help.title"), helpMessage: localized.string(for: "bigger.help.message"), isPrimary: true),
-                QuickStripSegmentedButton.Segment(icon: .minus(), helpTitle: localized.string(for: "smaller.help.title"), helpMessage: localized.string(for: "smaller.help.message"), isPrimary: false)
+                QuickStripSegmentedButton.Segment(icon: .plus(), isPrimary: true, helpProvider: QuickHelpTextSizeBiggerProvider(display: Display.main, localized: localized)),
+                QuickStripSegmentedButton.Segment(icon: .minus(), isPrimary: false, helpProvider: QuickHelpTextSizeSmallerProvider(display: Display.main, localized: localized))
             ]
             let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.target = self
@@ -116,28 +101,36 @@ class QuickStripControlItem: QuickStripItem{
             return view
         case .magnifier:
             let localized = LocalizedStrings(prefix: "control.feature.magnifier")
+            let showHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "show.help.title"), message: localized.string(for: "show.help.message")) }
+            let hideHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "hide.help.title"), message: localized.string(for: "hide.help.message")) }
             let segments = [
-                QuickStripSegmentedButton.Segment(title: localized.string(for: "show"), helpTitle: localized.string(for: "show.help.title"), helpMessage: localized.string(for: "show.help.message"), isPrimary: true),
-                QuickStripSegmentedButton.Segment(title: localized.string(for: "hide"), helpTitle: localized.string(for: "hide.help.title"), helpMessage: localized.string(for: "hide.help.message"), isPrimary: false)
+                QuickStripSegmentedButton.Segment(title: localized.string(for: "show"), isPrimary: true, helpProvider: showHelpProvider),
+                QuickStripSegmentedButton.Segment(title: localized.string(for: "hide"), isPrimary: false, helpProvider: hideHelpProvider)
             ]
             let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(QuickStripControlItem.magnifier(_:))
             return view
         case .reader:
             let localized = LocalizedStrings(prefix: "control.feature.reader")
+            let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
+            let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                QuickStripSegmentedButton.Segment(title: localized.string(for: "on"), helpTitle: localized.string(for: "on.help.title"), helpMessage: localized.string(for: "on.help.message"),  isPrimary: true),
-                QuickStripSegmentedButton.Segment(title: localized.string(for: "off"), helpTitle: localized.string(for: "off.help.title"), helpMessage: localized.string(for: "off.help.message"),  isPrimary: false)
+                QuickStripSegmentedButton.Segment(title: localized.string(for: "on"), isPrimary: true, helpProvider: onHelpProvider),
+                QuickStripSegmentedButton.Segment(title: localized.string(for: "off"), isPrimary: false, helpProvider: offHelpProvider)
             ]
             let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(QuickStripControlItem.reader(_:))
             return view
         case .volume:
             let localized = LocalizedStrings(prefix: "control.feature.volume")
             let segments = [
-                QuickStripSegmentedButton.Segment(icon: .plus(), helpTitle: localized.string(for: "up.help.title"), helpMessage: localized.string(for: "up.help.message"), isPrimary: true),
-                QuickStripSegmentedButton.Segment(icon: .minus(), helpTitle: localized.string(for: "down.help.title"), helpMessage: localized.string(for: "down.help.message"), isPrimary: false),
-                QuickStripSegmentedButton.Segment(title: localized.string(for: "mute"), helpTitle: localized.string(for: "mute.help.title"), helpMessage: localized.string(for: "mute.help.message"), isPrimary: true)
+                QuickStripSegmentedButton.Segment(icon: .plus(), isPrimary: true, helpProvider: QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized)),
+                QuickStripSegmentedButton.Segment(icon: .minus(), isPrimary: false, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized)),
+                QuickStripSegmentedButton.Segment(title: localized.string(for: "mute"), isPrimary: true, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized))
             ]
             let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.target = self
@@ -145,12 +138,16 @@ class QuickStripControlItem: QuickStripItem{
             return view
         case .contrast:
             let localized = LocalizedStrings(prefix: "control.feature.contrast")
+            let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
+            let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                QuickStripSegmentedButton.Segment(title: localized.string(for: "on"), helpTitle: localized.string(for: "on.help.title"), helpMessage: localized.string(for: "on.help.message"), isPrimary: true),
-                QuickStripSegmentedButton.Segment(title: localized.string(for: "off"), helpTitle: localized.string(for: "off.help.title"), helpMessage: localized.string(for: "off.help.message"), isPrimary: false)
+                QuickStripSegmentedButton.Segment(title: localized.string(for: "on"), isPrimary: true, helpProvider: onHelpProvider),
+                QuickStripSegmentedButton.Segment(title: localized.string(for: "off"), isPrimary: false, helpProvider: offHelpProvider)
             ]
             let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(QuickStripControlItem.contrast(_:))
             return view
         default:
             return nil
@@ -171,7 +168,7 @@ class QuickStripControlItem: QuickStripItem{
         }else{
             percentage = display.percentage(zoomingOut: 1)
         }
-        Session.shared.set(percentage, for: .macosDisplayZoom)
+        _ = display.zoom(to: percentage)
     }
     
     @objc
@@ -197,6 +194,266 @@ class QuickStripControlItem: QuickStripItem{
         }else if segment == 2{
             _ = output.setMuted(true)
         }
+    }
+    
+    @objc
+    func contrast(_ sender: Any?){
+        guard let segment = (sender as? QuickStripSegmentedButton)?.integerValue else{
+            return
+        }
+        if segment == 0{
+            Session.shared.apply(true, for: .macosDisplayContrastEnabled){
+                _ in
+            }
+        }else{
+            Session.shared.apply(false, for: .macosDisplayContrastEnabled){
+                _ in
+            }
+        }
+    }
+    
+    @objc
+    func reader(_ sender: Any?){
+        guard let segment = (sender as? QuickStripSegmentedButton)?.integerValue else{
+            return
+        }
+        if segment == 0{
+            Session.shared.apply(true, for: .macosVoiceOverEnabled){
+                _ in
+            }
+        }else{
+            Session.shared.apply(false, for: .macosVoiceOverEnabled){
+                _ in
+            }
+        }
+    }
+    
+    @objc
+    func magnifier(_ sender: Any?){
+        guard let segment = (sender as? QuickStripSegmentedButton)?.integerValue else{
+            return
+        }
+        let session = Session.shared
+        if segment == 0{
+            let keyValuesToSet: [(Preferences.Key, Interoperable?)] = [
+                (.macosZoomStyle, 1)
+            ]
+            let preferences = Preferences(identifier: "__magnifier__")
+            let capture = CaptureSession(settingsManager: session.settings, preferences: preferences)
+            capture.keys = keyValuesToSet.map{ $0.0 }
+            capture.captureDefaultValues = true
+            capture.run {
+                session.storage.save(record: capture.preferences){
+                    _ in
+                    let apply = ApplySession(settingsManager: session.settings, keyValueTuples: keyValuesToSet)
+                    apply.add(key: .macosZoomEnabled, value: true)
+                    apply.run {
+                    }
+                }
+            }
+        }else{
+            session.storage.load(identifier: "__magnifier__"){
+                (preferences: Preferences?) in
+                if let preferences = preferences{
+                    let apply = ApplySession(settingsManager: session.settings, preferences: preferences)
+                    apply.addFirst(key: .macosZoomEnabled, value: false)
+                    apply.run {
+                    }
+                }else{
+                    session.apply(false, for: .macosZoomEnabled){
+                        _ in
+                    }
+                }
+            }
+        }
+    }
+    
+}
+
+fileprivate struct LocalizedStrings{
+    
+    var prefix: String
+    var table = "QuickStripViewController"
+    var bundle = Bundle.main
+    
+    init(prefix: String){
+        self.prefix = prefix
+    }
+    
+    func string(for suffix: String) -> String{
+        return bundle.localizedString(forKey: prefix + "." + suffix, value: nil, table: table)
+    }
+}
+
+fileprivate class QuickHelpDynamicTextProvider: QuickHelpContentProvider{
+    
+    var textProvider: () -> (String, String)?
+    
+    init(textProvider: @escaping () -> (String, String)?){
+        self.textProvider = textProvider
+    }
+    
+    func quickHelpViewController() -> NSViewController? {
+        guard let strings = textProvider() else{
+            return nil
+        }
+        let viewController = QuickHelpViewController(nibName: "QuickHelpViewController", bundle: nil)
+        viewController.titleText = strings.0
+        viewController.messageText = strings.1
+        return viewController
+    }
+}
+
+fileprivate class QuickHelpTextSizeBiggerProvider: QuickHelpContentProvider{
+    
+    init(display: Display?, localized: LocalizedStrings){
+        self.display = display
+        self.localized = localized
+    }
+    
+    var display: Display?
+    var localized: LocalizedStrings
+    
+    func quickHelpViewController() -> NSViewController? {
+        let viewController = QuickHelpStepViewController(nibName: "QuickHelpStepViewController", bundle: nil)
+        let total = display?.numberOfSteps ?? 1
+        var step = display?.currentStep ?? -1
+        if step >= 0{
+            step = total - 1 - step
+        }
+        viewController.numberOfSteps = total
+        viewController.step = step
+        if step == total - 1{
+            viewController.titleText = localized.string(for: "bigger.limit.help.title")
+            viewController.messageText = localized.string(for: "bigger.limit.help.message")
+        }else{
+            viewController.titleText = localized.string(for: "bigger.help.title")
+            viewController.messageText = localized.string(for: "bigger.help.message")
+        }
+        return viewController
+    }
+}
+
+fileprivate class QuickHelpTextSizeSmallerProvider: QuickHelpContentProvider{
+    
+    init(display: Display?, localized: LocalizedStrings){
+        self.display = display
+        self.localized = localized
+    }
+    
+    var display: Display?
+    var localized: LocalizedStrings
+    
+    func quickHelpViewController() -> NSViewController? {
+        let viewController = QuickHelpStepViewController(nibName: "QuickHelpStepViewController", bundle: nil)
+        let total = display?.numberOfSteps ?? 1
+        var step = display?.currentStep ?? -1
+        if step >= 0{
+            step = total - 1 - step
+        }
+        viewController.numberOfSteps = total
+        viewController.step = step
+        if step == 0{
+            viewController.titleText = localized.string(for: "smaller.limit.help.title")
+            viewController.messageText = localized.string(for: "smaller.limit.help.message")
+        }else{
+            viewController.titleText = localized.string(for: "smaller.help.title")
+            viewController.messageText = localized.string(for: "smaller.help.message")
+        }
+        return viewController
+    }
+}
+
+fileprivate class QuickHelpVolumeUpProvider: QuickHelpContentProvider{
+    
+    init(audioOutput: AudioOutput?, localized: LocalizedStrings){
+        output = audioOutput
+        self.localized = localized
+    }
+    
+    var output: AudioOutput?
+    var localized: LocalizedStrings
+    
+    func quickHelpViewController() -> NSViewController? {
+        let level = output?.volume ?? 0.0
+        let muted = output?.isMuted ?? false
+        let viewController = QuickHelpVolumeViewController(nibName: "QuickHelpVolumeViewController", bundle: nil)
+        viewController.volumeLevel = level
+        viewController.muted = muted
+        if muted{
+            viewController.titleText = localized.string(for: "up.muted.help.title")
+            viewController.messageText = localized.string(for: "up.muted.help.message")
+        }else{
+            if level >= 0.99{
+                viewController.titleText = localized.string(for: "up.limit.help.title")
+                viewController.messageText = localized.string(for: "up.limit.help.message")
+            }else{
+                viewController.titleText = localized.string(for: "up.help.title")
+                viewController.messageText = localized.string(for: "up.help.message")
+            }
+        }
+        return viewController
+    }
+    
+}
+
+fileprivate class QuickHelpVolumeDownProvider: QuickHelpContentProvider{
+    
+    init(audioOutput: AudioOutput?, localized: LocalizedStrings){
+        output = audioOutput
+        self.localized = localized
+    }
+    
+    var output: AudioOutput?
+    var localized: LocalizedStrings
+    
+    func quickHelpViewController() -> NSViewController? {
+        let level = output?.volume ?? 0.0
+        let muted = output?.isMuted ?? false
+        let viewController = QuickHelpVolumeViewController(nibName: "QuickHelpVolumeViewController", bundle: nil)
+        viewController.volumeLevel = level
+        viewController.muted = muted
+        if muted{
+            viewController.titleText = localized.string(for: "down.muted.help.title")
+            viewController.messageText = localized.string(for: "down.muted.help.message")
+        }else{
+            if level <= 0.01{
+                viewController.titleText = localized.string(for: "down.limit.help.title")
+                viewController.messageText = localized.string(for: "down.limit.help.message")
+            }else{
+                viewController.titleText = localized.string(for: "down.help.title")
+                viewController.messageText = localized.string(for: "down.help.message")
+            }
+        }
+        return viewController
+    }
+    
+}
+
+fileprivate class QuickHelpVolumeMuteProvider: QuickHelpContentProvider{
+    
+    init(audioOutput: AudioOutput?, localized: LocalizedStrings){
+        output = audioOutput
+        self.localized = localized
+    }
+    
+    var output: AudioOutput?
+    var localized: LocalizedStrings
+    
+    func quickHelpViewController() -> NSViewController? {
+        let level = output?.volume ?? 0.0
+        let muted = output?.isMuted ?? false
+        let viewController = QuickHelpVolumeViewController(nibName: "QuickHelpVolumeViewController", bundle: nil)
+        viewController.volumeLevel = level
+        viewController.muted = muted
+        if muted{
+            viewController.titleText = localized.string(for: "muted.help.title")
+            viewController.messageText = localized.string(for: "muted.help.message")
+        }else{
+            viewController.titleText = localized.string(for: "mute.help.title")
+            viewController.messageText = localized.string(for: "mute.help.message")
+        }
+        return viewController
     }
     
 }

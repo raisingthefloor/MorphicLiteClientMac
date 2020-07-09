@@ -87,25 +87,19 @@ class QuickStripSegmentedButton: NSControl {
         /// Indicates the segment is a primary button and should be colored differently from non-primary buttons
         var isPrimary: Bool = false
         
-        /// The help title text to be shown in the Quick Help Window
-        var helpTitle: String?
-        
-        /// The help message text to be shown in the Quick Help Window
-        var helpMessage: String?
+        var helpProvider: QuickHelpContentProvider?
         
         /// Create a segment with a title
-        init(title: String, helpTitle: String, helpMessage: String, isPrimary: Bool){
+        init(title: String, isPrimary: Bool, helpProvider: QuickHelpContentProvider?){
             self.title = title
-            self.helpTitle = helpTitle
-            self.helpMessage = helpMessage
+            self.helpProvider = helpProvider
             self.isPrimary = isPrimary
         }
         
         /// Create a segment with an icon
-        init(icon: NSImage, helpTitle: String, helpMessage: String, isPrimary: Bool){
+        init(icon: NSImage, isPrimary: Bool, helpProvider: QuickHelpContentProvider?){
             self.icon = icon
-            self.helpTitle = helpTitle
-            self.helpMessage = helpMessage
+            self.helpProvider = helpProvider
             self.isPrimary = isPrimary
         }
     }
@@ -187,18 +181,29 @@ class QuickStripSegmentedButton: NSControl {
             }
         }
         
-        var helpTitle: String?
-        var helpMessage: String?
+        var helpProvider: QuickHelpContentProvider?
         
         override func mouseEntered(with event: NSEvent) {
-            guard let title = helpTitle, let message = helpMessage else{
-                return
-            }
-            QuickHelpWindow.show(title: title, message: message)
+            updateHelpWindow()
         }
         
         override func mouseExited(with event: NSEvent) {
             QuickHelpWindow.hide()
+        }
+        
+        override func sendAction(_ action: Selector?, to target: Any?) -> Bool {
+            guard super.sendAction(action, to: target) else{
+                return false
+            }
+            updateHelpWindow()
+            return true
+        }
+        
+        func updateHelpWindow(){
+            guard let viewController = helpProvider?.quickHelpViewController() else{
+                return
+            }
+            QuickHelpWindow.show(viewController: viewController)
         }
         
         override func updateTrackingAreas() {
@@ -253,8 +258,7 @@ class QuickStripSegmentedButton: NSControl {
         }else if let icon = segment.icon{
             button.image = icon
         }
-        button.helpTitle = segment.helpTitle
-        button.helpMessage = segment.helpMessage
+        button.helpProvider = segment.helpProvider
         (button.cell as? NSButtonCell)?.backgroundColor = segment.isPrimary ? primarySegmentColor : secondarySegmentColor
         button.font = font
         return button
