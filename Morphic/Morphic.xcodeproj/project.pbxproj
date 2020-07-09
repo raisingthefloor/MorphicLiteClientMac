@@ -1133,7 +1133,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator3;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Morphic Configurator for macOS";
 				SWIFT_VERSION = 5.0;
