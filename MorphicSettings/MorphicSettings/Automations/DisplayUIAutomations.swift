@@ -66,6 +66,10 @@ public class DisplaySliderUIAutomation: AccessibilityUIAutomation{
     var sliderTitle: String! { nil }
 
     public override func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
+        if let intValue = value as? Int{
+            apply(Double(intValue), completion: completion)
+            return
+        }
         guard let value = value as? Double else{
             os_log(.error, log: logger, "Passed non-double value to slider")
             completion(false)
@@ -130,6 +134,50 @@ public class ContrastUIAutomation: AccessibilityUIAutomation{
     
 }
 
+public class DisplayPopupButtonUIAutomation: AccessibilityUIAutomation{
+    
+    var tabTitle: String! { nil }
+    var buttonTitle: String! { nil }
+    
+    var optionTitles: [Int: String]! { nil }
+    
+    public override func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
+        guard let value = value as? Int else{
+            os_log(.error, log: logger, "Passed non-int value to popup")
+            completion(false)
+            return
+        }
+        guard let stringValue = optionTitles[value] else{
+            os_log(.error, log: logger, "Passed invalid int value to popup")
+            completion(false)
+            return
+        }
+        showAccessibilityDisplayPreferences(tab: tabTitle){
+            accessibility in
+            guard let accessibility = accessibility else{
+                completion(false)
+                return
+            }
+            guard let button = accessibility.popUpButton(titled: self.buttonTitle) else{
+                os_log(.error, log: logger, "Failed to find popup button")
+                completion(false)
+                return
+            }
+            button.setValue(stringValue){
+                success in
+                guard success else{
+                    os_log(.error, log: logger, "Failed to set popup button value")
+                    completion(false)
+                    return
+                }
+                completion(true)
+            }
+        }
+        
+    }
+    
+}
+
 public class InvertColorsUIAutomation: DisplayCheckboxUIAutomation{
     
     override var tabTitle: String! { "Display" }
@@ -177,4 +225,95 @@ public class CursorSizeUIAutomation: DisplaySliderUIAutomation{
     override var tabTitle: String! { "Cursor" }
     override var sliderTitle: String! { "Cursor size:" }
     
+}
+
+public class ColorFilterEnabledAutomation: DisplayCheckboxUIAutomation{
+    
+    override var tabTitle: String! { "Color Filters" }
+    override var checkboxTitle: String! { "Enable Color Filters" }
+    
+}
+
+// Type Popup isn't properly labeled
+public class ColorFilterTypeAutomation: AccessibilityUIAutomation{
+
+    
+    var optionTitles: [Int : String]! {
+        [
+            1: "Grayscale",
+            2: "Red/Green filter (Protanopia)",
+            4: "Green/Red filter (Deuteranopia)",
+            8: "Blue/Yellow filter (Tritanopia)",
+            16: "Color Tint"
+        ]
+    }
+    public override func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
+        guard let value = value as? Int else{
+            os_log(.error, log: logger, "Passed non-int value to popup")
+            completion(false)
+            return
+        }
+        guard let stringValue = optionTitles[value] else{
+            os_log(.error, log: logger, "Passed invalid int value to popup")
+            completion(false)
+            return
+        }
+        showAccessibilityDisplayPreferences(tab: "Color Filters"){
+            accessibility in
+            guard let accessibility = accessibility else{
+                completion(false)
+                return
+            }
+            guard let button = accessibility.firstPopupButton() else{
+                os_log(.error, log: logger, "Failed to find popup button")
+                completion(false)
+                return
+            }
+            button.setValue(stringValue){
+                success in
+                guard success else{
+                    os_log(.error, log: logger, "Failed to set popup button value")
+                    completion(false)
+                    return
+                }
+                completion(true)
+            }
+        }
+        
+    }
+    
+}
+
+// Intensity Slider isn't properly labeled
+class ColorFilterIntensityUIAutomation: AccessibilityUIAutomation{
+
+    public override func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
+        if let intValue = value as? Int{
+            apply(Double(intValue), completion: completion)
+            return
+        }
+        guard let value = value as? Double else{
+            os_log(.error, log: logger, "Passed non-double value to slider")
+            completion(false)
+            return
+        }
+        showAccessibilityDisplayPreferences(tab: "Color Filters"){
+            accessibility in
+            guard let accessibility = accessibility else{
+                completion(false)
+                return
+            }
+            guard let slider = accessibility.firstSlider() else{
+                os_log(.error, log: logger, "Failed to find slider")
+                completion(false)
+                return
+            }
+            guard slider.setValue(value) else{
+                os_log(.error, log: logger, "Failed to update slider value")
+                completion(false)
+                return
+            }
+            completion(true)
+        }
+    }
 }

@@ -135,30 +135,6 @@
           "solution": "com.apple.macos.display",
           "preference": "colorfilter.type"
         }
-      },
-      {
-        "name": "colorfilter.intensity",
-        "type": "double",
-        "default": 0.4,
-        "handler": {
-          "type": "com.apple.macos.defaults-read-ui-write",
-          "defaults_domain": "com.apple.mediaaccessibility",
-          "defaults_key": "MADisplayFilterSingleColorIntensity",
-          "solution": "com.apple.macos.display",
-          "preference": "colorfilter.intensity"
-        }
-      },
-      {
-        "name": "colorfilter.hue",
-        "type": "double",
-        "default": 0.8333333,
-        "handler": {
-          "type": "com.apple.macos.defaults-read-ui-write",
-          "defaults_domain": "com.apple.mediaaccessibility",
-          "defaults_key": "MADisplayFilterSingleColorHue",
-          "solution": "com.apple.macos.display",
-          "preference": "colorfilter.hue"
-        }
       }
     ]
   },
@@ -204,18 +180,6 @@
           "defaults_key": "closeViewScrollWheelToggle",
           "solution": "com.apple.macos.zoom",
           "preference": "scroll.enabled"
-        }
-      },
-      {
-        "name": "scroll.modifier-key",
-        "type": "integer",
-        "default": 262144,
-        "handler": {
-          "type": "com.apple.macos.defaults-read-ui-write",
-          "defaults_domain": "com.apple.universalaccess",
-          "defaults_key": "closeViewScrollWheelModifiersInt",
-          "solution": "com.apple.macos.zoom",
-          "preference": "scroll.modifier-key"
         }
       },
       {

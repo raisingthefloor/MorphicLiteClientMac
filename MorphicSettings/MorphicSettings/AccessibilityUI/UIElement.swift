@@ -59,8 +59,16 @@ public class UIElement{
         return descendant(role: .popUpButton, title: titled)
     }
     
+    public func firstPopupButton() -> PopUpButtonElement?{
+        return descendant(role: .popUpButton)
+    }
+    
     public func slider(titled: String) -> SliderElement?{
         return descendant(role: .slider, title: titled)
+    }
+    
+    public func firstSlider() -> SliderElement?{
+        return descendant(role: .slider)
     }
     
     public var menu: MenuElement?{

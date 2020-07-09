@@ -135,7 +135,7 @@ public class ApplySession{
         let key = pair.0
         let value = pair.1
         guard let setting = settingsManager.setting(for: key) else{
-            // os_log(.info, log: logger, "Cannot find setting for %{public}s.%{public}s", key.solution, key.preference)
+             os_log(.info, log: logger, "Cannot find setting for %{public}s.%{public}s", key.solution, key.preference)
             applyNextKey(completion: completion)
             return
         }

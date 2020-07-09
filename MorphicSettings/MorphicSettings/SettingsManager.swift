@@ -43,11 +43,18 @@ public class SettingsManager{
         DefaultsReadUIWriteSettingHandler.register(automation: DifferentiateWithoutColorUIAutomation.self, for: .macosDisplayDifferentiateWithoutColor)
         DefaultsReadUIWriteSettingHandler.register(automation: CursorShakeUIAutomation.self, for: .macosCursorShake)
         DefaultsReadUIWriteSettingHandler.register(automation: CursorSizeUIAutomation.self, for: .macosCursorSize)
+        DefaultsReadUIWriteSettingHandler.register(automation: ColorFilterEnabledAutomation.self, for: .macosColorFilterEnabled)
+        DefaultsReadUIWriteSettingHandler.register(automation: ColorFilterTypeAutomation.self, for: .macosColorFilterType)
+        DefaultsReadUIWriteSettingHandler.register(automation: ColorFilterIntensityUIAutomation.self, for: .macosColorFilterIntensity)
+        
         DefaultsReadUIWriteSettingHandler.register(automation: VoiceOverUIAutomation.self, for: .macosVoiceOverEnabled)
+        
         DefaultsReadUIWriteSettingHandler.register(automation: ZoomEnabledUIAutomation.self, for: .macosZoomEnabled)
+        DefaultsReadUIWriteSettingHandler.register(automation: ScrollToZoomEnabledUIAutomation.self, for: .macosScrollToZoomEnabled)
         DefaultsReadUIWriteSettingHandler.register(automation: HoverTextEnabledUIAutomation.self, for: .macosHoverTextEnabled)
         DefaultsReadUIWriteSettingHandler.register(automation: TouchbarZoomEnabledUIAutomation.self, for: .macosTouchbarZoomEnabled)
         DefaultsReadUIWriteSettingHandler.register(automation: ZoomStyleUIAutomation.self, for: .macosZoomStyle)
+        
     }
     
     /// All known solutions
@@ -144,6 +151,9 @@ public extension Preferences.Key{
     static var macosDisplayDifferentiateWithoutColor = Preferences.Key(solution: "com.apple.macos.display", preference: "differentiate-without-color")
     static var macosCursorShake = Preferences.Key(solution: "com.apple.macos.display", preference: "cursor.shake")
     static var macosCursorSize = Preferences.Key(solution: "com.apple.macos.display", preference: "cursor.size")
+    static var macosColorFilterEnabled = Preferences.Key(solution: "com.apple.macos.display", preference: "colorfilter.enabled")
+    static var macosColorFilterType = Preferences.Key(solution: "com.apple.macos.display", preference: "colorfilter.type")
+    static var macosColorFilterIntensity = Preferences.Key(solution: "com.apple.macos.display", preference: "colorfilter.intensity")
     
     // Voice Over
     static var macosVoiceOverEnabled = Preferences.Key(solution: "com.apple.macos.voiceover", preference: "enabled")
