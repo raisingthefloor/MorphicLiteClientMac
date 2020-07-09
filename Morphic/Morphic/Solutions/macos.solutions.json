@@ -18,8 +18,8 @@
         "default": false,
         "handler": {
           "type": "com.apple.macos.defaults-read-ui-write",
-          "defaults_domain": "com.apple.Accessibility",
-          "defaults_key": "DarkenSystemColors",
+          "defaults_domain": "com.apple.universalaccess",
+          "defaults_key": "increaseContrast",
           "solution": "com.apple.macos.display",
           "preference": "contrast.enabled"
         }
@@ -93,8 +93,9 @@
         "default": true,
         "handler": {
           "type": "com.apple.macos.defaults-read-ui-write",
-          "defaults_domain": "com.apple.universalaccess",
+          "defaults_domain": "Apple Global Domain",
           "defaults_key": "CGDisableCursorLocationMagnification",
+          "transform": "negateBoolean",
           "solution": "com.apple.macos.display",
           "preference": "cursor.shake"
         }
@@ -225,6 +226,11 @@
           "type": "com.apple.macos.defaults-read-ui-write",
           "defaults_domain": "com.apple.universalaccess",
           "defaults_key": "closeViewZoomMode",
+          "integer_map": {
+            "0": "Full Screen",
+            "1": "Split Screen",
+            "2": "Picture-in-picture"
+          },
           "solution": "com.apple.macos.zoom",
           "preference": "style"
         }

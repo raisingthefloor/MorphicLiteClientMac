@@ -96,6 +96,29 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
     }
     
+    @IBAction
+    func reapplyAllSettings(_ sender: Any){
+        Session.shared.open{
+            os_log(.info, "Re-applying all settings")
+            Session.shared.applyAllPreferences {
+                
+            }
+        }
+    }
+    
+    @IBAction
+    func captureAllSettings(_ sender: Any){
+        let prefs = Preferences(identifier: "")
+        let capture = CaptureSession(settingsManager: Session.shared.settings, preferences: prefs)
+        capture.captureDefaultValues = true
+        capture.addAllSolutions()
+        capture.run {
+            for pair in capture.preferences.keyValueTuples(){
+                print(pair.0, pair.1 ?? "<nil>")
+            }
+        }
+    }
+    
     // MARK: - Default Preferences
     
     func copyDefaultPreferences(completion: @escaping () -> Void){

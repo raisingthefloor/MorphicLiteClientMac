@@ -23,6 +23,10 @@
 
 import Foundation
 import MorphicCore
+import OSLog
+
+private let logger = OSLog(subsystem: "MorphicSettings", category: "CaptureSession")
+
 
 /// Capture many values into a `Preferences` object
 public class CaptureSession{
@@ -87,10 +91,12 @@ public class CaptureSession{
         }
         let key = keyQueue.removeLast()
         guard let setting = settingsManager.setting(for: key) else{
+            os_log(.info, log: logger, "Failed to find setting for %{public}s.%{public}s", key.solution, key.preference)
             captureNextKey(completion: completion)
             return
         }
         guard let handler = setting.createHandler() else{
+            os_log(.info, log: logger, "Failed create handler for %{public}s.%{public}s", key.solution, key.preference)
             captureNextKey(completion: completion)
             return
         }
@@ -104,6 +110,7 @@ public class CaptureSession{
                     self.preferences.remove(key: key)
                 }
             case .failed:
+                os_log(.info, log: logger, "Capture failed for %{public}s.%{public}s", key.solution, key.preference)
                 break
             }
             self.captureNextKey(completion: completion)

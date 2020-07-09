@@ -140,7 +140,7 @@ public class InvertColorsUIAutomation: DisplayCheckboxUIAutomation{
 public class InvertClassicUIAutomation: DisplayCheckboxUIAutomation{
     
     override var tabTitle: String! { "Display" }
-    override var checkboxTitle: String! { "Classic invert" }
+    override var checkboxTitle: String! { "Classic Invert" }
     
 }
 

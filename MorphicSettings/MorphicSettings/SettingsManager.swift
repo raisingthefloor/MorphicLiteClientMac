@@ -34,6 +34,7 @@ public class SettingsManager{
     public static var shared: SettingsManager = SettingsManager()
     
     private init(){
+        ClientSettingHandler.register(type: DisplayZoomHandler.self, for: .macosDisplayZoom)
         DefaultsReadUIWriteSettingHandler.register(automation: ContrastUIAutomation.self, for: .macosDisplayContrastEnabled)
         DefaultsReadUIWriteSettingHandler.register(automation: InvertColorsUIAutomation.self, for: .macosDisplayInvertColors)
         DefaultsReadUIWriteSettingHandler.register(automation: InvertClassicUIAutomation.self, for: .macosDisplayClassicInvert)

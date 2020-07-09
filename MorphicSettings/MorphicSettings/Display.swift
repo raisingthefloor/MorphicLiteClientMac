@@ -58,7 +58,7 @@ public class Display{
             return 1
         }
         let target = possibleModes.reversed().first(where: { $0.widthInVirtualPixels < currentMode.widthInVirtualPixels }) ?? currentMode
-        return Double(target.widthInVirtualPixels) / Double(normalMode.widthInVirtualPixels)
+        return Double(normalMode.widthInVirtualPixels) / Double(target.widthInVirtualPixels)
     }
     
     public func percentage(zoomingOut steps: Int) -> Double{
@@ -66,7 +66,14 @@ public class Display{
             return 1
         }
         let target = possibleModes.first(where: { $0.widthInVirtualPixels > currentMode.widthInVirtualPixels }) ?? currentMode
-        return Double(target.widthInVirtualPixels) / Double(normalMode.widthInVirtualPixels)
+        return Double(normalMode.widthInVirtualPixels) / Double(target.widthInVirtualPixels)
+    }
+    
+    public var currentPercentage: Double{
+        guard let currentMode = currentMode, let normalMode = normalMode else{
+            return 1
+        }
+        return Double(normalMode.widthInVirtualPixels) / Double(currentMode.widthInVirtualPixels)
     }
     
     public var numberOfSteps: Int {
@@ -108,7 +115,7 @@ public class Display{
         guard let normalMode = normalMode else{
             return nil
         }
-        let targetWidth = Int(round(Double(normalMode.widthInVirtualPixels) * percentage))
+        let targetWidth = Int(round(Double(normalMode.widthInVirtualPixels) / percentage))
         let modes = possibleModes.map({ (abs($0.widthInVirtualPixels - targetWidth), $0) }).sorted(by: { $0.0 < $1.0 })
         return modes.first?.1
     }
@@ -117,7 +124,19 @@ public class Display{
 
 public class DisplayZoomHandler: ClientSettingHandler{
     
+    public override func read(completion: @escaping (SettingHandler.Result) -> Void) {
+        guard let percentage = Display.main?.currentPercentage else {
+            completion(.failed)
+            return
+        }
+        completion(.succeeded(value: percentage))
+    }
+    
     public override func apply(_ value: Interoperable?, completion: @escaping (_ success: Bool) -> Void) {
+        if let intValue = value as? Int{
+            apply(Double(intValue), completion: completion)
+            return
+        }
         guard let percentage = value as? Double else{
             completion(false)
             return

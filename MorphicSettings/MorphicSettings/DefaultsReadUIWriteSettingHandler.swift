@@ -60,11 +60,18 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler{
         public let solution: String
         public let preference: String
         
+        public let transform: Transform?
+        
+        public enum Transform: String, Decodable{
+            case negateBoolean
+        }
+        
         public enum CodingKeys: String, CodingKey{
             case defaultsDomain = "defaults_domain"
             case defaultsKey = "defaults_key"
             case solution
             case preference
+            case transform
 //            case ui
         }
         
@@ -75,6 +82,7 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler{
 //            ui = try container.decode(String.self, forKey: .ui)
             solution = try container.decode(String.self, forKey: .solution)
             preference = try container.decode(String.self, forKey: .preference)
+            transform = try container.decodeIfPresent(Transform.self, forKey: .transform)
         }
     }
     
@@ -187,9 +195,15 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler{
     public override func read(completion: @escaping (_ result: SettingHandler.Result) -> Void) {
         switch setting.type{
         case .boolean:
-            guard let boolValue = defaults?.bool(forKey: description.defaultsKey) else{
+            guard var boolValue = defaults?.bool(forKey: description.defaultsKey) else{
                 completion(.failed)
                 return
+            }
+            if let transform = description.transform{
+                switch transform {
+                case .negateBoolean:
+                    boolValue = !boolValue
+                }
             }
             completion(.succeeded(value: boolValue))
         case .double:

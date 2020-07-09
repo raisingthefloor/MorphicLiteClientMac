@@ -46,6 +46,18 @@
                         <action selector="launchLogin:" target="ZNk-5q-oDb" id="mYB-Jp-6w7"/>
                     </connections>
                 </menuItem>
+                <menuItem title="DEBUG Capture All Settings" id="bwc-3y-vEE">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="captureAllSettings:" target="ZNk-5q-oDb" id="0us-xx-xqM"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="DEBUG Re-apply Settings" id="445-gc-1TH">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="reapplyAllSettings:" target="ZNk-5q-oDb" id="wi5-VN-mSS"/>
+                    </connections>
+                </menuItem>
                 <menuItem title="Logout" hidden="YES" id="fdS-ef-rqr">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
