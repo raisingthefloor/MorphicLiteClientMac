@@ -26,7 +26,7 @@ import MorphicCore
 import MorphicSettings
 import MorphicService
 
-public class QuickStripItem{
+public class MorphicBarItem{
     
     var interoperable: [String: Interoperable?]
     
@@ -34,12 +34,12 @@ public class QuickStripItem{
         self.interoperable = interoperable
     }
     
-    func view() -> QuickStripItemView?{
+    func view() -> MorphicBarItemView?{
         return nil
     }
     
-    public static func items(from interoperables: [Interoperable?]) -> [QuickStripItem]{
-        var items = [QuickStripItem]()
+    public static func items(from interoperables: [Interoperable?]) -> [MorphicBarItem]{
+        var items = [MorphicBarItem]()
         for i in 0..<interoperables.count{
             if let dict = interoperables.dictionary(at: i){
                 if let item_ = item(from: dict){
@@ -50,10 +50,10 @@ public class QuickStripItem{
         return items
     }
     
-    public static func item(from interoperable: [String: Interoperable?]) -> QuickStripItem?{
+    public static func item(from interoperable: [String: Interoperable?]) -> MorphicBarItem?{
         switch interoperable.string(for: "type"){
         case "control":
-            return QuickStripControlItem(interoperable: interoperable)
+            return MorphicBarControlItem(interoperable: interoperable)
         default:
             return nil
         }
@@ -61,7 +61,7 @@ public class QuickStripItem{
     
 }
 
-class QuickStripControlItem: QuickStripItem{
+class MorphicBarControlItem: MorphicBarItem{
     
     enum Feature: String{
         case resolution
@@ -87,67 +87,67 @@ class QuickStripControlItem: QuickStripItem{
         super.init(interoperable: interoperable)
     }
     
-    override func view() -> QuickStripItemView? {
+    override func view() -> MorphicBarItemView? {
         switch feature{
         case .resolution:
             let localized = LocalizedStrings(prefix: "control.feature.resolution")
             let segments = [
-                QuickStripSegmentedButton.Segment(icon: .plus(), isPrimary: true, helpProvider: QuickHelpTextSizeBiggerProvider(display: Display.main, localized: localized)),
-                QuickStripSegmentedButton.Segment(icon: .minus(), isPrimary: false, helpProvider: QuickHelpTextSizeSmallerProvider(display: Display.main, localized: localized))
+                MorphicBarSegmentedButton.Segment(icon: .plus(), isPrimary: true, helpProvider: QuickHelpTextSizeBiggerProvider(display: Display.main, localized: localized)),
+                MorphicBarSegmentedButton.Segment(icon: .minus(), isPrimary: false, helpProvider: QuickHelpTextSizeSmallerProvider(display: Display.main, localized: localized))
             ]
-            let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.target = self
-            view.segmentedButton.action = #selector(QuickStripControlItem.zoom(_:))
+            view.segmentedButton.action = #selector(MorphicBarControlItem.zoom(_:))
             return view
         case .magnifier:
             let localized = LocalizedStrings(prefix: "control.feature.magnifier")
             let showHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "show.help.title"), message: localized.string(for: "show.help.message")) }
             let hideHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "hide.help.title"), message: localized.string(for: "hide.help.message")) }
             let segments = [
-                QuickStripSegmentedButton.Segment(title: localized.string(for: "show"), isPrimary: true, helpProvider: showHelpProvider),
-                QuickStripSegmentedButton.Segment(title: localized.string(for: "hide"), isPrimary: false, helpProvider: hideHelpProvider)
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "show"), isPrimary: true, helpProvider: showHelpProvider),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "hide"), isPrimary: false, helpProvider: hideHelpProvider)
             ]
-            let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
             view.segmentedButton.target = self
-            view.segmentedButton.action = #selector(QuickStripControlItem.magnifier(_:))
+            view.segmentedButton.action = #selector(MorphicBarControlItem.magnifier(_:))
             return view
         case .reader:
             let localized = LocalizedStrings(prefix: "control.feature.reader")
             let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                QuickStripSegmentedButton.Segment(title: localized.string(for: "on"), isPrimary: true, helpProvider: onHelpProvider),
-                QuickStripSegmentedButton.Segment(title: localized.string(for: "off"), isPrimary: false, helpProvider: offHelpProvider)
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), isPrimary: true, helpProvider: onHelpProvider),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), isPrimary: false, helpProvider: offHelpProvider)
             ]
-            let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
             view.segmentedButton.target = self
-            view.segmentedButton.action = #selector(QuickStripControlItem.reader(_:))
+            view.segmentedButton.action = #selector(MorphicBarControlItem.reader(_:))
             return view
         case .volume:
             let localized = LocalizedStrings(prefix: "control.feature.volume")
             let segments = [
-                QuickStripSegmentedButton.Segment(icon: .plus(), isPrimary: true, helpProvider: QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized)),
-                QuickStripSegmentedButton.Segment(icon: .minus(), isPrimary: false, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized)),
-                QuickStripSegmentedButton.Segment(title: localized.string(for: "mute"), isPrimary: true, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized))
+                MorphicBarSegmentedButton.Segment(icon: .plus(), isPrimary: true, helpProvider: QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized)),
+                MorphicBarSegmentedButton.Segment(icon: .minus(), isPrimary: false, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized)),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "mute"), isPrimary: true, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized))
             ]
-            let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.target = self
-            view.segmentedButton.action = #selector(QuickStripControlItem.volume(_:))
+            view.segmentedButton.action = #selector(MorphicBarControlItem.volume(_:))
             return view
         case .contrast:
             let localized = LocalizedStrings(prefix: "control.feature.contrast")
             let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                QuickStripSegmentedButton.Segment(title: localized.string(for: "on"), isPrimary: true, helpProvider: onHelpProvider),
-                QuickStripSegmentedButton.Segment(title: localized.string(for: "off"), isPrimary: false, helpProvider: offHelpProvider)
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), isPrimary: true, helpProvider: onHelpProvider),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), isPrimary: false, helpProvider: offHelpProvider)
             ]
-            let view = QuickStripSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
             view.segmentedButton.target = self
-            view.segmentedButton.action = #selector(QuickStripControlItem.contrast(_:))
+            view.segmentedButton.action = #selector(MorphicBarControlItem.contrast(_:))
             return view
         default:
             return nil
@@ -156,7 +156,7 @@ class QuickStripControlItem: QuickStripItem{
     
     @objc
     func zoom(_ sender: Any?){
-        guard let segment = (sender as? QuickStripSegmentedButton)?.integerValue else{
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else{
             return
         }
         guard let display = Display.main else{
@@ -173,7 +173,7 @@ class QuickStripControlItem: QuickStripItem{
     
     @objc
     func volume(_ sender: Any?){
-        guard let segment = (sender as? QuickStripSegmentedButton)?.integerValue else{
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else{
             return
         }
         guard let output = AudioOutput.main else{
@@ -198,7 +198,7 @@ class QuickStripControlItem: QuickStripItem{
     
     @objc
     func contrast(_ sender: Any?){
-        guard let segment = (sender as? QuickStripSegmentedButton)?.integerValue else{
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else{
             return
         }
         if segment == 0{
@@ -214,7 +214,7 @@ class QuickStripControlItem: QuickStripItem{
     
     @objc
     func reader(_ sender: Any?){
-        guard let segment = (sender as? QuickStripSegmentedButton)?.integerValue else{
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else{
             return
         }
         if segment == 0{
@@ -230,7 +230,7 @@ class QuickStripControlItem: QuickStripItem{
     
     @objc
     func magnifier(_ sender: Any?){
-        guard let segment = (sender as? QuickStripSegmentedButton)?.integerValue else{
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else{
             return
         }
         let session = Session.shared
@@ -273,7 +273,7 @@ class QuickStripControlItem: QuickStripItem{
 fileprivate struct LocalizedStrings{
     
     var prefix: String
-    var table = "QuickStripViewController"
+    var table = "MorphicBarViewController"
     var bundle = Bundle.main
     
     init(prefix: String){

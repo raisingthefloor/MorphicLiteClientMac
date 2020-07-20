@@ -23,9 +23,9 @@
 
 import Cocoa
 
-public class QuickStripItemView: NSView {
+public class MorphicBarItemView: NSView {
     
-    public weak var quickStripView: QuickStripView?
+    public weak var morphicBarView: MorphicBarView?
     
     public var showsHelp: Bool = true
     
@@ -35,17 +35,17 @@ public class QuickStripItemView: NSView {
     
 }
 
-class QuickStripSegmentedButtonItemView: QuickStripItemView{
+class MorphicBarSegmentedButtonItemView: MorphicBarItemView{
     
     var titleLabel: NSTextField
-    var segmentedButton: QuickStripSegmentedButton
+    var segmentedButton: MorphicBarSegmentedButton
     var titleButtonSpacing: CGFloat = 4.0
     
-    init(title: String, segments: [QuickStripSegmentedButton.Segment]){
+    init(title: String, segments: [MorphicBarSegmentedButton.Segment]){
         titleLabel = NSTextField(labelWithString: title)
         titleLabel.font = .morphicBold
         titleLabel.alignment = .center
-        segmentedButton = QuickStripSegmentedButton(segments: segments)
+        segmentedButton = MorphicBarSegmentedButton(segments: segments)
         super.init(frame: NSRect(x: 0, y: 0, width: 100, height: 100))
         addSubview(titleLabel)
         addSubview(segmentedButton)

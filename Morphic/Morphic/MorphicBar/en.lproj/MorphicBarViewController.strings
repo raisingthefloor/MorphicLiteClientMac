@@ -1,12 +1,12 @@
 
-/* Class = "NSMenuItem"; title = "Customize Quick Strip..."; ObjectID = "1rR-To-5lZ"; */
-"1rR-To-5lZ.title" = "Customize Quick Strip...";
+/* Class = "NSMenuItem"; title = "Customize MorphicBar..."; ObjectID = "1rR-To-5lZ"; */
+"1rR-To-5lZ.title" = "Customize MorphicBar...";
 
 /* Class = "NSMenuItem"; title = "Take Settings With Me..."; ObjectID = "jUa-06-vgJ"; */
 "jUa-06-vgJ.title" = "Take Settings With Me...";
 
-/* Class = "NSMenuItem"; title = "Hide Quick Strip"; ObjectID = "rih-DC-jC5"; */
-"rih-DC-jC5.title" = "Hide Quick Strip";
+/* Class = "NSMenuItem"; title = "Hide MorphicBar"; ObjectID = "rih-DC-jC5"; */
+"rih-DC-jC5.title" = "Hide MorphicBar";
 
 /* Class = "NSMenuItem"; title = "Quit Morphic"; ObjectID = "tHP-m8-Lto"; */
 "tHP-m8-Lto.title" = "Quit Morphic";

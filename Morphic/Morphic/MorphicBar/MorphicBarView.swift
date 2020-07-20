@@ -23,21 +23,21 @@
 
 import Cocoa
 
-/// The view that shows a collection of quick strip items
-public class QuickStripView: NSView {
+/// The view that shows a collection of MorphicBar items
+public class MorphicBarView: NSView {
     
     // MARK: - Item Views
     
     /// The item views in order of appearance
-    public private(set) var itemViews = [QuickStripItemView]()
+    public private(set) var itemViews = [MorphicBarItemView]()
     
-    /// Add an item view to the end of the quick strip
+    /// Add an item view to the end of the MorphicBar
     ///
     /// - parameters:
     ///   - itemView: The item view to add
-    public func add(itemView: QuickStripItemView){
+    public func add(itemView: MorphicBarItemView){
         itemViews.append(itemView)
-        itemView.quickStripView = self
+        itemView.morphicBarView = self
         addSubview(itemView)
         invalidateIntrinsicContentSize()
     }
@@ -50,11 +50,11 @@ public class QuickStripView: NSView {
         let itemView = itemViews[index]
         itemViews.remove(at: index)
         itemView.removeFromSuperview()
-        itemView.quickStripView = nil
+        itemView.morphicBarView = nil
         invalidateIntrinsicContentSize()
     }
     
-    /// Remove all item views from the quick strip
+    /// Remove all item views from the MorphicBar
     public func removeAllItemViews(){
         for i in (0..<itemViews.count).reversed(){
             removeItemView(at: i)
