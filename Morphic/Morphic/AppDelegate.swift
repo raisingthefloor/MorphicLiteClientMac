@@ -178,11 +178,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         os_log(.info, log: logger, "Creating status item")
         statusItem = NSStatusBar.system.statusItem(withLength: -1)
         statusItem.menu = menu
-        guard let button = statusItem.button else {
-            return
-        }
-        button.image = NSImage(named: "MenuIcon")
-        button.alternateImage = NSImage(named: "MenuIconAlternate")
+        
+        let buttonImage = NSImage(named: "MenuIconBlack")
+        buttonImage?.isTemplate = true
+        statusItem.button?.image = buttonImage
     }
      
     // MARK: - MorphicBar

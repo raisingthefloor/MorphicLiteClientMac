@@ -689,6 +689,8 @@ extension URLResponse{
 
 public extension NSNotification.Name{
     
+    static let appleInterfaceThemeChanged = NSNotification.Name(rawValue: "AppleInterfaceThemeChangedNotification")
+    
     static let morphicSessionUserDidChange = NSNotification.Name(rawValue: "org.raisingthefloor.morphicSessionUserDidChange")
     
 }
