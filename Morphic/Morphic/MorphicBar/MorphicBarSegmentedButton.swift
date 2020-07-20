@@ -34,7 +34,7 @@ import Cocoa
 //
 // Given the styling and behavior constraints, it seemed better to make a custom control
 // that draws a series of connected buttons than to use NSSegmentedControl.
-class QuickStripSegmentedButton: NSControl {
+class MorphicBarSegmentedButton: NSControl {
     
     // MARK: - Creating a Segmented Button
     
@@ -291,7 +291,7 @@ class QuickStripSegmentedButton: NSControl {
         let index = segmentButtons.count
         button.tag = index
         button.target = self
-        button.action = #selector(QuickStripSegmentedButton.segmentAction)
+        button.action = #selector(MorphicBarSegmentedButton.segmentAction)
         segmentButtons.append(button)
         addSubview(button)
     }

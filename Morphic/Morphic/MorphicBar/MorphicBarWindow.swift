@@ -25,44 +25,44 @@ import Cocoa
 import MorphicCore
 import MorphicService
 
-/// A window that displays the quick strip
+/// A window that displays the MorphicBar
 ///
-/// This class takes care of window styling, but leaves most of the work to the `QuickStripViewController`,
+/// This class takes care of window styling, but leaves most of the work to the `MorphicBarViewController`,
 /// which is installed as the window's `contentViewController`
 ///
-/// A Quick Strip window is always on top of other windows so it's never lost, and can only occupy corner
+/// A MorphicBar window is always on top of other windows so it's never lost, and can only occupy corner
 /// locations on a screen, and will snap to the closest corner whenever the user moves the window.
-public class QuickStripWindow: NSWindow {
+public class MorphicBarWindow: NSWindow {
     
-    public var quickStripViewController: QuickStripViewController
+    public var morphicBarViewController: MorphicBarViewController
     
-    /// Create a new Quick Strip Window with a `QuickStripViewController` as its `contentViewController`
+    /// Create a new MorphicBar Window with a `MorphicBarViewController` as its `contentViewController`
     public init(){
-        quickStripViewController = QuickStripViewController.init(nibName: nil, bundle: nil)
+        morphicBarViewController = MorphicBarViewController.init(nibName: nil, bundle: nil)
         super.init(contentRect: NSMakeRect(0, 0, 100, 100), styleMask: .borderless, backing: .buffered, defer: false)
-        contentViewController = quickStripViewController
+        contentViewController = morphicBarViewController
         hasShadow = true
         isReleasedWhenClosed = false
         level = .floating
         backgroundColor = .clear
         isMovableByWindowBackground = true
         collectionBehavior = [.canJoinAllSpaces]
-        if let savedPosition = Position(rawValue: Session.shared.string(for: .morphicQuickStripPosition) ?? ""){
+        if let savedPosition = Position(rawValue: Session.shared.string(for: .morphicBarPosition) ?? ""){
             position = savedPosition
         }
-        updateQuickStrip()
-        NotificationCenter.default.addObserver(self, selector: #selector(QuickStripWindow.userDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
+        updateMorphicBar()
+        NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarWindow.userDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
     }
     
     @objc
     func userDidChange(_ notification: NSNotification){
-        updateQuickStrip()
+        updateMorphicBar()
     }
     
-    func updateQuickStrip(){
-        quickStripViewController.showsHelp = Session.shared.bool(for: .morphicQuickStripShowsHelp) ?? true
-        if let preferredItems = Session.shared.array(for: .morphicQuickStripItems){
-            quickStripViewController.items = QuickStripItem.items(from: preferredItems)
+    func updateMorphicBar(){
+        morphicBarViewController.showsHelp = Session.shared.bool(for: .morphicBarShowsHelp) ?? true
+        if let preferredItems = Session.shared.array(for: .morphicBarItems){
+            morphicBarViewController.items = MorphicBarItem.items(from: preferredItems)
         }
         reposition(animated: false)
     }
@@ -83,7 +83,7 @@ public class QuickStripWindow: NSWindow {
         case bottomRight
         
         /// Determine the origin for the given window at this position
-        fileprivate func origin(for window: QuickStripWindow) -> NSPoint{
+        fileprivate func origin(for window: MorphicBarWindow) -> NSPoint{
             guard let screen = window.screen else{
                 return .zero
             }
@@ -116,7 +116,7 @@ public class QuickStripWindow: NSWindow {
         self.position = position
         reposition(animated: animated)
         if changed{
-            Session.shared.set(position.rawValue, for: .morphicQuickStripPosition)
+            Session.shared.set(position.rawValue, for: .morphicBarPosition)
         }
     }
     
@@ -158,7 +158,7 @@ public class QuickStripWindow: NSWindow {
 }
 
 /// Custom `NSView` that accepts first mouse to ensure proper window movement behavior
-class QuickStripWindowContentView: NSView{
+class MorphicBarWindowContentView: NSView{
     
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool {
         // accept first mouse so the event propagates up to the window and we
@@ -178,19 +178,19 @@ private extension NSRect{
 
 public extension Preferences.Key{
     
-    /// The preference key that stores the position for the quick strip window on mac
+    /// The preference key that stores the position for the MorphicBar window on mac
     ///
     /// It is platform specific because mac controls tend to be at the top of the screen while windows
-    /// controls tend to be at the bottom.  A user who works between platforms can move the strip
-    /// on one platform without affecting the strip's location on the other.
-    static var morphicQuickStripPosition = Preferences.Key(solution: "org.raisingthefloor.morphic.quickstrip", preference: "position.mac")
+    /// controls tend to be at the bottom.  A user who works between platforms can move the MorphicBar
+    /// on one platform without affecting the MorphicBar's location on the other.
+    static var morphicBarPosition = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbar", preference: "position.mac")
     
-    /// The preference key that stores whether the quick strip should appear by default
-    static var morphicQuickStripVisible = Preferences.Key(solution: "org.raisingthefloor.morphic.quickstrip", preference: "visible")
+    /// The preference key that stores whether the MorphicBar should appear by default
+    static var morphicBarVisible = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbar", preference: "visible")
     
-    /// The preference key that stores whether the quick strip buttons should show giant help tips
-    static var morphicQuickStripShowsHelp = Preferences.Key(solution: "org.raisingthefloor.morphic.quickstrip", preference: "showsHelp")
+    /// The preference key that stores whether the MorphicBar buttons should show giant help tips
+    static var morphicBarShowsHelp = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbar", preference: "showsHelp")
     
-    /// The preference key that stores which items appear on the quick strip
-    static var morphicQuickStripItems = Preferences.Key(solution: "org.raisingthefloor.morphic.quickstrip", preference: "items")
+    /// The preference key that stores which items appear on the MorphicBar
+    static var morphicBarItems = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbar", preference: "items")
 }

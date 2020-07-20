@@ -35,8 +35,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     static var shared: AppDelegate!
     
     @IBOutlet var menu: NSMenu!
-    @IBOutlet weak var showQuickStripItem: NSMenuItem?
-    @IBOutlet weak var hideQuickStripItem: NSMenuItem?
+    @IBOutlet weak var showMorphicBarItem: NSMenuItem?
+    @IBOutlet weak var hideMorphicBarItem: NSMenuItem?
     @IBOutlet weak var logoutItem: NSMenuItem?
     
     // MARK: - Application Lifecycle
@@ -52,8 +52,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
                 self.logoutItem?.isHidden = Session.shared.user == nil
-                if Session.shared.bool(for: .morphicQuickStripVisible) ?? true{
-                    self.showQuickStrip(nil)
+                if Session.shared.bool(for: .morphicBarVisible) ?? true{
+                    self.showMorphicBar(nil)
                 }
                 DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.userDidSignin), name: .morphicSignin, object: nil)
                 NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
@@ -185,46 +185,46 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         button.alternateImage = NSImage(named: "MenuIconAlternate")
     }
      
-    // MARK: - Quick Strip
+    // MARK: - MorphicBar
      
-    /// The window controller for the morphic quick strip that is shown by clicking on the `statusItem`
-    var quickStripWindow: QuickStripWindow?
+    /// The window controller for the MorphicBar that is shown by clicking on the `statusItem`
+    var morphicBarWindow: MorphicBarWindow?
      
-    /// Show or hide the morphic quick strip
+    /// Show or hide the MorphicBar
     ///
     /// - parameter sender: The UI element that caused this action to be invoked
     @IBAction
-    func toggleQuickStrip(_ sender: Any?){
-        if quickStripWindow != nil{
-            hideQuickStrip(nil)
+    func toggleMorphicBar(_ sender: Any?){
+        if morphicBarWindow != nil{
+            hideMorphicBar(nil)
         }else{
-            showQuickStrip(nil)
+            showMorphicBar(nil)
         }
     }
     
     @IBAction
-    func showQuickStrip(_ sender: Any?){
-        if quickStripWindow == nil{
-            quickStripWindow = QuickStripWindow()
-            quickStripWindow?.delegate = self
+    func showMorphicBar(_ sender: Any?){
+        if morphicBarWindow == nil{
+            morphicBarWindow = MorphicBarWindow()
+            morphicBarWindow?.delegate = self
         }
         NSApplication.shared.activate(ignoringOtherApps: true)
-        quickStripWindow?.makeKeyAndOrderFront(nil)
-        showQuickStripItem?.isHidden = true
-        hideQuickStripItem?.isHidden = false
+        morphicBarWindow?.makeKeyAndOrderFront(nil)
+        showMorphicBarItem?.isHidden = true
+        hideMorphicBarItem?.isHidden = false
         if sender != nil{
-            Session.shared.set(true, for: .morphicQuickStripVisible)
+            Session.shared.set(true, for: .morphicBarVisible)
         }
     }
     
     @IBAction
-    func hideQuickStrip(_ sender: Any?){
-        quickStripWindow?.close()
-        showQuickStripItem?.isHidden = false
-        hideQuickStripItem?.isHidden = true
+    func hideMorphicBar(_ sender: Any?){
+        morphicBarWindow?.close()
+        showMorphicBarItem?.isHidden = false
+        hideMorphicBarItem?.isHidden = true
         QuickHelpWindow.hide()
         if sender != nil{
-            Session.shared.set(false, for: .morphicQuickStripVisible)
+            Session.shared.set(false, for: .morphicBarVisible)
         }
     }
      
@@ -235,11 +235,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
      
     func windowWillClose(_ notification: Notification) {
-        quickStripWindow = nil
+        morphicBarWindow = nil
     }
     
     func windowDidChangeScreen(_ notification: Notification) {
-        quickStripWindow?.reposition(animated: false)
+        morphicBarWindow?.reposition(animated: false)
     }
      
     // MARK: - Configurator App
