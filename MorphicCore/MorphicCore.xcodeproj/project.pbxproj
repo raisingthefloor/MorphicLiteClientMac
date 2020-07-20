@@ -18,6 +18,8 @@
 		31A0A5AD2405B75500166668 /* UserDeafults+Morphic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5AC2405B75500166668 /* UserDeafults+Morphic.swift */; };
 		31DDA6A32424130900F18A43 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DDA6A22424130900F18A43 /* Storage.swift */; };
 		31DDA6A624241CF900F18A43 /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DDA6A524241CF900F18A43 /* Record.swift */; };
+		8011AF9424C61EAE00A49F96 /* UserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8011AF9324C61EAE00A49F96 /* UserTests.swift */; };
+		8011AF9624C61FB200A49F96 /* ArbitraryKeysTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8011AF9524C61FB200A49F96 /* ArbitraryKeysTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +47,8 @@
 		31A0A5AC2405B75500166668 /* UserDeafults+Morphic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDeafults+Morphic.swift"; sourceTree = "<group>"; };
 		31DDA6A22424130900F18A43 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		31DDA6A524241CF900F18A43 /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
+		8011AF9324C61EAE00A49F96 /* UserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTests.swift; sourceTree = "<group>"; };
+		8011AF9524C61FB200A49F96 /* ArbitraryKeysTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArbitraryKeysTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +110,8 @@
 			children = (
 				31A0A5612405965600166668 /* MorphicCoreTests.swift */,
 				31A0A5632405965600166668 /* Info.plist */,
+				8011AF9324C61EAE00A49F96 /* UserTests.swift */,
+				8011AF9524C61FB200A49F96 /* ArbitraryKeysTests.swift */,
 			);
 			path = MorphicCoreTests;
 			sourceTree = "<group>";
@@ -235,7 +241,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8011AF9424C61EAE00A49F96 /* UserTests.swift in Sources */,
 				31A0A5622405965600166668 /* MorphicCoreTests.swift in Sources */,
+				8011AF9624C61FB200A49F96 /* ArbitraryKeysTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
