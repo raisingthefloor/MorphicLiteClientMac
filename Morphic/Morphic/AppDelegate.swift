@@ -47,7 +47,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         os_log(.info, log: logger, "opening morphic session...")
         populateSolutions()
         createStatusItem()
-        copyDefaultPreferences{
+        loadInitialDefaultPreferences()
+        createEmptyDefaultPreferencesIfNotExist{
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
                 self.logoutItem?.isHidden = Session.shared.user == nil
@@ -121,25 +122,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     // MARK: - Default Preferences
     
-    func copyDefaultPreferences(completion: @escaping () -> Void){
-        var prefs = Preferences(identifier: "__default__")
+    func createEmptyDefaultPreferencesIfNotExist(completion: @escaping () -> Void) {
+        let prefs = Preferences(identifier: "__default__")
         guard !Session.shared.storage.contains(identifier: prefs.identifier, type: Preferences.self) else{
             completion()
-            return
-        }
-        guard let url = Bundle.main.url(forResource: "DefaultPreferences", withExtension: "json") else{
-            os_log(.error, log: logger, "Failed to find default preferences")
-            return
-        }
-        guard let json = FileManager.default.contents(atPath: url.path) else{
-            os_log(.error, log: logger, "Failed to read default preferences")
-            return
-        }
-        do{
-            let decoder = JSONDecoder()
-            prefs.defaults = try decoder.decode(Preferences.PreferencesSet.self, from: json)
-        }catch{
-            os_log(.error, log: logger, "Failed to decode default preferences")
             return
         }
         Session.shared.storage.save(record: prefs){
@@ -150,7 +136,30 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             completion()
         }
     }
-    
+     
+    func loadInitialDefaultPreferences(){
+        // load our initial default preferences
+        var initialPrefs = Preferences(identifier: "__initial__")
+        
+        guard let url = Bundle.main.url(forResource: "DefaultPreferences", withExtension: "json") else{
+            os_log(.error, log: logger, "Failed to find default preferences")
+            return
+        }
+        guard let json = FileManager.default.contents(atPath: url.path) else{
+            os_log(.error, log: logger, "Failed to read default preferences")
+            return
+        }
+        do{
+            let decoder = JSONDecoder()
+            initialPrefs.defaults = try decoder.decode(Preferences.PreferencesSet.self, from: json)
+        }catch{
+            os_log(.error, log: logger, "Failed to decode default preferences")
+            return
+        }
+        
+        Session.initialPreferences = initialPrefs
+    }
+   
     // MARK: - Solutions
     
     func populateSolutions(){

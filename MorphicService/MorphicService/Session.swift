@@ -463,6 +463,9 @@ public class Session{
         }
     }
     
+    /// The initial default preferences
+    public static var initialPreferences: Preferences?
+    
     /// The current user's preferences
     public var preferences: Preferences?
     
@@ -476,27 +479,27 @@ public class Session{
     }
     
     public func string(for key: Preferences.Key) -> String?{
-        return preferences?.get(key: key) as? String
+        return (preferences?.get(key: key) ?? Session.initialPreferences?.get(key: key)) as? String
     }
     
     public func int(for key: Preferences.Key) -> Int?{
-        return preferences?.get(key: key) as? Int
+        return (preferences?.get(key: key) ?? Session.initialPreferences?.get(key: key)) as? Int
     }
     
     public func double(for key: Preferences.Key) -> Double?{
-        return preferences?.get(key: key) as? Double
+        return (preferences?.get(key: key) ?? Session.initialPreferences?.get(key: key)) as? Double
     }
     
     public func bool(for key: Preferences.Key) -> Bool?{
-        return preferences?.get(key: key) as? Bool
+        return (preferences?.get(key: key) ?? Session.initialPreferences?.get(key: key)) as? Bool
     }
     
     public func array(for key: Preferences.Key) -> [Interoperable?]?{
-        return preferences?.get(key: key) as? [Interoperable?]
+        return (preferences?.get(key: key) ?? Session.initialPreferences?.get(key: key)) as? [Interoperable?]
     }
     
     public func dictionary(for key: Preferences.Key) -> [String: Interoperable?]?{
-        return preferences?.get(key: key) as? [String: Interoperable?]
+        return (preferences?.get(key: key) ?? Session.initialPreferences?.get(key: key)) as? [String: Interoperable?]
     }
     
     public func applyAllPreferences(completion: @escaping () -> Void){
