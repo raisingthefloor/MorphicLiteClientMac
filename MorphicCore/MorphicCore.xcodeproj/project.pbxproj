@@ -20,6 +20,7 @@
 		31DDA6A624241CF900F18A43 /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DDA6A524241CF900F18A43 /* Record.swift */; };
 		8011AF9424C61EAE00A49F96 /* UserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8011AF9324C61EAE00A49F96 /* UserTests.swift */; };
 		8011AF9624C61FB200A49F96 /* ArbitraryKeysTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8011AF9524C61FB200A49F96 /* ArbitraryKeysTests.swift */; };
+		8011AF9824C6256400A49F96 /* PreferencesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8011AF9724C6256400A49F96 /* PreferencesTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		31DDA6A524241CF900F18A43 /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 		8011AF9324C61EAE00A49F96 /* UserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTests.swift; sourceTree = "<group>"; };
 		8011AF9524C61FB200A49F96 /* ArbitraryKeysTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArbitraryKeysTests.swift; sourceTree = "<group>"; };
+		8011AF9724C6256400A49F96 /* PreferencesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +110,7 @@
 		31A0A5602405965600166668 /* MorphicCoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				8011AF9724C6256400A49F96 /* PreferencesTests.swift */,
 				31A0A5612405965600166668 /* MorphicCoreTests.swift */,
 				31A0A5632405965600166668 /* Info.plist */,
 				8011AF9324C61EAE00A49F96 /* UserTests.swift */,
@@ -243,6 +246,7 @@
 			files = (
 				8011AF9424C61EAE00A49F96 /* UserTests.swift in Sources */,
 				31A0A5622405965600166668 /* MorphicCoreTests.swift in Sources */,
+				8011AF9824C6256400A49F96 /* PreferencesTests.swift in Sources */,
 				8011AF9624C61FB200A49F96 /* ArbitraryKeysTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
