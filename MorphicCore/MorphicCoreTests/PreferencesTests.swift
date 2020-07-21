@@ -33,6 +33,8 @@ import XCTest
 class PreferencesTests: XCTestCase {
 
     var carlaPrefs: Preferences!
+    let prefsId = UUID().uuidString
+    let carlaId = UUID().uuidString
 
     var magFactorKey: Preferences.Key!
     let magnifierName = "Magnifier"
@@ -43,19 +45,31 @@ class PreferencesTests: XCTestCase {
     let inverseVideoPref = "inverse_video"
     let inverseVideoVal: Bool = true
 
-    let prefsId = UUID().uuidString
-    let carlaId = UUID().uuidString
+    var nonExistentKey: Preferences.Key!
+    let nonExistentSolution = "nonSolution"
+    let nonExistentPref = "nullPref"
+    let nonExistentVal: Int = 0
 
     override func setUpWithError() throws {
         carlaPrefs = Preferences(identifier: prefsId)
+        carlaPrefs.userId = carlaId
         magFactorKey = Preferences.Key(solution: magnifierName, preference: magFactorPref)
         inverseVideoKey = Preferences.Key(solution: magnifierName, preference: inverseVideoPref)
+        nonExistentKey = Preferences.Key(solution: nonExistentSolution, preference: nonExistentPref)
     }
 
     override func tearDownWithError() throws {
         carlaPrefs = nil
         magFactorKey = nil
         inverseVideoKey = nil
+        nonExistentKey = nil
+    }
+
+    func testCreation() {
+        XCTAssertEqual(type(of: carlaPrefs).typeName, Preferences.typeName, "Check type name")
+        XCTAssertEqual(carlaPrefs.identifier, prefsId, "Check preferences id")
+        XCTAssertEqual(carlaPrefs.userId, carlaId, "Check user id")
+        XCTAssertNil(carlaPrefs.defaults, "Check empty default preferences values")
     }
 
     func testSetGet() {
@@ -70,13 +84,20 @@ class PreferencesTests: XCTestCase {
     }
 
     func testRemove() {
-        // Check that there is no magnification factor, then initialize it, confirm
-        // it is set, and then remove it.
+        // Check that there is no magnification factor, then initialize it and confirm that
+        // it is set.
         XCTAssertNil(carlaPrefs.get(key: magFactorKey), "Magnification factor nil before set()")
-
         carlaPrefs.set(magFactorVal, for: magFactorKey)
-        XCTAssertNotNil(carlaPrefs.get(key: magFactorKey), "Magnification factor initialized to non-nil")
+        XCTAssertNotNil(carlaPrefs.get(key: magFactorKey), "Magnification factor set")
 
+        // Test "removal" of non-existent preferences and that the mag factor is unaffected.
+        XCTAssertNil(carlaPrefs.get(key: nonExistentKey), "Test non-existent preference before removal")
+        carlaPrefs.remove(key: nonExistentKey)
+        XCTAssertNil(carlaPrefs.get(key: nonExistentKey), "Test non-existent preference after removeal")
+        XCTAssertNotNil(carlaPrefs.get(key: magFactorKey), "Test magnification factor still present after removing non-existant preference")
+
+        // Remove mag factor preference.
+        // FAILING
         carlaPrefs.remove(key: magFactorKey)
         XCTAssertNil(carlaPrefs.get(key: magFactorKey), "Magnification factor nil after remove()")
     }
@@ -84,7 +105,7 @@ class PreferencesTests: XCTestCase {
     func testKeyValueTuples() {
         // At start, there should be no preferences
         var prefsTuples = carlaPrefs.keyValueTuples()
-        XCTAssert(0 == prefsTuples.count, "Check for zero preferences")
+        XCTAssertTrue(prefsTuples.isEmpty, "Check for zero preferences")
 
         // Add two preferences
         carlaPrefs.set(magFactorVal, for: magFactorKey)
@@ -95,14 +116,20 @@ class PreferencesTests: XCTestCase {
         XCTAssert(2 == prefsTuples.count, "Check for two preferences")
         XCTAssertTrue(containsTuple(magFactorKey, magFactorVal, prefsTuples), "Check presence of magnification factor preference")
         XCTAssertTrue(containsTuple(inverseVideoKey, inverseVideoVal, prefsTuples), "Check presence of inverse video preference")
+
+        // Check that non-existent preference is absent
+        XCTAssertFalse(containsTuple(nonExistentKey, nonExistentVal, prefsTuples), "Check absence of non-existent preference")
     }
 
-    func containsTuple(_ aKey: Preferences.Key, _ aValue: Interoperable, _ tuplesArray: [ (Preferences.Key, Interoperable?)]) -> Bool {
+    func containsTuple(_ inKey: Preferences.Key, _ inValue: Interoperable, _ tuplesArray: [ (Preferences.Key, Interoperable?)]) -> Bool {
+        guard !tuplesArray.isEmpty else {
+            return false
+        }
         for (key, val) in tuplesArray {
-            if ((aKey.solution == key.solution) &&
-                (aKey.preference == key.preference) &&
+            if ((inKey.solution == key.solution) &&
+                (inKey.preference == key.preference) &&
                 // Find a way to compare the actual values.
-                (aValue != nil && val != nil)) {
+                (inValue != nil && val != nil)) {
                 return true
             }
         }
