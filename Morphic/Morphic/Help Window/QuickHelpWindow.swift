@@ -23,7 +23,7 @@
 
 import Cocoa
 
-/// The large tooltip-like window that displays help about Quick Strip actions
+/// The large tooltip-like window that displays help about MorphicBar actions
 ///
 /// Uses a `QuickHelpViewController` as its `contentViewController`
 class QuickHelpWindow: NSWindow {

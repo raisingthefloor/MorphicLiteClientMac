@@ -1,5 +1,5 @@
 {
-    "org.raisingthefloor.morphic.quickstrip": {
+    "org.raisingthefloor.morphic.morphicbar": {
         "visible": true,
         "position.mac": "topRight",
         "showsHelp": true,

@@ -25,8 +25,8 @@ import Cocoa
 import MorphicService
 import MorphicSettings
 
-/// The View Controller for a Quick Strip showing a collection of actions the user can take
-public class QuickStripViewController: NSViewController {
+/// The View Controller for a MorphicBar showing a collection of actions the user can take
+public class MorphicBarViewController: NSViewController {
     
     // MARK: - View Lifecycle
 
@@ -35,7 +35,7 @@ public class QuickStripViewController: NSViewController {
         view.layer?.backgroundColor = .white
         view.layer?.cornerRadius = 6
         self.logoutMenuItem?.isHidden = Session.shared.user == nil
-        NotificationCenter.default.addObserver(self, selector: #selector(QuickStripViewController.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
+        NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
     }
     
     // MARK: - Notifications
@@ -50,7 +50,7 @@ public class QuickStripViewController: NSViewController {
     
     // MARK: - Logo Button & Main Menu
     
-    /// The strip's main menu, accessible via the Logo image button
+    /// The MorphicBar's main menu, accessible via the Logo image button
     @IBOutlet var mainMenu: NSMenu!
     
     @IBOutlet var logoutMenuItem: NSMenuItem!
@@ -66,18 +66,18 @@ public class QuickStripViewController: NSViewController {
     
     // MARK: - Items
     
-    /// The quick strip view managed by this controller
-    @IBOutlet weak var quickStripView: QuickStripView!
+    /// The MorphicBar view managed by this controller
+    @IBOutlet weak var morphicBarView: MorphicBarView!
     
-    /// The items that should be shown on the quick strip
-    public var items = [QuickStripItem](){
+    /// The items that should be shown on the MorphicBar
+    public var items = [MorphicBarItem](){
         didSet{
             _ = view
-            quickStripView.removeAllItemViews()
+            morphicBarView.removeAllItemViews()
             for item in items{
                 if let itemView = item.view(){
                     itemView.showsHelp = showsHelp
-                    quickStripView.add(itemView: itemView)
+                    morphicBarView.add(itemView: itemView)
                 }
             }
         }
@@ -86,7 +86,7 @@ public class QuickStripViewController: NSViewController {
     var showsHelp: Bool = true{
         didSet{
             logoButton.showsHelp = showsHelp
-            for itemView in quickStripView.itemViews{
+            for itemView in morphicBarView.itemViews{
                 itemView.showsHelp = showsHelp
             }
         }
