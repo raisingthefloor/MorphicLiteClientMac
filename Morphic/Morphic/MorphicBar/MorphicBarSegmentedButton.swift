@@ -89,18 +89,22 @@ class MorphicBarSegmentedButton: NSControl {
         
         var helpProvider: QuickHelpContentProvider?
         
+        var accessibilityLabel: String?
+        
         /// Create a segment with a title
-        init(title: String, isPrimary: Bool, helpProvider: QuickHelpContentProvider?){
+        init(title: String, isPrimary: Bool, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?){
             self.title = title
             self.helpProvider = helpProvider
             self.isPrimary = isPrimary
+            self.accessibilityLabel = accessibilityLabel
         }
         
         /// Create a segment with an icon
-        init(icon: NSImage, isPrimary: Bool, helpProvider: QuickHelpContentProvider?){
+        init(icon: NSImage, isPrimary: Bool, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?){
             self.icon = icon
             self.helpProvider = helpProvider
             self.isPrimary = isPrimary
+            self.accessibilityLabel = accessibilityLabel
         }
     }
     
@@ -258,6 +262,7 @@ class MorphicBarSegmentedButton: NSControl {
         }else if let icon = segment.icon{
             button.image = icon
         }
+        button.setAccessibilityLabel(segment.accessibilityLabel)
         button.helpProvider = segment.helpProvider
         (button.cell as? NSButtonCell)?.backgroundColor = segment.isPrimary ? primarySegmentColor : secondarySegmentColor
         button.font = font

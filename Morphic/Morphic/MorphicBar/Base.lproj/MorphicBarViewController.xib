@@ -7,6 +7,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="MorphicBarViewController" customModule="Morphic" customModuleProvider="target">
             <connections>
+                <outlet property="advancedFeaturesButton" destination="ead-JY-BhL" id="an3-xG-08o"/>
                 <outlet property="logoButton" destination="ead-JY-BhL" id="cLt-cn-cEr"/>
                 <outlet property="logoutMenuItem" destination="O7a-6a-ADF" id="wIr-CK-VBa"/>
                 <outlet property="mainMenu" destination="Tdd-O7-ejt" id="2yx-wr-veu"/>

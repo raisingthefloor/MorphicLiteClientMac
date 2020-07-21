@@ -92,8 +92,8 @@ class MorphicBarControlItem: MorphicBarItem{
         case .resolution:
             let localized = LocalizedStrings(prefix: "control.feature.resolution")
             let segments = [
-                MorphicBarSegmentedButton.Segment(icon: .plus(), isPrimary: true, helpProvider: QuickHelpTextSizeBiggerProvider(display: Display.main, localized: localized)),
-                MorphicBarSegmentedButton.Segment(icon: .minus(), isPrimary: false, helpProvider: QuickHelpTextSizeSmallerProvider(display: Display.main, localized: localized))
+                MorphicBarSegmentedButton.Segment(icon: .plus(), isPrimary: true, helpProvider: QuickHelpTextSizeBiggerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "bigger.help.title")),
+                MorphicBarSegmentedButton.Segment(icon: .minus(), isPrimary: false, helpProvider: QuickHelpTextSizeSmallerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "smaller.help.title"))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.target = self
@@ -104,8 +104,8 @@ class MorphicBarControlItem: MorphicBarItem{
             let showHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "show.help.title"), message: localized.string(for: "show.help.message")) }
             let hideHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "hide.help.title"), message: localized.string(for: "hide.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "show"), isPrimary: true, helpProvider: showHelpProvider),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "hide"), isPrimary: false, helpProvider: hideHelpProvider)
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "show"), isPrimary: true, helpProvider: showHelpProvider, accessibilityLabel: localized.string(for: "show.help.title")),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "hide"), isPrimary: false, helpProvider: hideHelpProvider, accessibilityLabel: localized.string(for: "hide.help.title"))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
@@ -117,8 +117,8 @@ class MorphicBarControlItem: MorphicBarItem{
             let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), isPrimary: true, helpProvider: onHelpProvider),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), isPrimary: false, helpProvider: offHelpProvider)
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), isPrimary: true, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title")),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), isPrimary: false, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
@@ -128,9 +128,9 @@ class MorphicBarControlItem: MorphicBarItem{
         case .volume:
             let localized = LocalizedStrings(prefix: "control.feature.volume")
             let segments = [
-                MorphicBarSegmentedButton.Segment(icon: .plus(), isPrimary: true, helpProvider: QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized)),
-                MorphicBarSegmentedButton.Segment(icon: .minus(), isPrimary: false, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized)),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "mute"), isPrimary: true, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized))
+                MorphicBarSegmentedButton.Segment(icon: .plus(), isPrimary: true, helpProvider: QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "up.help.title")),
+                MorphicBarSegmentedButton.Segment(icon: .minus(), isPrimary: false, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "down.help.title")),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "mute"), isPrimary: true, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "mute.help.title"))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.target = self
@@ -141,8 +141,8 @@ class MorphicBarControlItem: MorphicBarItem{
             let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), isPrimary: true, helpProvider: onHelpProvider),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), isPrimary: false, helpProvider: offHelpProvider)
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), isPrimary: true, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title")),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), isPrimary: false, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
