@@ -50,6 +50,7 @@ public class MorphicBarWindow: NSWindow {
         if let savedPosition = Position(rawValue: Session.shared.string(for: .morphicBarPosition) ?? ""){
             position = savedPosition
         }
+        setAccessibilityLabel("MorphicBar")
         updateMorphicBar()
         NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarWindow.userDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
     }
