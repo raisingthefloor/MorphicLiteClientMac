@@ -37,7 +37,7 @@ class PreferencesTests: XCTestCase {
     var magFactorKey: Preferences.Key!
     let magnifierName = "Magnifier"
     let magFactorPref = "magfactor"
-    let magFactorVal: Interoperable = 2.0
+    let magFactorVal: Double = 2.0
 
     var inverseVideoKey: Preferences.Key!
     let inverseVideoPref = "inverse_video"
@@ -63,7 +63,10 @@ class PreferencesTests: XCTestCase {
         XCTAssertNil(carlaPrefs.get(key: magFactorKey), "Test set()/get() with magnification factor of nil")
 
         carlaPrefs.set(magFactorVal, for: magFactorKey)
-        XCTAssertNotNil(carlaPrefs.get(key: magFactorKey), "Test set()/get() with magnification factor of 2.0 (non nil)")
+        XCTAssertEqual(magFactorVal, carlaPrefs.get(key: magFactorKey) as! Double, "Test set()/get() with magnification factor")
+
+        carlaPrefs.set(inverseVideoVal, for: inverseVideoKey)
+        XCTAssertEqual(inverseVideoVal, carlaPrefs.get(key: inverseVideoKey) as! Bool, "Test set()/get() with inverse video")
     }
 
     func testRemove() {
@@ -75,16 +78,34 @@ class PreferencesTests: XCTestCase {
         XCTAssertNotNil(carlaPrefs.get(key: magFactorKey), "Magnification factor initialized to non-nil")
 
         carlaPrefs.remove(key: magFactorKey)
-        carlaPrefs.remove(key: magFactorKey)
         XCTAssertNil(carlaPrefs.get(key: magFactorKey), "Magnification factor nil after remove()")
     }
 
     func testKeyValueTuples() {
+        // At start, there should be no preferences
+        var prefsTuples = carlaPrefs.keyValueTuples()
+        XCTAssert(0 == prefsTuples.count, "Check for zero preferences")
+
+        // Add two preferences
         carlaPrefs.set(magFactorVal, for: magFactorKey)
         carlaPrefs.set(inverseVideoVal, for: inverseVideoKey)
-        let prefsTuples = carlaPrefs.keyValueTuples()
-        XCTAssert(2 == prefsTuples.count, "Number of preferences")
 
-        // Add check for presence of the preferences set() above in prefsTuples
+        // Check that the preferences were added
+        prefsTuples = carlaPrefs.keyValueTuples()
+        XCTAssert(2 == prefsTuples.count, "Check for two preferences")
+        XCTAssertTrue(containsTuple(magFactorKey, magFactorVal, prefsTuples), "Check presence of magnification factor preference")
+        XCTAssertTrue(containsTuple(inverseVideoKey, inverseVideoVal, prefsTuples), "Check presence of inverse video preference")
+    }
+
+    func containsTuple(_ aKey: Preferences.Key, _ aValue: Interoperable, _ tuplesArray: [ (Preferences.Key, Interoperable?)]) -> Bool {
+        for (key, val) in tuplesArray {
+            if ((aKey.solution == key.solution) &&
+                (aKey.preference == key.preference) &&
+                // Find a way to compare the actual values.
+                (aValue != nil && val != nil)) {
+                return true
+            }
+        }
+        return false
     }
 }

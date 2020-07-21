@@ -46,10 +46,10 @@ class UserTests: XCTestCase {
         "email": "pjones@somewhere.com"
     }
     """
-    
+
     override func setUpWithError() throws {
         try super.setUpWithError()
-        
+
         freshNewUser = User()
         knownUserNoPrefs = User(identifier: identifierString)
 
