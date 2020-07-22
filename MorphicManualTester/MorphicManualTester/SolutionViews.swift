@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import MorphicSettings
 
 struct SolutionSection: View {
     @ObservedObject var solution: SolutionCollection
@@ -16,35 +17,46 @@ struct SolutionSection: View {
             HStack {
                 if(active)
                 {
-                    Text("COLLAPSE")
+                    Text("\u{25bc}")
+                        .font(.headline)
                 }
                 else
                 {
-                    Text("EXPAND")
+                    Text("\u{25b6}")
+                        .font(.headline)
                 }
-                Text(solution.id)
+                Text(solution.name)
                     .font(.headline)
                 Spacer()
             }
+            .onTapGesture {
+                self.active = !self.active
+            }
             .padding(.all)
-            Section {
-                ForEach(solution.settings.sorted()) {setting in
-                    Divider()
-                    if(setting.type == SettingType.boolean) {
-                        BooleanEntry(setting: setting)
-                    }
-                    else if(setting.type == SettingType.double) {
-                        Text("THIS IS BROKEN")
-                    }
-                    else if(setting.type == SettingType.integer) {
-                        Text("THIS IS BROKEN")
-                    }
-                    else if(setting.type == SettingType.string) {
-                        Text("THIS IS BROKEN")
+            Section() {
+                ForEach(solution.settings) {setting in
+                    if(self.active) {
+                        Divider()
+                        if(setting.type == Setting.ValueType.boolean) {
+                            BooleanEntry(setting: setting)
+                        }
+                        else if(setting.type == Setting.ValueType.double) {
+                            DoubleEntry(setting: setting)
+                        }
+                        else if(setting.type == Setting.ValueType.integer) {
+                            IntegerEntry(setting: setting)
+                        }
+                        else if(setting.type == Setting.ValueType.string) {
+                            StringEntry(setting: setting)
+                        }
                     }
                 }
             }
+            Divider()
         }
+    }
+    func toggleDrop() {
+        self.active = !self.active
     }
 }
 
@@ -52,37 +64,74 @@ struct BooleanEntry: View {
     @ObservedObject var setting: SettingControl
     var body: some View {
         HStack {
-            Text(setting.id)
-                .font(.body)
-                
+            Text(setting.name)
+                .font(.subheadline)
             Spacer()
             Text("Boolean:")
             Toggle("", isOn: $setting.val_bool)
         }
         .padding(.leading, 30.0)
-        .padding(/*@START_MENU_TOKEN@*/[.top, .bottom, .trailing], 5.0/*@END_MENU_TOKEN@*/)
+        .padding([.top, .bottom, .trailing], 5.0)
     }
 }
 
-struct TestRow: View {
+struct IntegerEntry: View {
+    @ObservedObject var setting: SettingControl
     var body: some View {
         HStack {
-            Text("AYY LMAO")
+            Text(setting.name)
+                .font(.subheadline)
             Spacer()
-            Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
-                Text("Button")
-            }
+            Text("Integer:")
+            TextField("", text: $setting.displayVal, onEditingChanged: setting.CheckVal)
+                .frame(width: 300.0)
         }
+        .padding(.leading, 30.0)
+        .padding([.top, .bottom, .trailing], 5.0)
+    }
+}
+
+struct DoubleEntry: View {
+    @ObservedObject var setting: SettingControl
+    var body: some View {
+        HStack {
+            Text(setting.name)
+                .font(.subheadline)
+            Spacer()
+            Text("Double:")
+            TextField("", text: $setting.displayVal, onEditingChanged: setting.CheckVal)
+                .frame(width: 300.0)
+        }
+        .padding(.leading, 30.0)
+        .padding([.top, .bottom, .trailing], 5.0)
+    }
+}
+
+struct StringEntry: View {
+    @ObservedObject var setting: SettingControl
+    var body: some View {
+        HStack {
+            Text(setting.name)
+                .font(.subheadline)
+            Spacer()
+            Text("String:")
+            TextField("", text: $setting.displayVal, onEditingChanged: setting.CheckVal)
+                .frame(width: 300.0)
+        }
+        .padding(.leading, 30.0)
+        .padding([.top, .bottom, .trailing], 5.0)
     }
 }
 
 struct SolutionViews_Previews: PreviewProvider {
     static var previews: some View {
         let solution = SolutionCollection(solutionName: "morphic.solution.name")
-        solution.settings.append(SettingControl(name: "FIRST SETTING", solname: "solution", type: SettingType.boolean))
-        solution.settings.append(SettingControl(name: "SECOND SETTING", solname: "solution", type: SettingType.boolean))
-        solution.settings.append(SettingControl(name: "THIRD SETTING", solname: "solution", type: SettingType.boolean))
-        solution.settings.append(SettingControl(name: "FOURTH SETTING", solname: "solution", type: SettingType.boolean))
-        return SolutionSection(solution: solution)
+        solution.settings.append(SettingControl(name: "FIRST SETTING", solname: "solution", type: .boolean))
+        solution.settings.append(SettingControl(name: "SECOND SETTING", solname: "solution", type: .boolean))
+        solution.settings.append(SettingControl(name: "THIRD SETTING", solname: "solution", type: .boolean))
+        solution.settings.append(SettingControl(name: "FOURTH SETTING", solname: "solution", type: .boolean))
+        let sec = SolutionSection(solution: solution)
+        sec.active = true
+        return sec
     }
 }

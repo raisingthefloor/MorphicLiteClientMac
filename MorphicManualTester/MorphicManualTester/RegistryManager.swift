@@ -7,39 +7,115 @@
 //
 
 import Foundation
+import MorphicCore
+import MorphicSettings
 import SwiftUI
 
-enum SettingType
-{
-    case boolean
-    case string
-    case integer
-    case double
-}
+let registry = RegistryManager()
 
 class SettingControl: ObservableObject, Identifiable
 {
     @Published var name: String
-    @Published var type: SettingType
+    @Published var type: Setting.ValueType
+    @Published var changed: Bool
     @Published var val_bool: Bool
-    @Published var val_string: String
-    @Published var val_int: Int
-    @Published var val_double: Double
+        {
+        didSet
+        {
+            changed = true
+            if(registry.autoApply)
+            {
+                //TODO: apply setting
+            }
+        }
+    }
+    @Published var displayVal: String
+    var val_string: String
+    var val_int: Int
+    var val_double: Double
     var solutionName: String
-    init(name: String, solname: String, type: SettingType)
+    init(name: String, solname: String, type: Setting.ValueType, val_string: String = "", val_bool: Bool = false, val_double: Double = 0.0, val_int: Int = 0)
     {
         self.name = name
         self.type = type
+        self.changed = false
         self.solutionName = solname
-        val_bool = false
-        val_string = ""
-        val_double = 0.0
-        val_int = 0
+        self.val_bool = val_bool
+        self.val_double = val_double
+        self.val_string = val_string
+        self.val_int = val_int
+        self.displayVal = ""
     }
     func copy() -> SettingControl
     {
         let copy = SettingControl(name: name, solname: solutionName, type: type)
+        copy.val_bool = val_bool
+        copy.val_int = val_int
+        copy.val_string = val_string
+        copy.val_double = val_double
         return copy;
+    }
+    func CheckVal(isStart: Bool)
+    {
+        changed = true
+        if isStart
+        {
+            return
+        }
+        switch(type)
+        {
+        case .string:
+            val_string = displayVal
+            break
+        case .integer:
+            let ival: Int? = Int(displayVal)
+            if ival == nil
+            {
+                Capture()
+                return
+            }
+            val_int = ival!
+            break
+        case .double:
+            let dval: Double? = Double(displayVal)
+            if dval == nil
+            {
+                Capture()
+                return
+            }
+            val_double = dval!
+            break
+        case .boolean:
+            return
+        }
+        if(registry.autoApply)
+        {
+            Apply()
+        }
+    }
+    func Apply()
+    {
+        //TODO: apply settings
+        Capture()
+    }
+    func Capture()
+    {
+        //TODO: capture settings
+        switch(type)
+        {
+        case .string:
+            displayVal = val_string
+            break
+        case .boolean:
+            break
+        case .integer:
+            displayVal = String(format: "%i", val_int)
+            break
+        case .double:
+            displayVal = String(format: "%f", val_double)
+            break
+        }
+        changed = false
     }
 }
 
@@ -88,30 +164,47 @@ class RegistryManager: ObservableObject
             if(solurl != nil)
             {
                 let solpath: String = solurl!.path
-                
-                
-                
-                
-                
-                
-                let solution = SolutionCollection(solutionName: "morphic.solution.name")
-                solution.settings.append(SettingControl(name: "FIRST SETTING", solname: "solution", type: SettingType.boolean))
-                solution.settings.append(SettingControl(name: "SECOND SETTING", solname: "solution", type: SettingType.integer))
-                solution.settings.append(SettingControl(name: "THIRD SETTING", solname: "solution", type: SettingType.double))
-                solution.settings.append(SettingControl(name: "FOURTH SETTING", solname: "solution", type: SettingType.string))
-                solutions.append(solution)
-                
+                SettingsManager.shared.populateSolutions(from: solurl!)
+                if(SettingsManager.shared.solutions.isEmpty)
+                {
+                    load = "ERROR, INVALID SOLUTION FILE. PLEASE TRY AGAIN."
+                    return
+                }
+                for solution in SettingsManager.shared.solutions
+                {
+                    let collection = SolutionCollection(solutionName: solution.identifier)
+                    for setting in solution.settings
+                    {
+                        collection.settings.append(SettingControl(name: setting.name, solname: solution.identifier, type: setting.type))
+                    }
+                    solutions.append(collection)
+                }
+                CaptureAllSettings()
                 load = "Loaded file " + solpath
             }
         }
     }
     func ApplyAllSettings()
     {
-        
+        for solution in self.solutions
+        {
+            for setting in solution.settings
+            {
+                if setting.changed
+                {
+                    setting.Apply()
+                }
+            }
+        }
     }
-    
-    func ApplySetting(solutionName: String, settingName: String)
+    func CaptureAllSettings()
     {
-        
+        for solution in self.solutions
+        {
+            for setting in solution.settings
+            {
+                setting.Capture()
+            }
+        }
     }
 }

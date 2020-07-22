@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var registry: RegistryManager = RegistryManager()
+    @ObservedObject var manager: RegistryManager = registry
     var body: some View {
         VStack(spacing: 0.0) {
             VStack() {
@@ -20,10 +20,14 @@ struct ContentView: View {
                         .multilineTextAlignment(.leading)
                         .padding()
                     Spacer()
-                    Toggle(isOn: $registry.autoApply) {
+                    Toggle(isOn: $manager.autoApply) {
                         Text("Auto Apply")
                             .padding([.top, .bottom, .trailing])
                         
+                    }
+                    .padding(.vertical)
+                    Button(action: registry.CaptureAllSettings) {
+                        Text("Refresh")
                     }
                     .padding(.vertical)
                     Button(action: registry.ApplyAllSettings) {
@@ -46,10 +50,11 @@ struct ContentView: View {
                 
             }
             .background(/*@START_MENU_TOKEN@*/Color(hue: 0.307, saturation: 0.976, brightness: 0.418)/*@END_MENU_TOKEN@*/)
-            List(registry.solutions.sorted()){ solution in
-                SolutionSection(solution: solution)
+            ScrollView() {
+                ForEach(registry.solutions) { solution in
+                    SolutionSection(solution: solution)
+                }
             }
-            
         }
         .frame(width: 800.0, height: 800.0)
     }

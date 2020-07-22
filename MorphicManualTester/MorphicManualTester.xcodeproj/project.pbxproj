@@ -48,6 +48,7 @@
 		FF56B32524C01CAA00960132 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FF56B32724C01CAA00960132 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FF56B32824C01CAA00960132 /* MorphicManualTester.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicManualTester.entitlements; sourceTree = "<group>"; };
+		FF62B90724C85F8700BFDFAF /* MorphicService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +67,7 @@
 		FF486AC524C09A600024503E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FF62B90724C85F8700BFDFAF /* MorphicService.framework */,
 				FF486ACA24C09A660024503E /* MorphicCore.framework */,
 				FF486AC624C09A600024503E /* MorphicSettings.framework */,
 			);
