@@ -16,7 +16,7 @@ class CaptureWindowController: NSWindowController, CaptureViewControllerDelegate
 
     override func windowDidLoad() {
         super.windowDidLoad()
-        window?.backgroundColor = .white
+//        window?.backgroundColor = NSColor(named: "WindowBackgroundColor")
         window?.contentViewController = pageViewController
         showCapture(animated: false)
     }
