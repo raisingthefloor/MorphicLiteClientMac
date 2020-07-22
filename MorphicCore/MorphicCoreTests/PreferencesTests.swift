@@ -93,11 +93,10 @@ class PreferencesTests: XCTestCase {
         // Test "removal" of non-existent preferences and that the mag factor is unaffected.
         XCTAssertNil(carlaPrefs.get(key: nonExistentKey), "Test non-existent preference before removal")
         carlaPrefs.remove(key: nonExistentKey)
-        XCTAssertNil(carlaPrefs.get(key: nonExistentKey), "Test non-existent preference after removeal")
+        XCTAssertNil(carlaPrefs.get(key: nonExistentKey), "Test non-existent preference after removal")
         XCTAssertNotNil(carlaPrefs.get(key: magFactorKey), "Test magnification factor still present after removing non-existant preference")
 
         // Remove mag factor preference.
-        // FAILING
         carlaPrefs.remove(key: magFactorKey)
         XCTAssertNil(carlaPrefs.get(key: magFactorKey), "Magnification factor nil after remove()")
     }
