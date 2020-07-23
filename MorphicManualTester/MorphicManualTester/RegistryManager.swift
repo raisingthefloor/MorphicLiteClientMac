@@ -25,7 +25,7 @@ class SettingControl: ObservableObject, Identifiable
             changed = true
             if(registry.autoApply)
             {
-                //TODO: apply setting
+                Apply()
             }
         }
     }
@@ -58,10 +58,7 @@ class SettingControl: ObservableObject, Identifiable
     func CheckVal(isStart: Bool)
     {
         changed = true
-        if isStart
-        {
-            return
-        }
+        if isStart {return}
         switch(type)
         {
         case .string:
@@ -90,32 +87,77 @@ class SettingControl: ObservableObject, Identifiable
         }
         if(registry.autoApply)
         {
-            Apply()
+            Apply(alreadyChecked: true)
         }
     }
-    func Apply()
+    func Apply(alreadyChecked: Bool = false)
     {
-        //TODO: apply settings
-        Capture()
-    }
-    func Capture()
-    {
-        //TODO: capture settings
+        if !changed
+        {
+            return
+        }
+        if !alreadyChecked
+        {
+            CheckVal(isStart: false)
+        }
+        var val: Interoperable?
         switch(type)
         {
         case .string:
-            displayVal = val_string
-            break
-        case .boolean:
+            val = val_string
             break
         case .integer:
-            displayVal = String(format: "%i", val_int)
+            val = val_int
             break
         case .double:
-            displayVal = String(format: "%f", val_double)
+            val = val_double
+            break
+        case .boolean:
+            val = val_bool
             break
         }
-        changed = false
+        let sname = String(name)
+        SettingsManager.shared.apply(val, for: Preferences.Key(solution: solutionName, preference: sname))
+        { success in
+            if(!success)
+            {
+            self.Capture()
+            }
+        }
+    }
+    func Capture()
+    {
+        let sname = String(name)
+        SettingsManager.shared.capture(valueFor: Preferences.Key(solution: solutionName, preference: sname))
+        { value in
+            switch(self.type)
+            {
+            case .string:
+                let v_string: String? = value as? String
+                if v_string == nil {return}
+                self.val_string = v_string!
+                self.displayVal = self.val_string
+                break
+            case .boolean:
+                let v_bool: Bool? = value as? Bool
+                if v_bool == nil {return}
+                self.val_bool = v_bool!
+                break
+            case .integer:
+                let v_int: Int? = value as? Int
+                if v_int == nil {return}
+                self.val_int = v_int!
+                self.displayVal = String(format: "%i", self.val_int)
+                break
+            case .double:
+                let v_double: Double? = value as? Double
+                if v_double == nil {return}
+                self.val_double = v_double!
+                self.displayVal = String(format: "%f", self.val_double)
+                break
+            }
+            self.changed = false
+        }
     }
 }
 
