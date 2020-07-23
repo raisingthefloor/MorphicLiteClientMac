@@ -49,4 +49,10 @@ public class Service{
     
     /// The URL session to use when making requests to the remote server
     public private(set) weak var session: Session!
+    
+    public enum Response<ResponseBody, BadRequestBody>{
+        case success(body: ResponseBody)
+        case badRequest(body: BadRequestBody)
+        case failed
+    }
 }

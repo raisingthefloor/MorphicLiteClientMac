@@ -35,8 +35,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     static var shared: AppDelegate!
     
     @IBOutlet var menu: NSMenu!
-    @IBOutlet weak var showQuickStripItem: NSMenuItem?
-    @IBOutlet weak var hideQuickStripItem: NSMenuItem?
+    @IBOutlet weak var showMorphicBarItem: NSMenuItem?
+    @IBOutlet weak var hideMorphicBarItem: NSMenuItem?
+    @IBOutlet weak var logoutItem: NSMenuItem?
     
     // MARK: - Application Lifecycle
 
@@ -44,13 +45,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         os_log(.info, log: logger, "applicationDidFinishLaunching")
         AppDelegate.shared = self
         os_log(.info, log: logger, "opening morphic session...")
+        populateSolutions()
         createStatusItem()
-        copyDefaultPreferences{
+        loadInitialDefaultPreferences()
+        createEmptyDefaultPreferencesIfNotExist{
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
-                if Session.shared.bool(for: .morphicQuickStripVisible) ?? true{
-                    self.showQuickStrip(nil)
+                self.logoutItem?.isHidden = Session.shared.user == nil
+                if Session.shared.bool(for: .morphicBarVisible) ?? true{
+                    self.showMorphicBar(nil)
                 }
+                DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.userDidSignin), name: .morphicSignin, object: nil)
+                NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
             }
         }
     }
@@ -58,14 +64,83 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func applicationWillTerminate(_ aNotification: Notification) {
     }
     
+    // MARK: - Notifications
+    
+    @objc
+    func userDidSignin(_ notification: NSNotification){
+        os_log(.info, log: logger, "Got signin notification from configurator")
+        Session.shared.open {
+            NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: Session.shared)
+            let userInfo = notification.userInfo ?? [:]
+            if !(userInfo["isRegister"] as? Bool ?? false){
+                os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
+                Session.shared.applyAllPreferences {
+                }
+            }
+        }
+    }
+    
+    @objc
+    func sessionUserDidChange(_ notification: NSNotification){
+        guard let session = notification.object as? Session else{
+            return
+        }
+        self.logoutItem?.isHidden = session.user == nil
+    }
+    
+    // MARK: - Actions
+    
+    @IBAction
+    func logout(_ sender: Any){
+        Session.shared.signout {
+            self.logoutItem?.isHidden = true
+        }
+    }
+    
+    @IBAction
+    func reapplyAllSettings(_ sender: Any){
+        Session.shared.open{
+            os_log(.info, "Re-applying all settings")
+            Session.shared.applyAllPreferences {
+                
+            }
+        }
+    }
+    
+    @IBAction
+    func captureAllSettings(_ sender: Any){
+        let prefs = Preferences(identifier: "")
+        let capture = CaptureSession(settingsManager: Session.shared.settings, preferences: prefs)
+        capture.captureDefaultValues = true
+        capture.addAllSolutions()
+        capture.run {
+            for pair in capture.preferences.keyValueTuples(){
+                print(pair.0, pair.1 ?? "<nil>")
+            }
+        }
+    }
+    
     // MARK: - Default Preferences
     
-    func copyDefaultPreferences(completion: @escaping () -> Void){
-        var prefs = Preferences(identifier: "__default__")
-        guard !Storage.shared.contains(identifier: prefs.identifier, type: Preferences.self) else{
+    func createEmptyDefaultPreferencesIfNotExist(completion: @escaping () -> Void) {
+        let prefs = Preferences(identifier: "__default__")
+        guard !Session.shared.storage.contains(identifier: prefs.identifier, type: Preferences.self) else{
             completion()
             return
         }
+        Session.shared.storage.save(record: prefs){
+            success in
+            if !success{
+                os_log(.error, log: logger, "Failed to save default preferences")
+            }
+            completion()
+        }
+    }
+     
+    func loadInitialDefaultPreferences(){
+        // load our initial default preferences
+        var initialPrefs = Preferences(identifier: "__initial__")
+        
         guard let url = Bundle.main.url(forResource: "DefaultPreferences", withExtension: "json") else{
             os_log(.error, log: logger, "Failed to find default preferences")
             return
@@ -76,18 +151,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
         do{
             let decoder = JSONDecoder()
-            prefs.defaults = try decoder.decode(Preferences.PreferencesSet.self, from: json)
+            initialPrefs.defaults = try decoder.decode(Preferences.PreferencesSet.self, from: json)
         }catch{
             os_log(.error, log: logger, "Failed to decode default preferences")
             return
         }
-        Storage.shared.save(record: prefs){
-            success in
-            if !success{
-                os_log(.error, log: logger, "Failed to save default preferences")
-            }
-            completion()
-        }
+        
+        Session.initialPreferences = initialPrefs
+    }
+   
+    // MARK: - Solutions
+    
+    func populateSolutions(){
+        Session.shared.settings.populateSolutions(fromResource: "macos.solutions")
     }
      
     // MARK: - Status Bar Item
@@ -102,53 +178,52 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         os_log(.info, log: logger, "Creating status item")
         statusItem = NSStatusBar.system.statusItem(withLength: -1)
         statusItem.menu = menu
-        guard let button = statusItem.button else {
-            return
-        }
-        button.image = NSImage(named: "MenuIcon")
-        button.alternateImage = NSImage(named: "MenuIconAlternate")
+        
+        let buttonImage = NSImage(named: "MenuIconBlack")
+        buttonImage?.isTemplate = true
+        statusItem.button?.image = buttonImage
     }
      
-    // MARK: - Quick Strip
+    // MARK: - MorphicBar
      
-    /// The window controller for the morphic quick strip that is shown by clicking on the `statusItem`
-    var quickStripWindow: QuickStripWindow?
+    /// The window controller for the MorphicBar that is shown by clicking on the `statusItem`
+    var morphicBarWindow: MorphicBarWindow?
      
-    /// Show or hide the morphic quick strip
+    /// Show or hide the MorphicBar
     ///
     /// - parameter sender: The UI element that caused this action to be invoked
     @IBAction
-    func toggleQuickStrip(_ sender: Any?){
-        if quickStripWindow != nil{
-            hideQuickStrip(nil)
+    func toggleMorphicBar(_ sender: Any?){
+        if morphicBarWindow != nil{
+            hideMorphicBar(nil)
         }else{
-            showQuickStrip(nil)
+            showMorphicBar(nil)
         }
     }
     
     @IBAction
-    func showQuickStrip(_ sender: Any?){
-        if quickStripWindow == nil{
-            quickStripWindow = QuickStripWindow()
-            quickStripWindow?.delegate = self
+    func showMorphicBar(_ sender: Any?){
+        if morphicBarWindow == nil{
+            morphicBarWindow = MorphicBarWindow()
+            morphicBarWindow?.delegate = self
         }
         NSApplication.shared.activate(ignoringOtherApps: true)
-        quickStripWindow?.makeKeyAndOrderFront(nil)
-        showQuickStripItem?.isHidden = true
-        hideQuickStripItem?.isHidden = false
+        morphicBarWindow?.makeKeyAndOrderFront(nil)
+        showMorphicBarItem?.isHidden = true
+        hideMorphicBarItem?.isHidden = false
         if sender != nil{
-            Session.shared.set(true, for: .morphicQuickStripVisible)
+            Session.shared.set(true, for: .morphicBarVisible)
         }
     }
     
     @IBAction
-    func hideQuickStrip(_ sender: Any?){
-        quickStripWindow?.close()
-        showQuickStripItem?.isHidden = false
-        hideQuickStripItem?.isHidden = true
+    func hideMorphicBar(_ sender: Any?){
+        morphicBarWindow?.close()
+        showMorphicBarItem?.isHidden = false
+        hideMorphicBarItem?.isHidden = true
         QuickHelpWindow.hide()
         if sender != nil{
-            Session.shared.set(false, for: .morphicQuickStripVisible)
+            Session.shared.set(false, for: .morphicBarVisible)
         }
     }
      
@@ -159,30 +234,28 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
      
     func windowWillClose(_ notification: Notification) {
-        quickStripWindow = nil
+        morphicBarWindow = nil
     }
     
     func windowDidChangeScreen(_ notification: Notification) {
-        quickStripWindow?.reposition(animated: false)
-    }
-     
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        toggleQuickStrip(statusItem.button!)
-        UserDefaults.morphic.removeObserver(self, forKeyPath: .morphicDefaultsKeyUserIdentifier)
-        os_log(.info, log: logger, "Configurator set user identifier, retrying session open")
-        Session.shared.open {
-            if Session.shared.user == nil{
-                os_log(.error, log: logger, "no user, launching configurator")
-            }else{
-                os_log(.info, log: logger, "session open")
-            }
-        }
+        morphicBarWindow?.reposition(animated: false)
     }
      
     // MARK: - Configurator App
-     
+    
     @IBAction
-    func launchConfigurator(_ sender: Any?){
+    func launchCapture(_ sender: Any?){
+        launchConfigurator(argument: "capture")
+    }
+    
+    @IBAction
+    func launchLogin(_ sender: Any?){
+        launchConfigurator(argument: "login")
+    }
+    
+    func launchConfigurator(argument: String){
+//        let url = URL(string: "morphicconfig:\(argument)")!
+//        NSWorkspace.shared.open(url)
         os_log(.info, log: logger, "launching configurator")
         guard let url = Bundle.main.resourceURL?.deletingLastPathComponent().appendingPathComponent("Library").appendingPathComponent("MorphicConfigurator.app") else{
             os_log(.error, log: logger, "Failed to construct bundled configurator app URL")
@@ -190,6 +263,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
         let config = NSWorkspace.OpenConfiguration()
         config.activates = true
+        config.arguments = [argument]
         NSWorkspace.shared.openApplication(at: url, configuration: config){
             (app, error) in
             guard error == nil else{

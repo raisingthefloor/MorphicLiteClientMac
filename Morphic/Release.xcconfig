@@ -27,3 +27,4 @@
 // It's a pain, but values here cannot contain //, so the most used hack
 // is to put an empty variable between the two slashes in the URL
 MORPHIC_SERVICE_ENDPOINT=https:/$()/morphic-lite.raisingthefloor.org/
+FRONT_END_URL=https:/$()/app.morphic.org/

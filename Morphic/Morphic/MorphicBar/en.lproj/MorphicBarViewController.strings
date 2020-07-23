@@ -1,0 +1,162 @@
+
+/* Class = "NSMenuItem"; title = "Customize MorphicBar..."; ObjectID = "1rR-To-5lZ"; */
+"1rR-To-5lZ.title" = "Customize MorphicBar...";
+
+/* Class = "NSMenuItem"; title = "Take Settings With Me..."; ObjectID = "jUa-06-vgJ"; */
+"jUa-06-vgJ.title" = "Take Settings With Me...";
+
+/* Class = "NSMenuItem"; title = "Hide MorphicBar"; ObjectID = "rih-DC-jC5"; */
+"rih-DC-jC5.title" = "Hide MorphicBar";
+
+/* Class = "NSMenuItem"; title = "Quit Morphic"; ObjectID = "tHP-m8-Lto"; */
+"tHP-m8-Lto.title" = "Quit Morphic";
+
+/* Class = "NSButton"; ead-JY-BhL.ibExternalUserDefinedRuntimeAttributesLocalizableStrings[0] = "Advanced Features"; ObjectID = "ead-JY-BhL"; */
+"ead-JY-BhL.ibExternalUserDefinedRuntimeAttributesLocalizableStrings[0]" = "Advanced Features";
+
+/* Class = "NSButton"; ead-JY-BhL.ibExternalUserDefinedRuntimeAttributesLocalizableStrings[1] = "Customize buttons and take your settings with you anywhere"; ObjectID = "ead-JY-BhL"; */
+"ead-JY-BhL.ibExternalUserDefinedRuntimeAttributesLocalizableStrings[1]" = "Customize buttons and take your settings with you anywhere";
+
+/* Label for the buttons that control text/icon size */
+"control.feature.resolution.title" = "Screen Zoom";
+
+/* Title for the help window for the larger text/icon size button */
+"control.feature.resolution.bigger.help.title" = "Increase Screen Zoom";
+
+/* Message for the help window for the larger text/icon size button */
+"control.feature.resolution.bigger.help.message" = "Make all the text and icons bigger";
+
+/* Title for the help window for the larger text/icon size button when at its limit */
+"control.feature.resolution.bigger.limit.help.title" = "Screen Zoom Cannot Go Bigger";
+
+/* Message for the help window for the larger text/icon size button when at its limit */
+"control.feature.resolution.bigger.limit.help.message" = "The current text and icon size is as big as possible";
+
+/* Title for the help window for the smaller text/icon size button */
+"control.feature.resolution.smaller.help.title" = "Decrease Screen Zoom";
+
+/* Message for the help window for the smaller text/icon size button */
+"control.feature.resolution.smaller.help.message" = "Make all the text and icons smaller";
+
+/* Title for the help window for the smaller text/icon size button when at its limit */
+"control.feature.resolution.smaller.limit.help.title" = "Screen Zoom Cannot Go Smaller";
+
+/* Message for the help window for the smaller text/icon size button when at its limit */
+"control.feature.resolution.smaller.limit.help.message" = "The current text and icon size is as small as possible";
+
+/* Label for the buttons that control the magnifier */
+"control.feature.magnifier.title" = "Magnifier";
+
+/* Label for the button that shows the magnifier */
+"control.feature.magnifier.show" = "Show";
+
+/* Title for the help window for the show magnifier button */
+"control.feature.magnifier.show.help.title" = "Show a Magnifying Glass";
+
+/* Message for the help window for the show magnifier button */
+"control.feature.magnifier.show.help.message" = "Magnify a part of the screen as you move around";
+
+/* Label for the button that hides the magnifier */
+"control.feature.magnifier.hide" = "Hide";
+
+/* Title for the help window for the hide magnifier button */
+"control.feature.magnifier.hide.help.title" = "Hide the Magnifying Glass";
+
+/* Message for the help window for the hide magnifier button */
+"control.feature.magnifier.hide.help.message" = "Stop magnifying part of the screen as you move";
+
+/* Label for the buttons that control the reader */
+"control.feature.reader.title" = "Screen Reader";
+
+/* Label for the button that turns the reader on */
+"control.feature.reader.on" = "On";
+
+/* Title for the help window for the hide magnifier button */
+"control.feature.reader.on.help.title" = "Turn On Screen Reader";
+
+/* Message for the help window for the hide magnifier button */
+"control.feature.reader.on.help.message" = "Have the computer read text aloud";
+
+/* Label for the button that turns the reader off */
+"control.feature.reader.off" = "Off";
+
+/* Title for the help window for the hide magnifier button */
+"control.feature.reader.off.help.title" = "Turn Off Screen Reader";
+
+/* Message for the help window for the hide magnifier button */
+"control.feature.reader.off.help.message" = "Stop the computer from reading text aloud";
+
+/* Label for the buttons that control the volume */
+"control.feature.volume.title" = "Volume";
+
+/* Title for the help window for the volume up button */
+"control.feature.volume.up.help.title" = "Turn the Volume Up";
+
+/* Message for the help window for the volume up button */
+"control.feature.volume.up.help.message" = "Make all the sounds louder";
+
+/* Title for the help window for the volume up button at its limit */
+"control.feature.volume.up.limit.help.title" = "Volume Cannot Go Higher";
+
+/* Message for the help window for the volume up button at its limit */
+"control.feature.volume.up.limit.help.message" = "Your computer's sounds are as loud as they can go";
+
+/* Title for the help window for the volume up button when muted */
+"control.feature.volume.up.muted.help.title" = "Unmute All Sounds";
+
+/* Message for the help window for the volume up button when muted */
+"control.feature.volume.up.muted.help.message" = "Return the volume to its previous level";
+
+/* Title for the help window for the volume down button */
+"control.feature.volume.down.help.title" = "Turn the Volume Down";
+
+/* Message for the help window for the volume down button */
+"control.feature.volume.down.help.message" = "Make all the sounds quieter";
+
+/* Title for the help window for the volume down button at its limit */
+"control.feature.volume.down.limit.help.title" = "Volume Cannot Go Lower";
+
+/* Message for the help window for the volume down button at its limit */
+"control.feature.volume.down.limit.help.message" = "Your computer's sounds are as low as they can go";
+
+/* Title for the help window for the volume down button at its limit */
+"control.feature.volume.down.muted.help.title" = "Unmute All Sounds";
+
+/* Message for the help window for the volume down button at its limit */
+"control.feature.volume.down.muted.help.message" = "Return the volume to its previous level";
+
+/* Label for the button that mutes the volume */
+"control.feature.volume.mute" = "Mute";
+
+/* Title for the help window for the mute button */
+"control.feature.volume.mute.help.title" = "Mute All Sounds";
+
+/* Message for the help window for the mute button */
+"control.feature.volume.mute.help.message" = "Turn off all sounds from the computer";
+
+/* Title for the help window for the mute button when muted */
+"control.feature.volume.muted.help.title" = "All Sounds Are Muted";
+
+/* Message for the help window for the mute button when muted */
+"control.feature.volume.muted.help.message" = "Use the plus or minus button to unmute";
+
+/* Label for the buttons that control the contrast */
+"control.feature.contrast.title" = "High Contrast";
+
+/* Label for the button that turns high contrast on */
+"control.feature.contrast.on" = "On";
+
+/* Title for the help window for the hide magnifier button */
+"control.feature.contrast.on.help.title" = "Turn On High Contrast";
+
+/* Message for the help window for the hide magnifier button */
+"control.feature.contrast.on.help.message" = "Make it easier to distinguish items";
+
+/* Label for the button that turns high contrast off */
+"control.feature.contrast.off" = "Off";
+
+/* Title for the help window for the hide magnifier button */
+"control.feature.contrast.off.help.title" = "Turn Off High Contrast";
+
+/* Message for the help window for the hide magnifier button */
+"control.feature.contrast.off.help.message" = "Make it harder to distinguish items";

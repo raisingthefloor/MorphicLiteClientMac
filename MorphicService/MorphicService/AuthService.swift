@@ -38,10 +38,31 @@ public extension Service{
     ///   - completion: The block to call when the task has completed
     ///   - authentication: The authentication response
     /// - returns: The URL session task that is making the remote request for preferences data
-    func register(user: User, username: String, password: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> Session.Task{
-        let body = RegisterUsernameRequest(username: username, password: password, firstName: user.firstName, lastName: user.lastName)
-        let request = URLRequest(session: session, path: "register/username", method: .post, body: body)
-        return session.runningTask(with: request, completion: completion)
+    func register(user: User, username: String, password: String, completion: @escaping (_ result: RegistrationResult) -> Void) -> Session.Task{
+        let body = RegisterUsernameRequest(username: username, password: password, firstName: user.firstName, lastName: user.lastName, email: user.email)
+        let request = URLRequest(session: session, path: "v1/register/username", method: .post, body: body)
+        return session.runningTask(with: request){
+            (response: Response<AuthentiationResponse, RegisterUsernameBadRequest>) in
+            switch response{
+            case .success(let auth):
+                completion(.success(authentication: auth))
+            case .badRequest(let bad):
+                guard let error = bad.error else{
+                    completion(.error)
+                    return
+                }
+                switch error{
+                case .badPassword, .shortPassword:
+                    completion(.badPassword)
+                case .existingEmail, .existingUsername:
+                    completion(.existingEmail)
+                case .malformedEmail:
+                    completion(.invalidEmail)
+                }
+            case .failed:
+                completion(.error)
+            }
+        }
     }
     
     /// Register using a secret key
@@ -55,7 +76,7 @@ public extension Service{
     /// - returns: The URL session task that is making the remote request for preferences data
     func register(user: User, key: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> Session.Task{
         let body = RegisterKeyRequest(key: key, firstName: user.firstName, lastName: user.lastName)
-        let request = URLRequest(session: session, path: "register/key", method: .post, body: body)
+        let request = URLRequest(session: session, path: "v1/register/key", method: .post, body: body)
         return session.runningTask(with: request, completion: completion)
     }
     
@@ -79,7 +100,7 @@ public extension Service{
     /// - returns: The URL session task that is making the remote request for preferences data
     func authenticate(username: String, password: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> Session.Task{
         let body = AuthUsernameRequest(username: username, password: password)
-        let request = URLRequest(session: session, path: "auth/username", method: .post, body: body)
+        let request = URLRequest(session: session, path: "v1/auth/username", method: .post, body: body)
         return session.runningTask(with: request, completion: completion)
     }
     
@@ -92,7 +113,7 @@ public extension Service{
     /// - returns: The URL session task that is making the remote request for preferences data
     func authenticate(key: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> Session.Task{
         let body = AuthKeyRequest(key: key)
-        let request = URLRequest(session: session, path: "auth/key", method: .post, body: body)
+        let request = URLRequest(session: session, path: "v1/auth/key", method: .post, body: body)
         return session.runningTask(with: request, completion: completion)
     }
     
@@ -103,12 +124,33 @@ struct RegisterUsernameRequest: Codable{
     public var password: String
     public var firstName: String?
     public var lastName: String?
+    public var email: String?
+}
+
+struct RegisterUsernameBadRequest: Codable{
+    public var error: InputError?
+    
+    public enum InputError: String, Codable{
+        case existingUsername = "existing_username"
+        case existingEmail = "existing_email"
+        case malformedEmail = "malformed_email"
+        case badPassword = "bad_password"
+        case shortPassword = "short_password"
+    }
 }
 
 struct RegisterKeyRequest: Codable{
     public var key: String
     public var firstName: String?
     public var lastName: String?
+}
+
+public enum RegistrationResult{
+    case success(authentication: AuthentiationResponse)
+    case badPassword
+    case existingEmail
+    case invalidEmail
+    case error
 }
 
 struct AuthUsernameRequest: Codable{

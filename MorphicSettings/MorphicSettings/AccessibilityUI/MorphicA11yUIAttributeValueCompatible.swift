@@ -90,6 +90,16 @@ extension Bool: MorphicA11yUIAttributeValueCompatible {
         return self as CFTypeRef
     }
 }
+extension Double: MorphicA11yUIAttributeValueCompatible {
+    public func toCFTypeRef() -> CFTypeRef {
+        return self as CFTypeRef
+    }
+}
+extension Int: MorphicA11yUIAttributeValueCompatible {
+    public func toCFTypeRef() -> CFTypeRef {
+        return self as CFTypeRef
+    }
+}
 extension CFRange: MorphicA11yUIAttributeValueCompatible {
     public func toCFTypeRef() -> CFTypeRef {
         var mutableSelf = self

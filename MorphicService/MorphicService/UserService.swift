@@ -37,7 +37,7 @@ public extension Service{
     ///   - user: The user, if the load was successful
     /// - returns: The URL session task that is making the remote request for user data
     func fetch(user identifier: String, completion: @escaping (_ user: User?) -> Void) -> Session.Task{
-        let request = URLRequest(session: session, path: "users/\(identifier)", method: .get)
+        let request = URLRequest(session: session, path: "v1/users/\(identifier)", method: .get)
         return session.runningTask(with: request, completion: completion)
     }
     
@@ -50,7 +50,7 @@ public extension Service{
     ///   - success: Whether the save request succeeded
     /// - returns: The URL session task that is making the remote request for user data
     func save(_ user: User, completion: @escaping (_ success: Bool) -> Void) -> Session.Task{
-        let request = URLRequest(session: session, path: "preferences/\(user.identifier)", method: .put, body: user)
+        let request = URLRequest(session: session, path: "v1/preferences/\(user.identifier)", method: .put, body: user)
         return session.runningTask(with: request, completion: completion)
     }
     

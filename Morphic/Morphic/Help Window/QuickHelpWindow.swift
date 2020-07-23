@@ -23,19 +23,14 @@
 
 import Cocoa
 
-/// The large tooltip-like window that displays help about Quick Strip actions
+/// The large tooltip-like window that displays help about MorphicBar actions
 ///
 /// Uses a `QuickHelpViewController` as its `contentViewController`
 class QuickHelpWindow: NSWindow {
     
-    /// A typed access to the `contentViewController`
-    private var quickHelpViewController: QuickHelpViewController
-    
     /// Create a new Quick Help Window with a `QuickHelpViewController` as its `contentViewController`
     private init(){
-        quickHelpViewController = QuickHelpViewController.init(nibName: nil, bundle: nil)
         super.init(contentRect: NSMakeRect(0, 0, 100, 100), styleMask: .borderless, backing: .buffered, defer: false)
-        contentViewController = quickHelpViewController
         hasShadow = true
         isReleasedWhenClosed = false
         level = .floating
@@ -53,13 +48,12 @@ class QuickHelpWindow: NSWindow {
     /// - parameters:
     ///   - title: The text to show in the view controller's `titleLabel`
     ///   - message: The text to show in the view controller's `messageLabel`
-    public static func show(title: String, message: String){
+    public static func show(viewController: NSViewController){
         if shared == nil{
             shared = QuickHelpWindow()
             shared?.delegate = delegate
         }
-        shared?.quickHelpViewController.titleText = title
-        shared?.quickHelpViewController.messageText = message
+        shared?.contentViewController = viewController;
         shared?.makeKeyAndOrderFront(nil)
         shared?.hideQueued = false
         shared?.reposition()
