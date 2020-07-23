@@ -32,15 +32,28 @@ public class MorphicBarViewController: NSViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.layer?.backgroundColor = .white
+        view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
         view.layer?.cornerRadius = 6
         self.logoutMenuItem?.isHidden = Session.shared.user == nil
         NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
-        
+        DistributedNotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.appleInterfaceThemeDidChange(_:)), name: .appleInterfaceThemeChanged, object: nil)
+
         logoButton.setAccessibilityLabel(logoButton.helpTitle)
     }
     
     // MARK: - Notifications
+    
+    @objc
+    func appleInterfaceThemeDidChange(_ notification: NSNotification) {
+        self.view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
+    }
+    
+    private func getThemeBackgroundColor() -> NSColor? {
+        let appleInterfaceStyle = UserDefaults.standard.string(forKey: "AppleInterfaceStyle")
+        let isDark = (appleInterfaceStyle?.lowercased() == "dark")
+        let backgroundColorName = isDark ? "MorphicBarDarkBackgroundColor" : "MorphicBarLightBackgroundColor"
+        return NSColor(named: backgroundColorName)
+    }
     
     @objc
     func sessionUserDidChange(_ notification: NSNotification){

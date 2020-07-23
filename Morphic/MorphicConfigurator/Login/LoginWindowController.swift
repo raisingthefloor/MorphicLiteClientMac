@@ -15,7 +15,7 @@ class LoginWindowController: NSWindowController, NSTextFieldDelegate {
 
     override func windowDidLoad() {
         super.windowDidLoad()
-        window?.backgroundColor = .white
+//        window?.backgroundColor = NSColor(named: "WindowBackgroundColor")
         forgotPasswordButton.cursor = .pointingHand
     }
     
