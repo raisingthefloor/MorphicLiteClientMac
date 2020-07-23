@@ -28,8 +28,6 @@ import MorphicSettings
 /// The View Controller for a MorphicBar showing a collection of actions the user can take
 public class MorphicBarViewController: NSViewController {
     
-    @IBOutlet weak var advancedFeaturesButton: LogoButton!
-    
     // MARK: - View Lifecycle
 
     public override func viewDidLoad() {
@@ -39,7 +37,7 @@ public class MorphicBarViewController: NSViewController {
         self.logoutMenuItem?.isHidden = Session.shared.user == nil
         NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
         
-        advancedFeaturesButton.setAccessibilityLabel(advancedFeaturesButton.helpTitle)
+        logoButton.setAccessibilityLabel(logoButton.helpTitle)
     }
     
     // MARK: - Notifications
