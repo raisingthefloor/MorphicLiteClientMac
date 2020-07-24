@@ -68,7 +68,7 @@ struct BooleanEntry: View {
                 .font(.subheadline)
             Spacer()
             Text("Boolean:")
-            Toggle("", isOn: $setting.val_bool)
+            Toggle("", isOn: $setting.displayBool)
         }
         .padding(.leading, 30.0)
         .padding([.top, .bottom, .trailing], 5.0)

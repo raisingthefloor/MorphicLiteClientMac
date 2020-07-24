@@ -18,18 +18,22 @@ class SettingControl: ObservableObject, Identifiable
     @Published var name: String
     @Published var type: Setting.ValueType
     @Published var changed: Bool
-    @Published var val_bool: Bool
-        {
+    @Published var displayVal: String
+    @Published var displayBool: Bool
+    {
         didSet
         {
-            changed = true
-            if(registry.autoApply)
+            if val_bool != displayBool
             {
-                Apply()
+                changed = true
+                if registry.autoApply
+                {
+                    CheckVal(isStart: false)
+                }
             }
         }
     }
-    @Published var displayVal: String
+    var val_bool: Bool
     var val_string: String
     var val_int: Int
     var val_double: Double
@@ -45,6 +49,7 @@ class SettingControl: ObservableObject, Identifiable
         self.val_string = val_string
         self.val_int = val_int
         self.displayVal = ""
+        self.displayBool = false
     }
     func copy() -> SettingControl
     {
@@ -83,7 +88,8 @@ class SettingControl: ObservableObject, Identifiable
             val_double = dval!
             break
         case .boolean:
-            return
+            val_bool = displayBool
+            break
         }
         if(registry.autoApply)
         {
@@ -142,6 +148,7 @@ class SettingControl: ObservableObject, Identifiable
                 let v_bool: Bool? = value as? Bool
                 if v_bool == nil {return}
                 self.val_bool = v_bool!
+                self.displayBool = self.val_bool
                 break
             case .integer:
                 let v_int: Int? = value as? Int
