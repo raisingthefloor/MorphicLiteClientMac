@@ -21,6 +21,7 @@
 		8011AF9424C61EAE00A49F96 /* UserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8011AF9324C61EAE00A49F96 /* UserTests.swift */; };
 		8011AF9624C61FB200A49F96 /* ArbitraryKeysTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8011AF9524C61FB200A49F96 /* ArbitraryKeysTests.swift */; };
 		8011AF9824C6256400A49F96 /* PreferencesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8011AF9724C6256400A49F96 /* PreferencesTests.swift */; };
+		806C04D224CA08AF0022E647 /* StorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806C04D124CA08AF0022E647 /* StorageTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		8011AF9324C61EAE00A49F96 /* UserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTests.swift; sourceTree = "<group>"; };
 		8011AF9524C61FB200A49F96 /* ArbitraryKeysTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArbitraryKeysTests.swift; sourceTree = "<group>"; };
 		8011AF9724C6256400A49F96 /* PreferencesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesTests.swift; sourceTree = "<group>"; };
+		806C04D124CA08AF0022E647 /* StorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 				31A0A5632405965600166668 /* Info.plist */,
 				8011AF9324C61EAE00A49F96 /* UserTests.swift */,
 				8011AF9524C61FB200A49F96 /* ArbitraryKeysTests.swift */,
+				806C04D124CA08AF0022E647 /* StorageTests.swift */,
 			);
 			path = MorphicCoreTests;
 			sourceTree = "<group>";
@@ -247,6 +250,7 @@
 				8011AF9424C61EAE00A49F96 /* UserTests.swift in Sources */,
 				31A0A5622405965600166668 /* MorphicCoreTests.swift in Sources */,
 				8011AF9824C6256400A49F96 /* PreferencesTests.swift in Sources */,
+				806C04D224CA08AF0022E647 /* StorageTests.swift in Sources */,
 				8011AF9624C61FB200A49F96 /* ArbitraryKeysTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -94,7 +94,7 @@ class PreferencesTests: XCTestCase {
         XCTAssertNil(carlaPrefs.get(key: nonExistentKey), "Test non-existent preference before removal")
         carlaPrefs.remove(key: nonExistentKey)
         XCTAssertNil(carlaPrefs.get(key: nonExistentKey), "Test non-existent preference after removal")
-        XCTAssertNotNil(carlaPrefs.get(key: magFactorKey), "Test magnification factor still present after removing non-existant preference")
+        XCTAssertNotNil(carlaPrefs.get(key: magFactorKey), "Test magnification factor still present after removing non-existent preference")
 
         // Remove mag factor preference.
         carlaPrefs.remove(key: magFactorKey)
@@ -120,7 +120,7 @@ class PreferencesTests: XCTestCase {
         XCTAssertFalse(containsTuple(nonExistentKey, nonExistentVal, prefsTuples), "Check absence of non-existent preference")
     }
 
-    func containsTuple(_ inKey: Preferences.Key, _ inValue: Interoperable, _ tuplesArray: [ (Preferences.Key, Interoperable?)]) -> Bool {
+    func containsTuple(_ inKey: Preferences.Key, _ inValue: Interoperable, _ tuplesArray: [(Preferences.Key, Interoperable?)]) -> Bool {
         guard !tuplesArray.isEmpty else {
             return false
         }
