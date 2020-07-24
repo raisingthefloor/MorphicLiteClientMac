@@ -17,32 +17,32 @@
 /* Class = "NSButton"; ead-JY-BhL.ibExternalUserDefinedRuntimeAttributesLocalizableStrings[1] = "Customize buttons and take your settings with you anywhere"; ObjectID = "ead-JY-BhL"; */
 "ead-JY-BhL.ibExternalUserDefinedRuntimeAttributesLocalizableStrings[1]" = "Customize buttons and take your settings with you anywhere";
 
-/* Label for the buttons that control text size */
-"control.feature.resolution.title" = "Text Size";
+/* Label for the buttons that control text/icon size */
+"control.feature.resolution.title" = "Screen Zoom";
 
-/* Title for the help window for the larger text size button */
-"control.feature.resolution.bigger.help.title" = "Increase Text Size";
+/* Title for the help window for the larger text/icon size button */
+"control.feature.resolution.bigger.help.title" = "Increase Screen Zoom";
 
-/* Message for the help window for the larger text size button */
+/* Message for the help window for the larger text/icon size button */
 "control.feature.resolution.bigger.help.message" = "Make all the text and icons bigger";
 
-/* Title for the help window for the larger text size button when at its limit */
-"control.feature.resolution.bigger.limit.help.title" = "Text Size Cannot Go Bigger";
+/* Title for the help window for the larger text/icon size button when at its limit */
+"control.feature.resolution.bigger.limit.help.title" = "Screen Zoom Cannot Go Bigger";
 
-/* Message for the help window for the larger text size button when at its limit */
-"control.feature.resolution.bigger.limit.help.message" = "The current text size is as big as possible";
+/* Message for the help window for the larger text/icon size button when at its limit */
+"control.feature.resolution.bigger.limit.help.message" = "The current text and icon size is as big as possible";
 
-/* Title for the help window for the smaller text size button */
-"control.feature.resolution.smaller.help.title" = "Decrease Text Size";
+/* Title for the help window for the smaller text/icon size button */
+"control.feature.resolution.smaller.help.title" = "Decrease Screen Zoom";
 
-/* Message for the help window for the smaller text size button */
+/* Message for the help window for the smaller text/icon size button */
 "control.feature.resolution.smaller.help.message" = "Make all the text and icons smaller";
 
-/* Title for the help window for the smaller text size button when at its limit */
-"control.feature.resolution.smaller.limit.help.title" = "Text Size Cannot Go Smaller";
+/* Title for the help window for the smaller text/icon size button when at its limit */
+"control.feature.resolution.smaller.limit.help.title" = "Screen Zoom Cannot Go Smaller";
 
-/* Message for the help window for the smaller text size button when at its limit */
-"control.feature.resolution.smaller.limit.help.message" = "The current text size is as small as possible";
+/* Message for the help window for the smaller text/icon size button when at its limit */
+"control.feature.resolution.smaller.limit.help.message" = "The current text and icon size is as small as possible";
 
 /* Label for the buttons that control the magnifier */
 "control.feature.magnifier.title" = "Magnifier";
