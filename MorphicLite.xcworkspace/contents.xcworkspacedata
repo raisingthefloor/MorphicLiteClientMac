@@ -2,9 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:MorphicManualTester/MorphicManualTester.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:Morphic/Morphic.xcodeproj">
    </FileRef>
    <FileRef
@@ -15,5 +12,8 @@
    </FileRef>
    <FileRef
       location = "group:MorphicService/MorphicService.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:MorphicManualTester/MorphicManualTester.xcodeproj">
    </FileRef>
 </Workspace>
