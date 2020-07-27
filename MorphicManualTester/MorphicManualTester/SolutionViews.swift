@@ -108,7 +108,7 @@ struct IntegerEntry: View {
             Text("Integer:")
             TextField("", text: $setting.displayVal, onEditingChanged: setting.CheckVal)
                 .frame(width: 300.0)
-                .background(setting.wrong ? Color.red : (setting.changed ? Color.green : Color.clear))
+                .background(setting.wrong ? Color.red.opacity(0.2) : (setting.changed ? Color.green.opacity(0.2) : Color.clear))
         }
         .padding(.leading, 30.0)
         .padding([.top, .bottom, .trailing], 5.0)
@@ -128,7 +128,7 @@ struct DoubleEntry: View {
             Text("Double:")
             TextField("", text: $setting.displayVal, onEditingChanged: setting.CheckVal)
                 .frame(width: 300.0)
-                .background(setting.wrong ? Color.red : (setting.changed ? Color.green : Color.clear))
+                .background(setting.wrong ? Color.red.opacity(0.2) : (setting.changed ? Color.green.opacity(0.2) : Color.clear))
         }
         .padding(.leading, 30.0)
         .padding([.top, .bottom, .trailing], 5.0)
@@ -148,7 +148,7 @@ struct StringEntry: View {
             Text("String:")
             TextField("", text: $setting.displayVal, onEditingChanged: setting.CheckVal)
                 .frame(width: 300.0)
-                .background(setting.wrong ? Color.red.opacity(20) : (setting.changed ? Color.green.opacity(20) : Color.clear))
+                .background(setting.wrong ? Color.red.opacity(0.2) : (setting.changed ? Color.green.opacity(0.2) : Color.clear))
         }
         .padding(.leading, 30.0)
         .padding([.top, .bottom, .trailing], 5.0)
