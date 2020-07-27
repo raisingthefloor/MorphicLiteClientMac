@@ -17,10 +17,12 @@ class SettingControl: ObservableObject, Identifiable
 {
     @Published var name: String
     @Published var type: Setting.ValueType
+    @Published var wrong: Bool
     @Published var changed: Bool
+    @Published var loading: Bool
     @Published var displayVal: String
     @Published var displayBool: Bool
-    {
+        {
         didSet
         {
             if val_bool != displayBool
@@ -42,7 +44,9 @@ class SettingControl: ObservableObject, Identifiable
     {
         self.name = name
         self.type = type
+        self.wrong = false
         self.changed = false
+        self.loading = true
         self.solutionName = solname
         self.val_bool = val_bool
         self.val_double = val_double
@@ -62,8 +66,9 @@ class SettingControl: ObservableObject, Identifiable
     }
     func CheckVal(isStart: Bool)
     {
-        changed = true
+        wrong = false
         if isStart {return}
+        changed = true
         switch(type)
         {
         case .string:
@@ -73,7 +78,7 @@ class SettingControl: ObservableObject, Identifiable
             let ival: Int? = Int(displayVal)
             if ival == nil
             {
-                Capture()
+                wrong = true
                 return
             }
             val_int = ival!
@@ -82,7 +87,7 @@ class SettingControl: ObservableObject, Identifiable
             let dval: Double? = Double(displayVal)
             if dval == nil
             {
-                Capture()
+                wrong = true
                 return
             }
             val_double = dval!
@@ -98,6 +103,7 @@ class SettingControl: ObservableObject, Identifiable
     }
     func Apply(alreadyChecked: Bool = false)
     {
+        self.loading = true
         if !changed
         {
             return
@@ -127,12 +133,17 @@ class SettingControl: ObservableObject, Identifiable
         { success in
             if(!success)
             {
-            self.Capture()
+                self.Capture()
+            }
+            else
+            {
+                self.loading = false
             }
         }
     }
     func Capture()
     {
+        self.loading = true
         let sname = String(name)
         SettingsManager.shared.capture(valueFor: Preferences.Key(solution: solutionName, preference: sname))
         { value in
@@ -163,7 +174,9 @@ class SettingControl: ObservableObject, Identifiable
                 self.displayVal = String(format: "%f", self.val_double)
                 break
             }
+            self.loading = false
             self.changed = false
+            self.wrong = false
         }
     }
 }
@@ -186,6 +199,23 @@ class SolutionCollection: ObservableObject, Identifiable
         }
         return copy;
     }
+    func ApplySettings()
+    {
+        for setting in self.settings
+        {
+            if(setting.changed)
+            {
+                setting.Apply()
+            }
+        }
+    }
+    func CaptureSettings()
+    {
+        for setting in self.settings
+        {
+            setting.Capture()
+        }
+    }
 }
 
 class RegistryManager: ObservableObject
@@ -196,13 +226,13 @@ class RegistryManager: ObservableObject
     init()
     {
         load = "NO REGISTRY LOADED"
-        autoApply = false
+        autoApply = true
         solutions = [SolutionCollection]()
     }
     func LoadSolution()
     {
         let filedialog = NSOpenPanel()
-        filedialog.title = "Open Solution File"
+        filedialog.message = "Please select a solution registry JSON file to load:"
         filedialog.showsResizeIndicator = true
         filedialog.showsHiddenFiles = false
         filedialog.allowsMultipleSelection = false
@@ -219,6 +249,7 @@ class RegistryManager: ObservableObject
                     load = "ERROR, INVALID SOLUTION FILE. PLEASE TRY AGAIN."
                     return
                 }
+                solutions = [SolutionCollection]()
                 for solution in SettingsManager.shared.solutions
                 {
                     let collection = SolutionCollection(solutionName: solution.identifier)

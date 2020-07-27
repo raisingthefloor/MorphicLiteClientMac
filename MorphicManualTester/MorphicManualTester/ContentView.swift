@@ -8,6 +8,8 @@
 
 import SwiftUI
 
+let color_bg = Color(hue: 0.307, saturation: 0.976, brightness: 0.418)
+
 struct ContentView: View {
     @ObservedObject var manager: RegistryManager = registry
     var body: some View {
@@ -20,22 +22,8 @@ struct ContentView: View {
                         .multilineTextAlignment(.leading)
                         .padding()
                     Spacer()
-                    Toggle(isOn: $manager.autoApply) {
-                        Text("Auto Apply")
-                            .padding([.top, .bottom, .trailing])
-                        
-                    }
-                    .padding(.vertical)
-                    Button(action: registry.CaptureAllSettings) {
-                        Text("Refresh")
-                    }
-                    .padding(.vertical)
-                    Button(action: registry.ApplyAllSettings) {
-                        Text("Apply Settings")
-                    }
-                    .padding(.vertical)
                     Button(action: registry.LoadSolution) {
-                        Text("Load New Registry")
+                        Text("Load a Different Registry")
                     }
                     .padding([.top, .bottom, .trailing])
                 }
@@ -49,12 +37,33 @@ struct ContentView: View {
                 .padding(.bottom, 10.0)
                 
             }
-            .background(/*@START_MENU_TOKEN@*/Color(hue: 0.307, saturation: 0.976, brightness: 0.418)/*@END_MENU_TOKEN@*/)
+            .background(color_bg)
             ScrollView() {
                 ForEach(registry.solutions) { solution in
                     SolutionSection(solution: solution)
                 }
             }
+            HStack() {
+                Spacer()
+                Toggle(isOn: $manager.autoApply) {
+                    Text("Auto Apply")
+                }.toggleStyle(SwitchToggleStyle())
+                .padding(.vertical)
+                HStack {
+                    if(!manager.autoApply) {
+                        Button(action: registry.ApplyAllSettings) {
+                            Text("Apply Settings")
+                        }
+                    }
+                    else {
+                        Button(action: {}) {
+                            Text("Apply Settings")
+                        }.hidden()
+                    }
+                }
+                .padding(.horizontal)
+            }
+            .background(color_bg)
         }
         .frame(width: 800.0, height: 800.0)
     }
