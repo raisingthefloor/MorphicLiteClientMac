@@ -37,6 +37,8 @@ public class MorphicBarViewController: NSViewController {
         self.logoutMenuItem?.isHidden = Session.shared.user == nil
         NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
         DistributedNotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.appleInterfaceThemeDidChange(_:)), name: .appleInterfaceThemeChanged, object: nil)
+
+        logoButton.setAccessibilityLabel(logoButton.helpTitle)
     }
     
     // MARK: - Notifications
