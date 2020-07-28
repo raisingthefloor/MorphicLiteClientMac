@@ -25,7 +25,7 @@ import Foundation
 import MorphicCore
 
 /// Interface to the remote Morphic auth server
-public extension Service{
+public extension Service {
     
     // MARK: - Requests
     
@@ -38,10 +38,10 @@ public extension Service{
     ///   - completion: The block to call when the task has completed
     ///   - authentication: The authentication response
     /// - returns: The URL session task that is making the remote request for preferences data
-    func register(user: User, username: String, password: String, completion: @escaping (_ result: RegistrationResult) -> Void) -> Session.Task{
+    func register(user: User, username: String, password: String, completion: @escaping (_ result: RegistrationResult) -> Void) -> Session.Task {
         let body = RegisterUsernameRequest(username: username, password: password, firstName: user.firstName, lastName: user.lastName, email: user.email)
         let request = URLRequest(session: session, path: "v1/register/username", method: .post, body: body)
-        return session.runningTask(with: request){
+        return session.runningTask(with: request) {
             (response: Response<AuthentiationResponse, RegisterUsernameBadRequest>) in
             switch response{
             case .success(let auth):
@@ -74,17 +74,17 @@ public extension Service{
     ///   - completion: The block to call when the task has completed
     ///   - authentication: The authentication response
     /// - returns: The URL session task that is making the remote request for preferences data
-    func register(user: User, key: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> Session.Task{
+    func register(user: User, key: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> Session.Task {
         let body = RegisterKeyRequest(key: key, firstName: user.firstName, lastName: user.lastName)
         let request = URLRequest(session: session, path: "v1/register/key", method: .post, body: body)
         return session.runningTask(with: request, completion: completion)
     }
     
-    func authenticate(credentials: Credentials, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> Session.Task{
-        if let keyCredentials = credentials as? KeyCredentials{
+    func authenticate(credentials: Credentials, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> Session.Task {
+        if let keyCredentials = credentials as? KeyCredentials {
             return authenticate(key: keyCredentials.key, completion: completion)
         }
-        if let usernameCredentials = credentials as? UsernameCredentials{
+        if let usernameCredentials = credentials as? UsernameCredentials {
             return authenticate(username: usernameCredentials.username, password: usernameCredentials.password, completion: completion)
         }
         return session.runningTask(with: nil, completion: completion)
@@ -98,7 +98,7 @@ public extension Service{
     ///   - completion: The block to call when the task has completed
     ///   - authentication: The authentication response
     /// - returns: The URL session task that is making the remote request for preferences data
-    func authenticate(username: String, password: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> Session.Task{
+    func authenticate(username: String, password: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> Session.Task {
         let body = AuthUsernameRequest(username: username, password: password)
         let request = URLRequest(session: session, path: "v1/auth/username", method: .post, body: body)
         return session.runningTask(with: request, completion: completion)
@@ -111,7 +111,7 @@ public extension Service{
     ///   - completion: The block to call when the task has loaded
     ///   - success: Whether the save request succeeded
     /// - returns: The URL session task that is making the remote request for preferences data
-    func authenticate(key: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> Session.Task{
+    func authenticate(key: String, completion: @escaping (_ authentication: AuthentiationResponse?) -> Void) -> Session.Task {
         let body = AuthKeyRequest(key: key)
         let request = URLRequest(session: session, path: "v1/auth/key", method: .post, body: body)
         return session.runningTask(with: request, completion: completion)
@@ -119,7 +119,7 @@ public extension Service{
     
 }
 
-struct RegisterUsernameRequest: Codable{
+struct RegisterUsernameRequest: Codable {
     public var username: String
     public var password: String
     public var firstName: String?
@@ -127,10 +127,10 @@ struct RegisterUsernameRequest: Codable{
     public var email: String?
 }
 
-struct RegisterUsernameBadRequest: Codable{
+struct RegisterUsernameBadRequest: Codable {
     public var error: InputError?
     
-    public enum InputError: String, Codable{
+    public enum InputError: String, Codable {
         case existingUsername = "existing_username"
         case existingEmail = "existing_email"
         case malformedEmail = "malformed_email"
@@ -139,13 +139,13 @@ struct RegisterUsernameBadRequest: Codable{
     }
 }
 
-struct RegisterKeyRequest: Codable{
+struct RegisterKeyRequest: Codable {
     public var key: String
     public var firstName: String?
     public var lastName: String?
 }
 
-public enum RegistrationResult{
+public enum RegistrationResult {
     case success(authentication: AuthentiationResponse)
     case badPassword
     case existingEmail
@@ -153,16 +153,16 @@ public enum RegistrationResult{
     case error
 }
 
-struct AuthUsernameRequest: Codable{
+struct AuthUsernameRequest: Codable {
     public var username: String
     public var password: String
 }
 
-struct AuthKeyRequest: Codable{
+struct AuthKeyRequest: Codable {
     public var key: String
 }
 
-public struct AuthentiationResponse: Codable{
+public struct AuthentiationResponse: Codable {
     
     /// The authentication token to be used in the `X-Morphic-Auth-Token` header of subsequent requests
     public var token: String

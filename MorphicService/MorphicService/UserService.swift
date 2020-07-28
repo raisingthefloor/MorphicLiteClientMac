@@ -25,7 +25,7 @@ import Foundation
 import MorphicCore
 
 /// Interface to the remote Morphic preferences server
-public extension Service{
+public extension Service {
     
     // MARK: - Requests
     
@@ -36,7 +36,7 @@ public extension Service{
     ///   - completion: The block to call when the task has loaded
     ///   - user: The user, if the load was successful
     /// - returns: The URL session task that is making the remote request for user data
-    func fetch(user identifier: String, completion: @escaping (_ user: User?) -> Void) -> Session.Task{
+    func fetch(user identifier: String, completion: @escaping (_ user: User?) -> Void) -> Session.Task {
         let request = URLRequest(session: session, path: "v1/users/\(identifier)", method: .get)
         return session.runningTask(with: request, completion: completion)
     }
@@ -49,7 +49,7 @@ public extension Service{
     ///   - completion: The block to call when the task has loaded
     ///   - success: Whether the save request succeeded
     /// - returns: The URL session task that is making the remote request for user data
-    func save(_ user: User, completion: @escaping (_ success: Bool) -> Void) -> Session.Task{
+    func save(_ user: User, completion: @escaping (_ success: Bool) -> Void) -> Session.Task {
         let request = URLRequest(session: session, path: "v1/preferences/\(user.identifier)", method: .put, body: user)
         return session.runningTask(with: request, completion: completion)
     }
