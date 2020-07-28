@@ -84,21 +84,17 @@ class SettingControl: ObservableObject, Identifiable
         case .string:
             val_string = displayVal
         case .integer:
-            let ival: Int? = Int(displayVal)
-            if ival == nil
-            {
+            guard let ival = Int(displayVal) else {
                 wrong = true
                 return
             }
-            val_int = ival!
+            val_int = ival
         case .double:
-            let dval: Double? = Double(displayVal)
-            if dval == nil
-            {
+            guard let dval = Double(displayVal) else {
                 wrong = true
                 return
             }
-            val_double = dval!
+            val_double = dval
         case .boolean:
             val_bool = displayBool
         }
@@ -149,19 +145,22 @@ class SettingControl: ObservableObject, Identifiable
                 self.val_string = v_string!
                 self.displayVal = self.val_string
             case .boolean:
-                let v_bool: Bool? = value as? Bool
-                if v_bool == nil {return}
-                self.val_bool = v_bool!
+                guard let v_bool = value as? Bool else {
+                    return
+                }
+                self.val_bool = v_bool
                 self.displayBool = self.val_bool
             case .integer:
-                let v_int: Int? = value as? Int
-                if v_int == nil {return}
-                self.val_int = v_int!
+                guard let v_int = value as? Int else {
+                    return
+                }
+                self.val_int = v_int
                 self.displayVal = String(format: "%i", self.val_int)
             case .double:
-                let v_double: Double? = value as? Double
-                if v_double == nil {return}
-                self.val_double = v_double!
+                guard let v_double = value as? Double else {
+                    return
+                }
+                self.val_double = v_double
                 self.displayVal = String(format: "%f", self.val_double)
             }
             self.loading = false
@@ -225,10 +224,9 @@ class RegistryManager: ObservableObject
         fileDialog.allowsMultipleSelection = false
         fileDialog.canChooseDirectories = false
         if fileDialog.runModal() == NSApplication.ModalResponse.OK {
-            let solurl = filedialog.url
-            if solurl != nil {
-                let solpath: String = solurl!.path
-                SettingsManager.shared.populateSolutions(from: solurl!)
+            if let solurl = fileDialog.url {
+                let solpath: String = solurl.path
+                SettingsManager.shared.populateSolutions(from: solurl)
                 if SettingsManager.shared.solutions.isEmpty {
                     load = "ERROR, INVALID SOLUTION FILE. PLEASE TRY AGAIN."
                     return
