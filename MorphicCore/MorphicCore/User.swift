@@ -24,14 +24,14 @@
 import Foundation
 
 /// A Morphic user
-public struct User: Codable, Record{
+public struct User: Codable, Record {
     
     // MARK: - Creating a User
     
     /// Create a new user by generating a new globally unique identifier
     ///
     /// Typically used for completely new users
-    public init(){
+    public init() {
         identifier = UUID().uuidString
         preferencesId = UUID().uuidString
     }
@@ -47,7 +47,7 @@ public struct User: Codable, Record{
     
     // MARK: - Codable
     
-    enum CodingKeys: String, CodingKey{
+    enum CodingKeys: String, CodingKey {
         case identifier = "id"
         case preferencesId = "preferences_id"
         case firstName = "first_name"
@@ -55,7 +55,7 @@ public struct User: Codable, Record{
         case email = "email"
     }
     
-    public init(from decoder: Decoder) throws{
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         identifier = try container.decode(String.self, forKey: .identifier)
         preferencesId = try container.decode(String?.self, forKey: .preferencesId)
@@ -64,7 +64,7 @@ public struct User: Codable, Record{
         email = try container.decodeIfPresent(String.self, forKey: .email)
     }
     
-    public func encode(to encoder: Encoder) throws{
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(identifier, forKey: .identifier)
         try container.encode(preferencesId, forKey: .preferencesId)

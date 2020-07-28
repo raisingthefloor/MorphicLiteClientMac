@@ -27,18 +27,18 @@ import OSLog
 private let logger = OSLog(subsystem: "MorphicCore", category: "Storage")
 
 /// Application storage for Morphic on the local machine
-public class Storage{
+public class Storage {
     
     /// The singleton `Storage` instance
     public private(set) static var shared = Storage()
     
-    private init(){
+    private init() {
         fileManager = .default
         root = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent("org.raisingthefloor.Morphic", isDirectory: true).appendingPathComponent("Data", isDirectory: true)
         queue = DispatchQueue(label: "org.raisingthefloor.Morphic.Storage", qos: .background, attributes: [], autoreleaseFrequency: .inherit, target: nil)
     }
     
-    public init(root url: URL){
+    public init(root url: URL) {
         fileManager = .default
         root = url
         queue = DispatchQueue(label: "org.raisingthefloor.Morphic.Storage", qos: .background, attributes: [], autoreleaseFrequency: .inherit, target: nil)
@@ -55,7 +55,7 @@ public class Storage{
     
     // MARK: - Preferences
     
-    private func url(for identifier: String, type: Record.Type) -> URL?{
+    private func url(for identifier: String, type: Record.Type) -> URL? {
         return root?.appendingPathComponent(type.typeName, isDirectory: true).appendingPathComponent(identifier).appendingPathExtension("json")
     }
     
@@ -65,9 +65,9 @@ public class Storage{
     ///   - encodable: The object to save
     ///   - completion: The block to call when the save request completes
     ///   - success: Whether the object was saved successfully to disk
-    public func save<RecordType>(record: RecordType, completion: @escaping (_ success: Bool) -> Void) where RecordType: Encodable, RecordType: Record{
+    public func save<RecordType>(record: RecordType, completion: @escaping (_ success: Bool) -> Void) where RecordType: Encodable, RecordType: Record {
         queue.async {
-            guard let url = self.url(for: record.identifier, type: RecordType.self) else{
+            guard let url = self.url(for: record.identifier, type: RecordType.self) else {
                 os_log(.error, log: logger, "Could not obtain a valid file url for saving")
                 DispatchQueue.main.async {
                     completion(false)
@@ -75,16 +75,16 @@ public class Storage{
                 return
             }
             let encoder = JSONEncoder()
-            guard let json = try? encoder.encode(record) else{
+            guard let json = try? encoder.encode(record) else {
                 os_log(.error, log: logger, "Failed to encode to JSON")
                 DispatchQueue.main.async {
                     completion(false)
                 }
                 return
             }
-            do{
+            do {
                 try self.fileManager.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: nil)
-            }catch{
+            } catch {
                 os_log(.error, log: logger, "Failed to create directory")
                 DispatchQueue.main.async {
                     completion(false)
@@ -104,16 +104,16 @@ public class Storage{
     ///   - identifier: The identifier of the object to load
     ///   - completion: The block to call with the loaded object
     ///   - document: The loaded object, or `nil` if no such identifier was saved
-    public func load<RecordType>(identifier: String, completion: @escaping (_ document: RecordType?) -> Void) where RecordType: Decodable, RecordType: Record{
+    public func load<RecordType>(identifier: String, completion: @escaping (_ document: RecordType?) -> Void) where RecordType: Decodable, RecordType: Record {
         queue.async {
-            guard let url = self.url(for: identifier, type: RecordType.self) else{
+            guard let url = self.url(for: identifier, type: RecordType.self) else {
                 os_log(.error, log: logger, "Could not obtain a valid file url for loading")
                 DispatchQueue.main.async {
                     completion(nil)
                 }
                 return
             }
-            guard let data = self.fileManager.contents(atPath: url.path) else{
+            guard let data = self.fileManager.contents(atPath: url.path) else {
                 os_log(.error, log: logger, "Could not read data")
                 DispatchQueue.main.async {
                     completion(nil)
@@ -121,7 +121,7 @@ public class Storage{
                 return
             }
             let decoder = JSONDecoder()
-            guard let record = try? decoder.decode(RecordType.self, from: data) else{
+            guard let record = try? decoder.decode(RecordType.self, from: data) else {
                 os_log(.error, log: logger, "Could not decode JSON")
                 DispatchQueue.main.async {
                     completion(nil)
@@ -138,8 +138,8 @@ public class Storage{
     /// - parameters:
     ///   - identifier: The identifier of the object to load
     ///   - type: The type of record
-    public func contains(identifier: String, type: Record.Type) -> Bool{
-        guard let url = self.url(for: identifier, type: type) else{
+    public func contains(identifier: String, type: Record.Type) -> Bool {
+        guard let url = self.url(for: identifier, type: type) else {
             os_log(.error, log: logger, "Could not obtain a valid file url for loading")
             return false
         }
