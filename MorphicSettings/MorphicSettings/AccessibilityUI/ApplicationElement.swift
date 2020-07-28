@@ -27,10 +27,10 @@ import OSLog
 
 private let logger = OSLog(subsystem: "MorphicSettings", category: "ApplicationElement")
 
-public class ApplicationElement: UIElement{
+public class ApplicationElement: UIElement {
     
-    public static func from(bundleIdentifier: String) -> ApplicationElement{
-        switch bundleIdentifier{
+    public static func from(bundleIdentifier: String) -> ApplicationElement {
+        switch bundleIdentifier {
         case "com.apple.systempreferences":
             return SystemPreferencesElement()
         default:
@@ -38,7 +38,7 @@ public class ApplicationElement: UIElement{
         }
     }
     
-    public init(bundleIdentifier: String){
+    public init(bundleIdentifier: String) {
         self.bundleIdentifier = bundleIdentifier
         super.init(accessibilityElement: nil)
     }
@@ -51,21 +51,21 @@ public class ApplicationElement: UIElement{
     
     private var runningApplication: NSRunningApplication?
     
-    public func open(completion: @escaping (_ success: Bool) -> Void){
-        guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleIdentifier) else{
+    public func open(completion: @escaping (_ success: Bool) -> Void) {
+        guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleIdentifier) else {
             os_log(.error, log: logger, "Failed to find url for application %{public}s", bundleIdentifier)
             completion(false)
             return
         }
-        guard runningApplication == nil || runningApplication!.isTerminated else{
+        guard runningApplication == nil || runningApplication!.isTerminated else {
             completion(true)
             return
         }
         let complete = {
             let runningApplication: NSRunningApplication! = self.runningApplication
-            self.wait(atMost: 5.0, for: { runningApplication.isFinishedLaunching }){
+            self.wait(atMost: 5.0, for: { runningApplication.isFinishedLaunching }) {
                 success in
-                guard success else{
+                guard success else {
                     os_log(.error, log: logger, "Timeout waiting for isFinishLaunching")
                     completion(false)
                     return
@@ -80,7 +80,7 @@ public class ApplicationElement: UIElement{
                 } catch {
                     // no other errors should be throws by MorphicA11yUIElement.createFromProcess
                 }
-                guard accessibilityElement != nil else{
+                guard accessibilityElement != nil else {
                     os_log(.error, log: logger, "Failed to get automation element for application")
                     completion(false)
                     return
@@ -90,11 +90,11 @@ public class ApplicationElement: UIElement{
             }
         }
         runningApplication = NSRunningApplication.runningApplications(withBundleIdentifier: bundleIdentifier).first
-        if runningApplication == nil{
+        if runningApplication == nil {
             let config = NSWorkspace.OpenConfiguration()
             config.activates = false
             config.hides = true
-            NSWorkspace.shared.openApplication(at: url, configuration: config){
+            NSWorkspace.shared.openApplication(at: url, configuration: config) {
                 (runningApplication, error) in
                 DispatchQueue.main.async {
                     guard runningApplication != nil else{
@@ -107,27 +107,27 @@ public class ApplicationElement: UIElement{
                     complete()
                 }
             }
-        }else{
+        } else {
             complete()
         }
     }
     
     public func terminate() -> Bool{
-        guard let runningApplication = runningApplication else{
+        guard let runningApplication = runningApplication else {
             return true
         }
-        guard !runningApplication.isTerminated else{
+        guard !runningApplication.isTerminated else {
             return true
         }
         return runningApplication.terminate()
     }
     
-    public var mainWindow: WindowElement?{
+    public var mainWindow: WindowElement? {
         get{
-            guard accessibilityElement != nil else{
+            guard accessibilityElement != nil else {
                 return nil
             }
-            guard let mainWindow: MorphicA11yUIElement = accessibilityElement.value(forAttribute: .mainWindow) else{
+            guard let mainWindow: MorphicA11yUIElement = accessibilityElement.value(forAttribute: .mainWindow) else {
                 return nil
             }
             return WindowElement(accessibilityElement: mainWindow)

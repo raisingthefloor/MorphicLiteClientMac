@@ -31,7 +31,7 @@ private let logger = OSLog(subsystem: "MorphicSettings", category: "ApplySession
 ///
 /// Apply sessions can take advantage of `SettingFinalizer`s and only perform certain operations once
 /// instead of once-per-setting.  This is useful for things like writing files or calling refresh functions
-public class ApplySession{
+public class ApplySession {
     
     /// Create an apply session for the given settings manager and values
     ///
@@ -40,7 +40,7 @@ public class ApplySession{
     /// - parameters:
     ///   - settingsManager: The settings manager to use when looking up `Setting`s
     ///   - valuesByKey: The values to apply in this session
-    public required init(settingsManager: SettingsManager, keyValueTuples: [(Preferences.Key, Interoperable?)]){
+    public required init(settingsManager: SettingsManager, keyValueTuples: [(Preferences.Key, Interoperable?)]) {
         self.settingsManager = settingsManager
         self.keyValueTuples = keyValueTuples
     }
@@ -48,18 +48,18 @@ public class ApplySession{
     /// Create an apply session for the given settings manager and preferences
     ///
     /// Convenience method that extracts values from preferences
-    public convenience init(settingsManager: SettingsManager, preferences: Preferences){
+    public convenience init(settingsManager: SettingsManager, preferences: Preferences) {
         self.init(settingsManager: settingsManager, keyValueTuples: preferences.keyValueTuples())
     }
     
     /// The values to apply for in session
     public var keyValueTuples: [(Preferences.Key, Interoperable?)]
     
-    public func add(key: Preferences.Key, value: Interoperable?){
+    public func add(key: Preferences.Key, value: Interoperable?) {
         keyValueTuples.append((key, value))
     }
     
-    public func addFirst(key: Preferences.Key, value: Interoperable?){
+    public func addFirst(key: Preferences.Key, value: Interoperable?) {
         keyValueTuples.insert((key, value), at: 0)
     }
     
@@ -77,13 +77,13 @@ public class ApplySession{
     /// The remaining finalizers to run
     private var finalizerQueue: [SettingFinalizerDescription]!
     
-    public func addDefaultValuesFromAllSolutions(){
+    public func addDefaultValuesFromAllSolutions() {
         let valuesByKey = [Preferences.Key: Interoperable?].init(uniqueKeysWithValues: keyValueTuples)
-        for solution in settingsManager.solutions{
-            for setting in solution.settings{
+        for solution in settingsManager.solutions {
+            for setting in solution.settings {
                 let key = Preferences.Key(solution: solution.identifier, preference: setting.name)
-                if valuesByKey[key] == nil{
-                    if let defaultValue = setting.defaultValue{
+                if valuesByKey[key] == nil {
+                    if let defaultValue = setting.defaultValue {
                         keyValueTuples.append((key, defaultValue))
                     }
                 }
@@ -95,7 +95,7 @@ public class ApplySession{
     ///
     /// - parameters:
     ///   - completion: Called when all the setting apply calls have completed
-    public func run(completion: @escaping () -> Void){
+    public func run(completion: @escaping () -> Void) {
         guard keyValueQueue == nil else{
             os_log(.info, log: logger, "Calling .run() before previous run finished")
             return
@@ -106,14 +106,14 @@ public class ApplySession{
         // Figure out which unique finalizers need to run
         finalizerQueue = [SettingFinalizerDescription]()
         var seenFinalizers = Set<String>()
-        for pair in keyValueTuples{
+        for pair in keyValueTuples {
             let key = pair.0
-            guard let setting = settingsManager.setting(for: key) else{
+            guard let setting = settingsManager.setting(for: key) else {
                 // os_log(.info, log: logger, "Cannot find setting for %{public}s.%{public}s", key.solution, key.preference)
                 continue
             }
-            if let description = setting.finalizerDescription{
-                if !seenFinalizers.contains(description.uniqueRepresentation){
+            if let description = setting.finalizerDescription {
+                if !seenFinalizers.contains(description.uniqueRepresentation) {
                     seenFinalizers.insert(description.uniqueRepresentation)
                     finalizerQueue.append(description)
                 }
@@ -126,25 +126,25 @@ public class ApplySession{
     }
     
     /// Apply a single setting
-    private func applyNextKey(completion: @escaping () -> Void){
-        guard keyValueQueue.count > 0 else{
+    private func applyNextKey(completion: @escaping () -> Void) {
+        guard keyValueQueue.count > 0 else {
             callNextFinalizer(completion: completion)
             return
         }
         let pair = keyValueQueue.removeLast()
         let key = pair.0
         let value = pair.1
-        guard let setting = settingsManager.setting(for: key) else{
+        guard let setting = settingsManager.setting(for: key) else {
              os_log(.info, log: logger, "Cannot find setting for %{public}s.%{public}s", key.solution, key.preference)
             applyNextKey(completion: completion)
             return
         }
-        guard let handler = setting.createHandler() else{
+        guard let handler = setting.createHandler() else {
             os_log(.info, log: logger, "Cannot create handler for %{public}s.%{public}s", key.solution, key.preference)
             applyNextKey(completion: completion)
             return
         }
-        handler.apply(value){
+        handler.apply(value) {
             success in
             if !success{
                 os_log(.info, log: logger, "Failed to apply %{public}s.%{public}s", key.solution, key.preference)
@@ -155,7 +155,7 @@ public class ApplySession{
     }
     
     /// Call a single finalizer
-    private func callNextFinalizer(completion: @escaping () -> Void){
+    private func callNextFinalizer(completion: @escaping () -> Void) {
         guard finalizerQueue.count > 0 else{
             keyValueQueue = nil
             finalizerQueue = nil
@@ -164,11 +164,11 @@ public class ApplySession{
             return
         }
         let description = finalizerQueue.removeLast()
-        guard let finalizer = SettingFinalizer.create(from: description) else{
+        guard let finalizer = SettingFinalizer.create(from: description) else {
             callNextFinalizer(completion: completion)
             return
         }
-        finalizer.run{
+        finalizer.run {
             success in
             self.callNextFinalizer(completion: completion)
         }

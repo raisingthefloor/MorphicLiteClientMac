@@ -23,23 +23,23 @@
 
 import Foundation
 
-public class RowElement: UIElement{
+public class RowElement: UIElement {
     
-    public func select() -> Bool{
-        guard accessibilityElement.setValue(true, forAttribute: .selected) else{
+    public func select() -> Bool {
+        guard accessibilityElement.setValue(true, forAttribute: .selected) else {
             return false
         }
         return true
     }
     
-    public func cell(at index: Int) -> CellElement?{
-        guard let cells = accessibilityElement.children()?.filter({ $0.role == .cell }) else{
+    public func cell(at index: Int) -> CellElement? {
+        guard let cells = accessibilityElement.children()?.filter({ $0.role == .cell }) else {
             return nil
         }
-        guard index >= 0 else{
+        guard index >= 0 else {
             return nil
         }
-        guard index < cells.count else{
+        guard index < cells.count else {
             return nil
         }
         return CellElement(accessibilityElement: cells[index])

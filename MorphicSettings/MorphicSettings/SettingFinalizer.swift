@@ -29,22 +29,22 @@ import MorphicCore
 /// For example, a finalizer might be used to restart a process or perform a system call that refreshes some
 /// UI components.  Rather than do this operation after each setting changes, finalizers provide a way to
 /// perform the operation only once after all the settings have been updated.
-public class SettingFinalizer{
+public class SettingFinalizer {
     
     /// Create a finalizer from the given description
-    public required init(description: SettingFinalizerDescription){
+    public required init(description: SettingFinalizerDescription) {
         self.description = description
     }
     
     public let description: SettingFinalizerDescription
     
     /// Run the finalizer's operation
-    public func run(completion: @escaping (_ success: Bool) -> Void){
+    public func run(completion: @escaping (_ success: Bool) -> Void) {
         completion(false)
     }
     
-    public static func create(from description: SettingFinalizerDescription) -> SettingFinalizer?{
-        switch description.type{
+    public static func create(from description: SettingFinalizerDescription) -> SettingFinalizer? {
+        switch description.type {
         case .notImplemented:
             return nil
         }
@@ -53,7 +53,7 @@ public class SettingFinalizer{
 }
 
 /// A data model describing the finalizer's behavior
-public protocol SettingFinalizerDescription{
+public protocol SettingFinalizerDescription {
     
     var type: Setting.FinalizerType { get }
     

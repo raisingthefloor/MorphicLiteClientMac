@@ -27,24 +27,24 @@ import OSLog
 
 private let logger = OSLog(subsystem: "MorphicSettings", category: "Audio")
 
-public class AudioOutput{
+public class AudioOutput {
     
-    init(id: UInt32){
+    init(id: UInt32) {
         self.id = id
     }
     
     private var id: UInt32
     
     public static var main: AudioOutput? = {
-        if let id = MorphicAudio.getDefaultAudioDeviceId(){
+        if let id = MorphicAudio.getDefaultAudioDeviceId() {
             return AudioOutput(id: id)
         }
         return nil
     }()
     
     public var isMuted: Bool{
-        get{
-            if let muted = MorphicAudio.getMuteState(for: id){
+        get {
+            if let muted = MorphicAudio.getMuteState(for: id) {
                 return muted
             }
             os_log(.error, log: logger, "Failed to get mute state, assuming false")
@@ -52,19 +52,19 @@ public class AudioOutput{
         }
     }
     
-    public func setMuted(_ muted: Bool) -> Bool{
-        do{
+    public func setMuted(_ muted: Bool) -> Bool {
+        do {
             try MorphicAudio.setMuteState(for: id, muteState: muted)
             return true
-        }catch{
+        } catch {
             os_log(.error, log: logger, "Exception while setting mute state: %{public}s", error.localizedDescription)
             return false
         }
     }
     
-    public var volume: Double{
-        get{
-            if let value = MorphicAudio.getVolume(for: id){
+    public var volume: Double {
+        get {
+            if let value = MorphicAudio.getVolume(for: id) {
                 return Double(value)
             }
             os_log(.error, log: logger, "Failed to get volume, assuming 0.0")
@@ -72,11 +72,11 @@ public class AudioOutput{
         }
     }
     
-    public func setVolume(_ value: Double) -> Bool{
-        do{
+    public func setVolume(_ value: Double) -> Bool {
+        do {
             try MorphicAudio.setVolume(for: id, volume: Float(value))
             return true
-        }catch{
+        } catch {
             os_log(.error, log: logger, "Exception while setting volume: %{public}s", error.localizedDescription)
             return false
         }

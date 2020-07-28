@@ -28,7 +28,7 @@ import OSLog
 private let logger = OSLog(subsystem: "MorphicSettings", category: "AccessibilityUIAutomation")
 
 
-public class AccessibilityUIAutomation: UIAutomation{
+public class AccessibilityUIAutomation: UIAutomation {
     
     public required init() {
     }
@@ -37,16 +37,16 @@ public class AccessibilityUIAutomation: UIAutomation{
         fatalError("Not implemented")
     }
         
-    public func showAccessibilityPreferences(completion: @escaping (_ accessibility: AccessibilityPreferencesElement?) -> Void){
+    public func showAccessibilityPreferences(completion: @escaping (_ accessibility: AccessibilityPreferencesElement?) -> Void) {
         let app = SystemPreferencesElement()
-        app.open{
+        app.open {
             success in
             guard success else {
                 os_log(.error, log: logger, "Failed to open system preferences")
                 completion(nil)
                 return
             }
-            app.showAccessibility{
+            app.showAccessibility {
                 success, accessibility in
                 guard success else {
                     os_log(.error, log: logger, "Failed to show Accessibility pane")
@@ -58,21 +58,21 @@ public class AccessibilityUIAutomation: UIAutomation{
         }
     }
     
-    public func showAccessibilityDisplayPreferences(tab: String, completion: @escaping (_ accessibility: AccessibilityPreferencesElement?) -> Void){
-        showAccessibilityPreferences{
+    public func showAccessibilityDisplayPreferences(tab: String, completion: @escaping (_ accessibility: AccessibilityPreferencesElement?) -> Void) {
+        showAccessibilityPreferences {
             accessibility in
-            guard let accessibility = accessibility else{
+            guard let accessibility = accessibility else {
                 completion(nil)
                 return
             }
-            accessibility.selectDisplay{
+            accessibility.selectDisplay {
                 success in
-                guard success else{
+                guard success else {
                     os_log(.error, log: logger, "Failed to select Display category")
                     completion(nil)
                     return
                 }
-                guard accessibility.select(tabTitled: tab) else{
+                guard accessibility.select(tabTitled: tab) else {
                     os_log(.error, log: logger, "Failed to select Display tab")
                     completion(nil)
                     return
@@ -83,13 +83,13 @@ public class AccessibilityUIAutomation: UIAutomation{
     }
     
     public func showAccessibilityVoiceOverPreferences(completion: @escaping (_ accessibility: AccessibilityPreferencesElement?) -> Void){
-        showAccessibilityPreferences{
+        showAccessibilityPreferences {
             accessibility in
-            guard let accessibility = accessibility else{
+            guard let accessibility = accessibility else {
                 completion(nil)
                 return
             }
-            accessibility.selectVoiceOver{
+            accessibility.selectVoiceOver {
                 success in
                 guard success else{
                     os_log(.error, log: logger, "Failed to select VoiceOver category")
@@ -101,16 +101,16 @@ public class AccessibilityUIAutomation: UIAutomation{
         }
     }
     
-    public func showAccessibilityZoomPreferences(completion: @escaping (_ accessibility: AccessibilityPreferencesElement?) -> Void){
-        showAccessibilityPreferences{
+    public func showAccessibilityZoomPreferences(completion: @escaping (_ accessibility: AccessibilityPreferencesElement?) -> Void) {
+        showAccessibilityPreferences {
             accessibility in
-            guard let accessibility = accessibility else{
+            guard let accessibility = accessibility else {
                 completion(nil)
                 return
             }
-            accessibility.selectZoom{
+            accessibility.selectZoom {
                 success in
-                guard success else{
+                guard success else {
                     os_log(.error, log: logger, "Failed to select Zoom category")
                     completion(nil)
                     return

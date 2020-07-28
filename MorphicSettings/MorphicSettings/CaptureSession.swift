@@ -27,15 +27,14 @@ import OSLog
 
 private let logger = OSLog(subsystem: "MorphicSettings", category: "CaptureSession")
 
-
 /// Capture many values into a `Preferences` object
-public class CaptureSession{
+public class CaptureSession {
  
     /// Create a capture session for the given settings manager and preferences target
     ///
     /// The settings manager will be used to fetch `Setting` information and the preferences will
     /// be modified with the results of the capture upon calling `run()`
-    public init(settingsManager: SettingsManager, preferences: Preferences){
+    public init(settingsManager: SettingsManager, preferences: Preferences) {
         self.settingsManager = settingsManager
         self.preferences = preferences
         keys = [Preferences.Key]()
@@ -57,9 +56,9 @@ public class CaptureSession{
     public var keys: [Preferences.Key]
     
     /// Add every single known setting to `keys` so they'll all be captured
-    public func addAllSolutions(){
-        for solution in settingsManager.solutions{
-            for setting in solution.settings{
+    public func addAllSolutions() {
+        for solution in settingsManager.solutions {
+            for setting in solution.settings {
                 let key = Preferences.Key(solution: solution.identifier, preference: setting.name)
                 keys.append(key)
             }
@@ -75,36 +74,36 @@ public class CaptureSession{
     ///
     /// - parameters:
     ///   - completion: Called when the run is done
-    public func run(completion: @escaping () -> Void){
-        guard keyQueue == nil else{
+    public func run(completion: @escaping () -> Void) {
+        guard keyQueue == nil else {
             return
         }
         keyQueue = keys.reversed()
         captureNextKey(completion: completion)
     }
     
-    private func captureNextKey(completion: @escaping () -> Void){
+    private func captureNextKey(completion: @escaping () -> Void) {
         guard keyQueue.count > 0 else{
             keyQueue = nil
             completion()
             return
         }
         let key = keyQueue.removeLast()
-        guard let setting = settingsManager.setting(for: key) else{
+        guard let setting = settingsManager.setting(for: key) else {
             os_log(.info, log: logger, "Failed to find setting for %{public}s.%{public}s", key.solution, key.preference)
             captureNextKey(completion: completion)
             return
         }
-        guard let handler = setting.createHandler() else{
+        guard let handler = setting.createHandler() else {
             os_log(.info, log: logger, "Failed create handler for %{public}s.%{public}s", key.solution, key.preference)
             captureNextKey(completion: completion)
             return
         }
         handler.read{
             result in
-            switch result{
+            switch result {
             case .succeeded(let value):
-                if self.captureDefaultValues || !setting.isDefault(value){
+                if self.captureDefaultValues || !setting.isDefault(value) {
                     self.preferences.set(value, for: key)
                 }else{
                     self.preferences.remove(key: key)

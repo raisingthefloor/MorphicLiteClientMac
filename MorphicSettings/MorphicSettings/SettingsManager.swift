@@ -28,12 +28,12 @@ import OSLog
 private let logger = OSLog(subsystem: "MorphicSettings", category: "SettingsManager")
 
 /// Manages system settings based on morphic preferences
-public class SettingsManager{
+public class SettingsManager {
     
     /// The singleton object representing this system's settings
     public static var shared: SettingsManager = SettingsManager()
     
-    private init(){
+    private init() {
         ClientSettingHandler.register(type: DisplayZoomHandler.self, for: .macosDisplayZoom)
         DefaultsReadUIWriteSettingHandler.register(automation: ContrastUIAutomation.self, for: .macosDisplayContrastEnabled)
         DefaultsReadUIWriteSettingHandler.register(automation: InvertColorsUIAutomation.self, for: .macosDisplayInvertColors)
@@ -64,30 +64,30 @@ public class SettingsManager{
     private var solutionsById = [String: Solution]()
     
     /// Add solutions to the settings manager by parsing JSON
-    public func populateSolutions(fromResource resource: String, in bundle: Bundle = Bundle.main){
-        guard let url = bundle.url(forResource: resource, withExtension: "json") else{
+    public func populateSolutions(fromResource resource: String, in bundle: Bundle = Bundle.main) {
+        guard let url = bundle.url(forResource: resource, withExtension: "json") else {
             os_log(.error, log: logger, "Failed to find solutions json resource")
             return
         }
         populateSolutions(from: url)
     }
     
-    public func populateSolutions(from url: URL){
-        guard let data = FileManager.default.contents(atPath: url.path) else{
+    public func populateSolutions(from url: URL) {
+        guard let data = FileManager.default.contents(atPath: url.path) else {
             os_log(.error, log: logger, "Failed to read contents of solutions json resource")
             return
         }
         populateSolutions(from: data)
     }
     
-    public func populateSolutions(from data: Data){
+    public func populateSolutions(from data: Data) {
         let decoder = JSONDecoder()
-        guard let solutions = try? decoder.decode([Solution].self, from: data) else{
+        guard let solutions = try? decoder.decode([Solution].self, from: data) else {
             os_log(.error, log: logger, "Failed to decode JSON from solutions file")
             return
         }
         self.solutions = solutions
-        for solution in solutions{
+        for solution in solutions {
             solutionsById[solution.identifier] = solution
         }
     }
@@ -95,7 +95,7 @@ public class SettingsManager{
     /// Get the setting for the given key
     ///
     /// - parameter key: The key to use when looking up the setting
-    public func setting(for key: Preferences.Key) -> Setting?{
+    public func setting(for key: Preferences.Key) -> Setting? {
         guard let solution = solutionsById[key.solution] else{
             return nil
         }
@@ -103,7 +103,7 @@ public class SettingsManager{
     }
     
     /// Apply a value for Morphic preference in the given solution
-    public func apply(_ value: Interoperable?, for key: Preferences.Key, completion: @escaping (_ success: Bool) -> Void){
+    public func apply(_ value: Interoperable?, for key: Preferences.Key, completion: @escaping (_ success: Bool) -> Void) {
         apply(values: [(key, value)]){
             results in
             completion(results[key] ?? false)
@@ -111,7 +111,7 @@ public class SettingsManager{
     }
     
     /// Apply several values at once
-    public func apply(values: [(Preferences.Key, Interoperable?)], completion: @escaping (_ results: [Preferences.Key: Bool]) -> Void){
+    public func apply(values: [(Preferences.Key, Interoperable?)], completion: @escaping (_ results: [Preferences.Key: Bool]) -> Void) {
         let session = ApplySession(settingsManager: self, keyValueTuples: values)
         session.run{
             completion(session.results)
@@ -119,15 +119,15 @@ public class SettingsManager{
     }
     
     /// Capture a value for the given preference
-    public func capture(valueFor key: Preferences.Key, completion: @escaping (_ result: Interoperable?) -> Void){
-        capture(valuesFor: [key]){
+    public func capture(valueFor key: Preferences.Key, completion: @escaping (_ result: Interoperable?) -> Void) {
+        capture(valuesFor: [key]) {
             results in
             completion(results[key] ?? nil)
         }
     }
     
     /// Capture many values at once
-    public func capture(valuesFor keys: [Preferences.Key], completion: @escaping(_ results: [Preferences.Key: Interoperable?]) -> Void){
+    public func capture(valuesFor keys: [Preferences.Key], completion: @escaping(_ results: [Preferences.Key: Interoperable?]) -> Void) {
         let prefs = Preferences(identifier: "")
         let session = CaptureSession(settingsManager: self, preferences: prefs)
         session.captureDefaultValues = true
@@ -140,7 +140,7 @@ public class SettingsManager{
     
 }
 
-public extension Preferences.Key{
+public extension Preferences.Key {
     // Display
     static var macosDisplayZoom = Preferences.Key(solution: "com.apple.macos.display", preference: "zoom")
     static var macosDisplayContrastEnabled = Preferences.Key(solution: "com.apple.macos.display", preference: "contrast.enabled")

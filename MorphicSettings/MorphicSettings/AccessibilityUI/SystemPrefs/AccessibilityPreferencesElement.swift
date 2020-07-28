@@ -23,15 +23,15 @@
 
 import Foundation
 
-public class AccessibilityPreferencesElement: UIElement{
+public class AccessibilityPreferencesElement: UIElement {
     
-    public enum CategoryIdentifier{
+    public enum CategoryIdentifier {
         
         case display
         case zoom
         case voiceOver
         
-        public var rowTitle: String{
+        public var rowTitle: String {
             get{
                 switch self {
                 case .display:
@@ -46,46 +46,46 @@ public class AccessibilityPreferencesElement: UIElement{
         
     }
     
-    public var categoriesTable: TableElement?{
+    public var categoriesTable: TableElement? {
         return table(titled: "Accessibility features")
     }
     
-    public func selectDisplay(completion: @escaping (_ success: Bool) -> Void){
-        select(category: .display){
+    public func selectDisplay(completion: @escaping (_ success: Bool) -> Void) {
+        select(category: .display) {
             success in
             guard success else{
                 completion(false)
                 return
             }
-            self.wait(atMost: 1.0, for: { self.tabGroup?.tab(titled: "Display") != nil}){
+            self.wait(atMost: 1.0, for: { self.tabGroup?.tab(titled: "Display") != nil}) {
                 success in
                 completion(success)
             }
         }
     }
     
-    public func selectVoiceOver(completion: @escaping (_ success: Bool) -> Void){
-        select(category: .voiceOver){
+    public func selectVoiceOver(completion: @escaping (_ success: Bool) -> Void) {
+        select(category: .voiceOver) {
             success in
             guard success else{
                 completion(false)
                 return
             }
-            self.wait(atMost: 1.0, for: { self.checkbox(titled: "Enable VoiceOver") != nil}){
+            self.wait(atMost: 1.0, for: { self.checkbox(titled: "Enable VoiceOver") != nil}) {
                 success in
                 completion(success)
             }
         }
     }
     
-    public func selectZoom(completion: @escaping (_ success: Bool) -> Void){
-        select(category: .zoom){
+    public func selectZoom(completion: @escaping (_ success: Bool) -> Void) {
+        select(category: .zoom) {
             success in
-            guard success else{
+            guard success else {
                 completion(false)
                 return
             }
-            self.wait(atMost: 1.0, for: { self.checkbox(titled: "Use keyboard shortcuts to zoom") != nil}){
+            self.wait(atMost: 1.0, for: { self.checkbox(titled: "Use keyboard shortcuts to zoom") != nil}) {
                 success in
                 completion(success)
             }
@@ -93,14 +93,14 @@ public class AccessibilityPreferencesElement: UIElement{
         
     }
 
-    public func select(category identifier: CategoryIdentifier, completion: @escaping (_ success: Bool) -> Void){
-        wait(atMost: 1.0, for: { self.categoriesTable != nil }){
+    public func select(category identifier: CategoryIdentifier, completion: @escaping (_ success: Bool) -> Void) {
+        wait(atMost: 1.0, for: { self.categoriesTable != nil }) {
             success in
-            guard success else{
+            guard success else {
                 completion(false)
                 return
             }
-            guard let row = self.categoriesTable?.row(titled: identifier.rowTitle) else{
+            guard let row = self.categoriesTable?.row(titled: identifier.rowTitle) else {
                 completion(false)
                 return
             }
@@ -109,7 +109,7 @@ public class AccessibilityPreferencesElement: UIElement{
         }
     }
     
-    public func select(tabTitled title: String) -> Bool{
+    public func select(tabTitled title: String) -> Bool {
         return tabGroup?.select(tabTitled: title) ?? false
     }
     

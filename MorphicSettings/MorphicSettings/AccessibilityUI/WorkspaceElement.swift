@@ -27,11 +27,11 @@ import OSLog
 
 private var logger = OSLog(subsystem: "MorphicSettings", category: "WorkspaceElement")
 
-public class WorkspaceElement: UIElement{
+public class WorkspaceElement: UIElement {
     
     public static let shared = WorkspaceElement(accessibilityElement: nil)
     
-    public override func perform(action: Action, completion: @escaping (_ success: Bool, _ nextTarget: UIElement?) -> Void){
+    public override func perform(action: Action, completion: @escaping (_ success: Bool, _ nextTarget: UIElement?) -> Void) {
         switch action {
         case .launch(let bundleIdentifier):
             let app = ApplicationElement.from(bundleIdentifier: bundleIdentifier)
@@ -46,27 +46,27 @@ public class WorkspaceElement: UIElement{
     
     public var launchedApplications = [ApplicationElement]()
     
-    public func closeLaunchedApplications(){
-        for application in launchedApplications{
-            if !application.terminate(){
+    public func closeLaunchedApplications() {
+        for application in launchedApplications {
+            if !application.terminate() {
                 os_log(.error, log: logger, "Failed to terminate application %{public}s", application.bundleIdentifier)
             }
         }
         launchedApplications = []
     }
     
-    public func send(keyCode: Int, down: Bool) -> Bool{
+    public func send(keyCode: Int, down: Bool) -> Bool {
         return KeyEvents.sendSystemWideKeyChar(CGCharCode(0), keyCode: CGKeyCode(keyCode), isDown: down)
     }
     
-    public func send(keyCodes: [Int]) -> Bool{
-        for code in keyCodes{
-            if !send(keyCode: code, down: true){
+    public func send(keyCodes: [Int]) -> Bool {
+        for code in keyCodes {
+            if !send(keyCode: code, down: true) {
                 return false
             }
         }
-        for code in keyCodes{
-            if !send(keyCode: code, down: false){
+        for code in keyCodes {
+            if !send(keyCode: code, down: false) {
                 return false
             }
         }

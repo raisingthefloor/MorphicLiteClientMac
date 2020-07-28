@@ -23,7 +23,7 @@
 
 import Foundation
 
-public class SystemPreferencesElement: ApplicationElement{
+public class SystemPreferencesElement: ApplicationElement {
     
     public init() {
         super.init(bundleIdentifier: "com.apple.systempreferences")
@@ -33,10 +33,10 @@ public class SystemPreferencesElement: ApplicationElement{
         fatalError("init(accessibilityElement:) has not been implemented")
     }
     
-    public enum PaneIdentifier{
+    public enum PaneIdentifier {
         case accessibility
         
-        public var buttonTitle: String{
+        public var buttonTitle: String {
             get{
                 switch self {
                 case .accessibility:
@@ -45,7 +45,7 @@ public class SystemPreferencesElement: ApplicationElement{
             }
         }
         
-        public var windowTitle: String{
+        public var windowTitle: String {
             get{
                 switch self {
                 case .accessibility:
@@ -55,46 +55,46 @@ public class SystemPreferencesElement: ApplicationElement{
         }
     }
     
-    public func showAccessibility(completion: @escaping (_ success: Bool, _ pane: AccessibilityPreferencesElement?) -> Void){
+    public func showAccessibility(completion: @escaping (_ success: Bool, _ pane: AccessibilityPreferencesElement?) -> Void) {
         return show(pane: .accessibility, completion: completion)
     }
     
-    public func show<ElementType: UIElement>(pane identifier: PaneIdentifier, completion: @escaping (_ success: Bool, _ pane: ElementType?) -> Void){
-        guard let window = mainWindow else{
+    public func show<ElementType: UIElement>(pane identifier: PaneIdentifier, completion: @escaping (_ success: Bool, _ pane: ElementType?) -> Void) {
+        guard let window = mainWindow else {
             completion(false, nil)
             return
         }
-        guard window.raise() else{
+        guard window.raise() else {
             completion(false, nil)
             return
         }
-        guard window.title != identifier.windowTitle else{
+        guard window.title != identifier.windowTitle else {
             completion(true, ElementType(accessibilityElement: window.accessibilityElement))
             return
         }
-        guard let showAllButton = window.toolbar?.button(titled: "Show All") else{
+        guard let showAllButton = window.toolbar?.button(titled: "Show All") else {
             completion(false, nil)
             return
         }
-        guard showAllButton.press() else{
+        guard showAllButton.press() else {
             completion(false, nil)
             return
         }
-        wait(atMost: 3.0, for: { window.title == "System Preferences" }){
+        wait(atMost: 3.0, for: { window.title == "System Preferences" }) {
             success in
-            guard success else{
+            guard success else {
                 completion(false, nil)
                 return
             }
-            guard let paneButton = window.button(titled: identifier.buttonTitle) else{
+            guard let paneButton = window.button(titled: identifier.buttonTitle) else {
                 completion(false, nil)
                 return
             }
-            guard paneButton.press() else{
+            guard paneButton.press() else {
                 completion(false, nil)
                 return
             }
-            self.wait(atMost: 3.0, for: { window.title == identifier.windowTitle }){
+            self.wait(atMost: 3.0, for: { window.title == identifier.windowTitle }) {
                 success in
                 completion(success, ElementType(accessibilityElement: window.accessibilityElement))
             }

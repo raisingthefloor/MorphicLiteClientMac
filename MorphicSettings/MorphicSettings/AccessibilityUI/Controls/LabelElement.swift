@@ -23,11 +23,11 @@
 
 import Foundation
 
-public class LabelElement: UIElement{
+public class LabelElement: UIElement {
     
-    public var text: String?{
+    public var text: String? {
         get{
-            guard let value: String = accessibilityElement.value(forAttribute: .value) else{
+            guard let value: String = accessibilityElement.value(forAttribute: .value) else {
                 return nil
             }
             return value

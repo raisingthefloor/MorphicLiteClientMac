@@ -25,7 +25,7 @@ import Foundation
 import MorphicCore
 
 /// A data model describing an individual setting within a `Solution`
-public struct Setting: Decodable{
+public struct Setting: Decodable {
     
     /// The setting's locally-unique name within its owning `Solution`
     public let name: String
@@ -34,7 +34,7 @@ public struct Setting: Decodable{
     public let type: ValueType
     
     /// The possible types for values
-    public enum ValueType: String, Decodable{
+    public enum ValueType: String, Decodable {
         
         /// The value is a `String`
         case string
@@ -59,7 +59,7 @@ public struct Setting: Decodable{
     public let finalizerDescription: SettingFinalizerDescription?
     
     /// JSON decoding property map
-    private enum CodingKeys: String, CodingKey{
+    private enum CodingKeys: String, CodingKey {
         case name
         case type
         case defaultValue = "default"
@@ -71,12 +71,12 @@ public struct Setting: Decodable{
     ///
     /// Handler descriptions are based on the `type` value within the `handler` container, so
     /// we need to peek inside in order to create the correct handler description
-    private enum HandlerCodingKeys: String, CodingKey{
+    private enum HandlerCodingKeys: String, CodingKey {
         case type
     }
     
     /// The possible handler descriptions types
-    public enum HandlerType: String, Decodable{
+    public enum HandlerType: String, Decodable {
         
         /// Client handlers are custom code provided by the client application
         case client = "org.raisingthefloor.morphic.client"
@@ -92,72 +92,72 @@ public struct Setting: Decodable{
     ///
     /// Handler descriptions are based on the `type` value within the `finalizer` container, so
     /// we need to peek inside in order to create the correct handler description
-    private enum FinalizerCodingKeys: String, CodingKey{
+    private enum FinalizerCodingKeys: String, CodingKey {
         case type
     }
     
     /// The possible finalizer description types
-    public enum FinalizerType: String, Decodable{
+    public enum FinalizerType: String, Decodable {
         // TODO: remove after the first real case is added
         case notImplemented
     }
     
-    public init(from decoder: Decoder) throws{
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         name = try container.decode(String.self, forKey: .name)
         type = try container.decode(ValueType.self, forKey: .type)
         defaultValue = try container.decodeInteroperable(for: .defaultValue)
         let handlerContainer = try container.nestedContainer(keyedBy: HandlerCodingKeys.self, forKey: .handler)
         let handlerType = try handlerContainer.decode(HandlerType.self, forKey: .type)
-        switch handlerType{
+        switch handlerType {
         case .client:
             handlerDescription = try container.decode(ClientSettingHandler.Description.self, forKey: .handler)
         case .defaultsReadUIWrite:
             handlerDescription = try container.decode(DefaultsReadUIWriteSettingHandler.Description.self, forKey: .handler)
         }
-        if container.contains(.finalizer){
+        if container.contains(.finalizer) {
             let finalizerContainer = try container.nestedContainer(keyedBy: FinalizerCodingKeys.self, forKey: .finalizer)
             let finalizerType = try finalizerContainer.decode(FinalizerType.self, forKey: .type)
-            switch finalizerType{
+            switch finalizerType {
             case .notImplemented:
                 finalizerDescription = nil
             }
-        }else{
+        } else {
             finalizerDescription = nil
         }
     }
     
-    public func isDefault(_ value: Interoperable?) -> Bool{
+    public func isDefault(_ value: Interoperable?) -> Bool {
         switch type {
         case .boolean:
-            guard let defaultValue = defaultValue as? Bool else{
+            guard let defaultValue = defaultValue as? Bool else {
                 return false
             }
-            guard let value = value as? Bool else{
+            guard let value = value as? Bool else {
                 return false
             }
             return value == defaultValue
         case .integer:
-            guard let defaultValue = defaultValue as? Int else{
+            guard let defaultValue = defaultValue as? Int else {
                 return false
             }
-            guard let value = value as? Int else{
+            guard let value = value as? Int else {
                 return false
             }
             return value == defaultValue
         case .string:
-            guard let defaultValue = defaultValue as? String else{
+            guard let defaultValue = defaultValue as? String else {
                 return false
             }
-            guard let value = value as? String else{
+            guard let value = value as? String else {
                 return false
             }
             return value == defaultValue
         case .double:
-            guard let defaultValue = defaultValue as? Double else{
+            guard let defaultValue = defaultValue as? Double else {
                 return false
             }
-            guard let value = value as? Double else{
+            guard let value = value as? Double else {
                 return false
             }
             return value == defaultValue

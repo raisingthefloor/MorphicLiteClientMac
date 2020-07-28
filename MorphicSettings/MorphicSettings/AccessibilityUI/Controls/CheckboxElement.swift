@@ -23,9 +23,9 @@
 
 import Foundation
 
-public class CheckboxElement: UIElement{
+public class CheckboxElement: UIElement {
     
-    public enum State{
+    public enum State {
         case checked
         case unchecked
         case mixed
@@ -33,29 +33,29 @@ public class CheckboxElement: UIElement{
     }
     
     public var state: State {
-        guard let checked: Bool = accessibilityElement.value(forAttribute: .value) else{
+        guard let checked: Bool = accessibilityElement.value(forAttribute: .value) else {
             return .unknown
         }
-        if checked{
+        if checked {
             return .checked
         }
         return .unchecked
     }
     
-    public func setChecked(_ checked: Bool) -> Bool{
-        if checked{
+    public func setChecked(_ checked: Bool) -> Bool {
+        if checked {
             return check()
-        }else{
+        } else {
             return uncheck()
         }
     }
     
-    public func check() -> Bool{
-        switch state{
+    public func check() -> Bool {
+        switch state {
         case .checked:
             return true
         case .unchecked, .mixed:
-            if !accessibilityElement.perform(action: .press){
+            if !accessibilityElement.perform(action: .press) {
                 return false
             }
             return state == .checked
@@ -64,12 +64,12 @@ public class CheckboxElement: UIElement{
         }
     }
     
-    public func uncheck() -> Bool{
+    public func uncheck() -> Bool {
         switch state{
         case .unchecked:
             return true
         case .checked, .mixed:
-            if !accessibilityElement.perform(action: .press){
+            if !accessibilityElement.perform(action: .press) {
                 return false
             }
             return state == .unchecked
