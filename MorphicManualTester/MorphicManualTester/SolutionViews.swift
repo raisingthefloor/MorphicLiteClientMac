@@ -1,10 +1,25 @@
+// Copyright 2020 Raising the Floor - International
 //
-//  SolutionViews.swift
-//  MorphicManualTester
+// Licensed under the New BSD license. You may not use this file except in
+// compliance with this License.
 //
-//  Created by CatalinaTest on 7/20/20.
-//  Copyright © 2020 Raising the Floor. All rights reserved.
+// You may obtain a copy of the License at
+// https://github.com/GPII/universal/blob/master/LICENSE.txt
 //
+// The R&D leading to these results received funding from the:
+// * Rehabilitation Services Administration, US Dept. of Education under
+//   grant H421A150006 (APCP)
+// * National Institute on Disability, Independent Living, and
+//   Rehabilitation Research (NIDILRR)
+// * Administration for Independent Living & Dept. of Education under grants
+//   H133E080022 (RERC-IT) and H133E130028/90RE5003-01-00 (UIITA-RERC)
+// * European Union's Seventh Framework Programme (FP7/2007-2013) grant
+//   agreement nos. 289016 (Cloud4all) and 610510 (Prosperity4All)
+// * William and Flora Hewlett Foundation
+// * Ontario Ministry of Research and Innovation
+// * Canadian Foundation for Innovation
+// * Adobe Foundation
+// * Consumer Electronics Association Foundation
 
 import SwiftUI
 import MorphicSettings
@@ -29,21 +44,18 @@ struct SolutionSection: View {
     var body: some View {
         VStack(spacing: 0.0) {
             HStack {
-                if(active)
-                {
+                if self.active {
                     Text("\u{25bc}")
                         .font(.headline)
-                }
-                else
-                {
+                } else {
                     Text("\u{25b6}")
                         .font(.headline)
                 }
                 Text(solution.name)
                     .font(.headline)
                 Spacer()
-                Button(action: {self.solution.CaptureSettings()}) {
-                Text("Refresh")
+                Button(action: {self.solution.captureSettings()}) {
+                    Text("Refresh")
                 }
             }
             .onTapGesture {
@@ -52,18 +64,15 @@ struct SolutionSection: View {
             .padding(.all)
             Section() {
                 ForEach(solution.settings) {setting in
-                    if(self.active) {
+                    if self.active {
                         Divider()
-                        if(setting.type == Setting.ValueType.boolean) {
+                        if setting.type == Setting.ValueType.boolean {
                             BooleanEntry(setting: setting)
-                        }
-                        else if(setting.type == Setting.ValueType.double) {
+                        } else if setting.type == Setting.ValueType.double {
                             DoubleEntry(setting: setting)
-                        }
-                        else if(setting.type == Setting.ValueType.integer) {
+                        } else if setting.type == Setting.ValueType.integer {
                             IntegerEntry(setting: setting)
-                        }
-                        else if(setting.type == Setting.ValueType.string) {
+                        } else if setting.type == Setting.ValueType.string {
                             StringEntry(setting: setting)
                         }
                     }
@@ -84,8 +93,8 @@ struct BooleanEntry: View {
             Text(setting.name)
                 .font(.subheadline)
             Spacer()
-            if(setting.loading) {
-            Image("Hourglass").resizable().frame(width: 11.0, height: 20.0)
+            if setting.loading {
+                Image("Hourglass").resizable().frame(width: 11.0, height: 20.0)
             }
             Text("Boolean:")
             Toggle("", isOn: $setting.displayBool)
@@ -102,11 +111,11 @@ struct IntegerEntry: View {
             Text(setting.name)
                 .font(.subheadline)
             Spacer()
-            if(setting.loading) {
-            Image("Hourglass").resizable().frame(width: 11.0, height: 20.0)
+            if setting.loading {
+                Image("Hourglass").resizable().frame(width: 11.0, height: 20.0)
             }
             Text("Integer:")
-            TextField("", text: $setting.displayVal, onEditingChanged: setting.CheckVal)
+            TextField("", text: $setting.displayVal, onEditingChanged: setting.checkVal)
                 .frame(width: 300.0)
                 .background(setting.wrong ? Color.red.opacity(0.2) : (setting.changed ? Color.green.opacity(0.2) : Color.clear))
         }
@@ -122,11 +131,11 @@ struct DoubleEntry: View {
             Text(setting.name)
                 .font(.subheadline)
             Spacer()
-            if(setting.loading) {
-            Image("Hourglass").resizable().frame(width: 11.0, height: 20.0)
+            if setting.loading {
+                Image("Hourglass").resizable().frame(width: 11.0, height: 20.0)
             }
             Text("Double:")
-            TextField("", text: $setting.displayVal, onEditingChanged: setting.CheckVal)
+            TextField("", text: $setting.displayVal, onEditingChanged: setting.checkVal)
                 .frame(width: 300.0)
                 .background(setting.wrong ? Color.red.opacity(0.2) : (setting.changed ? Color.green.opacity(0.2) : Color.clear))
         }
@@ -142,11 +151,11 @@ struct StringEntry: View {
             Text(setting.name)
                 .font(.subheadline)
             Spacer()
-            if(setting.loading) {
-            Image("Hourglass").resizable().frame(width: 11.0, height: 20.0)
+            if setting.loading {
+                Image("Hourglass").resizable().frame(width: 11.0, height: 20.0)
             }
             Text("String:")
-            TextField("", text: $setting.displayVal, onEditingChanged: setting.CheckVal)
+            TextField("", text: $setting.displayVal, onEditingChanged: setting.checkVal)
                 .frame(width: 300.0)
                 .background(setting.wrong ? Color.red.opacity(0.2) : (setting.changed ? Color.green.opacity(0.2) : Color.clear))
         }
