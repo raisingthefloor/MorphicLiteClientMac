@@ -70,7 +70,17 @@ public class ApplicationElement: UIElement{
                     completion(false)
                     return
                 }
-                guard let accessibilityElement = MorphicA11yUIElement.createFromProcess(processIdentifier: runningApplication.processIdentifier) else{
+                //
+                var accessibilityElement: MorphicA11yUIElement? = nil
+                do {
+                    accessibilityElement = try MorphicA11yUIElement.createFromProcess(processIdentifier: runningApplication.processIdentifier)
+                } catch MorphicA11yAuthorizationError.notAuthorized {
+                    // prompt the user to grant our application accessibility permissions
+                    MorphicA11yAuthorization.promptUserToGrantAuthorization()
+                } catch {
+                    // no other errors should be throws by MorphicA11yUIElement.createFromProcess
+                }
+                guard accessibilityElement != nil else{
                     os_log(.error, log: logger, "Failed to get automation element for application")
                     completion(false)
                     return

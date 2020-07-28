@@ -13,4 +13,7 @@
    <FileRef
       location = "group:MorphicService/MorphicService.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:MorphicManualTester/MorphicManualTester.xcodeproj">
+   </FileRef>
 </Workspace>

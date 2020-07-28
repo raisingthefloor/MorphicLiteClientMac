@@ -62,8 +62,12 @@ public struct MorphicA11yUIElement {
         }
     }
     
-    // TODO: consider adding "throws" if we don't have permission
-    public static func createFromProcess(processIdentifier: pid_t) -> MorphicA11yUIElement? {
+    public static func createFromProcess(processIdentifier: pid_t) throws -> MorphicA11yUIElement? {
+        // verify that the application has accessibility authorization; if it does not, do not prompt the user (as we want the application to control the authorization pop-ups)
+        guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: false) == true else {
+            throw MorphicA11yAuthorizationError.notAuthorized
+        }
+
         // get a reference to the top-level accessibility object for this process
         let topLevelAccessibilityObject = AXUIElementCreateApplication(processIdentifier)
         return MorphicA11yUIElement(axUiElement: topLevelAccessibilityObject)
