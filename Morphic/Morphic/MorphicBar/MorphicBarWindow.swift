@@ -37,7 +37,7 @@ public class MorphicBarWindow: NSWindow {
     public var morphicBarViewController: MorphicBarViewController
     
     /// Create a new MorphicBar Window with a `MorphicBarViewController` as its `contentViewController`
-    public init(){
+    public init() {
         morphicBarViewController = MorphicBarViewController.init(nibName: nil, bundle: nil)
         super.init(contentRect: NSMakeRect(0, 0, 100, 100), styleMask: .borderless, backing: .buffered, defer: false)
         contentViewController = morphicBarViewController
@@ -47,7 +47,7 @@ public class MorphicBarWindow: NSWindow {
         backgroundColor = .clear
         isMovableByWindowBackground = true
         collectionBehavior = [.canJoinAllSpaces]
-        if let savedPosition = Position(rawValue: Session.shared.string(for: .morphicBarPosition) ?? ""){
+        if let savedPosition = Position(rawValue: Session.shared.string(for: .morphicBarPosition) ?? "") {
             position = savedPosition
         }
         setAccessibilityLabel("MorphicBar")
@@ -56,35 +56,35 @@ public class MorphicBarWindow: NSWindow {
     }
     
     @objc
-    func userDidChange(_ notification: NSNotification){
+    func userDidChange(_ notification: NSNotification) {
         updateMorphicBar()
     }
     
-    func updateMorphicBar(){
+    func updateMorphicBar() {
         morphicBarViewController.showsHelp = Session.shared.bool(for: .morphicBarShowsHelp) ?? true
-        if let preferredItems = Session.shared.array(for: .morphicBarItems){
+        if let preferredItems = Session.shared.array(for: .morphicBarItems) {
             morphicBarViewController.items = MorphicBarItem.items(from: preferredItems)
         }
         reposition(animated: false)
     }
     
-    public override var canBecomeKey: Bool{
+    public override var canBecomeKey: Bool {
         return true
     }
     
-    public override var canBecomeMain: Bool{
+    public override var canBecomeMain: Bool {
         return false
     }
     
     /// The allowed positions for the window
-    public enum Position: String{
+    public enum Position: String {
         case topLeft
         case topRight
         case bottomLeft
         case bottomRight
         
         /// Determine the origin for the given window at this position
-        fileprivate func origin(for window: MorphicBarWindow) -> NSPoint{
+        fileprivate func origin(for window: MorphicBarWindow) -> NSPoint {
             guard let screen = window.screen else{
                 return .zero
             }
@@ -102,7 +102,7 @@ public class MorphicBarWindow: NSWindow {
     }
     
     /// How far from the screen edges the window should position itself
-    public var screenInsets = NSEdgeInsets(top: 4, left: 4, bottom: 4, right: 4){
+    public var screenInsets = NSEdgeInsets(top: 4, left: 4, bottom: 4, right: 4) {
         didSet{
             reposition(animated: false)
         }
@@ -112,11 +112,11 @@ public class MorphicBarWindow: NSWindow {
     public private(set) var position: Position = .topRight
     
     /// Change the window's position, optionally animating the change
-    public func setPosition(_ position: Position, animated: Bool){
+    public func setPosition(_ position: Position, animated: Bool) {
         let changed = self.position != position
         self.position = position
         reposition(animated: animated)
-        if changed{
+        if changed {
             Session.shared.set(position.rawValue, for: .morphicBarPosition)
         }
     }
@@ -124,19 +124,19 @@ public class MorphicBarWindow: NSWindow {
     /// The nearst position to the window's current location
     ///
     /// Useful after a window has been moved by the user
-    private var nearestPosition: Position{
-        guard let area = screen?.visibleFrame else{
+    private var nearestPosition: Position {
+        guard let area = screen?.visibleFrame else {
             return position
         }
         let windowCenter = frame.center
         let areaCenter = area.center
-        if windowCenter.x < areaCenter.x{
-            if windowCenter.y < areaCenter.y{
+        if windowCenter.x < areaCenter.x {
+            if windowCenter.y < areaCenter.y {
                 return .bottomLeft
             }
             return .topLeft
-        }else{
-            if windowCenter.y < areaCenter.y{
+        } else {
+            if windowCenter.y < areaCenter.y {
                 return .bottomRight
             }
             return .topRight
@@ -144,7 +144,7 @@ public class MorphicBarWindow: NSWindow {
     }
     
     /// Move the window to its position
-    func reposition(animated: Bool){
+    func reposition(animated: Bool) {
         layoutIfNeeded()
         let origin = position.origin(for: self)
         let frame = NSRect(origin: origin, size: self.frame.size)
@@ -159,7 +159,7 @@ public class MorphicBarWindow: NSWindow {
 }
 
 /// Custom `NSView` that accepts first mouse to ensure proper window movement behavior
-class MorphicBarWindowContentView: NSView{
+class MorphicBarWindowContentView: NSView {
     
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool {
         // accept first mouse so the event propagates up to the window and we
@@ -168,16 +168,16 @@ class MorphicBarWindowContentView: NSView{
     }
 }
 
-private extension NSRect{
+private extension NSRect {
     
     /// The center point of the rectangle
-    var center: NSPoint{
+    var center: NSPoint {
         return NSPoint(x: origin.x + size.width / 2.0, y: origin.y + size.height / 2.0)
     }
     
 }
 
-public extension Preferences.Key{
+public extension Preferences.Key {
     
     /// The preference key that stores the position for the MorphicBar window on mac
     ///

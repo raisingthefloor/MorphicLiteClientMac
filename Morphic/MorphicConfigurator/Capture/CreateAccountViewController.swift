@@ -1,17 +1,32 @@
+// Copyright 2020 Raising the Floor - International
 //
-//  CreateAccountViewController.swift
-//  MorphicConfigurator
+// Licensed under the New BSD license. You may not use this file except in
+// compliance with this License.
 //
-//  Created by Owen Shaw on 6/24/20.
-//  Copyright © 2020 Raising the Floor. All rights reserved.
+// You may obtain a copy of the License at
+// https://github.com/GPII/universal/blob/master/LICENSE.txt
 //
+// The R&D leading to these results received funding from the:
+// * Rehabilitation Services Administration, US Dept. of Education under
+//   grant H421A150006 (APCP)
+// * National Institute on Disability, Independent Living, and
+//   Rehabilitation Research (NIDILRR)
+// * Administration for Independent Living & Dept. of Education under grants
+//   H133E080022 (RERC-IT) and H133E130028/90RE5003-01-00 (UIITA-RERC)
+// * European Union's Seventh Framework Programme (FP7/2007-2013) grant
+//   agreement nos. 289016 (Cloud4all) and 610510 (Prosperity4All)
+// * William and Flora Hewlett Foundation
+// * Ontario Ministry of Research and Innovation
+// * Canadian Foundation for Innovation
+// * Adobe Foundation
+// * Consumer Electronics Association Foundation
 
 import Cocoa
 import MorphicCore
 import MorphicSettings
 import MorphicService
 
-protocol CreateAccountViewControllerDelegate: class{
+protocol CreateAccountViewControllerDelegate: class {
     
     func createAccount(_ viewController: CreateAccountViewController, didCreate user: User)
 
@@ -32,20 +47,20 @@ class CreateAccountViewController: NSViewController, NSTextFieldDelegate, Presen
         super.viewDidLoad()
     }
     
-    func pageTransitionCompleted(){
+    func pageTransitionCompleted() {
         view.window?.makeFirstResponder(emailField)
     }
     
     @IBAction
-    func createAccount(_ sender: Any?){
+    func createAccount(_ sender: Any?) {
         hideError()
         setFieldsEnabled(false)
         var user = User(identifier: "")
         user.email = emailField.stringValue.trimmingCharacters(in: .whitespaces)
         let creds = UsernameCredentials(username: user.email!, password: passwordField.stringValue)
-        Session.shared.register(user: user, credentials: creds, preferences: preferences){
+        Session.shared.register(user: user, credentials: creds, preferences: preferences) {
             result in
-            switch result{
+            switch result {
             case .success(let auth):
                 DistributedNotificationCenter.default().postNotificationName(.morphicSignin, object: nil, userInfo: ["isRegister": true], deliverImmediately: true)
                 self.delegate?.createAccount(self, didCreate: auth.user)
@@ -76,10 +91,10 @@ class CreateAccountViewController: NSViewController, NSTextFieldDelegate, Presen
     
     func controlTextDidChange(_ obj: Notification) {
         updateValid()
-        guard let field = obj.object as? NSTextField else{
+        guard let field = obj.object as? NSTextField else {
             return
         }
-        if (field == passwordField || field == confirmPasswordField){
+        if (field == passwordField || field == confirmPasswordField) {
             if hasTypedBothPasswords{
                 updatePasswordMatch()
             }
@@ -93,27 +108,27 @@ class CreateAccountViewController: NSViewController, NSTextFieldDelegate, Presen
         guard let field = obj.object as? NSTextField else{
             return
         }
-        if field == passwordField || field == confirmPasswordField{
-            if passwordField.stringValue.count > 0 && confirmPasswordField.stringValue.count > 0{
+        if field == passwordField || field == confirmPasswordField {
+            if passwordField.stringValue.count > 0 && confirmPasswordField.stringValue.count > 0 {
                 hasTypedBothPasswords = true
                 updatePasswordMatch()
             }
         }
     }
     
-    func updatePasswordMatch(){
+    func updatePasswordMatch() {
         if passwordField.stringValue.count > 0 && confirmPasswordField.stringValue.count > 0 && passwordField.stringValue != confirmPasswordField.stringValue{
             showError(message: "Passwords do not match", pointingTo: confirmPasswordField)
-        }else{
+        } else {
             hideError()
         }
     }
     
-    func updateValid(){
+    func updateValid() {
         submitButton.isEnabled = emailField.stringValue.trimmingCharacters(in: .whitespaces).count > 0 && passwordField.stringValue.count > 0 && passwordField.stringValue == confirmPasswordField.stringValue
     }
     
-    func setFieldsEnabled(_ enabled: Bool){
+    func setFieldsEnabled(_ enabled: Bool) {
         emailField.isEnabled = enabled
         passwordField.isEnabled = enabled
         confirmPasswordField.isEnabled = enabled
@@ -122,12 +137,12 @@ class CreateAccountViewController: NSViewController, NSTextFieldDelegate, Presen
     
     @IBOutlet var errorViewController: CreateAccountErrorViewController!
     
-    func showError(message: String, pointingTo view: NSView){
+    func showError(message: String, pointingTo view: NSView) {
         errorViewController.errorText = message
         errorPopover.show(relativeTo: view.bounds, of: view, preferredEdge: .maxX)
     }
     
-    func hideError(){
+    func hideError() {
         if errorPopover.isShown{
             errorPopover.close()
         }
@@ -135,7 +150,7 @@ class CreateAccountViewController: NSViewController, NSTextFieldDelegate, Presen
     
 }
 
-class CreateAccountErrorViewController: NSViewController{
+class CreateAccountErrorViewController: NSViewController {
     
     @IBOutlet weak var errorLabel: NSTextField!
     
@@ -144,8 +159,8 @@ class CreateAccountErrorViewController: NSViewController{
         errorLabel.stringValue = errorText ?? ""
     }
     
-    var errorText: String?{
-        didSet{
+    var errorText: String? {
+        didSet {
             errorLabel?.stringValue = errorText ?? ""
         }
     }

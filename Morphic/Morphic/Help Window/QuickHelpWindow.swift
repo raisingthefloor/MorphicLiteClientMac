@@ -29,7 +29,7 @@ import Cocoa
 class QuickHelpWindow: NSWindow {
     
     /// Create a new Quick Help Window with a `QuickHelpViewController` as its `contentViewController`
-    private init(){
+    private init() {
         super.init(contentRect: NSMakeRect(0, 0, 100, 100), styleMask: .borderless, backing: .buffered, defer: false)
         hasShadow = true
         isReleasedWhenClosed = false
@@ -48,7 +48,7 @@ class QuickHelpWindow: NSWindow {
     /// - parameters:
     ///   - title: The text to show in the view controller's `titleLabel`
     ///   - message: The text to show in the view controller's `messageLabel`
-    public static func show(viewController: NSViewController){
+    public static func show(viewController: NSViewController) {
         if shared == nil{
             shared = QuickHelpWindow()
             shared?.delegate = delegate
@@ -68,7 +68,7 @@ class QuickHelpWindow: NSWindow {
     ///
     /// Since the user is likely to be moving from the button calling `hide()` to another that will call
     /// `show()`, the window doesn't close until a short delay has passed without a `show()` call.
-    public static func hide(){
+    public static func hide() {
         shared?.hideQueued = true
         Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false){
             timer in
@@ -79,27 +79,27 @@ class QuickHelpWindow: NSWindow {
         }
     }
     
-    override var canBecomeKey: Bool{
+    override var canBecomeKey: Bool {
         return false
     }
     
-    override var canBecomeMain: Bool{
+    override var canBecomeMain: Bool {
         return false
     }
     
     /// Center the window in the screen
-    func reposition(){
-        guard let screen = screen else{
+    func reposition() {
+        guard let screen = screen else {
             return
         }
         let frame = NSRect(x: round((screen.frame.width - self.frame.size.width) / 2), y: round((screen.frame.height - self.frame.size.height) / 2), width: self.frame.size.width, height: self.frame.size.height)
         setFrame(frame, display: true, animate: false)
     }
     
-    class Delegate: NSObject, NSWindowDelegate{
+    class Delegate: NSObject, NSWindowDelegate {
         
         func windowDidChangeScreen(_ notification: Notification) {
-            guard let window = notification.object as? QuickHelpWindow else{
+            guard let window = notification.object as? QuickHelpWindow else {
                 return
             }
             window.reposition()

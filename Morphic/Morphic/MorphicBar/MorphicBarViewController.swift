@@ -56,8 +56,8 @@ public class MorphicBarViewController: NSViewController {
     }
     
     @objc
-    func sessionUserDidChange(_ notification: NSNotification){
-        guard let session = notification.object as? Session else{
+    func sessionUserDidChange(_ notification: NSNotification) {
+        guard let session = notification.object as? Session else {
             return
         }
         self.logoutMenuItem?.isHidden = session.user == nil
@@ -75,7 +75,7 @@ public class MorphicBarViewController: NSViewController {
     
     /// Action to show the main menu from the logo button
     @IBAction
-    func showMainMenu(_ sender: Any?){
+    func showMainMenu(_ sender: Any?) {
         mainMenu.popUp(positioning: nil, at: NSPoint(x: logoButton.bounds.origin.x, y: logoButton.bounds.origin.y + logoButton.bounds.size.height), in: logoButton)
     }
     
@@ -85,12 +85,12 @@ public class MorphicBarViewController: NSViewController {
     @IBOutlet weak var morphicBarView: MorphicBarView!
     
     /// The items that should be shown on the MorphicBar
-    public var items = [MorphicBarItem](){
-        didSet{
+    public var items = [MorphicBarItem]() {
+        didSet {
             _ = view
             morphicBarView.removeAllItemViews()
             for item in items{
-                if let itemView = item.view(){
+                if let itemView = item.view() {
                     itemView.showsHelp = showsHelp
                     morphicBarView.add(itemView: itemView)
                 }
@@ -98,10 +98,10 @@ public class MorphicBarViewController: NSViewController {
         }
     }
     
-    var showsHelp: Bool = true{
-        didSet{
+    var showsHelp: Bool = true {
+        didSet {
             logoButton.showsHelp = showsHelp
-            for itemView in morphicBarView.itemViews{
+            for itemView in morphicBarView.itemViews {
                 itemView.showsHelp = showsHelp
             }
         }
@@ -109,7 +109,7 @@ public class MorphicBarViewController: NSViewController {
 
 }
 
-class LogoButton: NSButton{
+class LogoButton: NSButton {
     
     private var boundsTrackingArea: NSTrackingArea!
     
@@ -118,8 +118,8 @@ class LogoButton: NSButton{
         createBoundsTrackingArea()
     }
     
-    var showsHelp: Bool = true{
-        didSet{
+    var showsHelp: Bool = true {
+        didSet {
             createBoundsTrackingArea()
         }
     }
@@ -146,11 +146,11 @@ class LogoButton: NSButton{
         createBoundsTrackingArea()
     }
     
-    private func createBoundsTrackingArea(){
+    private func createBoundsTrackingArea() {
         if boundsTrackingArea != nil{
             removeTrackingArea(boundsTrackingArea)
         }
-        if showsHelp{
+        if showsHelp {
             boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
             addTrackingArea(boundsTrackingArea)
         }
