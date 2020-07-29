@@ -65,7 +65,7 @@
                                         </menuItem>
                                         <menuItem title="Open…" keyEquivalent="o" id="IAo-SY-fd9">
                                             <connections>
-                                                <action selector="LoadSolution:" target="Voe-Tx-rLC" id="5Tl-kd-1dm"/>
+                                                <action selector="loadSolution:" target="Voe-Tx-rLC" id="5Tl-kd-1dm"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Open Recent" id="tXI-mr-wws">

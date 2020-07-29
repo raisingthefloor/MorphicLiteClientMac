@@ -1,10 +1,25 @@
+// Copyright 2020 Raising the Floor - International
 //
-//  LoginWindowController.swift
-//  MorphicConfigurator
+// Licensed under the New BSD license. You may not use this file except in
+// compliance with this License.
 //
-//  Created by Owen Shaw on 6/24/20.
-//  Copyright © 2020 Raising the Floor. All rights reserved.
+// You may obtain a copy of the License at
+// https://github.com/GPII/universal/blob/master/LICENSE.txt
 //
+// The R&D leading to these results received funding from the:
+// * Rehabilitation Services Administration, US Dept. of Education under
+//   grant H421A150006 (APCP)
+// * National Institute on Disability, Independent Living, and
+//   Rehabilitation Research (NIDILRR)
+// * Administration for Independent Living & Dept. of Education under grants
+//   H133E080022 (RERC-IT) and H133E130028/90RE5003-01-00 (UIITA-RERC)
+// * European Union's Seventh Framework Programme (FP7/2007-2013) grant
+//   agreement nos. 289016 (Cloud4all) and 610510 (Prosperity4All)
+// * William and Flora Hewlett Foundation
+// * Ontario Ministry of Research and Innovation
+// * Canadian Foundation for Innovation
+// * Adobe Foundation
+// * Consumer Electronics Association Foundation
 
 import Cocoa
 import MorphicCore
@@ -28,13 +43,13 @@ class LoginWindowController: NSWindowController, NSTextFieldDelegate {
     @IBOutlet weak var forgotPasswordButton: CustomCursorButton!
     
     @IBAction
-    func login(_ sender: Any?){
+    func login(_ sender: Any?) {
         errorLabel.isHidden = true
         setFieldsEnabled(false)
         let creds = UsernameCredentials(username: usernameField.stringValue, password: passwordField.stringValue)
-        _ = Session.shared.authenticate(usingUsername: creds){
+        _ = Session.shared.authenticate(usingUsername: creds) {
             success in
-            guard success else{
+            guard success else {
                 self.setFieldsEnabled(true)
                 self.errorLabel.isHidden = false
                 return
@@ -46,8 +61,8 @@ class LoginWindowController: NSWindowController, NSTextFieldDelegate {
     }
     
     @IBAction
-    func forgotPassword(_ sender: Any?){
-        guard let urlString = Bundle.main.infoDictionary?["FrontEndURL"] as? String else{
+    func forgotPassword(_ sender: Any?) {
+        guard let urlString = Bundle.main.infoDictionary?["FrontEndURL"] as? String else {
             return
         }
         let url = URL(string: urlString)!.appendingPathComponent("password").appendingPathComponent("reset")
@@ -58,23 +73,23 @@ class LoginWindowController: NSWindowController, NSTextFieldDelegate {
         updateValid()
     }
     
-    func setFieldsEnabled(_ enabled: Bool){
+    func setFieldsEnabled(_ enabled: Bool) {
         usernameField.isEnabled = enabled
         passwordField.isEnabled = enabled
         submitButton.isEnabled = enabled
     }
     
-    func indicateActivity(withStatusText text: String?){
+    func indicateActivity(withStatusText text: String?) {
         statusLabel.isHidden = false
         statusLabel.stringValue = text ?? ""
         activityIndicator.startAnimation(nil)
     }
     
-    func updateValid(){
+    func updateValid() {
         submitButton.isEnabled = usernameField.stringValue.trimmingCharacters(in: .whitespaces).count > 0 && passwordField.stringValue.count > 0
     }
     
-    func stopActivity(){
+    func stopActivity() {
         statusLabel.isHidden = true
         activityIndicator.stopAnimation(nil)
     }

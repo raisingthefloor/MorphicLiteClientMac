@@ -35,7 +35,7 @@ public class MorphicBarView: NSView {
     ///
     /// - parameters:
     ///   - itemView: The item view to add
-    public func add(itemView: MorphicBarItemView){
+    public func add(itemView: MorphicBarItemView) {
         itemViews.append(itemView)
         itemView.morphicBarView = self
         addSubview(itemView)
@@ -46,7 +46,7 @@ public class MorphicBarView: NSView {
     ///
     /// - parameters:
     ///   - index: The index of the item to remove
-    public func removeItemView(at index: Int){
+    public func removeItemView(at index: Int) {
         let itemView = itemViews[index]
         itemViews.remove(at: index)
         itemView.removeFromSuperview()
@@ -55,21 +55,21 @@ public class MorphicBarView: NSView {
     }
     
     /// Remove all item views from the MorphicBar
-    public func removeAllItemViews(){
-        for i in (0..<itemViews.count).reversed(){
+    public func removeAllItemViews() {
+        for i in (0..<itemViews.count).reversed() {
             removeItemView(at: i)
         }
     }
     
     // MARK: - Layout
     
-    public override var isFlipped: Bool{
+    public override var isFlipped: Bool {
         return true
     }
     
     public override func layout() {
         var frame = CGRect(x: 0, y: 0, width: 0, height: bounds.size.height)
-        for itemView in itemViews{
+        for itemView in itemViews {
             let size = itemView.intrinsicContentSize
             frame.size.width = size.width
             itemView.frame = frame
@@ -78,16 +78,16 @@ public class MorphicBarView: NSView {
     }
     
     /// The desired spacing between each item
-    public var itemSpacing: CGFloat = 18.0{
+    public var itemSpacing: CGFloat = 18.0 {
         didSet{
             needsLayout = true
             invalidateIntrinsicContentSize()
         }
     }
     
-    public override var intrinsicContentSize: NSSize{
+    public override var intrinsicContentSize: NSSize {
         var size = NSSize(width: itemSpacing * CGFloat(itemViews.count - 1), height: NSView.noIntrinsicMetric)
-        for itemView in itemViews{
+        for itemView in itemViews {
             let itemSize = itemView.intrinsicContentSize
             size.width += itemSize.width
         }
@@ -104,7 +104,7 @@ public class MorphicBarView: NSView {
 
 extension NSSize{
     
-    public func roundedUp() -> NSSize{
+    public func roundedUp() -> NSSize {
         return NSSize(width: ceil(width), height: ceil(height))
     }
     

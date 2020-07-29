@@ -33,7 +33,7 @@ import MorphicCore
 ///
 /// Within a solution is a list of related settings that control fine-grained details
 /// of how the feature works.
-public struct Solution: Decodable{
+public struct Solution: Decodable {
     
     /// The globally unique identifier for the solution, typically in reverse-domain style
     public let identifier: String
@@ -44,7 +44,7 @@ public struct Solution: Decodable{
     /// Get the setting for the given name
     ///
     /// - parameter name: The locally-unique name for a setting
-    public func setting(for name: String) -> Setting?{
+    public func setting(for name: String) -> Setting? {
         return settingsByName[name]
     }
     
@@ -52,13 +52,13 @@ public struct Solution: Decodable{
     private let settingsByName: [String: Setting]
     
     /// JSON property name map
-    private enum CodingKeys: String, CodingKey{
+    private enum CodingKeys: String, CodingKey {
         case identifier = "id"
         case settings
     }
     
     /// Create a Solution from a decoder (JSON)
-    public init(from decoder: Decoder) throws{
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         identifier = try container.decode(String.self, forKey: .identifier)
         settings = try container.decode([Setting].self, forKey: .settings)
@@ -73,7 +73,7 @@ public struct Solution: Decodable{
     /// - parameters:
     ///   - identifier: The solution's unique identifier
     ///   - settings: The settings in this solution
-    public init(identifier: String, settings: [Setting]){
+    public init(identifier: String, settings: [Setting]) {
         self.identifier = identifier
         self.settings = settings
         settingsByName = settings.dictionaryByName()
@@ -81,9 +81,9 @@ public struct Solution: Decodable{
     
 }
 
-fileprivate extension Array where Element == Setting{
+fileprivate extension Array where Element == Setting {
     
-    func dictionaryByName() -> [String: Setting]{
+    func dictionaryByName() -> [String: Setting] {
         var dictionary = [String: Setting]()
         for setting in self{
             dictionary[setting.name] = setting

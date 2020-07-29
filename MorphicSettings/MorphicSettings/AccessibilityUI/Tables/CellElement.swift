@@ -23,9 +23,9 @@
 
 import Foundation
 
-public class CellElement: UIElement{
+public class CellElement: UIElement {
     
-    public var text: String?{
+    public var text: String? {
         get{
             return label?.text
         }

@@ -23,16 +23,16 @@
 
 import Foundation
 
-public class TabElement: UIElement{
+public class TabElement: UIElement {
     
-    public enum State{
+    public enum State {
         case normal
         case selected
         case unknown
     }
     
     public var state: State {
-        guard let selected: Bool = accessibilityElement.value(forAttribute: .value) else{
+        guard let selected: Bool = accessibilityElement.value(forAttribute: .value) else {
             return .unknown
         }
         if selected{
@@ -41,12 +41,12 @@ public class TabElement: UIElement{
         return .normal
     }
     
-    public func select() -> Bool{
+    public func select() -> Bool {
         switch state{
         case .selected:
             return true
         case .normal:
-            if !accessibilityElement.perform(action: .press){
+            if !accessibilityElement.perform(action: .press) {
                 return false
             }
             return state == .selected

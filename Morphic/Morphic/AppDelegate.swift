@@ -67,12 +67,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     // MARK: - Notifications
     
     @objc
-    func userDidSignin(_ notification: NSNotification){
+    func userDidSignin(_ notification: NSNotification) {
         os_log(.info, log: logger, "Got signin notification from configurator")
         Session.shared.open {
             NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: Session.shared)
             let userInfo = notification.userInfo ?? [:]
-            if !(userInfo["isRegister"] as? Bool ?? false){
+            if !(userInfo["isRegister"] as? Bool ?? false) {
                 os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
                 Session.shared.applyAllPreferences {
                 }
@@ -81,8 +81,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     @objc
-    func sessionUserDidChange(_ notification: NSNotification){
-        guard let session = notification.object as? Session else{
+    func sessionUserDidChange(_ notification: NSNotification) {
+        guard let session = notification.object as? Session else {
             return
         }
         self.logoutItem?.isHidden = session.user == nil
@@ -91,15 +91,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     // MARK: - Actions
     
     @IBAction
-    func logout(_ sender: Any){
+    func logout(_ sender: Any) {
         Session.shared.signout {
             self.logoutItem?.isHidden = true
         }
     }
     
     @IBAction
-    func reapplyAllSettings(_ sender: Any){
-        Session.shared.open{
+    func reapplyAllSettings(_ sender: Any) {
+        Session.shared.open {
             os_log(.info, "Re-applying all settings")
             Session.shared.applyAllPreferences {
                 
@@ -108,7 +108,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     @IBAction
-    func captureAllSettings(_ sender: Any){
+    func captureAllSettings(_ sender: Any) {
         let prefs = Preferences(identifier: "")
         let capture = CaptureSession(settingsManager: Session.shared.settings, preferences: prefs)
         capture.captureDefaultValues = true
@@ -124,35 +124,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     func createEmptyDefaultPreferencesIfNotExist(completion: @escaping () -> Void) {
         let prefs = Preferences(identifier: "__default__")
-        guard !Session.shared.storage.contains(identifier: prefs.identifier, type: Preferences.self) else{
+        guard !Session.shared.storage.contains(identifier: prefs.identifier, type: Preferences.self) else {
             completion()
             return
         }
-        Session.shared.storage.save(record: prefs){
+        Session.shared.storage.save(record: prefs) {
             success in
-            if !success{
+            if !success {
                 os_log(.error, log: logger, "Failed to save default preferences")
             }
             completion()
         }
     }
      
-    func loadInitialDefaultPreferences(){
+    func loadInitialDefaultPreferences() {
         // load our initial default preferences
         var initialPrefs = Preferences(identifier: "__initial__")
         
-        guard let url = Bundle.main.url(forResource: "DefaultPreferences", withExtension: "json") else{
+        guard let url = Bundle.main.url(forResource: "DefaultPreferences", withExtension: "json") else {
             os_log(.error, log: logger, "Failed to find default preferences")
             return
         }
-        guard let json = FileManager.default.contents(atPath: url.path) else{
+        guard let json = FileManager.default.contents(atPath: url.path) else {
             os_log(.error, log: logger, "Failed to read default preferences")
             return
         }
-        do{
+        do {
             let decoder = JSONDecoder()
             initialPrefs.defaults = try decoder.decode(Preferences.PreferencesSet.self, from: json)
-        }catch{
+        } catch {
             os_log(.error, log: logger, "Failed to decode default preferences")
             return
         }
@@ -162,7 +162,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
    
     // MARK: - Solutions
     
-    func populateSolutions(){
+    func populateSolutions() {
         Session.shared.settings.populateSolutions(fromResource: "macos.solutions")
     }
      
@@ -193,8 +193,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     ///
     /// - parameter sender: The UI element that caused this action to be invoked
     @IBAction
-    func toggleMorphicBar(_ sender: Any?){
-        if morphicBarWindow != nil{
+    func toggleMorphicBar(_ sender: Any?) {
+        if morphicBarWindow != nil {
             hideMorphicBar(nil)
         }else{
             showMorphicBar(nil)
@@ -202,8 +202,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     @IBAction
-    func showMorphicBar(_ sender: Any?){
-        if morphicBarWindow == nil{
+    func showMorphicBar(_ sender: Any?) {
+        if morphicBarWindow == nil {
             morphicBarWindow = MorphicBarWindow()
             morphicBarWindow?.delegate = self
         }
@@ -217,7 +217,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     @IBAction
-    func hideMorphicBar(_ sender: Any?){
+    func hideMorphicBar(_ sender: Any?) {
         morphicBarWindow?.close()
         showMorphicBarItem?.isHidden = false
         hideMorphicBarItem?.isHidden = true
@@ -244,27 +244,27 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     // MARK: - Configurator App
     
     @IBAction
-    func launchCapture(_ sender: Any?){
+    func launchCapture(_ sender: Any?) {
         launchConfigurator(argument: "capture")
     }
     
     @IBAction
-    func launchLogin(_ sender: Any?){
+    func launchLogin(_ sender: Any?) {
         launchConfigurator(argument: "login")
     }
     
-    func launchConfigurator(argument: String){
+    func launchConfigurator(argument: String) {
 //        let url = URL(string: "morphicconfig:\(argument)")!
 //        NSWorkspace.shared.open(url)
         os_log(.info, log: logger, "launching configurator")
-        guard let url = Bundle.main.resourceURL?.deletingLastPathComponent().appendingPathComponent("Library").appendingPathComponent("MorphicConfigurator.app") else{
+        guard let url = Bundle.main.resourceURL?.deletingLastPathComponent().appendingPathComponent("Library").appendingPathComponent("MorphicConfigurator.app") else {
             os_log(.error, log: logger, "Failed to construct bundled configurator app URL")
             return
         }
         let config = NSWorkspace.OpenConfiguration()
         config.activates = true
         config.arguments = [argument]
-        NSWorkspace.shared.openApplication(at: url, configuration: config){
+        NSWorkspace.shared.openApplication(at: url, configuration: config) {
             (app, error) in
             guard error == nil else{
                 os_log(.error, log: logger, "Failed to launch configurator: %{public}s", error!.localizedDescription)

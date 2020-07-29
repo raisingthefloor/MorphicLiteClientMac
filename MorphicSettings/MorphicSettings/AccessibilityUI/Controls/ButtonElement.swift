@@ -23,16 +23,16 @@
 
 import Foundation
 
-public class ButtonElement: UIElement{
+public class ButtonElement: UIElement {
     
-    public var enabled: Bool{
+    public var enabled: Bool {
         get{
             return accessibilityElement.supportedActions()?.contains(.press) ?? false
         }
     }
     
-    public func press() -> Bool{
-        guard enabled else{
+    public func press() -> Bool {
+        guard enabled else {
             return false
         }
         return accessibilityElement.perform(action: .press)

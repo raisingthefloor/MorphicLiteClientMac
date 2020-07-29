@@ -26,23 +26,23 @@ import MorphicCore
 import MorphicSettings
 import MorphicService
 
-public class MorphicBarItem{
+public class MorphicBarItem {
     
     var interoperable: [String: Interoperable?]
     
-    public init(interoperable: [String: Interoperable?]){
+    public init(interoperable: [String: Interoperable?]) {
         self.interoperable = interoperable
     }
     
-    func view() -> MorphicBarItemView?{
+    func view() -> MorphicBarItemView? {
         return nil
     }
     
-    public static func items(from interoperables: [Interoperable?]) -> [MorphicBarItem]{
+    public static func items(from interoperables: [Interoperable?]) -> [MorphicBarItem] {
         var items = [MorphicBarItem]()
-        for i in 0..<interoperables.count{
-            if let dict = interoperables.dictionary(at: i){
-                if let item_ = item(from: dict){
+        for i in 0..<interoperables.count {
+            if let dict = interoperables.dictionary(at: i) {
+                if let item_ = item(from: dict) {
                     items.append(item_)
                 }
             }
@@ -50,8 +50,8 @@ public class MorphicBarItem{
         return items
     }
     
-    public static func item(from interoperable: [String: Interoperable?]) -> MorphicBarItem?{
-        switch interoperable.string(for: "type"){
+    public static func item(from interoperable: [String: Interoperable?]) -> MorphicBarItem? {
+        switch interoperable.string(for: "type") {
         case "control":
             return MorphicBarControlItem(interoperable: interoperable)
         default:
@@ -63,7 +63,7 @@ public class MorphicBarItem{
 
 class MorphicBarControlItem: MorphicBarItem{
     
-    enum Feature: String{
+    enum Feature: String {
         case resolution
         case magnifier
         case reader
@@ -71,8 +71,8 @@ class MorphicBarControlItem: MorphicBarItem{
         case contrast
         case unknown
         
-        init(string: String?){
-            if let known = Feature(rawValue: string ?? ""){
+        init(string: String?) {
+            if let known = Feature(rawValue: string ?? "") {
                 self = known
             }else{
                 self = .unknown
@@ -88,7 +88,7 @@ class MorphicBarControlItem: MorphicBarItem{
     }
     
     override func view() -> MorphicBarItemView? {
-        switch feature{
+        switch feature {
         case .resolution:
             let localized = LocalizedStrings(prefix: "control.feature.resolution")
             let segments = [
@@ -155,86 +155,86 @@ class MorphicBarControlItem: MorphicBarItem{
     }
     
     @objc
-    func zoom(_ sender: Any?){
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else{
+    func zoom(_ sender: Any?) {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else {
             return
         }
-        guard let display = Display.main else{
+        guard let display = Display.main else {
             return
         }
         var percentage: Double
-        if segment == 0{
+        if segment == 0 {
             percentage = display.percentage(zoomingIn: 1)
-        }else{
+        } else {
             percentage = display.percentage(zoomingOut: 1)
         }
         _ = display.zoom(to: percentage)
     }
     
     @objc
-    func volume(_ sender: Any?){
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else{
+    func volume(_ sender: Any?) {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else {
             return
         }
-        guard let output = AudioOutput.main else{
+        guard let output = AudioOutput.main else {
             return
         }
-        if segment == 0{
-            if output.isMuted{
+        if segment == 0 {
+            if output.isMuted {
                 _ = output.setMuted(false)
-            }else{
+            } else {
                 _ = output.setVolume(output.volume + 0.1)
             }
-        }else if segment == 1{
+        } else if segment == 1 {
             if output.isMuted{
                 _ = output.setMuted(false)
-            }else{
+            } else {
                 _ = output.setVolume(output.volume - 0.1)
             }
-        }else if segment == 2{
+        } else if segment == 2 {
             _ = output.setMuted(true)
         }
     }
     
     @objc
-    func contrast(_ sender: Any?){
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else{
+    func contrast(_ sender: Any?) {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else {
             return
         }
-        if segment == 0{
-            Session.shared.apply(true, for: .macosDisplayContrastEnabled){
+        if segment == 0 {
+            Session.shared.apply(true, for: .macosDisplayContrastEnabled) {
                 _ in
             }
-        }else{
-            Session.shared.apply(false, for: .macosDisplayContrastEnabled){
+        } else {
+            Session.shared.apply(false, for: .macosDisplayContrastEnabled) {
                 _ in
             }
         }
     }
     
     @objc
-    func reader(_ sender: Any?){
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else{
+    func reader(_ sender: Any?) {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else {
             return
         }
-        if segment == 0{
-            Session.shared.apply(true, for: .macosVoiceOverEnabled){
+        if segment == 0 {
+            Session.shared.apply(true, for: .macosVoiceOverEnabled) {
                 _ in
             }
-        }else{
-            Session.shared.apply(false, for: .macosVoiceOverEnabled){
+        } else {
+            Session.shared.apply(false, for: .macosVoiceOverEnabled) {
                 _ in
             }
         }
     }
     
     @objc
-    func magnifier(_ sender: Any?){
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else{
+    func magnifier(_ sender: Any?) {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else {
             return
         }
         let session = Session.shared
-        if segment == 0{
+        if segment == 0 {
             let keyValuesToSet: [(Preferences.Key, Interoperable?)] = [
                 (.macosZoomStyle, 1)
             ]
@@ -243,7 +243,7 @@ class MorphicBarControlItem: MorphicBarItem{
             capture.keys = keyValuesToSet.map{ $0.0 }
             capture.captureDefaultValues = true
             capture.run {
-                session.storage.save(record: capture.preferences){
+                session.storage.save(record: capture.preferences) {
                     _ in
                     let apply = ApplySession(settingsManager: session.settings, keyValueTuples: keyValuesToSet)
                     apply.add(key: .macosZoomEnabled, value: true)
@@ -252,14 +252,14 @@ class MorphicBarControlItem: MorphicBarItem{
                 }
             }
         }else{
-            session.storage.load(identifier: "__magnifier__"){
+            session.storage.load(identifier: "__magnifier__") {
                 (preferences: Preferences?) in
-                if let preferences = preferences{
+                if let preferences = preferences {
                     let apply = ApplySession(settingsManager: session.settings, preferences: preferences)
                     apply.addFirst(key: .macosZoomEnabled, value: false)
                     apply.run {
                     }
-                }else{
+                } else {
                     session.apply(false, for: .macosZoomEnabled){
                         _ in
                     }
@@ -270,17 +270,17 @@ class MorphicBarControlItem: MorphicBarItem{
     
 }
 
-fileprivate struct LocalizedStrings{
+fileprivate struct LocalizedStrings {
     
     var prefix: String
     var table = "MorphicBarViewController"
     var bundle = Bundle.main
     
-    init(prefix: String){
+    init(prefix: String) {
         self.prefix = prefix
     }
     
-    func string(for suffix: String) -> String{
+    func string(for suffix: String) -> String {
         return bundle.localizedString(forKey: prefix + "." + suffix, value: nil, table: table)
     }
 }
@@ -289,7 +289,7 @@ fileprivate class QuickHelpDynamicTextProvider: QuickHelpContentProvider{
     
     var textProvider: () -> (String, String)?
     
-    init(textProvider: @escaping () -> (String, String)?){
+    init(textProvider: @escaping () -> (String, String)?) {
         self.textProvider = textProvider
     }
     
@@ -304,9 +304,9 @@ fileprivate class QuickHelpDynamicTextProvider: QuickHelpContentProvider{
     }
 }
 
-fileprivate class QuickHelpTextSizeBiggerProvider: QuickHelpContentProvider{
+fileprivate class QuickHelpTextSizeBiggerProvider: QuickHelpContentProvider {
     
-    init(display: Display?, localized: LocalizedStrings){
+    init(display: Display?, localized: LocalizedStrings) {
         self.display = display
         self.localized = localized
     }
@@ -323,10 +323,10 @@ fileprivate class QuickHelpTextSizeBiggerProvider: QuickHelpContentProvider{
         }
         viewController.numberOfSteps = total
         viewController.step = step
-        if step == total - 1{
+        if step == total - 1 {
             viewController.titleText = localized.string(for: "bigger.limit.help.title")
             viewController.messageText = localized.string(for: "bigger.limit.help.message")
-        }else{
+        } else {
             viewController.titleText = localized.string(for: "bigger.help.title")
             viewController.messageText = localized.string(for: "bigger.help.message")
         }
@@ -334,9 +334,9 @@ fileprivate class QuickHelpTextSizeBiggerProvider: QuickHelpContentProvider{
     }
 }
 
-fileprivate class QuickHelpTextSizeSmallerProvider: QuickHelpContentProvider{
+fileprivate class QuickHelpTextSizeSmallerProvider: QuickHelpContentProvider {
     
-    init(display: Display?, localized: LocalizedStrings){
+    init(display: Display?, localized: LocalizedStrings) {
         self.display = display
         self.localized = localized
     }
@@ -348,15 +348,15 @@ fileprivate class QuickHelpTextSizeSmallerProvider: QuickHelpContentProvider{
         let viewController = QuickHelpStepViewController(nibName: "QuickHelpStepViewController", bundle: nil)
         let total = display?.numberOfSteps ?? 1
         var step = display?.currentStep ?? -1
-        if step >= 0{
+        if step >= 0 {
             step = total - 1 - step
         }
         viewController.numberOfSteps = total
         viewController.step = step
-        if step == 0{
+        if step == 0 {
             viewController.titleText = localized.string(for: "smaller.limit.help.title")
             viewController.messageText = localized.string(for: "smaller.limit.help.message")
-        }else{
+        } else {
             viewController.titleText = localized.string(for: "smaller.help.title")
             viewController.messageText = localized.string(for: "smaller.help.message")
         }
@@ -366,7 +366,7 @@ fileprivate class QuickHelpTextSizeSmallerProvider: QuickHelpContentProvider{
 
 fileprivate class QuickHelpVolumeUpProvider: QuickHelpContentProvider{
     
-    init(audioOutput: AudioOutput?, localized: LocalizedStrings){
+    init(audioOutput: AudioOutput?, localized: LocalizedStrings) {
         output = audioOutput
         self.localized = localized
     }
@@ -380,14 +380,14 @@ fileprivate class QuickHelpVolumeUpProvider: QuickHelpContentProvider{
         let viewController = QuickHelpVolumeViewController(nibName: "QuickHelpVolumeViewController", bundle: nil)
         viewController.volumeLevel = level
         viewController.muted = muted
-        if muted{
+        if muted {
             viewController.titleText = localized.string(for: "up.muted.help.title")
             viewController.messageText = localized.string(for: "up.muted.help.message")
-        }else{
-            if level >= 0.99{
+        } else {
+            if level >= 0.99 {
                 viewController.titleText = localized.string(for: "up.limit.help.title")
                 viewController.messageText = localized.string(for: "up.limit.help.message")
-            }else{
+            } else {
                 viewController.titleText = localized.string(for: "up.help.title")
                 viewController.messageText = localized.string(for: "up.help.message")
             }
@@ -399,7 +399,7 @@ fileprivate class QuickHelpVolumeUpProvider: QuickHelpContentProvider{
 
 fileprivate class QuickHelpVolumeDownProvider: QuickHelpContentProvider{
     
-    init(audioOutput: AudioOutput?, localized: LocalizedStrings){
+    init(audioOutput: AudioOutput?, localized: LocalizedStrings) {
         output = audioOutput
         self.localized = localized
     }
@@ -413,14 +413,14 @@ fileprivate class QuickHelpVolumeDownProvider: QuickHelpContentProvider{
         let viewController = QuickHelpVolumeViewController(nibName: "QuickHelpVolumeViewController", bundle: nil)
         viewController.volumeLevel = level
         viewController.muted = muted
-        if muted{
+        if muted {
             viewController.titleText = localized.string(for: "down.muted.help.title")
             viewController.messageText = localized.string(for: "down.muted.help.message")
-        }else{
+        } else {
             if level <= 0.01{
                 viewController.titleText = localized.string(for: "down.limit.help.title")
                 viewController.messageText = localized.string(for: "down.limit.help.message")
-            }else{
+            } else {
                 viewController.titleText = localized.string(for: "down.help.title")
                 viewController.messageText = localized.string(for: "down.help.message")
             }
@@ -432,7 +432,7 @@ fileprivate class QuickHelpVolumeDownProvider: QuickHelpContentProvider{
 
 fileprivate class QuickHelpVolumeMuteProvider: QuickHelpContentProvider{
     
-    init(audioOutput: AudioOutput?, localized: LocalizedStrings){
+    init(audioOutput: AudioOutput?, localized: LocalizedStrings) {
         output = audioOutput
         self.localized = localized
     }
@@ -446,10 +446,10 @@ fileprivate class QuickHelpVolumeMuteProvider: QuickHelpContentProvider{
         let viewController = QuickHelpVolumeViewController(nibName: "QuickHelpVolumeViewController", bundle: nil)
         viewController.volumeLevel = level
         viewController.muted = muted
-        if muted{
+        if muted {
             viewController.titleText = localized.string(for: "muted.help.title")
             viewController.messageText = localized.string(for: "muted.help.message")
-        }else{
+        } else {
             viewController.titleText = localized.string(for: "mute.help.title")
             viewController.messageText = localized.string(for: "mute.help.message")
         }
@@ -460,11 +460,11 @@ fileprivate class QuickHelpVolumeMuteProvider: QuickHelpContentProvider{
 
 private extension NSImage{
     
-    static func plus() -> NSImage{
+    static func plus() -> NSImage {
         return NSImage(named: "SegmentIconPlus")!
     }
     
-    static func minus() -> NSImage{
+    static func minus() -> NSImage {
         return NSImage(named: "SegmentIconMinus")!
     }
     

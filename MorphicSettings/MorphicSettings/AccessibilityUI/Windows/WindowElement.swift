@@ -23,22 +23,22 @@
 
 import Foundation
 
-public class WindowElement: UIElement{
+public class WindowElement: UIElement {
     
-    public var toolbar: ToolbarElement?{
+    public var toolbar: ToolbarElement? {
         get{
-            guard let toolbar = accessibilityElement.children()?.firstAndOnly(where: { $0.role == .toolbar }) else{
+            guard let toolbar = accessibilityElement.children()?.firstAndOnly(where: { $0.role == .toolbar }) else {
                 return nil
             }
             return ToolbarElement(accessibilityElement: toolbar)
         }
     }
     
-    public func raise() -> Bool{
+    public func raise() -> Bool {
         return accessibilityElement.perform(action: .raise)
     }
     
-    public var title: String?{
+    public var title: String? {
         get{
             return accessibilityElement.value(forAttribute: .title)
         }

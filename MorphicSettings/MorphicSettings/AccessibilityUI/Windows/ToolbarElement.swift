@@ -23,6 +23,6 @@
 
 import Foundation
 
-public class ToolbarElement: UIElement{
+public class ToolbarElement: UIElement {
     
 }

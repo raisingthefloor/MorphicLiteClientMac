@@ -24,9 +24,9 @@
 import Foundation
 import MorphicCore
 
-public class Display{
+public class Display {
     
-    init(id: UInt32){
+    init(id: UInt32) {
         self.id = id
         possibleModes = findPossibleModes()
         normalMode = possibleModes.first(where: { $0.isDefault })
@@ -41,36 +41,36 @@ public class Display{
         return nil
     }()
     
-    public func zoom(to percentage: Double) -> Bool{
+    public func zoom(to percentage: Double) -> Bool {
         guard let mode = self.mode(for: percentage) else{
             return false
         }
-        do{
+        do {
             try MorphicDisplay.setCurrentDisplayMode(for: id, to: mode)
             return true
-        }catch{
+        } catch {
             return false
         }
     }
     
-    public func percentage(zoomingIn steps: Int) -> Double{
-        guard let currentMode = currentMode, let normalMode = normalMode else{
+    public func percentage(zoomingIn steps: Int) -> Double {
+        guard let currentMode = currentMode, let normalMode = normalMode else {
             return 1
         }
         let target = possibleModes.reversed().first(where: { $0.widthInVirtualPixels < currentMode.widthInVirtualPixels }) ?? currentMode
         return Double(normalMode.widthInVirtualPixels) / Double(target.widthInVirtualPixels)
     }
     
-    public func percentage(zoomingOut steps: Int) -> Double{
-        guard let currentMode = currentMode, let normalMode = normalMode else{
+    public func percentage(zoomingOut steps: Int) -> Double {
+        guard let currentMode = currentMode, let normalMode = normalMode else {
             return 1
         }
         let target = possibleModes.first(where: { $0.widthInVirtualPixels > currentMode.widthInVirtualPixels }) ?? currentMode
         return Double(normalMode.widthInVirtualPixels) / Double(target.widthInVirtualPixels)
     }
     
-    public var currentPercentage: Double{
-        guard let currentMode = currentMode, let normalMode = normalMode else{
+    public var currentPercentage: Double {
+        guard let currentMode = currentMode, let normalMode = normalMode else {
             return 1
         }
         return Double(normalMode.widthInVirtualPixels) / Double(currentMode.widthInVirtualPixels)
@@ -80,8 +80,8 @@ public class Display{
         possibleModes.count
     }
     
-    public var currentStep: Int{
-        guard let current = currentMode else{
+    public var currentStep: Int {
+        guard let current = currentMode else {
             return -1
         }
         return possibleModes.firstIndex(of: current) ?? -1
@@ -91,28 +91,28 @@ public class Display{
     
     private var normalMode: MorphicDisplay.DisplayMode?
     
-    private var currentMode: MorphicDisplay.DisplayMode?{
+    private var currentMode: MorphicDisplay.DisplayMode? {
         return MorphicDisplay.getCurrentDisplayMode(for: id)
     }
     
-    private func findPossibleModes() -> [MorphicDisplay.DisplayMode]{
-        guard let modes = MorphicDisplay.getAllDisplayModes(for: id) else{
+    private func findPossibleModes() -> [MorphicDisplay.DisplayMode] {
+        guard let modes = MorphicDisplay.getAllDisplayModes(for: id) else {
             return []
         }
-        guard let currentMode = currentMode else{
+        guard let currentMode = currentMode else {
             return []
         }
         var possibleModes = modes.filter({ $0.isUsableForDesktopGui && $0.aspectRatio == currentMode.aspectRatio && $0.integerRefresh == currentMode.integerRefresh && $0.scale == currentMode.scale }).sorted(by: <)
-        for i in (1..<possibleModes.count).reversed(){
-            if possibleModes[i] == possibleModes[i - 1]{
+        for i in (1..<possibleModes.count).reversed() {
+            if possibleModes[i] == possibleModes[i - 1] {
                 possibleModes.remove(at: i)
             }
         }
         return possibleModes
     }
     
-    private func mode(for percentage: Double) -> MorphicDisplay.DisplayMode?{
-        guard let normalMode = normalMode else{
+    private func mode(for percentage: Double) -> MorphicDisplay.DisplayMode? {
+        guard let normalMode = normalMode else {
             return nil
         }
         let targetWidth = Int(round(Double(normalMode.widthInVirtualPixels) / percentage))
@@ -122,7 +122,7 @@ public class Display{
     
 }
 
-public class DisplayZoomHandler: ClientSettingHandler{
+public class DisplayZoomHandler: ClientSettingHandler {
     
     public override func read(completion: @escaping (SettingHandler.Result) -> Void) {
         guard let percentage = Display.main?.currentPercentage else {
@@ -147,9 +147,9 @@ public class DisplayZoomHandler: ClientSettingHandler{
     
 }
 
-private extension MorphicDisplay.DisplayMode{
+private extension MorphicDisplay.DisplayMode {
     
-    var stringRepresentation: String{
+    var stringRepresentation: String {
         var str = "\(widthInVirtualPixels)x\(heightInVirtualPixels)"
         if widthInPixels != widthInVirtualPixels || heightInPixels != heightInPixels{
             str += " (\(widthInPixels)x\(heightInPixels))"
@@ -160,7 +160,7 @@ private extension MorphicDisplay.DisplayMode{
         return str
     }
     
-    static func <(_ a: MorphicDisplay.DisplayMode, _ b: MorphicDisplay.DisplayMode) -> Bool{
+    static func <(_ a: MorphicDisplay.DisplayMode, _ b: MorphicDisplay.DisplayMode) -> Bool {
         var diff = a.widthInVirtualPixels - b.widthInVirtualPixels
         if diff == 0{
             diff = a.widthInPixels - b.widthInPixels
@@ -174,8 +174,8 @@ private extension MorphicDisplay.DisplayMode{
         return diff < 0
     }
     
-    var integerRefresh: Int?{
-        guard let refresh = refreshRateInHertz else{
+    var integerRefresh: Int? {
+        guard let refresh = refreshRateInHertz else {
             return nil
         }
         return Int(refresh)
@@ -186,25 +186,25 @@ private extension MorphicDisplay.DisplayMode{
         public var width: Int
         public var height: Int
         
-        init(width: Int, height: Int){
+        init(width: Int, height: Int) {
             self.width = width
             self.height = height
         }
         
-        public var value: Double{
+        public var value: Double {
             return Double(width) / Double(height)
         }
         
-        static func ==(_ a: AspectRatio, _ b: AspectRatio) -> Bool{
+        static func ==(_ a: AspectRatio, _ b: AspectRatio) -> Bool {
             return abs(a.value - b.value) < 0.1
         }
     }
     
-    var aspectRatio: AspectRatio{
+    var aspectRatio: AspectRatio {
         return AspectRatio(width: widthInVirtualPixels, height: heightInVirtualPixels)
     }
     
-    var scale: Int{
+    var scale: Int {
         return widthInVirtualPixels / widthInPixels
     }
     

@@ -26,19 +26,19 @@ import Foundation
 public extension UserDefaults {
     static var morphic = UserDefaults(suiteName: "org.raisingthefloor.MorphicLite")!
     
-    func morphicUsername(for userIdentifier: String) -> String?{
+    func morphicUsername(for userIdentifier: String) -> String? {
         let usernamesByIdentifier = dictionary(forKey: .morphicDefaultsKeyUsernamesByIdentifier)
         return usernamesByIdentifier?[userIdentifier] as? String
     }
     
-    func set(morphicUsername: String, for userIdentifier: String){
+    func set(morphicUsername: String, for userIdentifier: String) {
         var usernamesByIdentifier = dictionary(forKey: .morphicDefaultsKeyUsernamesByIdentifier) ?? [String: Any]()
         usernamesByIdentifier[userIdentifier] = morphicUsername
         setValue(usernamesByIdentifier, forKey: .morphicDefaultsKeyUsernamesByIdentifier)
     }
 }
 
-public extension String{
+public extension String {
     static var morphicDefaultsKeyUserIdentifier = "userIdentifier"
     static var morphicDefaultsKeyUsernamesByIdentifier = "usernamesByIdentifier"
 }
