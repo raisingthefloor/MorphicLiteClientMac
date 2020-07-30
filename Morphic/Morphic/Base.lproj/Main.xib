@@ -53,6 +53,12 @@
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="yYL-r6-1AR"/>
+                <menuItem title="About Morphic..." id="m2n-v5-G3Y">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showAboutBox:" target="ZNk-5q-oDb" id="wZn-jB-dZm"/>
+                    </connections>
+                </menuItem>
                 <menuItem title="Quit Morphic" keyEquivalent="q" id="aYd-9o-084">
                     <connections>
                         <action selector="terminate:" target="-1" id="oZz-fZ-cJR"/>
