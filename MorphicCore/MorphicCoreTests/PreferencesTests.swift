@@ -125,10 +125,8 @@ class PreferencesTests: XCTestCase {
             return false
         }
         for (key, val) in tuplesArray {
-            if ((inKey.solution == key.solution) &&
-                (inKey.preference == key.preference) &&
-                // Find a way to compare the actual values.
-                (inValue != nil && val != nil)) {
+            if (inKey == key) &&
+               (inValue != nil && val != nil) {
                 return true
             }
         }

@@ -70,15 +70,15 @@ class StorageTests: XCTestCase {
     }
 
     func checkLoadedPrefs(_ actual: Preferences?) {
-        if actual != nil {
-            XCTAssertEqual(actual!.userId, userId, "Test loaded preferences user id")
-            let loadedMagFactor: Double = actual!.get(key: magFactorKey) as! Double
-            XCTAssertEqual(loadedMagFactor, magFactorVal, "Test loaded magnification factor")
-            let loadedInverseVideo: Bool = actual!.get(key: inverseVideoKey) as! Bool
-            XCTAssertEqual(loadedInverseVideo, inverseVideoVal, "Test loaded inverse video")
-        } else {
+        guard let actualPrefs = actual else {
             XCTFail("Test loading preferences: failed to load")
+            return
         }
+        XCTAssertEqual(actualPrefs.userId, userId, "Test loaded preferences user id")
+        let loadedMagFactor: Double = actualPrefs.get(key: magFactorKey) as! Double
+        XCTAssertEqual(loadedMagFactor, magFactorVal, "Test loaded magnification factor")
+        let loadedInverseVideo: Bool = actualPrefs.get(key: inverseVideoKey) as! Bool
+        XCTAssertEqual(loadedInverseVideo, inverseVideoVal, "Test loaded inverse video")
     }
 
     func testContains() {
