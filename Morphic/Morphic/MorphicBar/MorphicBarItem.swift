@@ -69,6 +69,7 @@ class MorphicBarControlItem: MorphicBarItem{
         case reader
         case volume
         case contrast
+        case nightshift
         case unknown
         
         init(string: String?){
@@ -149,6 +150,19 @@ class MorphicBarControlItem: MorphicBarItem{
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.contrast(_:))
             return view
+        case .nightshift:
+            let localized = LocalizedStrings(prefix: "control.feature.nightshift")
+            let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
+            let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
+            let segments = [
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), isPrimary: true, helpProvider: onHelpProvider),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), isPrimary: false, helpProvider: offHelpProvider)
+            ]
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(MorphicBarControlItem.nightShift(_:))
+            return view
         default:
             return nil
         }
@@ -211,7 +225,19 @@ class MorphicBarControlItem: MorphicBarItem{
             }
         }
     }
-    
+
+    @objc
+    func nightShift(_ sender: Any?) {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else {
+            return
+        }
+        if segment == 0 {
+            MorphicNightShift.setEnabled(true)
+        } else {
+            MorphicNightShift.setEnabled(false)
+        }
+    }
+
     @objc
     func reader(_ sender: Any?){
         guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else{

@@ -160,3 +160,24 @@
 
 /* Message for the help window for the hide magnifier button */
 "control.feature.contrast.off.help.message" = "Make it harder to distinguish items";
+
+/* Label for the buttons that control night mode */
+"control.feature.nightshift.title" = "Night Mode";
+
+/* Label for the button that turns night mode on */
+"control.feature.nightshift.on" = "On";
+
+/* Title for the help window for the 'turn on night mode' button */
+"control.feature.nightshift.on.help.title" = "Turn On Night Mode";
+
+/* Message for the help window for the 'turn on night mode' button */
+"control.feature.nightshift.on.help.message" = "Make screen colors warmer for better sleep";
+
+/* Label for the button that turns night mode off */
+"control.feature.nightshift.off" = "Off";
+
+/* Title for the help window for the 'turn off night mode' button */
+"control.feature.nightshift.off.help.title" = "Turn Off Night Mode";
+
+/* Message for the help window for the 'turn off night mode' button */
+"control.feature.nightshift.off.help.message" = "Make screen colors less warm for daytime";
