@@ -30,12 +30,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         populateSolutions()
         Session.shared.open {
-            for arg in ProcessInfo.processInfo.arguments[1...]{
-                if arg == "login"{
+            for arg in ProcessInfo.processInfo.arguments[1...] {
+                if arg == "login" {
                     self.showLoginWindow(nil)
                     break
                 }
-                if arg == "capture"{
+                if arg == "capture" {
                     self.showCaptureWindow(nil)
                     break
                 }
@@ -43,13 +43,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
     }
     
-    func populateSolutions(){
+    func populateSolutions() {
         Session.shared.settings.populateSolutions(fromResource: "macos.solutions")
     }
     
 //    func application(_ application: NSApplication, open urls: [URL]) {
-//        if let url = urls.first{
-//            switch url.path{
+//        if let url = urls.first {
+//            switch url.path {
 //            case "login":
 //                captureWindowController?.close()
 //                showLoginWindow(nil)
@@ -72,8 +72,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     var loginWindowController: NSWindowController?
     
-    func showLoginWindow(_ sender: Any?){
-        if loginWindowController == nil{
+    func showLoginWindow(_ sender: Any?) {
+        if loginWindowController == nil {
             loginWindowController = LoginWindowController(windowNibName: "LoginWindow")
         }
         loginWindowController?.window?.makeKeyAndOrderFront(sender)
@@ -82,8 +82,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     var captureWindowController: NSWindowController?
     
-    func showCaptureWindow(_ sender: Any?){
-        if captureWindowController == nil{
+    func showCaptureWindow(_ sender: Any?) {
+        if captureWindowController == nil {
             captureWindowController = CaptureWindowController(windowNibName: "CaptureWindow")
         }
         captureWindowController?.window?.makeKeyAndOrderFront(sender)
@@ -91,13 +91,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     func windowWillClose(_ notification: Notification) {
-        guard let window = notification.object as? NSWindow else{
+        guard let window = notification.object as? NSWindow else {
             return
         }
-        if window == captureWindowController?.window{
+        if window == captureWindowController?.window {
             captureWindowController = nil
         }
-        if window == loginWindowController?.window{
+        if window == loginWindowController?.window {
             loginWindowController = nil
         }
     }

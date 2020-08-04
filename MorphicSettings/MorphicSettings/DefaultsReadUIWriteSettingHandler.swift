@@ -32,7 +32,7 @@ private let logger = OSLog(subsystem: "MorphicSettings", category: "DefaultsRead
 /// The asymmetry between read and write is because macOS won't let us write the user defaults directly.
 /// Additionally, several system settings checkboxes actually change more than one default and call private
 /// functions that we don't have access to, so using the UI is the best option.
-public class DefaultsReadUIWriteSettingHandler: SettingHandler{
+public class DefaultsReadUIWriteSettingHandler: SettingHandler {
     
     public required init(setting: Setting) {
         super.init(setting: setting)
@@ -43,9 +43,9 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler{
     private var defaults: UserDefaults?
     
     /// The data model describing the properties for this kind of setting handler
-    public struct Description: SettingHandlerDescription{
+    public struct Description: SettingHandlerDescription {
         
-        public var type: Setting.HandlerType{
+        public var type: Setting.HandlerType {
             return .defaultsReadUIWrite
         }
         
@@ -62,11 +62,11 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler{
         
         public let transform: Transform?
         
-        public enum Transform: String, Decodable{
+        public enum Transform: String, Decodable {
             case negateBoolean
         }
         
-        public enum CodingKeys: String, CodingKey{
+        public enum CodingKeys: String, CodingKey {
             case defaultsDomain = "defaults_domain"
             case defaultsKey = "defaults_key"
             case solution
@@ -75,7 +75,7 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler{
 //            case ui
         }
         
-        public init(from decoder: Decoder) throws{
+        public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             defaultsDomain = try container.decode(String.self, forKey: .defaultsDomain)
             defaultsKey = try container.decode(String.self, forKey: .defaultsKey)
@@ -86,38 +86,38 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler{
         }
     }
     
-//    public struct UIDescription: Decodable{
+//    public struct UIDescription: Decodable {
 //
 //        public let steps: [Step]
 //
-//        public enum CodingKeys: String, CodingKey{
+//        public enum CodingKeys: String, CodingKey {
 //            case steps
 //        }
 //
-//        public init(from decoder: Decoder) throws{
+//        public init(from decoder: Decoder) throws {
 //            let container = try decoder.container(keyedBy: CodingKeys.self)
 //            steps = try container.decode([Step].self, forKey: .steps)
 //        }
 //
 //    }
 //
-//    public struct Step: Decodable{
+//    public struct Step: Decodable {
 //        public var action: String
 //        public var identifier: String
 //
-//        public enum CodingKeys: String, CodingKey{
+//        public enum CodingKeys: String, CodingKey {
 //            case action
 //            case identifier
 //        }
 //
-//        public init(from decoder: Decoder) throws{
+//        public init(from decoder: Decoder) throws {
 //            let container = try decoder.container(keyedBy: CodingKeys.self)
 //            action = try container.decode(String.self, forKey: .action)
 //            identifier = try container.decode(String.self, forKey: .identifier)
 //        }
 //
-//        public func action(for value: Interoperable?) -> UIElement.Action?{
-//            switch action{
+//        public func action(for value: Interoperable?) -> UIElement.Action? {
+//            switch action {
 //            case "launch":
 //                return .launch(bundleIdentifier: identifier)
 //            case "press":
@@ -125,7 +125,7 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler{
 //            case "show":
 //                return .show(identifier: identifier)
 //            case "check":
-//                guard let checked = value as? Bool else{
+//                guard let checked = value as? Bool else {
 //                    return nil
 //                }
 //                return .check(checkboxTitle: identifier, checked: checked)
@@ -136,17 +136,17 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler{
 //    }
     
     /// The properly typed description for this handler
-    private var description: Description{
+    private var description: Description {
         return setting.handlerDescription as! Description
     }
     
     private static var automationTypesByKey = [Preferences.Key: UIAutomation.Type]()
     
-    public static func register(automation: UIAutomation.Type, for key: Preferences.Key){
+    public static func register(automation: UIAutomation.Type, for key: Preferences.Key) {
         automationTypesByKey[key] = automation
     }
     
-    public static func automation(for key: Preferences.Key) -> UIAutomation?{
+    public static func automation(for key: Preferences.Key) -> UIAutomation? {
         guard let type = automationTypesByKey[key] else{
             return nil
         }
@@ -172,17 +172,17 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler{
 //                completion(false)
 //                return
 //            }
-//            element.perform(action: action){
+//            element.perform(action: action) {
 //                success, nextTarget in
-//                guard success else{
+//                guard success else {
 //                    os_log(.error, log: logger, "Failed to perform action")
 //                    completion(false)
 //                    return
 //                }
-//                if let target = nextTarget{
+//                if let target = nextTarget {
 //                    element = target
 //                }
-//                if steps.count > 0{
+//                if steps.count > 0 {
 //                    runNextStep()
 //                }else{
 //                    completion(true)
@@ -193,13 +193,13 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler{
     }
     
     public override func read(completion: @escaping (_ result: SettingHandler.Result) -> Void) {
-        switch setting.type{
+        switch setting.type {
         case .boolean:
             guard var boolValue = defaults?.bool(forKey: description.defaultsKey) else{
                 completion(.failed)
                 return
             }
-            if let transform = description.transform{
+            if let transform = description.transform {
                 switch transform {
                 case .negateBoolean:
                     boolValue = !boolValue
@@ -207,7 +207,7 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler{
             }
             completion(.succeeded(value: boolValue))
         case .double:
-            guard let doubleValue = defaults?.double(forKey: description.defaultsKey) else{
+            guard let doubleValue = defaults?.double(forKey: description.defaultsKey) else {
                 completion(.failed)
                 return
             }
@@ -219,7 +219,7 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler{
             }
             completion(.succeeded(value: intValue))
         case .string:
-            guard let stringValue = defaults?.string(forKey: description.defaultsKey) else{
+            guard let stringValue = defaults?.string(forKey: description.defaultsKey) else {
                 completion(.failed)
                 return
             }

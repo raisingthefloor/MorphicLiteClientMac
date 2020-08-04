@@ -38,7 +38,7 @@ class MorphicBarSegmentedButton: NSControl {
     
     // MARK: - Creating a Segmented Button
     
-    init(segments: [Segment]){
+    init(segments: [Segment]) {
         super.init(frame: NSRect(x: 0, y: 0, width: 100, height: 100))
         font = .morphicBold
         wantsLayer = true
@@ -70,7 +70,7 @@ class MorphicBarSegmentedButton: NSControl {
     // MARK: - Segments
     
     /// A segment's information
-    struct Segment{
+    struct Segment {
         
         /// The title to be shown on the segment, if any
         ///
@@ -92,7 +92,7 @@ class MorphicBarSegmentedButton: NSControl {
         var accessibilityLabel: String?
         
         /// Create a segment with a title
-        init(title: String, isPrimary: Bool, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?){
+        init(title: String, isPrimary: Bool, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?) {
             self.title = title
             self.helpProvider = helpProvider
             self.isPrimary = isPrimary
@@ -100,7 +100,7 @@ class MorphicBarSegmentedButton: NSControl {
         }
         
         /// Create a segment with an icon
-        init(icon: NSImage, isPrimary: Bool, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?){
+        init(icon: NSImage, isPrimary: Bool, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?) {
             self.icon = icon
             self.helpProvider = helpProvider
             self.isPrimary = isPrimary
@@ -109,7 +109,7 @@ class MorphicBarSegmentedButton: NSControl {
     }
     
     /// The segments on the control
-    var segments = [Segment](){
+    var segments = [Segment]() {
         didSet{
             updateButtons()
         }
@@ -117,23 +117,23 @@ class MorphicBarSegmentedButton: NSControl {
     
     // MARK: - Layout
     
-    override var isFlipped: Bool{
+    override var isFlipped: Bool {
         return true
     }
     
     /// Amount of inset each button segment should have
-    var contentInsets = NSEdgeInsets(top: 7, left: 9, bottom: 7, right: 9){
+    var contentInsets = NSEdgeInsets(top: 7, left: 9, bottom: 7, right: 9) {
         didSet{
             invalidateIntrinsicContentSize()
-            for button in segmentButtons{
+            for button in segmentButtons {
                 button.contentInsets = contentInsets
             }
         }
     }
     
-    override var intrinsicContentSize: NSSize{
+    override var intrinsicContentSize: NSSize {
         var size = NSSize(width: 0, height: contentInsets.top + contentInsets.bottom + 13)
-        for button in segmentButtons{
+        for button in segmentButtons {
             let buttonSize = button.intrinsicContentSize
             size.width += buttonSize.width
         }
@@ -153,7 +153,7 @@ class MorphicBarSegmentedButton: NSControl {
     // MARK: - Segment Buttons
     
     /// NSButton subclass that provides a custom intrinsic size with content insets
-    private class Button: NSButton{
+    private class Button: NSButton {
         
         private var boundsTrackingArea: NSTrackingArea!
         
@@ -166,21 +166,21 @@ class MorphicBarSegmentedButton: NSControl {
             return nil
         }
         
-        public var contentInsets = NSEdgeInsetsZero{
+        public var contentInsets = NSEdgeInsetsZero {
             didSet{
                 invalidateIntrinsicContentSize()
             }
         }
         
-        override var intrinsicContentSize: NSSize{
+        override var intrinsicContentSize: NSSize {
             var size = super.intrinsicContentSize.roundedUp()
             size.width += contentInsets.left + contentInsets.right
             size.height += contentInsets.top + contentInsets.bottom
             return size
         }
         
-        var showsHelp: Bool = true{
-            didSet{
+        var showsHelp: Bool = true {
+            didSet {
                 createBoundsTrackingArea()
             }
         }
@@ -196,15 +196,15 @@ class MorphicBarSegmentedButton: NSControl {
         }
         
         override func sendAction(_ action: Selector?, to target: Any?) -> Bool {
-            guard super.sendAction(action, to: target) else{
+            guard super.sendAction(action, to: target) else {
                 return false
             }
             updateHelpWindow()
             return true
         }
         
-        func updateHelpWindow(){
-            guard let viewController = helpProvider?.quickHelpViewController() else{
+        func updateHelpWindow() {
+            guard let viewController = helpProvider?.quickHelpViewController() else {
                 return
             }
             QuickHelpWindow.show(viewController: viewController)
@@ -215,11 +215,11 @@ class MorphicBarSegmentedButton: NSControl {
             createBoundsTrackingArea()
         }
         
-        private func createBoundsTrackingArea(){
-            if boundsTrackingArea != nil{
+        private func createBoundsTrackingArea() {
+            if boundsTrackingArea != nil {
                 removeTrackingArea(boundsTrackingArea)
             }
-            if showsHelp{
+            if showsHelp {
                 boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
                 addTrackingArea(boundsTrackingArea)
             }
@@ -227,9 +227,9 @@ class MorphicBarSegmentedButton: NSControl {
         
     }
     
-    public var showsHelp: Bool = true{
-        didSet{
-            for button in segmentButtons{
+    public var showsHelp: Bool = true {
+        didSet {
+            for button in segmentButtons {
                 button.showsHelp = showsHelp
             }
         }
@@ -239,11 +239,11 @@ class MorphicBarSegmentedButton: NSControl {
     private var segmentButtons = [Button]()
     
     /// Update the segment buttons
-    private func updateButtons(){
+    private func updateButtons() {
         setNeedsDisplay(bounds)
         invalidateIntrinsicContentSize()
         removeAllButtons()
-        for segment in segments{
+        for segment in segments {
             let button = self.createButton(for: segment)
             add(button: button)
         }
@@ -251,15 +251,15 @@ class MorphicBarSegmentedButton: NSControl {
     }
     
     /// Create a button for a segment
-    private func createButton(for segment: Segment) -> Button{
+    private func createButton(for segment: Segment) -> Button {
         let button = Button()
         button.bezelStyle = .regularSquare
         button.isBordered = false
         button.contentTintColor = titleColor
         button.contentInsets = contentInsets
-        if let title = segment.title{
+        if let title = segment.title {
             button.title = title
-        }else if let icon = segment.icon{
+        }else if let icon = segment.icon {
             button.image = icon
         }
         button.setAccessibilityLabel(segment.accessibilityLabel)
@@ -270,7 +270,7 @@ class MorphicBarSegmentedButton: NSControl {
     }
     
     /// Remove all buttons
-    private func removeAllButtons(){
+    private func removeAllButtons() {
         for i in (0..<segmentButtons.count).reversed(){
             removeButton(at: i)
         }
@@ -280,7 +280,7 @@ class MorphicBarSegmentedButton: NSControl {
     ///
     /// - parameters:
     ///   - index: The index of the button to remove
-    private func removeButton(at index: Int){
+    private func removeButton(at index: Int) {
         let button = segmentButtons[index]
         button.action = nil
         button.target = nil
@@ -292,7 +292,7 @@ class MorphicBarSegmentedButton: NSControl {
     ///
     /// - parameters:
     ///   - button: The button to add to the end of the list
-    private func add(button: Button){
+    private func add(button: Button) {
         let index = segmentButtons.count
         button.tag = index
         button.target = self
@@ -305,8 +305,8 @@ class MorphicBarSegmentedButton: NSControl {
     
     /// Handles a segment button click and calls this control's action
     @objc
-    private func segmentAction(_ sender: Any?){
-        guard let button = sender as? NSButton else{
+    private func segmentAction(_ sender: Any?) {
+        guard let button = sender as? NSButton else {
             return
         }
         integerValue = button.tag

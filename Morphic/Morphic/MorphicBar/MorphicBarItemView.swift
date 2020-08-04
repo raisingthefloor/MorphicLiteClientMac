@@ -29,19 +29,19 @@ public class MorphicBarItemView: NSView {
     
     public var showsHelp: Bool = true
     
-    public override var isFlipped: Bool{
+    public override var isFlipped: Bool {
         return true
     }
     
 }
 
-class MorphicBarSegmentedButtonItemView: MorphicBarItemView{
+class MorphicBarSegmentedButtonItemView: MorphicBarItemView {
     
     var titleLabel: NSTextField
     var segmentedButton: MorphicBarSegmentedButton
     var titleButtonSpacing: CGFloat = 4.0
     
-    init(title: String, segments: [MorphicBarSegmentedButton.Segment]){
+    init(title: String, segments: [MorphicBarSegmentedButton.Segment]) {
         titleLabel = NSTextField(labelWithString: title)
         titleLabel.font = .morphicBold
         titleLabel.alignment = .center
@@ -52,14 +52,14 @@ class MorphicBarSegmentedButtonItemView: MorphicBarItemView{
         self.needsLayout = true
     }
     
-    override var showsHelp: Bool{
+    override var showsHelp: Bool {
         didSet{
             segmentedButton.showsHelp = showsHelp
         }
     }
     
-    private var titleYAdjustment: CGFloat{
-        guard let font = titleLabel.font else{
+    private var titleYAdjustment: CGFloat {
+        guard let font = titleLabel.font else {
             return 0.0
         }
         return ceil(font.capHeight - font.ascender)
@@ -77,7 +77,7 @@ class MorphicBarSegmentedButtonItemView: MorphicBarItemView{
         segmentedButton.frame = NSRect(origin: NSPoint(x: round((bounds.size.width - buttonSize.width) / 2), y: bounds.size.height - buttonSize.height), size: buttonSize)
     }
     
-    override var intrinsicContentSize: NSSize{
+    override var intrinsicContentSize: NSSize {
         let labelSize = titleLabel.intrinsicContentSize.roundedUp()
         let buttonSize = segmentedButton.intrinsicContentSize
         return NSSize(width: ceil(max(labelSize.width, buttonSize.width)), height: NSView.noIntrinsicMetric)

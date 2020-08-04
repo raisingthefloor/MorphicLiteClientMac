@@ -27,29 +27,29 @@ import OSLog
 
 private let logger = OSLog(subsystem: "MorphicSettings", category: "DisplayUIAutomations")
 
-public class DisplayCheckboxUIAutomation: AccessibilityUIAutomation{
+public class DisplayCheckboxUIAutomation: AccessibilityUIAutomation {
     
     var tabTitle: String! { nil }
     var checkboxTitle: String! { nil }
 
     public override func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
-        guard let checked = value as? Bool else{
+        guard let checked = value as? Bool else {
             os_log(.error, log: logger, "Passed non-boolean value to checkbox")
             completion(false)
             return
         }
-        showAccessibilityDisplayPreferences(tab: self.tabTitle){
+        showAccessibilityDisplayPreferences(tab: self.tabTitle) {
             accessibility in
-            guard let accessibility = accessibility else{
+            guard let accessibility = accessibility else {
                 completion(false)
                 return
             }
-            guard let checkbox = accessibility.checkbox(titled: self.checkboxTitle) else{
+            guard let checkbox = accessibility.checkbox(titled: self.checkboxTitle) else {
                 os_log(.error, log: logger, "Failed to find checkbox")
                 completion(false)
                 return
             }
-            guard checkbox.setChecked(checked) else{
+            guard checkbox.setChecked(checked) else {
                 os_log(.error, log: logger, "Failed to press checkbox")
                 completion(false)
                 return
@@ -60,33 +60,33 @@ public class DisplayCheckboxUIAutomation: AccessibilityUIAutomation{
     
 }
 
-public class DisplaySliderUIAutomation: AccessibilityUIAutomation{
+public class DisplaySliderUIAutomation: AccessibilityUIAutomation {
     
     var tabTitle: String! { nil }
     var sliderTitle: String! { nil }
 
     public override func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
-        if let intValue = value as? Int{
+        if let intValue = value as? Int {
             apply(Double(intValue), completion: completion)
             return
         }
-        guard let value = value as? Double else{
+        guard let value = value as? Double else {
             os_log(.error, log: logger, "Passed non-double value to slider")
             completion(false)
             return
         }
-        showAccessibilityDisplayPreferences(tab: self.tabTitle){
+        showAccessibilityDisplayPreferences(tab: self.tabTitle) {
             accessibility in
-            guard let accessibility = accessibility else{
+            guard let accessibility = accessibility else {
                 completion(false)
                 return
             }
-            guard let slider = accessibility.slider(titled: self.sliderTitle) else{
+            guard let slider = accessibility.slider(titled: self.sliderTitle) else {
                 os_log(.error, log: logger, "Failed to find slider")
                 completion(false)
                 return
             }
-            guard slider.setValue(value) else{
+            guard slider.setValue(value) else {
                 os_log(.error, log: logger, "Failed to update slider value")
                 completion(false)
                 return
@@ -97,33 +97,33 @@ public class DisplaySliderUIAutomation: AccessibilityUIAutomation{
     
 }
 
-public class ContrastUIAutomation: AccessibilityUIAutomation{
+public class ContrastUIAutomation: AccessibilityUIAutomation {
     
     public override func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
-        guard let checked = value as? Bool else{
+        guard let checked = value as? Bool else {
             os_log(.error, log: logger, "Passed non-boolean value to contrast")
             completion(false)
             return
         }
-        showAccessibilityDisplayPreferences(tab: "Display"){
+        showAccessibilityDisplayPreferences(tab: "Display") {
             accessibility in
-            guard let accessibility = accessibility else{
+            guard let accessibility = accessibility else {
                 completion(false)
                 return
             }
-            guard let checkbox = accessibility.checkbox(titled: "Increase contrast") else{
+            guard let checkbox = accessibility.checkbox(titled: "Increase contrast") else {
                 os_log(.error, log: logger, "Failed to find contrast checkbox")
                 completion(false)
                 return
             }
-            guard checkbox.setChecked(checked) else{
+            guard checkbox.setChecked(checked) else {
                 os_log(.error, log: logger, "Failed to press contrast checkbox")
                 completion(false)
                 return
             }
-            if !checked{
-                if let transparencyCheckbox = accessibility.checkbox(titled: "Reduce transparency"){
-                    if !transparencyCheckbox.uncheck(){
+            if !checked {
+                if let transparencyCheckbox = accessibility.checkbox(titled: "Reduce transparency") {
+                    if !transparencyCheckbox.uncheck() {
                         os_log(.info, log: logger, "Failed to uncheck reduce transparency when turning off high contrast")
                     }
                 }
@@ -134,7 +134,7 @@ public class ContrastUIAutomation: AccessibilityUIAutomation{
     
 }
 
-public class DisplayPopupButtonUIAutomation: AccessibilityUIAutomation{
+public class DisplayPopupButtonUIAutomation: AccessibilityUIAutomation {
     
     var tabTitle: String! { nil }
     var buttonTitle: String! { nil }
@@ -142,30 +142,30 @@ public class DisplayPopupButtonUIAutomation: AccessibilityUIAutomation{
     var optionTitles: [Int: String]! { nil }
     
     public override func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
-        guard let value = value as? Int else{
+        guard let value = value as? Int else {
             os_log(.error, log: logger, "Passed non-int value to popup")
             completion(false)
             return
         }
-        guard let stringValue = optionTitles[value] else{
+        guard let stringValue = optionTitles[value] else {
             os_log(.error, log: logger, "Passed invalid int value to popup")
             completion(false)
             return
         }
-        showAccessibilityDisplayPreferences(tab: tabTitle){
+        showAccessibilityDisplayPreferences(tab: tabTitle) {
             accessibility in
-            guard let accessibility = accessibility else{
+            guard let accessibility = accessibility else {
                 completion(false)
                 return
             }
-            guard let button = accessibility.popUpButton(titled: self.buttonTitle) else{
+            guard let button = accessibility.popUpButton(titled: self.buttonTitle) else {
                 os_log(.error, log: logger, "Failed to find popup button")
                 completion(false)
                 return
             }
-            button.setValue(stringValue){
+            button.setValue(stringValue) {
                 success in
-                guard success else{
+                guard success else {
                     os_log(.error, log: logger, "Failed to set popup button value")
                     completion(false)
                     return
@@ -178,56 +178,56 @@ public class DisplayPopupButtonUIAutomation: AccessibilityUIAutomation{
     
 }
 
-public class InvertColorsUIAutomation: DisplayCheckboxUIAutomation{
+public class InvertColorsUIAutomation: DisplayCheckboxUIAutomation {
     
     override var tabTitle: String! { "Display" }
     override var checkboxTitle: String! { "Invert colors" }
     
 }
 
-public class InvertClassicUIAutomation: DisplayCheckboxUIAutomation{
+public class InvertClassicUIAutomation: DisplayCheckboxUIAutomation {
     
     override var tabTitle: String! { "Display" }
     override var checkboxTitle: String! { "Classic Invert" }
     
 }
 
-public class ReduceMotionUIAutomation: DisplayCheckboxUIAutomation{
+public class ReduceMotionUIAutomation: DisplayCheckboxUIAutomation {
     
     override var tabTitle: String! { "Display" }
     override var checkboxTitle: String! { "Reduce motion" }
     
 }
 
-public class ReduceTransparencyUIAutomation: DisplayCheckboxUIAutomation{
+public class ReduceTransparencyUIAutomation: DisplayCheckboxUIAutomation {
     
     override var tabTitle: String! { "Display" }
     override var checkboxTitle: String! { "Reduce transparency" }
     
 }
 
-public class DifferentiateWithoutColorUIAutomation: DisplayCheckboxUIAutomation{
+public class DifferentiateWithoutColorUIAutomation: DisplayCheckboxUIAutomation {
     
     override var tabTitle: String! { "Display" }
     override var checkboxTitle: String! { "Differentiate without color" }
     
 }
 
-public class CursorShakeUIAutomation: DisplayCheckboxUIAutomation{
+public class CursorShakeUIAutomation: DisplayCheckboxUIAutomation {
     
     override var tabTitle: String! { "Cursor" }
     override var checkboxTitle: String! { "Shake mouse pointer to locate" }
     
 }
 
-public class CursorSizeUIAutomation: DisplaySliderUIAutomation{
+public class CursorSizeUIAutomation: DisplaySliderUIAutomation {
     
     override var tabTitle: String! { "Cursor" }
     override var sliderTitle: String! { "Cursor size:" }
     
 }
 
-public class ColorFilterEnabledAutomation: DisplayCheckboxUIAutomation{
+public class ColorFilterEnabledAutomation: DisplayCheckboxUIAutomation {
     
     override var tabTitle: String! { "Color Filters" }
     override var checkboxTitle: String! { "Enable Color Filters" }
@@ -235,8 +235,7 @@ public class ColorFilterEnabledAutomation: DisplayCheckboxUIAutomation{
 }
 
 // Type Popup isn't properly labeled
-public class ColorFilterTypeAutomation: AccessibilityUIAutomation{
-
+public class ColorFilterTypeAutomation: AccessibilityUIAutomation {
     
     var optionTitles: [Int : String]! {
         [
@@ -247,31 +246,32 @@ public class ColorFilterTypeAutomation: AccessibilityUIAutomation{
             16: "Color Tint"
         ]
     }
+    
     public override func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
-        guard let value = value as? Int else{
+        guard let value = value as? Int else {
             os_log(.error, log: logger, "Passed non-int value to popup")
             completion(false)
             return
         }
-        guard let stringValue = optionTitles[value] else{
+        guard let stringValue = optionTitles[value] else {
             os_log(.error, log: logger, "Passed invalid int value to popup")
             completion(false)
             return
         }
-        showAccessibilityDisplayPreferences(tab: "Color Filters"){
+        showAccessibilityDisplayPreferences(tab: "Color Filters") {
             accessibility in
-            guard let accessibility = accessibility else{
+            guard let accessibility = accessibility else {
                 completion(false)
                 return
             }
-            guard let button = accessibility.firstPopupButton() else{
+            guard let button = accessibility.firstPopupButton() else {
                 os_log(.error, log: logger, "Failed to find popup button")
                 completion(false)
                 return
             }
-            button.setValue(stringValue){
+            button.setValue(stringValue) {
                 success in
-                guard success else{
+                guard success else {
                     os_log(.error, log: logger, "Failed to set popup button value")
                     completion(false)
                     return
@@ -285,30 +285,30 @@ public class ColorFilterTypeAutomation: AccessibilityUIAutomation{
 }
 
 // Intensity Slider isn't properly labeled
-class ColorFilterIntensityUIAutomation: AccessibilityUIAutomation{
+class ColorFilterIntensityUIAutomation: AccessibilityUIAutomation {
 
     public override func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
-        if let intValue = value as? Int{
+        if let intValue = value as? Int {
             apply(Double(intValue), completion: completion)
             return
         }
-        guard let value = value as? Double else{
+        guard let value = value as? Double else {
             os_log(.error, log: logger, "Passed non-double value to slider")
             completion(false)
             return
         }
-        showAccessibilityDisplayPreferences(tab: "Color Filters"){
+        showAccessibilityDisplayPreferences(tab: "Color Filters") {
             accessibility in
-            guard let accessibility = accessibility else{
+            guard let accessibility = accessibility else {
                 completion(false)
                 return
             }
-            guard let slider = accessibility.firstSlider() else{
+            guard let slider = accessibility.firstSlider() else {
                 os_log(.error, log: logger, "Failed to find slider")
                 completion(false)
                 return
             }
-            guard slider.setValue(value) else{
+            guard slider.setValue(value) else {
                 os_log(.error, log: logger, "Failed to update slider value")
                 completion(false)
                 return

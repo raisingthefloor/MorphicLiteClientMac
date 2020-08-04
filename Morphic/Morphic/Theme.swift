@@ -32,7 +32,7 @@ private var lighterGreen = NSColor(srgbRed: 102.0/255.0, green: 181.0/255.0, blu
 /// The same dark blue found around the oustside of the Morphic logo
 private var darkBlue = NSColor(srgbRed: 0, green: 41.0/255.0, blue: 87.0/255.0, alpha: 1.0)
 
-extension NSColor{
+extension NSColor {
     
     /// The primary dark color to use for Morphic elements
     ///
@@ -51,7 +51,7 @@ extension NSColor{
     
 }
 
-extension NSFont{
+extension NSFont {
     
     static var morphicBold : NSFont = .systemFont(ofSize: 14.0, weight: .bold)
 }

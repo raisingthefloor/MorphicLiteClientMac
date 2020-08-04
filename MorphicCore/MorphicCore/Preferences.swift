@@ -23,15 +23,15 @@
 
 import Foundation
 
-public struct Preferences: Codable, Record{
+public struct Preferences: Codable, Record {
     
     // MARK: - Creating Preferences
     
     /// Create a new preferences object from the given identifier
     ///
     /// Typically used for completely new users
-    public init(identifier: String){
-        self.identifier = identifier;
+    public init(identifier: String) {
+        self.identifier = identifier
     }
     
     // MARK: - Identifier
@@ -51,12 +51,12 @@ public struct Preferences: Codable, Record{
     /// The default map of solution identifier to solution prefs
     public var defaults: PreferencesSet?
     
-    public struct Key: Equatable, Hashable{
+    public struct Key: Equatable, Hashable {
         
         public var solution: String
         public var preference: String
         
-        public init(solution: String, preference: String){
+        public init(solution: String, preference: String) {
             self.solution = solution
             self.preference = preference
         }
@@ -64,12 +64,12 @@ public struct Preferences: Codable, Record{
     }
 
     /// The preferences for a specific solution
-    public struct Solution: Codable{
+    public struct Solution: Codable {
         
         /// Each solution can store arbitrary values
-        public var values = [String: Interoperable?]();
+        public var values = [String: Interoperable?]()
         
-        public init(){
+        public init() {
         }
         
         public init(from decoder: Decoder) throws {
@@ -84,40 +84,40 @@ public struct Preferences: Codable, Record{
         
     }
     
-    public mutating func set(_ value: Interoperable?, for key: Key){
-        if defaults == nil{
+    public mutating func set(_ value: Interoperable?, for key: Key) {
+        if defaults == nil {
             defaults = [:]
         }
-        if defaults?[key.solution] == nil{
+        if defaults?[key.solution] == nil {
             defaults?[key.solution] = Solution()
         }
         defaults?[key.solution]?.values[key.preference] = value
     }
     
-    public func get(key: Key) -> Interoperable?{
+    public func get(key: Key) -> Interoperable? {
         return defaults?[key.solution]?.values[key.preference] ?? nil
     }
     
     public mutating func remove(key: Key){
-        guard (defaults != nil) else{
+        guard defaults != nil else {
             return
         }
-        guard var solution = defaults?[key.solution] else{
+        guard var solution = defaults?[key.solution] else {
             return
         }
         solution.values.removeValue(forKey: key.preference)
-        if solution.values.count == 0{
+        if solution.values.isEmpty {
             defaults?.removeValue(forKey: key.solution)
         }
     }
     
-    public func keyValueTuples() -> [(Key, Interoperable?)]{
+    public func keyValueTuples() -> [(Key, Interoperable?)] {
         var tuples = [(Key, Interoperable?)]()
-        guard let defaults = defaults else{
+        guard let defaults = defaults else {
             return tuples
         }
-        for (identifier, solution) in defaults{
-            for (name, value) in solution.values{
+        for (identifier, solution) in defaults {
+            for (name, value) in solution.values {
                 let key = Key(solution: identifier, preference: name)
                 tuples.append((key, value))
             }
@@ -127,7 +127,7 @@ public struct Preferences: Codable, Record{
     
     // MARK: - Codable
     
-    enum CodingKeys: String, CodingKey{
+    enum CodingKeys: String, CodingKey {
         case identifier = "id"
         case userId = "user_id"
         case defaults = "default"

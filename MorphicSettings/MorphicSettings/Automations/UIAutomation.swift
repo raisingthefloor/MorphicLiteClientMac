@@ -24,7 +24,7 @@
 import Foundation
 import MorphicCore
 
-public protocol UIAutomation{
+public protocol UIAutomation {
     
     init()
     

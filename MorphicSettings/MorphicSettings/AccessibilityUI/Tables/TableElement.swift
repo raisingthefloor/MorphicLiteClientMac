@@ -23,19 +23,19 @@
 
 import Foundation
 
-public class TableElement: UIElement{
+public class TableElement: UIElement {
     
-    public func row(titled: String) -> RowElement?{
+    public func row(titled: String) -> RowElement? {
         for row in rows{
-            if row.cell(at: 0)?.text == titled{
+            if row.cell(at: 0)?.text == titled {
                 return row
             }
         }
         return nil
     }
     
-    public var rows: [RowElement]{
-        guard let accessibilityRows: [MorphicA11yUIElement] = accessibilityElement.values(forAttribute: .rows) else{
+    public var rows: [RowElement] {
+        guard let accessibilityRows: [MorphicA11yUIElement] = accessibilityElement.values(forAttribute: .rows) else {
             return []
         }
         return accessibilityRows.map{ RowElement(accessibilityElement: $0) }

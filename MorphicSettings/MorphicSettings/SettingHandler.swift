@@ -28,13 +28,13 @@ import MorphicCore
 ///
 /// Sublclasses should define a `Definition` data model that conforms to
 /// `SettingHandlerDescription` and describes the handler's properties
-public class SettingHandler{
+public class SettingHandler {
     
     /// Create a setting handler for the given setting
     ///
     /// - parameters:
     ///   - setting: The description of the setting to read/write
-    public required init(setting: Setting){
+    public required init(setting: Setting) {
         self.setting = setting
     }
     
@@ -44,12 +44,12 @@ public class SettingHandler{
     ///   - value: The value to save for `setting`
     ///   - completion: Called when the write completes
     ///   - success: Whether the write succeeded
-    public func apply(_ value: Interoperable?, completion: @escaping (_ success: Bool) -> Void){
+    public func apply(_ value: Interoperable?, completion: @escaping (_ success: Bool) -> Void) {
         completion(false)
     }
     
     /// Possbile results for reading a setting's value
-    public enum Result{
+    public enum Result {
         /// The read succeeded, with the value
         case succeeded(value: Interoperable)
         /// The read failed
@@ -61,7 +61,7 @@ public class SettingHandler{
     /// - parameters:
     ///   - completion: Called when the read completes
     ///   - result: The result of the read
-    public func read(completion: @escaping (_ result: Result) -> Void){
+    public func read(completion: @escaping (_ result: Result) -> Void) {
         completion(.failed)
     }
     
@@ -71,15 +71,15 @@ public class SettingHandler{
 }
 
 /// A protocol that should be adopted by any data  model describing a setting handler
-public protocol SettingHandlerDescription: Decodable{
+public protocol SettingHandlerDescription: Decodable {
     
     var type: Setting.HandlerType { get }
     
 }
 
-public extension Setting{
+public extension Setting {
     
-    func createHandler() -> SettingHandler?{
+    func createHandler() -> SettingHandler? {
         switch handlerDescription.type{
         case .client:
             return ClientSettingHandler.create(for: self)

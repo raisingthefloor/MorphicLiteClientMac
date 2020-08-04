@@ -45,14 +45,14 @@ public struct MorphicPropertyList {
         self.dictionary = dictionary
     }
     
-    // MARK: getValue
+    // MARK: value
 
-//    public func getValue(forKey key: String) -> Any? {
-//        return getValueAsAny(forKey: key)
+//    public func value(forKey key: String) -> Any? {
+//        return valueAsAny(forKey: key)
 //    }
     
-    public func getValue<TElement>(forKey key: String) throws -> Array<TElement>? where TElement: PropertyListValueCompatible {
-        guard let resultAsAny = getValueAsAny(forKey: key) else {
+    public func value<TElement>(forKey key: String) throws -> Array<TElement>? where TElement: PropertyListValueCompatible {
+        guard let resultAsAny = valueAsAny(forKey: key) else {
             return nil
         }
         guard let resultAsNSArray = resultAsAny as? NSArray else {
@@ -65,8 +65,8 @@ public struct MorphicPropertyList {
         return result
     }
 
-    public func getValue<TValue>(forKey key: String) throws -> Dictionary<String, TValue>? where TValue: PropertyListValueCompatible {
-        guard let resultAsAny = getValueAsAny(forKey: key) else {
+    public func value<TValue>(forKey key: String) throws -> Dictionary<String, TValue>? where TValue: PropertyListValueCompatible {
+        guard let resultAsAny = valueAsAny(forKey: key) else {
             return nil
         }
         guard let resultAsNSDictionary = resultAsAny as? NSDictionary else {
@@ -89,8 +89,8 @@ public struct MorphicPropertyList {
         return result
     }
 
-    public func getValue(forKey key: String) throws -> String? {
-        guard let resultAsAny = getValueAsAny(forKey: key) else {
+    public func value(forKey key: String) throws -> String? {
+        guard let resultAsAny = valueAsAny(forKey: key) else {
             return nil
         }
         guard let resultAsNSString = resultAsAny as? NSString else {
@@ -101,8 +101,8 @@ public struct MorphicPropertyList {
         return result
     }
 
-    public func getValue(forKey key: String) throws -> Data? {
-        guard let resultAsAny = getValueAsAny(forKey: key) else {
+    public func value(forKey key: String) throws -> Data? {
+        guard let resultAsAny = valueAsAny(forKey: key) else {
             return nil
         }
         guard let resultAsNSData = resultAsAny as? NSData else {
@@ -113,8 +113,8 @@ public struct MorphicPropertyList {
         return result
     }
 
-    public func getValue(forKey key: String) throws -> Date? {
-        guard let resultAsAny = getValueAsAny(forKey: key) else {
+    public func value(forKey key: String) throws -> Date? {
+        guard let resultAsAny = valueAsAny(forKey: key) else {
             return nil
         }
         guard let resultAsNSDate = resultAsAny as? NSDate else {
@@ -125,13 +125,13 @@ public struct MorphicPropertyList {
         return result
     }
 
-//    public func getValue(forKey key: String) throws -> NSNumber? {
-//        let result: NSNumber? = try getValueAsNSNumber(forKey: key)
+//    public func value(forKey key: String) throws -> NSNumber? {
+//        let result: NSNumber? = try valueAsNSNumber(forKey: key)
 //        return result
 //    }
 
-    public func getValue(forKey key: String) throws -> Int32? {
-        guard let resultAsNSNumber: NSNumber = try getValueAsNSNumber(forKey: key) else {
+    public func value(forKey key: String) throws -> Int32? {
+        guard let resultAsNSNumber: NSNumber = try valueAsNSNumber(forKey: key) else {
             return nil
         }
         guard let result = resultAsNSNumber as? Int32 else {
@@ -141,8 +141,8 @@ public struct MorphicPropertyList {
         return result
     }
 
-    public func getValue(forKey key: String) throws -> Int64? {
-        guard let resultAsNSNumber: NSNumber = try getValueAsNSNumber(forKey: key) else {
+    public func value(forKey key: String) throws -> Int64? {
+        guard let resultAsNSNumber: NSNumber = try valueAsNSNumber(forKey: key) else {
             return nil
         }
         guard let result = resultAsNSNumber as? Int64 else {
@@ -152,8 +152,8 @@ public struct MorphicPropertyList {
         return result
     }
 
-    public func getValue(forKey key: String) throws -> Float? {
-        guard let resultAsNSNumber: NSNumber = try getValueAsNSNumber(forKey: key) else {
+    public func value(forKey key: String) throws -> Float? {
+        guard let resultAsNSNumber: NSNumber = try valueAsNSNumber(forKey: key) else {
             return nil
         }
         guard let result = resultAsNSNumber as? Float else {
@@ -163,8 +163,8 @@ public struct MorphicPropertyList {
         return result
     }
 
-    public func getValue(forKey key: String) throws -> Double? {
-        guard let resultAsNSNumber: NSNumber = try getValueAsNSNumber(forKey: key) else {
+    public func value(forKey key: String) throws -> Double? {
+        guard let resultAsNSNumber: NSNumber = try valueAsNSNumber(forKey: key) else {
             return nil
         }
         guard let result = resultAsNSNumber as? Double else {
@@ -174,8 +174,8 @@ public struct MorphicPropertyList {
         return result
     }
 
-    public func getValue(forKey key: String) throws -> Bool? {
-        guard let resultAsNSNumber: NSNumber = try getValueAsNSNumber(forKey: key) else {
+    public func value(forKey key: String) throws -> Bool? {
+        guard let resultAsNSNumber: NSNumber = try valueAsNSNumber(forKey: key) else {
             return nil
         }
         guard let result = resultAsNSNumber as? Bool else {
@@ -187,12 +187,12 @@ public struct MorphicPropertyList {
 
     //
     
-    private func getValueAsAny(forKey key: String) -> Any? {
+    private func valueAsAny(forKey key: String) -> Any? {
         return self.dictionary.object(forKey: key)
     }
 
-    private func getValueAsNSNumber(forKey key: String) throws -> NSNumber? {
-        guard let resultAsAny = getValueAsAny(forKey: key) else {
+    private func valueAsNSNumber(forKey key: String) throws -> NSNumber? {
+        guard let resultAsAny = valueAsAny(forKey: key) else {
             return nil
         }
         guard let result = resultAsAny as? NSNumber else {

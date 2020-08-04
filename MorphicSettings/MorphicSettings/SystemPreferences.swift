@@ -23,20 +23,20 @@
 
 import Foundation
 
-public class SystemPreferences{
+public class SystemPreferences {
     
-    private init(){
+    private init() {
     }
     
     public static let shared = SystemPreferences()
     
     public let accessibility = AccessibilitySystemPreferencesPane()
     
-    public enum PaneIdentifier: String, Codable{
+    public enum PaneIdentifier: String, Codable {
         case accessibility
     }
     
-    public func pane(for identifier: PaneIdentifier) -> SystemPreferencesPane{
+    public func pane(for identifier: PaneIdentifier) -> SystemPreferencesPane {
         switch identifier {
         case .accessibility:
             return accessibility
@@ -45,12 +45,10 @@ public class SystemPreferences{
     
 }
 
-public class SystemPreferencesPane{
+public class SystemPreferencesPane {
     
 }
 
-public class AccessibilitySystemPreferencesPane: SystemPreferencesPane{
-    
-    
+public class AccessibilitySystemPreferencesPane: SystemPreferencesPane {
     
 }

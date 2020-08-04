@@ -28,7 +28,7 @@ import OSLog
 private let logger = OSLog(subsystem: "MorphicService", category: "Service")
 
 /// Base class for all morphic services
-public class Service{
+public class Service {
     
     // MARK: - Creating a Service
     
@@ -37,7 +37,7 @@ public class Service{
     /// - parameters:
     ///   - endpoint: The location of the remote server
     ///   - session: The URL session to use for requests to the remote server
-    public init(endpoint: URL, session: Session){
+    public init(endpoint: URL, session: Session) {
         self.endpoint = endpoint
         self.session = session
     }
@@ -50,7 +50,7 @@ public class Service{
     /// The URL session to use when making requests to the remote server
     public private(set) weak var session: Session!
     
-    public enum Response<ResponseBody, BadRequestBody>{
+    public enum Response<ResponseBody, BadRequestBody> {
         case success(body: ResponseBody)
         case badRequest(body: BadRequestBody)
         case failed

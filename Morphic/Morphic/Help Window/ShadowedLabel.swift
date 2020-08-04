@@ -38,7 +38,7 @@ public class ShadowedLabel: NSTextField {
     /// The shadow created from the other `textShadow*` properties
     ///
     /// - note: The other properties are split out so they can be individually `IBInspectable`
-    public var textShadow: NSShadow{
+    public var textShadow: NSShadow {
         let shadow = NSShadow()
         shadow.shadowColor = textShadowColor
         shadow.shadowOffset = textShadowOffset
@@ -46,11 +46,11 @@ public class ShadowedLabel: NSTextField {
         return shadow
     }
     
-    public override var stringValue: String{
-        get{
+    public override var stringValue: String {
+        get {
             return super.stringValue
         }
-        set{
+        set {
             super.stringValue = newValue
             // take whatever atttributed string NSTextField creates in its base implementation
             // and add the attribute that makes a text shadow.  This method ensures we don't lose any
@@ -61,7 +61,7 @@ public class ShadowedLabel: NSTextField {
         }
     }
     
-    public override var intrinsicContentSize: NSSize{
+    public override var intrinsicContentSize: NSSize {
         var size = super.intrinsicContentSize
         // Pad the intrinsic content size so the text shadow isn't cut off
         size.height += 4

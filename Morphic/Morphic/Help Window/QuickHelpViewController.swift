@@ -41,15 +41,15 @@ class QuickHelpViewController: NSViewController {
     }
     
     /// The text to display in the title label
-    public var titleText: String = ""{
-        didSet{
+    public var titleText: String = "" {
+        didSet {
             titleLabel?.stringValue = titleText
         }
     }
     
     /// The text to display in the message label
-    public var messageText: String = ""{
-        didSet{
+    public var messageText: String = "" {
+        didSet {
             messageLabel?.stringValue = messageText
         }
     }
