@@ -80,6 +80,12 @@
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="vgL-Lb-axj"/>
+                <menuItem title="About Morphic..." id="GjN-rN-rcZ">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showAboutBox:" target="-1" id="iCU-gX-DgC"/>
+                    </connections>
+                </menuItem>
                 <menuItem title="Quit Morphic" keyEquivalent="q" id="tHP-m8-Lto">
                     <connections>
                         <action selector="terminate:" target="-1" id="AxL-78-D9D"/>
