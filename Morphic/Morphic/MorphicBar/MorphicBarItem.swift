@@ -21,6 +21,7 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
+import Carbon.HIToolbox
 import Cocoa
 import MorphicCore
 import MorphicSettings
@@ -67,6 +68,7 @@ class MorphicBarControlItem: MorphicBarItem{
         case resolution
         case magnifier
         case reader
+        case readselected
         case volume
         case contrast
         case unknown
@@ -124,6 +126,17 @@ class MorphicBarControlItem: MorphicBarItem{
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.reader(_:))
+            return view
+        case .readselected:
+            let localized = LocalizedStrings(prefix: "control.feature.readselected")
+            let playStopHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "playstop.help.title"), message: localized.string(for: "playstop.help.message")) }
+            let segments = [
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "playstop"), isPrimary: true, helpProvider: playStopHelpProvider, accessibilityLabel: localized.string(for: "playstop.help.title"))
+            ]
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(MorphicBarControlItem.readselected)
             return view
         case .volume:
             let localized = LocalizedStrings(prefix: "control.feature.volume")
@@ -227,7 +240,34 @@ class MorphicBarControlItem: MorphicBarItem{
             }
         }
     }
-    
+
+    @objc
+    func readselected(_ sender: Any?) {
+        // get the window ID of the topmost window
+        guard let (_ /* topmostWindowOwnerName */, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
+            NSLog("Could not get ID of topmost window.")
+            return
+        }
+
+        // capture a reference to the topmost application
+        guard let topmostApplication = NSRunningApplication(processIdentifier: pid_t(topmostProcessId)) else {
+            NSLog("Could not get reference to application owning the topmost window")
+            return
+        }
+        
+        // activate the topmost application
+        guard topmostApplication.activate(options: .activateIgnoringOtherApps) == true else {
+            NSLog("Could not activate the topmost window")
+            return
+        }
+        
+        // send the "speak selected text key" to the system
+        guard MorphicInput.sendKey(keyCode: CGKeyCode(kVK_Escape), keyOptions: .withAlternateKey) == true else {
+            NSLog("Could not send Option+Escape to the keyboard input stream")
+            return
+        }
+    }
+
     @objc
     func magnifier(_ sender: Any?) {
         guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else {
