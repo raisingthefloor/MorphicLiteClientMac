@@ -105,7 +105,7 @@
 "control.feature.volume.up.muted.help.title" = "Unmute All Sounds";
 
 /* Message for the help window for the volume up button when muted */
-"control.feature.volume.up.muted.help.message" = "Turns the sounds back on";
+"control.feature.volume.up.muted.help.message" = "Turn the sounds back on";
 
 /* Title for the help window for the volume down button */
 "control.feature.volume.down.help.title" = "Turn the Volume Down";
@@ -123,7 +123,7 @@
 "control.feature.volume.down.muted.help.title" = "Unmute All Sounds";
 
 /* Message for the help window for the volume down button at its limit */
-"control.feature.volume.down.muted.help.message" = "Turns the sounds back on";
+"control.feature.volume.down.muted.help.message" = "Turn the sounds back on";
 
 /* Label for the button that mutes the volume */
 "control.feature.volume.mute" = "Mute";
@@ -138,7 +138,7 @@
 "control.feature.volume.muted.help.title" = "All Sounds Are Muted";
 
 /* Message for the help window for the mute button when muted */
-"control.feature.volume.muted.help.message" = "To unmute, click the plus or minus button";
+"control.feature.volume.muted.help.message" = "To unmute, press the plus or minus button";
 
 /* Label for the buttons that control the contrast */
 "control.feature.contrast.title" = "High Contrast";
