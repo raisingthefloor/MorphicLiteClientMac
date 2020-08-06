@@ -44,20 +44,51 @@ public class MorphicInput {
     
     // MARK: - Keyboard virtualization functions
     
+    public enum MorphicInputEventSource {
+        case hidSystem
+        case loginSession
+    }
+    
+    // NOTE: since we are generating a keystore within the user session, we use the .loginSession inputSource (stateID of .combinedSessionState); if we experience any problems with the OS recognizing sent keys, we may want to try using .hidSystemState (which is designed for events posted from user-mode drivers which are interpreting hardware signals) instead.
+    public static func sendKey(keyCode: CGKeyCode, keyOptions: KeyOptions, inputEventSource: MorphicInputEventSource? = .loginSession) -> Bool {
+        return MorphicInput.internalSendKey(keyCode: keyCode, keyOptions: keyOptions, toProcessId: nil, inputEventSource: inputEventSource)
+    }
+
+    // NOTE: technically .hidSystem (.hidSystemState) is designed to emulate an HID hardware event; if we experience any problems sending keys to processes via .hdiSystemState, try using .combinedSessionState (which is designed for events posted from within a login session) instead
+    // NOTE: a CGEventSource of "nil" seems to work just as well, but we're following established practices here; realistically it will probably work fine either way.
+    public static func sendKey(keyCode: CGKeyCode, keyOptions: KeyOptions, toProcessId processId: Int, inputEventSource: MorphicInputEventSource? = .hidSystem) -> Bool {
+        return MorphicInput.internalSendKey(keyCode: keyCode, keyOptions: keyOptions, toProcessId: processId, inputEventSource: inputEventSource)
+    }
+
     // NOTE: we have no way to know if the key press was successful: sendKey is "fire and forget"
-    public static func sendKey(keyCode: CGKeyCode, keyOptions: KeyOptions, toProcessId processId: Int) -> Bool {
+    // NOTE: technically inputEventSource can be nil, but we may want to remove that option in the future if it proves to be problematic
+    private static func internalSendKey(keyCode: CGKeyCode, keyOptions: KeyOptions, toProcessId processId: Int?, inputEventSource: MorphicInputEventSource?) -> Bool {
         // NOTE: this implementation of sendKey sends the key to a process via CGEvents and using its processId; we might also consider using AppleScript in the future to send keystrokes to apps (potentially by name)
         
-        // NOTE: a CGEventSource of "nil" seems to work just as well, but we're following established practices here; realistically it will probably work fine either way
-        guard let eventSource = CGEventSource(stateID: .hidSystemState) else {
-            NSLog("Could not set event source to .hidSystemState")
-            return false
-        }
+        // NOTE: events posted to the .combinedSessionState or .hidSystemState stateID are combined with other system signals, so we need to be aware that they could be "mixed" with a user's current keystrokes or other HID/session signals
 
-        guard let keyDownEvent: CGEvent = CGEvent(keyboardEventSource: eventSource, virtualKey: keyCode, keyDown: true),
-            let keyUpEvent: CGEvent = CGEvent(keyboardEventSource: eventSource, virtualKey: keyCode, keyDown: false) else {
+        // for details about CGEventSource stateID, see: https://developer.apple.com/documentation/coregraphics/cgeventsourcestateid
+        let eventSource: CGEventSource!
+        switch inputEventSource {
+        case .hidSystem:
+            guard let eventSourceAsNonOptional = CGEventSource(stateID: .hidSystemState) else {
+                NSLog("sendKey failure: Could not set event source to .hidSystemState")
+                return false
+            }
+            eventSource = eventSourceAsNonOptional
+        case .loginSession:
+            guard let eventSourceAsNonOptional: CGEventSource = CGEventSource(stateID: .combinedSessionState) else {
+                NSLog("sendKey failure: Could not set event source to .combinedSessionState")
+                return false
+            }
+            eventSource = eventSourceAsNonOptional
+        case nil:
+            eventSource = nil
+        }
+        
+        guard let keyDownEvent: CGEvent = MorphicInput.createKeyEvent(eventSource: eventSource, keyCode: keyCode, keyOptions: keyOptions, isKeyDown: true), let keyUpEvent: CGEvent = MorphicInput.createKeyEvent(eventSource: eventSource, keyCode: keyCode, keyOptions: keyOptions, isKeyDown: false) else {
             //
-            NSLog("Could not create keyUp/keyDown events")
+            NSLog("sendKey failure: Could not create keyUp/keyDown events")
             return false
         }
         // NOTE: Swift manages Core Foundation memory for us; in other languages, be sure to CFRelease
@@ -65,38 +96,52 @@ public class MorphicInput {
 //            CFRelease(keyUpEvent)
 //            CFRelease(keyDownEvent)
 //        }
+        
+        if let processId = processId {
+            // send the key to a specific process
+            
+            let processIdAsPid = pid_t(processId)
 
-        var keyDownEventFlagsRawValue = keyDownEvent.flags.rawValue
-        var keyUpEventFlagsRawValue = keyUpEvent.flags.rawValue
+            // press the key
+            keyDownEvent.postToPid(processIdAsPid)
+            // then release the key
+            keyUpEvent.postToPid(processIdAsPid)
+        } else {
+            // send the key to the system itself
+            
+            // press the key
+            keyDownEvent.post(tap: CGEventTapLocation.cgSessionEventTap)
+            // then release the key
+            keyUpEvent.post(tap: CGEventTapLocation.cgSessionEventTap)
+        }
+        
+        return true
+    }
+
+    private static func createKeyEvent(eventSource: CGEventSource, keyCode: CGKeyCode, keyOptions: KeyOptions, isKeyDown: Bool) -> CGEvent? {
+        guard let keyEvent: CGEvent = CGEvent(keyboardEventSource: eventSource, virtualKey: keyCode, keyDown: isKeyDown) else {
+            return nil
+        }
+
+        var keyEventFlagsRawValue = keyEvent.flags.rawValue
         //
         // hold down control key (if applicable)
         if keyOptions.contains(.withControlKey) {
-            keyDownEventFlagsRawValue |= CGEventFlags.maskControl.rawValue
-            keyUpEventFlagsRawValue |= CGEventFlags.maskControl.rawValue
+            keyEventFlagsRawValue |= CGEventFlags.maskControl.rawValue
         }
         //
         // hold down alternate/option key (if applicable)
         if keyOptions.contains(.withAlternateKey) {
-           keyDownEventFlagsRawValue |= CGEventFlags.maskAlternate.rawValue
-           keyUpEventFlagsRawValue |= CGEventFlags.maskAlternate.rawValue
+           keyEventFlagsRawValue |= CGEventFlags.maskAlternate.rawValue
         }
         //
         // hold down command key (if applicable)
         if keyOptions.contains(.withCommandKey) {
-            keyDownEventFlagsRawValue |= CGEventFlags.maskCommand.rawValue
-            keyUpEventFlagsRawValue |= CGEventFlags.maskCommand.rawValue
+            keyEventFlagsRawValue |= CGEventFlags.maskCommand.rawValue
         }
         //
-        keyDownEvent.flags = CGEventFlags(rawValue: keyDownEventFlagsRawValue)
-        keyUpEvent.flags = CGEventFlags(rawValue: keyUpEventFlagsRawValue)
+        keyEvent.flags = CGEventFlags(rawValue: keyEventFlagsRawValue)
 
-        let processIdAsPid = pid_t(processId)
-
-        // press the key
-        keyDownEvent.postToPid(processIdAsPid)
-        // then release the key
-        keyUpEvent.postToPid(processIdAsPid)
-
-        return true
+        return keyEvent
     }
 }
