@@ -120,6 +120,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
     }
     
+    @IBAction func showAboutBox(_ sender: NSMenuItem) {
+        let aboutBoxWindowController = AboutBoxWindowController.single
+        if aboutBoxWindowController.window?.isVisible == false {
+            aboutBoxWindowController.centerOnScreen()
+        }
+        
+        aboutBoxWindowController.showWindow(self)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
     // MARK: - Default Preferences
     
     func createEmptyDefaultPreferencesIfNotExist(completion: @escaping () -> Void) {

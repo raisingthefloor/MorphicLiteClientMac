@@ -117,6 +117,8 @@ class MorphicBarSegmentedButton: NSControl {
     
     // MARK: - Layout
     
+    let horizontalMarginBetweenSegments = CGFloat(1.5)
+    
     override var isFlipped: Bool {
         return true
     }
@@ -137,6 +139,7 @@ class MorphicBarSegmentedButton: NSControl {
             let buttonSize = button.intrinsicContentSize
             size.width += buttonSize.width
         }
+        size.width += CGFloat(max(segmentButtons.count - 1, 0)) * horizontalMarginBetweenSegments
         return size
     }
     
@@ -146,7 +149,7 @@ class MorphicBarSegmentedButton: NSControl {
             let buttonSize = button.intrinsicContentSize
             frame.size.width = buttonSize.width
             button.frame = frame
-            frame.origin.x += frame.size.width
+            frame.origin.x += frame.size.width + horizontalMarginBetweenSegments
         }
     }
     
@@ -264,7 +267,9 @@ class MorphicBarSegmentedButton: NSControl {
         }
         button.setAccessibilityLabel(segment.accessibilityLabel)
         button.helpProvider = segment.helpProvider
-        (button.cell as? NSButtonCell)?.backgroundColor = segment.isPrimary ? primarySegmentColor : secondarySegmentColor
+        (button.cell as? NSButtonCell)?.backgroundColor = primarySegmentColor
+        // NOTE: to use two alternating (contrasting) colors, uncomment the following line and set horizontalMarginBetweenSegments to 0.
+//        (button.cell as? NSButtonCell)?.backgroundColor = segment.isPrimary ? primarySegmentColor : secondarySegmentColor
         button.font = font
         return button
     }

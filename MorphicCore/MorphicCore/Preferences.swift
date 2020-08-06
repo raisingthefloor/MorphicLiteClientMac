@@ -98,7 +98,7 @@ public struct Preferences: Codable, Record {
         return defaults?[key.solution]?.values[key.preference] ?? nil
     }
     
-    public mutating func remove(key: Key){
+    public mutating func remove(key: Key) {
         guard defaults != nil else {
             return
         }
