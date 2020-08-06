@@ -24,28 +24,28 @@
 "control.feature.resolution.bigger.help.title" = "Increase Screen Zoom";
 
 /* Message for the help window for the larger text/icon size button */
-"control.feature.resolution.bigger.help.message" = "Make all the text and icons bigger";
+"control.feature.resolution.bigger.help.message" = "Make everything bigger";
 
 /* Title for the help window for the larger text/icon size button when at its limit */
 "control.feature.resolution.bigger.limit.help.title" = "Screen Zoom Cannot Go Bigger";
 
 /* Message for the help window for the larger text/icon size button when at its limit */
-"control.feature.resolution.bigger.limit.help.message" = "The current text and icon size is as big as possible";
+"control.feature.resolution.bigger.limit.help.message" = "";
 
 /* Title for the help window for the smaller text/icon size button */
 "control.feature.resolution.smaller.help.title" = "Decrease Screen Zoom";
 
 /* Message for the help window for the smaller text/icon size button */
-"control.feature.resolution.smaller.help.message" = "Make all the text and icons smaller";
+"control.feature.resolution.smaller.help.message" = "Make everything smaller";
 
 /* Title for the help window for the smaller text/icon size button when at its limit */
 "control.feature.resolution.smaller.limit.help.title" = "Screen Zoom Cannot Go Smaller";
 
 /* Message for the help window for the smaller text/icon size button when at its limit */
-"control.feature.resolution.smaller.limit.help.message" = "The current text and icon size is as small as possible";
+"control.feature.resolution.smaller.limit.help.message" = "";
 
 /* Label for the buttons that control the magnifier */
-"control.feature.magnifier.title" = "Magnifier";
+"control.feature.magnifier.title" = "Magnifying Glass";
 
 /* Label for the button that shows the magnifier */
 "control.feature.magnifier.show" = "Show";
@@ -54,7 +54,7 @@
 "control.feature.magnifier.show.help.title" = "Show a Magnifying Glass";
 
 /* Message for the help window for the show magnifier button */
-"control.feature.magnifier.show.help.message" = "Magnify a part of the screen as you move around";
+"control.feature.magnifier.show.help.message" = "Magnify the area around your mouse";
 
 /* Label for the button that hides the magnifier */
 "control.feature.magnifier.hide" = "Hide";
@@ -63,7 +63,7 @@
 "control.feature.magnifier.hide.help.title" = "Hide the Magnifying Glass";
 
 /* Message for the help window for the hide magnifier button */
-"control.feature.magnifier.hide.help.message" = "Stop magnifying part of the screen as you move";
+"control.feature.magnifier.hide.help.message" = "";
 
 /* Label for the buttons that control the reader */
 "control.feature.reader.title" = "Screen Reader";
@@ -71,7 +71,7 @@
 /* Label for the button that turns the reader on */
 "control.feature.reader.on" = "On";
 
-/* Title for the help window for the hide magnifier button */
+/* Title for the help window for the screen reader button */
 "control.feature.reader.on.help.title" = "Turn On Screen Reader";
 
 /* Message for the help window for the hide magnifier button */
@@ -99,13 +99,13 @@
 "control.feature.volume.up.limit.help.title" = "Volume Cannot Go Higher";
 
 /* Message for the help window for the volume up button at its limit */
-"control.feature.volume.up.limit.help.message" = "Your computer's sounds are as loud as they can go";
+"control.feature.volume.up.limit.help.message" = "";
 
 /* Title for the help window for the volume up button when muted */
 "control.feature.volume.up.muted.help.title" = "Unmute All Sounds";
 
 /* Message for the help window for the volume up button when muted */
-"control.feature.volume.up.muted.help.message" = "Return the volume to its previous level";
+"control.feature.volume.up.muted.help.message" = "Turns the sounds back on";
 
 /* Title for the help window for the volume down button */
 "control.feature.volume.down.help.title" = "Turn the Volume Down";
@@ -123,7 +123,7 @@
 "control.feature.volume.down.muted.help.title" = "Unmute All Sounds";
 
 /* Message for the help window for the volume down button at its limit */
-"control.feature.volume.down.muted.help.message" = "Return the volume to its previous level";
+"control.feature.volume.down.muted.help.message" = "Turns the sounds back on";
 
 /* Label for the button that mutes the volume */
 "control.feature.volume.mute" = "Mute";
@@ -138,7 +138,7 @@
 "control.feature.volume.muted.help.title" = "All Sounds Are Muted";
 
 /* Message for the help window for the mute button when muted */
-"control.feature.volume.muted.help.message" = "Use the plus or minus button to unmute";
+"control.feature.volume.muted.help.message" = "To unmute, click the plus or minus button";
 
 /* Label for the buttons that control the contrast */
 "control.feature.contrast.title" = "High Contrast";
@@ -146,20 +146,20 @@
 /* Label for the button that turns high contrast on */
 "control.feature.contrast.on" = "On";
 
-/* Title for the help window for the hide magnifier button */
+/* Title for the help window for the high contrast button */
 "control.feature.contrast.on.help.title" = "Turn On High Contrast";
 
-/* Message for the help window for the hide magnifier button */
-"control.feature.contrast.on.help.message" = "Make it easier to distinguish items";
+/* Message for the help window for the high contrast button */
+"control.feature.contrast.on.help.message" = "Makes it easier for some people to read";
 
 /* Label for the button that turns high contrast off */
 "control.feature.contrast.off" = "Off";
 
-/* Title for the help window for the hide magnifier button */
+/* Title for the help window for the high contrast button */
 "control.feature.contrast.off.help.title" = "Turn Off High Contrast";
 
-/* Message for the help window for the hide magnifier button */
-"control.feature.contrast.off.help.message" = "Make it harder to distinguish items";
+/* Message for the help window for the high contrast button */
+"control.feature.contrast.off.help.message" = "";
 
 /* Label for the buttons that control night mode */
 "control.feature.nightshift.title" = "Night Mode";
@@ -171,7 +171,7 @@
 "control.feature.nightshift.on.help.title" = "Turn On Night Mode";
 
 /* Message for the help window for the 'turn on night mode' button */
-"control.feature.nightshift.on.help.message" = "Make screen colors warmer for better sleep";
+"control.feature.nightshift.on.help.message" = "Make screen colors warmer for less eye strain and to make it easier to go to sleep";
 
 /* Label for the button that turns night mode off */
 "control.feature.nightshift.off" = "Off";
@@ -180,4 +180,4 @@
 "control.feature.nightshift.off.help.title" = "Turn Off Night Mode";
 
 /* Message for the help window for the 'turn off night mode' button */
-"control.feature.nightshift.off.help.message" = "Make screen colors less warm for daytime";
+"control.feature.nightshift.off.help.message" = "";
