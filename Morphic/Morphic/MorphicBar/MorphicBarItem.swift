@@ -243,9 +243,35 @@ class MorphicBarControlItem: MorphicBarItem{
 
     @objc
     func readselected(_ sender: Any?) {
+        // NOTE: we retrieve system settings here which are _not_ otherwise captured by Morphic; if we decide to capture those settings in the future for broader capture/apply purposes, then we should modify this code to access those settings in the normal place (while making sure that we are not getting cached data...since we need to check these settings every time this function is called).
+        let defaultsDomain = "com.apple.speech.synthesis.general.prefs"
+        guard let defaults = UserDefaults(suiteName: defaultsDomain) else {
+            NSLog("Could not access defaults domain: \(defaultsDomain)")
+            return
+        }
+        
+        // obtain any custom-specified key sequence used for activating the "speak selected text" feature in macOS (or else assume default)
+        let speakSelectedTextHotKeyCombo = defaults.integer(forKey: "SpokenUIUseSpeakingHotKeyCombo")
+        //
+        let keyCode: CGKeyCode
+        let keyOptions: MorphicInput.KeyOptions
+        if speakSelectedTextHotKeyCombo != 0 {
+            guard let (customKeyCode, customKeyOptions) = MorphicInput.parseDefaultsKeyCombo(speakSelectedTextHotKeyCombo) else {
+                fatalError("could not decode key; be sure to log the error or let the user know")
+            }
+            keyCode = customKeyCode
+            keyOptions = customKeyOptions
+        } else {
+            // default hotkey is Option+Esc
+            keyCode = CGKeyCode(kVK_Escape)
+            keyOptions = .withAlternateKey
+        }
+        
+        //
+        
         // get the window ID of the topmost window
         guard let (_ /* topmostWindowOwnerName */, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
-            NSLog("Could not get ID of topmost window.")
+            NSLog("Could not get ID of topmost window")
             return
         }
 
@@ -262,8 +288,8 @@ class MorphicBarControlItem: MorphicBarItem{
         }
         
         // send the "speak selected text key" to the system
-        guard MorphicInput.sendKey(keyCode: CGKeyCode(kVK_Escape), keyOptions: .withAlternateKey) == true else {
-            NSLog("Could not send Option+Escape to the keyboard input stream")
+        guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
+            NSLog("Could not send 'Speak selected text' hotkey to the keyboard input stream")
             return
         }
     }

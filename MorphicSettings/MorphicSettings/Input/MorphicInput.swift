@@ -37,9 +37,50 @@ public class MorphicInput {
             self.rawValue = rawValue
         }
         
-        public static let withControlKey = KeyOptions(rawValue: 1 << 00)
-        public static let withAlternateKey = KeyOptions(rawValue: 1 << 01)
-        public static let withCommandKey = KeyOptions(rawValue: 1 << 02)
+        // NOTE: these mask values are designed to match macOS's "HotKeyCombo" flags (e.g. SpokenUIUseSpeakingHotKeyCombo default)
+        public static let withCommandKey = KeyOptions(rawValue: 1 << 8)
+        public static let withShiftKey = KeyOptions(rawValue: 1 << 9)
+        public static let withCapsLockKey = KeyOptions(rawValue: 1 << 10)
+        public static let withAlternateKey = KeyOptions(rawValue: 1 << 11)
+        public static let withControlKey = KeyOptions(rawValue: 1 << 12)
+        
+        public static let allValues: [KeyOptions] = [
+            .withCommandKey,
+            .withShiftKey,
+            .withCapsLockKey,
+            .withAlternateKey,
+            .withControlKey
+        ]
+    }
+    
+    public static func parseDefaultsKeyCombo(_ value: Int) -> (keyCode: CGKeyCode, keyOptions: KeyOptions)? {
+        guard var valueAsUInt32 = UInt32(exactly: value) else {
+            return nil
+        }
+
+        // extract key code from the HotKeyCombo value
+        // NOTE: while there are no known core key codes greater than 7 bits, we are using an 8-bit flag (0xFF) as Apple may have reserved the extra bit for future expansion (e.g. custom keys)
+        let keyCode = CGKeyCode(CGKeyCode(valueAsUInt32 & 0xFF))
+        valueAsUInt32 &= ~0xFF
+
+        // create a mask of all key options (modifier keys) which we support
+        var keyOptionsMaskAsUInt32: UInt32 = 0
+        for keyOption in KeyOptions.allValues {
+            keyOptionsMaskAsUInt32 |= keyOption.rawValue
+        }
+        //
+        // extract options mask from the HotKeyCombo value
+        let keyOptionsAsUInt32 = valueAsUInt32 & keyOptionsMaskAsUInt32
+        let keyOptions = KeyOptions(rawValue: keyOptionsAsUInt32)
+        valueAsUInt32 &= ~keyOptionsAsUInt32
+        
+        // verify that there is no remaining content in the HotKeyCombo value which we didn't understand (as we don't want to parse incorrectly)
+        if valueAsUInt32 != 0 {
+            // if we have any component remaining which we do not know how to support, return nil (failure) now
+            return nil
+        }
+
+        return (keyCode: keyCode, keyOptions: keyOptions)
     }
     
     // MARK: - Keyboard virtualization functions
@@ -125,9 +166,19 @@ public class MorphicInput {
 
         var keyEventFlagsRawValue = keyEvent.flags.rawValue
         //
-        // hold down control key (if applicable)
-        if keyOptions.contains(.withControlKey) {
-            keyEventFlagsRawValue |= CGEventFlags.maskControl.rawValue
+        // hold down command key (if applicable)
+        if keyOptions.contains(.withCommandKey) {
+            keyEventFlagsRawValue |= CGEventFlags.maskCommand.rawValue
+        }
+        //
+        // hold down shift key (if applicable)
+        if keyOptions.contains(.withShiftKey) {
+            keyEventFlagsRawValue |= CGEventFlags.maskShift.rawValue
+        }
+        //
+        // hold down caps lock key (if applicable)
+        if keyOptions.contains(.withCapsLockKey) {
+            keyEventFlagsRawValue |= CGEventFlags.maskAlphaShift.rawValue
         }
         //
         // hold down alternate/option key (if applicable)
@@ -135,9 +186,9 @@ public class MorphicInput {
            keyEventFlagsRawValue |= CGEventFlags.maskAlternate.rawValue
         }
         //
-        // hold down command key (if applicable)
-        if keyOptions.contains(.withCommandKey) {
-            keyEventFlagsRawValue |= CGEventFlags.maskCommand.rawValue
+        // hold down control key (if applicable)
+        if keyOptions.contains(.withControlKey) {
+            keyEventFlagsRawValue |= CGEventFlags.maskControl.rawValue
         }
         //
         keyEvent.flags = CGEventFlags(rawValue: keyEventFlagsRawValue)
