@@ -34,6 +34,7 @@ public class SettingsManager {
     public static var shared: SettingsManager = SettingsManager()
     
     private init() {
+        // Display
         ClientSettingHandler.register(type: DisplayZoomHandler.self, for: .macosDisplayZoom)
         DefaultsReadUIWriteSettingHandler.register(automation: ContrastUIAutomation.self, for: .macosDisplayContrastEnabled)
         DefaultsReadUIWriteSettingHandler.register(automation: InvertColorsUIAutomation.self, for: .macosDisplayInvertColors)
@@ -47,8 +48,10 @@ public class SettingsManager {
         DefaultsReadUIWriteSettingHandler.register(automation: ColorFilterTypeAutomation.self, for: .macosColorFilterType)
         DefaultsReadUIWriteSettingHandler.register(automation: ColorFilterIntensityUIAutomation.self, for: .macosColorFilterIntensity)
         
+        // Voice Over
         DefaultsReadUIWriteSettingHandler.register(automation: VoiceOverUIAutomation.self, for: .macosVoiceOverEnabled)
         
+        // Zoom
         DefaultsReadUIWriteSettingHandler.register(automation: ZoomEnabledUIAutomation.self, for: .macosZoomEnabled)
         DefaultsReadUIWriteSettingHandler.register(automation: ScrollToZoomEnabledUIAutomation.self, for: .macosScrollToZoomEnabled)
         DefaultsReadUIWriteSettingHandler.register(automation: HoverTextEnabledUIAutomation.self, for: .macosHoverTextEnabled)
