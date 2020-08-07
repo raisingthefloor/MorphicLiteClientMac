@@ -161,6 +161,18 @@
 /* Message for the help window for the hide magnifier button */
 "control.feature.contrast.off.help.message" = "Make it harder to distinguish items";
 
+/* Label for the buttons that play/stop 'read selected text' */
+"control.feature.readselected.title" = "Read Selected";
+
+/* Label for the button that plays/stops 'read selected text' */
+"control.feature.readselected.playstop" = "\U25B6 / \U25A0";
+
+/* Title for the help window for the play/stop 'read selected text' button */
+"control.feature.readselected.playstop.help.title" = "Read/Stop Reading Selected Text";
+
+/* Message for the help window for the play/stop 'read selected text' button */
+"control.feature.readselected.playstop.help.message" = "How to use: Select text and then click this button to have it read to you. Click again to stop.";
+
 /* Label for the buttons that control night mode */
 "control.feature.nightshift.title" = "Night Mode";
 

@@ -29,9 +29,8 @@ private let logger = OSLog(subsystem: "MorphicSettings", category: "DefaultsRead
 
 /// A setting handler that reads values from user defaults, but writes values using the system preferences UI
 ///
-/// The asymmetry between read and write is because macOS won't let us write the user defaults directly.
-/// Additionally, several system settings checkboxes actually change more than one default and call private
-/// functions that we don't have access to, so using the UI is the best option.
+/// The asymmetry between read and write is because macOS won't let us write the user defaults directly (sometimes because we don't have Full Trust, sometimes because of SIP).
+/// Additionally, several system settings checkboxes actually change more than one default and call private functions that we don't have access to, so using the UI is the best option.
 public class DefaultsReadUIWriteSettingHandler: SettingHandler {
     
     public required init(setting: Setting) {

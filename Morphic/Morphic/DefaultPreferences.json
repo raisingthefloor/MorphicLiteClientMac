@@ -14,7 +14,7 @@
             },
             {
                 "type": "control",
-                "feature": "reader"
+                "feature": "readselected"
             },
             {
                 "type": "control",

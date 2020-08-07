@@ -34,6 +34,7 @@ public class SettingsManager {
     public static var shared: SettingsManager = SettingsManager()
     
     private init() {
+        // Display
         ClientSettingHandler.register(type: DisplayZoomHandler.self, for: .macosDisplayZoom)
         DefaultsReadUIWriteSettingHandler.register(automation: ContrastUIAutomation.self, for: .macosDisplayContrastEnabled)
         DefaultsReadUIWriteSettingHandler.register(automation: InvertColorsUIAutomation.self, for: .macosDisplayInvertColors)
@@ -46,9 +47,14 @@ public class SettingsManager {
         DefaultsReadUIWriteSettingHandler.register(automation: ColorFilterEnabledAutomation.self, for: .macosColorFilterEnabled)
         DefaultsReadUIWriteSettingHandler.register(automation: ColorFilterTypeAutomation.self, for: .macosColorFilterType)
         DefaultsReadUIWriteSettingHandler.register(automation: ColorFilterIntensityUIAutomation.self, for: .macosColorFilterIntensity)
+
+        // Speech
+        DefaultsReadUIWriteSettingHandler.register(automation: SpeakSelectedTextEnabledUIAutomation.self, for: .macosSpeakSelectedTextEnabled)
         
+        // Voice Over
         DefaultsReadUIWriteSettingHandler.register(automation: VoiceOverUIAutomation.self, for: .macosVoiceOverEnabled)
         
+        // Zoom
         DefaultsReadUIWriteSettingHandler.register(automation: ZoomEnabledUIAutomation.self, for: .macosZoomEnabled)
         DefaultsReadUIWriteSettingHandler.register(automation: ScrollToZoomEnabledUIAutomation.self, for: .macosScrollToZoomEnabled)
         DefaultsReadUIWriteSettingHandler.register(automation: HoverTextEnabledUIAutomation.self, for: .macosHoverTextEnabled)
@@ -154,6 +160,9 @@ public extension Preferences.Key {
     static var macosColorFilterEnabled = Preferences.Key(solution: "com.apple.macos.display", preference: "colorfilter.enabled")
     static var macosColorFilterType = Preferences.Key(solution: "com.apple.macos.display", preference: "colorfilter.type")
     static var macosColorFilterIntensity = Preferences.Key(solution: "com.apple.macos.display", preference: "colorfilter.intensity")
+    
+    // Speech
+    static var macosSpeakSelectedTextEnabled = Preferences.Key(solution: "com.apple.macos.speech", preference: "speakselectedtext.enabled")
     
     // Voice Over
     static var macosVoiceOverEnabled = Preferences.Key(solution: "com.apple.macos.voiceover", preference: "enabled")

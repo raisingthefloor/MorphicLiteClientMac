@@ -81,7 +81,26 @@ public class AccessibilityUIAutomation: UIAutomation {
             }
         }
     }
-    
+
+    public func showAccessibilitySpeechPreferences(completion: @escaping (_ accessibility: AccessibilityPreferencesElement?) -> Void){
+        showAccessibilityPreferences {
+            accessibility in
+            guard let accessibility = accessibility else {
+                completion(nil)
+                return
+            }
+            accessibility.selectSpeech {
+                success in
+                guard success else {
+                    os_log(.error, log: logger, "Failed to select Speech category")
+                    completion(nil)
+                    return
+                }
+                completion(accessibility)
+            }
+        }
+    }
+
     public func showAccessibilityVoiceOverPreferences(completion: @escaping (_ accessibility: AccessibilityPreferencesElement?) -> Void){
         showAccessibilityPreferences {
             accessibility in
@@ -91,7 +110,7 @@ public class AccessibilityUIAutomation: UIAutomation {
             }
             accessibility.selectVoiceOver {
                 success in
-                guard success else{
+                guard success else {
                     os_log(.error, log: logger, "Failed to select VoiceOver category")
                     completion(nil)
                     return
