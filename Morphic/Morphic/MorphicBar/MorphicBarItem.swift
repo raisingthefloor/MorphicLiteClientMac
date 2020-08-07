@@ -266,7 +266,10 @@ class MorphicBarControlItem: MorphicBarItem{
             let keyOptions: MorphicInput.KeyOptions
             if speakSelectedTextHotKeyCombo != 0 {
                 guard let (customKeyCode, customKeyOptions) = MorphicInput.parseDefaultsKeyCombo(speakSelectedTextHotKeyCombo) else {
-                    fatalError("could not decode key; be sure to log the error or let the user know")
+                    // NOTE: while we should be able to decode any custom hotkey, this code is here to capture edge cases we have not anticipated
+                    // NOTE: in the future, we should consider an informational prompt alerting the user that we could not decode their custom hotkey (so they know why the feature did not work...or at least that it intentionally did not work)
+                    NSLog("Could not decode custom hotkey")
+                    return
                 }
                 keyCode = customKeyCode
                 keyOptions = customKeyOptions
