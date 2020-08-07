@@ -243,54 +243,79 @@ class MorphicBarControlItem: MorphicBarItem{
 
     @objc
     func readselected(_ sender: Any?) {
-        // NOTE: we retrieve system settings here which are _not_ otherwise captured by Morphic; if we decide to capture those settings in the future for broader capture/apply purposes, then we should modify this code to access those settings in the normal place (while making sure that we are not getting cached data...since we need to check these settings every time this function is called).
+        // verify that we have accessibility permissions (since UI automation and sendKeys will not work without them)
+        // NOTE: this function call will prompt the user for authorization if they have not already granted it
+        guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+            NSLog("User had not granted 'accessibility' authorization; user now prompted")
+            return
+        }
+        
+        // NOTE: we retrieve system settings here which are _not_ otherwise captured by Morphic; if we decide to capture those settings in the future for broader capture/apply purposes, then we should modify this code to access those settings via Session.shared (if doing so will ensure that we are not getting cached data...rather than 'captured or set data'...since we need to check these settings every time this function is called).
         let defaultsDomain = "com.apple.speech.synthesis.general.prefs"
         guard let defaults = UserDefaults(suiteName: defaultsDomain) else {
             NSLog("Could not access defaults domain: \(defaultsDomain)")
             return
         }
         
-        // obtain any custom-specified key sequence used for activating the "speak selected text" feature in macOS (or else assume default)
-        let speakSelectedTextHotKeyCombo = defaults.integer(forKey: "SpokenUIUseSpeakingHotKeyCombo")
-        //
-        let keyCode: CGKeyCode
-        let keyOptions: MorphicInput.KeyOptions
-        if speakSelectedTextHotKeyCombo != 0 {
-            guard let (customKeyCode, customKeyOptions) = MorphicInput.parseDefaultsKeyCombo(speakSelectedTextHotKeyCombo) else {
-                fatalError("could not decode key; be sure to log the error or let the user know")
+        // NOTE: sendSpeakSelectedTextHotKey will be called synchronously or asynchronously (depending on whether we need to enable the OS feature asynchronously first)
+        let sendSpeakSelectedTextHotKey = {
+            // obtain any custom-specified key sequence used for activating the "speak selected text" feature in macOS (or else assume default)
+            let speakSelectedTextHotKeyCombo = defaults.integer(forKey: "SpokenUIUseSpeakingHotKeyCombo")
+            //
+            let keyCode: CGKeyCode
+            let keyOptions: MorphicInput.KeyOptions
+            if speakSelectedTextHotKeyCombo != 0 {
+                guard let (customKeyCode, customKeyOptions) = MorphicInput.parseDefaultsKeyCombo(speakSelectedTextHotKeyCombo) else {
+                    fatalError("could not decode key; be sure to log the error or let the user know")
+                }
+                keyCode = customKeyCode
+                keyOptions = customKeyOptions
+            } else {
+                // default hotkey is Option+Esc
+                keyCode = CGKeyCode(kVK_Escape)
+                keyOptions = .withAlternateKey
             }
-            keyCode = customKeyCode
-            keyOptions = customKeyOptions
-        } else {
-            // default hotkey is Option+Esc
-            keyCode = CGKeyCode(kVK_Escape)
-            keyOptions = .withAlternateKey
-        }
-        
-        //
-        
-        // get the window ID of the topmost window
-        guard let (_ /* topmostWindowOwnerName */, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
-            NSLog("Could not get ID of topmost window")
-            return
-        }
+            
+            //
+            
+            // get the window ID of the topmost window
+            guard let (_ /* topmostWindowOwnerName */, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
+                NSLog("Could not get ID of topmost window")
+                return
+            }
 
-        // capture a reference to the topmost application
-        guard let topmostApplication = NSRunningApplication(processIdentifier: pid_t(topmostProcessId)) else {
-            NSLog("Could not get reference to application owning the topmost window")
-            return
+            // capture a reference to the topmost application
+            guard let topmostApplication = NSRunningApplication(processIdentifier: pid_t(topmostProcessId)) else {
+                NSLog("Could not get reference to application owning the topmost window")
+                return
+            }
+            
+            // activate the topmost application
+            guard topmostApplication.activate(options: .activateIgnoringOtherApps) == true else {
+                NSLog("Could not activate the topmost window")
+                return
+            }
+            
+            // send the "speak selected text key" to the system
+            guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
+                NSLog("Could not send 'Speak selected text' hotkey to the keyboard input stream")
+                return
+            }
         }
         
-        // activate the topmost application
-        guard topmostApplication.activate(options: .activateIgnoringOtherApps) == true else {
-            NSLog("Could not activate the topmost window")
-            return
-        }
         
-        // send the "speak selected text key" to the system
-        guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
-            NSLog("Could not send 'Speak selected text' hotkey to the keyboard input stream")
-            return
+        // make sure the user has "speak selected text..." enabled in System Preferences
+        let speakSelectedTextKeyEnabled = defaults.bool(forKey: "SpokenUIUseSpeakingHotKeyFlag")
+        if speakSelectedTextKeyEnabled == false {
+            // if SpokenUIUseSpeakingHotKeyFlag is false, then enable it via UI automation
+            Session.shared.apply(true, for: .macosSpeakSelectedTextEnabled) {
+                _ in
+                // send the hotkey (asynchronously) once we have enabled macOS's "speak selected text" feature
+                sendSpeakSelectedTextHotKey()
+            }
+        } else {
+            // send the hotkey (synchronously) now
+            sendSpeakSelectedTextHotKey()
         }
     }
 

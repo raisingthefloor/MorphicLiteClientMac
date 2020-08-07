@@ -52,7 +52,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
                 self.logoutItem?.isHidden = Session.shared.user == nil
-                if Session.shared.bool(for: .morphicBarVisible) ?? true{
+                if Session.shared.bool(for: .morphicBarVisible) ?? true {
                     self.showMorphicBar(nil)
                 }
                 DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.userDidSignin), name: .morphicSignin, object: nil)

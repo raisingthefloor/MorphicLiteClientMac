@@ -139,6 +139,23 @@
     ]
   },
   {
+    "id": "com.apple.macos.speech",
+    "settings": [
+      {
+        "name": "speakselectedtext.enabled",
+        "type": "boolean",
+        "default": false,
+        "handler": {
+          "type": "com.apple.macos.defaults-read-ui-write",
+          "defaults_domain": "com.apple.speech.synthesis.general.prefs",
+          "defaults_key": "SpokenUIUseSpeakingHotKeyFlag",
+          "solution": "com.apple.macos.speech",
+          "preference": "speakselectedtext.enabled"
+        }
+      }
+    ]
+  },
+  {
     "id": "com.apple.macos.voiceover",
     "settings": [
       {
