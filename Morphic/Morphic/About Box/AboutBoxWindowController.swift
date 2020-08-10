@@ -65,14 +65,12 @@ class AboutBoxWindowController: NSWindowController, NSWindowDelegate {
             versionTextField.stringValue = "[version is unknown]"
         }
         //
-        // NOTE: for future use: if we incremenet the build version, we can show the build information; for now, just show an empty box
-buildTextField.stringValue = ""
-//        if let buildAsString = Bundle.main.infoDictionary?["CustomBuildInfo" as String] {
-//            buildTextField.stringValue = "(build \(buildAsString))"
-//        } else {
-//            assertionFailure("could not retrieve application build #")
-//            buildTextField.stringValue = "[bundle version is unknown]"
-//        }
+        if let buildAsString = Bundle.main.infoDictionary?["CFBundleVersion" as String] {
+            buildTextField.stringValue = "(build \(buildAsString))"
+        } else {
+            assertionFailure("could not retrieve application build #")
+            buildTextField.stringValue = "[build version is unknown]"
+        }
     }
     
     func centerOnScreen() {
