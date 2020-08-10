@@ -47,6 +47,9 @@ class StorageTests: XCTestCase {
     let inverseVideoVal: Bool = true
     let inverseVideoKey = Preferences.Key(solution: "Magnifier", preference: "inverse_video")
 
+    let defaultsId = "__default__"
+    let defaultsUserId:String? = nil
+
     override func setUpWithError() throws {
         prefsToStore = Preferences(identifier: prefsId)
         prefsToStore.userId = userId
@@ -60,36 +63,60 @@ class StorageTests: XCTestCase {
         prefsToStore = nil
     }
 
-    func testSaveLoad() {
-        storage.save(record: prefsToStore, completion: runLoadTest)
-    }
+    func testSaveReload() {
+        let saveExpect = XCTestExpectation(description: "Test saving of preferences")
+        storage.save(record: prefsToStore, completion: { (_ saveSuccessful: Bool) -> Void in
+            XCTAssertTrue(saveSuccessful, "Test storing preferences")
+            saveExpect.fulfill()
+        })
+        wait(for: [saveExpect], timeout: 10.0)
 
-    func runLoadTest(_ saveSuccessful: Bool) {
-        XCTAssertTrue(saveSuccessful, "Test storing preferences")
-        storage.load(identifier: prefsId, completion: checkLoadedPrefs)
-    }
+        let loadExpect = XCTestExpectation(description: "Test loading of just saved preferences")
+        storage.load(identifier: prefsId, completion: { (_ actual: Preferences?) -> Void in
+            guard let actualPrefs = actual else {
+                XCTFail("Test loading preferences: failed to load")
+                loadExpect.fulfill()
+                return
+            }
+            XCTAssertEqual(actualPrefs.userId, self.userId, "Test loaded preferences user id")
 
-    func checkLoadedPrefs(_ actual: Preferences?) {
-        guard let actualPrefs = actual else {
-            XCTFail("Test loading preferences: failed to load")
-            return
-        }
-        XCTAssertEqual(actualPrefs.userId, userId, "Test loaded preferences user id")
-        let loadedMagFactor: Double = actualPrefs.get(key: magFactorKey) as! Double
-        XCTAssertEqual(loadedMagFactor, magFactorVal, "Test loaded magnification factor")
-        let loadedInverseVideo: Bool = actualPrefs.get(key: inverseVideoKey) as! Bool
-        XCTAssertEqual(loadedInverseVideo, inverseVideoVal, "Test loaded inverse video")
+            let loadedMagFactor: Double = actualPrefs.get(key: self.magFactorKey) as! Double
+            XCTAssertEqual(loadedMagFactor, self.magFactorVal, "Test loaded magnification factor")
+
+            let loadedInverseVideo: Bool = actualPrefs.get(key: self.inverseVideoKey) as! Bool
+            XCTAssertEqual(loadedInverseVideo, self.inverseVideoVal, "Test loaded inverse video")
+
+            loadExpect.fulfill()
+        })
+        wait(for: [loadExpect], timeout: 10.0)
     }
 
     func testContains() {
-        storage.save(record: prefsToStore, completion: checkContains)
+        let containExpect = XCTestExpectation(description: "Test store contains preferences")
+        storage.save(record: prefsToStore, completion: { (_ succeeded: Bool) -> Void in
+            if succeeded {
+                let isContained = self.storage.contains(identifier: self.prefsId, type: Preferences.self)
+                XCTAssertTrue(isContained, "Test store contains known preferences")
+            } else {
+                XCTFail("Test store for known preferences: failure to save preferences")
+            }
+            containExpect.fulfill()
+        })
+        wait(for: [containExpect], timeout: 10.0)
     }
 
-    func checkContains(_ succeeded: Bool) {
-        if succeeded {
-            XCTAssertTrue(storage.contains(identifier: prefsId, type: Preferences.self), "Test store contains known preferences")
-        } else {
-            XCTFail("Test store for known preferences: failure to save preferences")
-        }
+    func testLoadDefaults() {
+        let loadExpect = XCTestExpectation(description: "Test loading from default preferences")
+        storage.load(identifier: defaultsId, completion: { (_ actual: Preferences?) -> Void in
+            guard let actualPrefs = actual else {
+                XCTFail("Test loading preferences: failed to load")
+                loadExpect.fulfill()
+                return
+            }
+            XCTAssertEqual(actualPrefs.identifier, self.defaultsId, "Test loaded default preferences identifier")
+            XCTAssertEqual(actualPrefs.userId, self.defaultsUserId, "Test loaded default preferences user id")
+            loadExpect.fulfill()
+        })
+        wait(for: [loadExpect], timeout: 10.0)
     }
 }
