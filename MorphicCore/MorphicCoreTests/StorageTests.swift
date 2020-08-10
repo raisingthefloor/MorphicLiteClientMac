@@ -65,13 +65,11 @@ class StorageTests: XCTestCase {
 
     func testSaveReload() {
         let saveExpect = XCTestExpectation(description: "Test saving of preferences")
+        let loadExpect = XCTestExpectation(description: "Test loading of just saved preferences")
         storage.save(record: prefsToStore, completion: { (_ saveSuccessful: Bool) -> Void in
             XCTAssertTrue(saveSuccessful, "Test storing preferences")
             saveExpect.fulfill()
         })
-        wait(for: [saveExpect], timeout: 10.0)
-
-        let loadExpect = XCTestExpectation(description: "Test loading of just saved preferences")
         storage.load(identifier: prefsId, completion: { (_ actual: Preferences?) -> Void in
             guard let actualPrefs = actual else {
                 XCTFail("Test loading preferences: failed to load")
@@ -88,7 +86,7 @@ class StorageTests: XCTestCase {
 
             loadExpect.fulfill()
         })
-        wait(for: [loadExpect], timeout: 10.0)
+        wait(for: [saveExpect, loadExpect], timeout: 10.0, enforceOrder: true)
     }
 
     func testContains() {
