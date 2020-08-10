@@ -21,6 +21,7 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
+import Carbon.HIToolbox
 import Cocoa
 import MorphicCore
 import MorphicSettings
@@ -67,6 +68,7 @@ class MorphicBarControlItem: MorphicBarItem{
         case resolution
         case magnifier
         case reader
+        case readselected
         case volume
         case contrast
         case nightshift
@@ -125,6 +127,17 @@ class MorphicBarControlItem: MorphicBarItem{
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.reader(_:))
+            return view
+        case .readselected:
+            let localized = LocalizedStrings(prefix: "control.feature.readselected")
+            let playStopHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "playstop.help.title"), message: localized.string(for: "playstop.help.message")) }
+            let segments = [
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "playstop"), isPrimary: true, helpProvider: playStopHelpProvider, accessibilityLabel: localized.string(for: "playstop.help.title"))
+            ]
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(MorphicBarControlItem.readselected)
             return view
         case .volume:
             let localized = LocalizedStrings(prefix: "control.feature.volume")
@@ -253,7 +266,88 @@ class MorphicBarControlItem: MorphicBarItem{
             }
         }
     }
-    
+
+    @objc
+    func readselected(_ sender: Any?) {
+        // verify that we have accessibility permissions (since UI automation and sendKeys will not work without them)
+        // NOTE: this function call will prompt the user for authorization if they have not already granted it
+        guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+            NSLog("User had not granted 'accessibility' authorization; user now prompted")
+            return
+        }
+        
+        // NOTE: we retrieve system settings here which are _not_ otherwise captured by Morphic; if we decide to capture those settings in the future for broader capture/apply purposes, then we should modify this code to access those settings via Session.shared (if doing so will ensure that we are not getting cached data...rather than 'captured or set data'...since we need to check these settings every time this function is called).
+        let defaultsDomain = "com.apple.speech.synthesis.general.prefs"
+        guard let defaults = UserDefaults(suiteName: defaultsDomain) else {
+            NSLog("Could not access defaults domain: \(defaultsDomain)")
+            return
+        }
+        
+        // NOTE: sendSpeakSelectedTextHotKey will be called synchronously or asynchronously (depending on whether we need to enable the OS feature asynchronously first)
+        let sendSpeakSelectedTextHotKey = {
+            // obtain any custom-specified key sequence used for activating the "speak selected text" feature in macOS (or else assume default)
+            let speakSelectedTextHotKeyCombo = defaults.integer(forKey: "SpokenUIUseSpeakingHotKeyCombo")
+            //
+            let keyCode: CGKeyCode
+            let keyOptions: MorphicInput.KeyOptions
+            if speakSelectedTextHotKeyCombo != 0 {
+                guard let (customKeyCode, customKeyOptions) = MorphicInput.parseDefaultsKeyCombo(speakSelectedTextHotKeyCombo) else {
+                    // NOTE: while we should be able to decode any custom hotkey, this code is here to capture edge cases we have not anticipated
+                    // NOTE: in the future, we should consider an informational prompt alerting the user that we could not decode their custom hotkey (so they know why the feature did not work...or at least that it intentionally did not work)
+                    NSLog("Could not decode custom hotkey")
+                    return
+                }
+                keyCode = customKeyCode
+                keyOptions = customKeyOptions
+            } else {
+                // default hotkey is Option+Esc
+                keyCode = CGKeyCode(kVK_Escape)
+                keyOptions = .withAlternateKey
+            }
+            
+            //
+            
+            // get the window ID of the topmost window
+            guard let (_ /* topmostWindowOwnerName */, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
+                NSLog("Could not get ID of topmost window")
+                return
+            }
+
+            // capture a reference to the topmost application
+            guard let topmostApplication = NSRunningApplication(processIdentifier: pid_t(topmostProcessId)) else {
+                NSLog("Could not get reference to application owning the topmost window")
+                return
+            }
+            
+            // activate the topmost application
+            guard topmostApplication.activate(options: .activateIgnoringOtherApps) == true else {
+                NSLog("Could not activate the topmost window")
+                return
+            }
+            
+            // send the "speak selected text key" to the system
+            guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
+                NSLog("Could not send 'Speak selected text' hotkey to the keyboard input stream")
+                return
+            }
+        }
+        
+        
+        // make sure the user has "speak selected text..." enabled in System Preferences
+        let speakSelectedTextKeyEnabled = defaults.bool(forKey: "SpokenUIUseSpeakingHotKeyFlag")
+        if speakSelectedTextKeyEnabled == false {
+            // if SpokenUIUseSpeakingHotKeyFlag is false, then enable it via UI automation
+            Session.shared.apply(true, for: .macosSpeakSelectedTextEnabled) {
+                _ in
+                // send the hotkey (asynchronously) once we have enabled macOS's "speak selected text" feature
+                sendSpeakSelectedTextHotKey()
+            }
+        } else {
+            // send the hotkey (synchronously) now
+            sendSpeakSelectedTextHotKey()
+        }
+    }
+
     @objc
     func magnifier(_ sender: Any?) {
         guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else {

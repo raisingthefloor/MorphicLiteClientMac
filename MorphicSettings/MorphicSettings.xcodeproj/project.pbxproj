@@ -64,6 +64,7 @@
 		9D0AF73924A0FB78007E177E /* MorphicA11yUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */; };
 		9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */; };
 		9DCE209224CF1AAF00D3445B /* MorphicA11yAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */; };
+		9DD22FBA24DCB8B800C2FA52 /* SpeechUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -151,6 +152,7 @@
 		9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yUIElement.swift; sourceTree = "<group>"; };
 		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
 		9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yAuthorization.swift; sourceTree = "<group>"; };
+		9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechUIAutomations.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,6 +202,7 @@
 				314EB6DF24A6A69B00CF3D48 /* DisplayUIAutomations.swift */,
 				31F9AEE224A7F7EA0026EBDA /* VoiceOverUIAutomations.swift */,
 				31F9AEE424A803B90026EBDA /* ZoomUIAutomations.swift */,
+				9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */,
 			);
 			path = Automations;
 			sourceTree = "<group>";
@@ -554,6 +557,7 @@
 				9D0AF73724A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift in Sources */,
 				31CE56E22448C8F700A52A7B /* SettingHandler.swift in Sources */,
 				315EEC8724A536A60039C61D /* TabGroupElement.swift in Sources */,
+				9DD22FBA24DCB8B800C2FA52 /* SpeechUIAutomations.swift in Sources */,
 				3137AC4224B0FB9600CE3808 /* MenuElement.swift in Sources */,
 				315EEC9924A5714F0039C61D /* RowElement.swift in Sources */,
 				314EB6E024A6A69B00CF3D48 /* DisplayUIAutomations.swift in Sources */,

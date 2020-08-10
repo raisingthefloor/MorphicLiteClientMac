@@ -61,7 +61,7 @@ public class ZoomCheckboxUIAutomation: AccessibilityUIAutomation {
     
 }
 
-public class ZoomPopupButtonUIAutomation: AccessibilityUIAutomation{
+public class ZoomPopupButtonUIAutomation: AccessibilityUIAutomation {
     
     var buttonTitle: String! { nil }
     
