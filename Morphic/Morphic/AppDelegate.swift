@@ -48,7 +48,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         populateSolutions()
         createStatusItem()
         loadInitialDefaultPreferences()
-        createEmptyDefaultPreferencesIfNotExist{
+        createEmptyDefaultPreferencesIfNotExist {
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
                 self.logoutItem?.isHidden = Session.shared.user == nil

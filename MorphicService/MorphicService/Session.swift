@@ -47,15 +47,28 @@ public class Session {
     /// Open a session, fetching the current user's data if we have saved credentials
     public func open(completion: @escaping () -> Void) {
         let loadPreferences = {
-            self.storage.load(identifier: self.user?.preferencesId ?? "__default__") {
-                (prefs: Preferences?) in
-                self.preferences = prefs
+            let identifier = self.user?.preferencesId ?? "__default__"
+            self.storage.load(identifier: identifier) {
+                (status: Storage.LoadStatus, prefs: Preferences?) in
+                switch status {
+                case .success:
+                    self.preferences = prefs
+                case .fileUrlMissing,
+                     .couldNotReadFile,
+                     .couldNotDecodeJson:
+                    // NOTE: this may be informational (file does not exist) or it may be an error (file was corrupt)
+                    os_log(.error, log: logger, "Could not retrieve preferences from storage")
+                    
+                    // degrade gracefully: initialize a default set of preferences
+                    self.preferences = Preferences(identifier: identifier)
+                }
+                
                 completion()
             }
         }
         if let userId = currentUserIdentifier {
             storage.load(identifier: userId) {
-                (user: User?) in
+                (_, user: User?) in
                 self.user = user
                 loadPreferences()
             }
@@ -422,9 +435,9 @@ public class Session {
     public func signout(completion: @escaping () -> Void) {
         user = nil
         storage.load(identifier: "__default__") {
-            (defautPreferences: Preferences?) in
-            self.preferences = defautPreferences
-            let apply = ApplySession(settingsManager: self.settings, preferences: defautPreferences!)
+            (_, defaultPreferences: Preferences?) in
+            self.preferences = defaultPreferences
+            let apply = ApplySession(settingsManager: self.settings, preferences: defaultPreferences!)
             apply.run {
                 completion()
                 NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: self)
@@ -520,7 +533,7 @@ public class Session {
         preferencesSaveTimer = .scheduledTimer(withTimeInterval: 5, repeats: false) {
             timer in
             self.preferencesSaveTimer = nil
-            if let preferences = self.preferences{
+            if let preferences = self.preferences {
                 os_log(.info, log: logger, "Saving prefefences to disk")
                 self.storage.save(record: preferences) {
                     success in
