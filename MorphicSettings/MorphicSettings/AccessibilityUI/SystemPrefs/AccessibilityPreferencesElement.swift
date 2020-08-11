@@ -38,7 +38,13 @@ public class AccessibilityPreferencesElement: UIElement {
                 case .display:
                     return "Display"
                 case .speech:
-                    return "Speech"
+                    if ProcessInfo().isOperatingSystemAtLeast(OperatingSystemVersion(majorVersion: 10, minorVersion: 16, patchVersion: 0)) {
+                        // >= macOS 11.0
+                        return "Spoken Content"
+                    } else {
+                        // >= macOS 10.14
+                        return "Speech"
+                    }
                 case .voiceOver:
                     return "VoiceOver"
                 case .zoom:
@@ -74,7 +80,17 @@ public class AccessibilityPreferencesElement: UIElement {
                 completion(false)
                 return
             }
-            self.wait(atMost: 1.0, for: { self.checkbox(titled: "Enable announcements") != nil}) {
+            //
+            let waitForCheckboxTitle: String
+            if ProcessInfo().isOperatingSystemAtLeast(OperatingSystemVersion(majorVersion: 10, minorVersion: 16, patchVersion: 0)) {
+                // >= macOS 11.0
+                waitForCheckboxTitle = "Speak announcements"
+            } else {
+                // >= macOS 10.14
+                waitForCheckboxTitle = "Enable announcements"
+            }
+            //
+            self.wait(atMost: 1.0, for: { self.checkbox(titled: waitForCheckboxTitle) != nil}) {
                 success in
                 completion(success)
             }
