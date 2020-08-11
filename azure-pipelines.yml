@@ -30,7 +30,7 @@ variables:
 - name: signingOption
   value: 'default' # this setting uses the builtin project configuration options for signing
 - name: extraArgs
-  value: 'OTHER_CODE_SIGN_FLAGS="--timestamp"'
+  value: 'OTHER_CODE_SIGN_FLAGS="--timestamp" CURRENT_PROJECT_VERSION=“$(Build.BuildNumber)"'
 
 pool:
   vmImage: 'macos-latest'
@@ -47,12 +47,6 @@ steps:
   inputs:
     provProfileSecureFile: 'Morphic_Client_for_macOS.provisionprofile'
 
-- task: Bash@3
-  displayName: "update plist versions"
-  inputs:
-    targetType: filePath
-    filePath: set-version.sh
-    arguments: "$(finalVersion)"
 - task: Xcode@5
   displayName: Build MorphicCore
   inputs:
