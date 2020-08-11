@@ -332,7 +332,6 @@ class MorphicBarControlItem: MorphicBarItem{
             }
         }
         
-        
         // make sure the user has "speak selected text..." enabled in System Preferences
         let speakSelectedTextKeyEnabled = defaults.bool(forKey: "SpokenUIUseSpeakingHotKeyFlag")
         if speakSelectedTextKeyEnabled == false {
@@ -373,7 +372,7 @@ class MorphicBarControlItem: MorphicBarItem{
             }
         }else{
             session.storage.load(identifier: "__magnifier__") {
-                (preferences: Preferences?) in
+                (_, preferences: Preferences?) in
                 if let preferences = preferences {
                     let apply = ApplySession(settingsManager: session.settings, preferences: preferences)
                     apply.addFirst(key: .macosZoomEnabled, value: false)
