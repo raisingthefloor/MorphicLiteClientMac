@@ -24,8 +24,6 @@
 //
 //  StorageTests.swift
 //  MorphicCoreTests
-//
-//  Created by Joseph on 2020-07-23.
 
 import XCTest
 @testable import MorphicCore
@@ -50,6 +48,8 @@ class StorageTests: XCTestCase {
     let defaultsId = "__default__"
     let defaultsUserId:String? = nil
 
+    let noSuchPrefsId = "NoSuchPrefsIdZzz"
+
     override func setUpWithError() throws {
         prefsToStore = Preferences(identifier: prefsId)
         prefsToStore.userId = userId
@@ -70,7 +70,8 @@ class StorageTests: XCTestCase {
             XCTAssertTrue(saveSuccessful, "Test storing preferences")
             saveExpect.fulfill()
         })
-        storage.load(identifier: prefsId, completion: { (_ actual: Preferences?) -> Void in
+        storage.load(identifier: prefsId, completion: { (_ status:Storage.LoadStatus, _ actual: Preferences?) -> Void in
+            XCTAssertEqual(status, Storage.LoadStatus.success, "Test success status on load of preferences")
             guard let actualPrefs = actual else {
                 XCTFail("Test loading preferences: failed to load")
                 loadExpect.fulfill()
@@ -93,8 +94,10 @@ class StorageTests: XCTestCase {
         let containExpect = XCTestExpectation(description: "Test store contains preferences")
         storage.save(record: prefsToStore, completion: { (_ succeeded: Bool) -> Void in
             if succeeded {
-                let isContained = self.storage.contains(identifier: self.prefsId, type: Preferences.self)
+                var isContained = self.storage.contains(identifier: self.prefsId, type: Preferences.self)
                 XCTAssertTrue(isContained, "Test store contains known preferences")
+                isContained = self.storage.contains(identifier: self.noSuchPrefsId, type: Preferences.self)
+                XCTAssertFalse(isContained, "Test store does not contains unknown preferences")
             } else {
                 XCTFail("Test store for known preferences: failure to save preferences")
             }
@@ -105,7 +108,8 @@ class StorageTests: XCTestCase {
 
     func testLoadDefaults() {
         let loadExpect = XCTestExpectation(description: "Test loading from default preferences")
-        storage.load(identifier: defaultsId, completion: { (_ actual: Preferences?) -> Void in
+        storage.load(identifier: defaultsId, completion: { (_ status:Storage.LoadStatus, _ actual: Preferences?) -> Void in
+            XCTAssertEqual(status, Storage.LoadStatus.success, "Test success status on load of default preferences")
             guard let actualPrefs = actual else {
                 XCTFail("Test loading preferences: failed to load")
                 loadExpect.fulfill()

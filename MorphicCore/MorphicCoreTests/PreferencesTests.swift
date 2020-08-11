@@ -24,8 +24,6 @@
 //
 //  PreferencesTests.swift
 //  MorphicCoreTests
-//
-//  Created by Joseph on 2020-07-20.
 
 import XCTest
 @testable import MorphicCore

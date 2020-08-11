@@ -24,8 +24,6 @@
 //
 //  ArbitraryKeysTests.swift
 //  MorphicCoreTests
-//
-//  Created by Joseph on 2020-07-17.
 
 import XCTest
 @testable import MorphicCore
