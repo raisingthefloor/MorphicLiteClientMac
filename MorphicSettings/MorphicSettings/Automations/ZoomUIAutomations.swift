@@ -138,7 +138,7 @@ public class ZoomEnabledUIAutomation: AccessibilityUIAutomation {
                 completion(true)
                 return
             }
-            guard WorkspaceElement.shared.send(keyCodes: [kVK_Command, kVK_Option, kVK_ANSI_8]) else {
+            guard WorkspaceElement.shared.sendKey(keyCode: CGKeyCode(kVK_ANSI_8), keyOptions: [.withCommandKey, .withAlternateKey]) else {
                 os_log(.error, log: logger, "Failed to send key shortcut")
                 completion(false)
                 return
