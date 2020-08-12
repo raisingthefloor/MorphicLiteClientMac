@@ -21,7 +21,7 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Foundation
+import Cocoa
 
 // NOTE: the MorphicProcess class contains the functionality used by Obj-C and Swift applications
 
@@ -45,4 +45,40 @@ public class MorphicProcess {
          launchctlProcess.arguments = ["kickstart", "-k", domainTarget]
          launchctlProcess.launch()
      }
+    
+    public static func openProcess(at url: URL, arguments: [String], activate: Bool, hide: Bool, completionHandler: ((NSRunningApplication?, Error?) -> Void)? = nil) {
+        if #available(macOS 10.15, *) {
+            let config = NSWorkspace.OpenConfiguration()
+            config.activates = activate
+            config.hides = hide
+            NSWorkspace.shared.openApplication(at: url, configuration: config, completionHandler: completionHandler)
+        } else {
+            // fall-back to now-deprecated functionality for earlier versions of macOS
+            var launchOptionsValue: UInt = 0
+            if hide == true {
+                launchOptionsValue |= NSWorkspace.LaunchOptions.andHide.rawValue
+            }
+            if activate == false {
+                launchOptionsValue |= NSWorkspace.LaunchOptions.withoutActivation.rawValue
+            }
+            //
+            let options = NSWorkspace.LaunchOptions(rawValue: launchOptionsValue)
+            
+            var configuration: [NSWorkspace.LaunchConfigurationKey : Any] = [:]
+            if arguments != [] {
+                configuration[.arguments] = arguments as [NSString]
+            }
+
+            // NOTE: we use a synchronous function to launch our application, so we need to do this on a background thread (i.e. not the UI thread)
+            DispatchQueue.global(qos: .background).async {
+                do {
+                    // NOTE: the alternate overload of launchApplication (and maybe this one) sends didLaunchApplicationNotification to the NSWorkspace object’s notification center once the application is launched; as an alternative to our current DispatchQueue.async implementation, we could consider using a LaunchOption.async or calling the overload instead.
+                    let runningApplication = try NSWorkspace.shared.launchApplication(at: url, options: options, configuration: configuration)
+                    completionHandler?(runningApplication, nil)
+                } catch let error {
+                    completionHandler?(nil, error)
+                }
+            }
+        }
+    }
 }
