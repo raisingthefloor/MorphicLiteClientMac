@@ -134,7 +134,7 @@ public class ZoomEnabledUIAutomation: AccessibilityUIAutomation {
                 completion(false)
                 return
             }
-            if #available(macOS 15.0, *) {
+            if #available(macOS 10.15, *) {
                 guard checked != defaults.bool(forKey: "closeViewZoomedIn") else {
                     completion(true)
                     return
@@ -158,7 +158,7 @@ public class ZoomEnabledUIAutomation: AccessibilityUIAutomation {
                 completion(false)
                 return
             }
-            if #available(macOS 15.0, *) {
+            if #available(macOS 10.15, *) {
                 accessibility.wait(atMost: 5.0, for: { checked == defaults.bool(forKey: "closeViewZoomedIn") }) {
                     success in
                     completion(success)
