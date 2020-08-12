@@ -180,7 +180,7 @@ public class Keychain {
         attributes[kSecUseDataProtectionKeychain] = kCFBooleanTrue
         attributes[kSecAttrSynchronizable] = kCFBooleanFalse
         attributes[kSecAttrIsInvisible] = kCFBooleanFalse
-        attributes[kSecAttrModificationDate] = NSDate.now as CFDate
+        attributes[kSecAttrModificationDate] = Date() as CFDate
         var status = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
         if status == errSecItemNotFound {
             attributes[kSecAttrCreationDate] = attributes[kSecAttrModificationDate]
