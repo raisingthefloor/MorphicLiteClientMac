@@ -51,6 +51,8 @@ public class MorphicProcess {
             let config = NSWorkspace.OpenConfiguration()
             config.activates = activate
             config.hides = hide
+            config.arguments = arguments
+            
             NSWorkspace.shared.openApplication(at: url, configuration: config, completionHandler: completionHandler)
         } else {
             // fall-back to now-deprecated functionality for earlier versions of macOS
