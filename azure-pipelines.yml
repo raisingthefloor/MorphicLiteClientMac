@@ -30,7 +30,7 @@ variables:
 - name: signingOption
   value: 'default' # this setting uses the builtin project configuration options for signing
 - name: extraArgs
-  value: 'OTHER_CODE_SIGN_FLAGS="--timestamp" CURRENT_PROJECT_VERSION=“$(Build.BuildNumber)"'
+  value: 'OTHER_CODE_SIGN_FLAGS="--timestamp" CURRENT_PROJECT_VERSION="$(Build.BuildNumber)"'
 
 pool:
   vmImage: 'macos-latest'

@@ -98,25 +98,32 @@ public class Storage {
         }
     }
     
+    public enum LoadStatus {
+        case success
+        case fileUrlMissing
+        case couldNotReadFile
+        case couldNotDecodeJson
+    }
+    
     /// Load the object for the given identifier
     ///
     /// - parameters:
     ///   - identifier: The identifier of the object to load
     ///   - completion: The block to call with the loaded object
     ///   - document: The loaded object, or `nil` if no such identifier was saved
-    public func load<RecordType>(identifier: String, completion: @escaping (_ document: RecordType?) -> Void) where RecordType: Decodable, RecordType: Record {
+    public func load<RecordType>(identifier: String, completion: @escaping (_ status: LoadStatus, _ document: RecordType?) -> Void) where RecordType: Decodable, RecordType: Record {
         queue.async {
             guard let url = self.url(for: identifier, type: RecordType.self) else {
                 os_log(.error, log: logger, "Could not obtain a valid file url for loading")
                 DispatchQueue.main.async {
-                    completion(nil)
+                    completion(.fileUrlMissing, nil)
                 }
                 return
             }
             guard let data = self.fileManager.contents(atPath: url.path) else {
                 os_log(.error, log: logger, "Could not read data")
                 DispatchQueue.main.async {
-                    completion(nil)
+                    completion(.couldNotReadFile, nil)
                 }
                 return
             }
@@ -124,12 +131,12 @@ public class Storage {
             guard let record = try? decoder.decode(RecordType.self, from: data) else {
                 os_log(.error, log: logger, "Could not decode JSON")
                 DispatchQueue.main.async {
-                    completion(nil)
+                    completion(.couldNotDecodeJson, nil)
                 }
                 return
             }
             DispatchQueue.main.async {
-                completion(record)
+                completion(.success, record)
             }
         }
     }
