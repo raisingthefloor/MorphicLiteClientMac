@@ -59,21 +59,17 @@ class StorageTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
-        prefsToStore.remove(key: magFactorKey)      // necessary?
+        let removeExpect = XCTestExpectation(description: "Test removal of preferences")
+        try storage.remove(record: prefsToStore, completion: { (_ status:Storage.LoadStatus, _ prefs:Preferences? ) -> Void in
+            let actualPrefsId = prefs?.identifier ?? ""
+            XCTAssertEqual(status, Storage.LoadStatus.success, "Test remove preferences from Storage " + actualPrefsId)
+            removeExpect.fulfill()
+        })
+        wait(for: [removeExpect], timeout: 10.0)
+
+        prefsToStore.remove(key: magFactorKey)      // necessary?""
         prefsToStore.remove(key: inverseVideoKey)   // necessary?
         prefsToStore = nil
-
-        // Delete the preferences files created for testing
-        // JS: Should be better way of getting the filepath -- this is brittle
-        let prefsFile = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask)
-            .first?.appendingPathComponent("org.raisingthefloor.Morphic", isDirectory: true)
-            .appendingPathComponent("Data", isDirectory: true)
-            .appendingPathComponent(Preferences.typeName, isDirectory: true)
-            .appendingPathComponent(prefsId)
-            .appendingPathExtension("json")
-        if (prefsFile != nil) && (fileManager.fileExists(atPath: prefsFile!.path)) {
-            try fileManager.removeItem(at: prefsFile!)
-        }
     }
 
     func testSaveReload() {
@@ -124,7 +120,7 @@ class StorageTests: XCTestCase {
         storage.load(identifier: defaultsId, completion: { (_ status:Storage.LoadStatus, _ actual: Preferences?) -> Void in
             XCTAssertEqual(status, Storage.LoadStatus.success, "Test success status on load of default preferences")
             guard let actualPrefs = actual else {
-                XCTFail("Test loading preferences: failed to load")
+                XCTFail("Test loading default preferences: failed to load")
                 loadExpect.fulfill()
                 return
             }
