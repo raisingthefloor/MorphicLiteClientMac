@@ -150,7 +150,9 @@ public class Keychain {
     
     private func first(matching query: [CFString: CFTypeRef]) -> [CFString: CFTypeRef]? {
         var query = query
-        query[kSecUseDataProtectionKeychain] = kCFBooleanTrue
+        if #available(macOS 10.15, *) {
+            query[kSecUseDataProtectionKeychain] = kCFBooleanTrue
+        }
         query[kSecReturnData] = kCFBooleanTrue
         query[kSecReturnAttributes] = kCFBooleanTrue
         query[kSecMatchLimit] = kSecMatchLimitOne
@@ -177,10 +179,12 @@ public class Keychain {
     
     private func save(attributes: [CFString: CFTypeRef], matching query: [CFString: CFTypeRef]) -> Bool {
         var attributes = attributes
-        attributes[kSecUseDataProtectionKeychain] = kCFBooleanTrue
+        if #available(macOS 10.15, *) {
+            attributes[kSecUseDataProtectionKeychain] = kCFBooleanTrue
+        }
         attributes[kSecAttrSynchronizable] = kCFBooleanFalse
         attributes[kSecAttrIsInvisible] = kCFBooleanFalse
-        attributes[kSecAttrModificationDate] = NSDate.now as CFDate
+        attributes[kSecAttrModificationDate] = Date() as CFDate
         var status = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
         if status == errSecItemNotFound {
             attributes[kSecAttrCreationDate] = attributes[kSecAttrModificationDate]

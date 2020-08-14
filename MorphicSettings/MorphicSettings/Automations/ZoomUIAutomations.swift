@@ -134,18 +134,47 @@ public class ZoomEnabledUIAutomation: AccessibilityUIAutomation {
                 completion(false)
                 return
             }
-            guard checked != defaults.bool(forKey: "closeViewZoomedIn") else {
-                completion(true)
-                return
+            if #available(macOS 10.15, *) {
+                guard checked != defaults.bool(forKey: "closeViewZoomedIn") else {
+                    completion(true)
+                    return
+                }
+            } else {
+                // backwards compatibility for macOS 10.14
+                if checked == true {
+                    guard 1.0 == defaults.double(forKey: "closeViewZoomFactor") else {
+                        completion(true)
+                        return
+                    }
+                } else {
+                    guard 1.0 != defaults.double(forKey: "closeViewZoomFactor") else {
+                        completion(true)
+                        return
+                    }
+                }
             }
-            guard WorkspaceElement.shared.send(keyCodes: [kVK_Command, kVK_Option, kVK_ANSI_8]) else {
+            guard WorkspaceElement.shared.sendKey(keyCode: CGKeyCode(kVK_ANSI_8), keyOptions: [.withCommandKey, .withAlternateKey]) else {
                 os_log(.error, log: logger, "Failed to send key shortcut")
                 completion(false)
                 return
             }
-            accessibility.wait(atMost: 5.0, for: { checked == defaults.bool(forKey: "closeViewZoomedIn") }) {
-                success in
-                completion(success)
+            if #available(macOS 10.15, *) {
+                accessibility.wait(atMost: 5.0, for: { checked == defaults.bool(forKey: "closeViewZoomedIn") }) {
+                    success in
+                    completion(success)
+                }
+            } else {
+                // backwards compatibility for macOS 10.14
+                accessibility.wait(atMost: 5.0, for: {
+                    if checked == true {
+                        return 1.0 != defaults.double(forKey: "closeViewZoomFactor")
+                    } else {
+                        return 1.0 == defaults.double(forKey: "closeViewZoomFactor")
+                    }
+                }) {
+                    success in
+                    completion(success)
+                }
             }
         }
         

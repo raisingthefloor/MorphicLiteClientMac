@@ -55,22 +55,7 @@ public class WorkspaceElement: UIElement {
         launchedApplications = []
     }
     
-    public func send(keyCode: Int, down: Bool) -> Bool {
-        return KeyEvents.sendSystemWideKeyChar(CGCharCode(0), keyCode: CGKeyCode(keyCode), isDown: down)
+    public func sendKey(keyCode: CGKeyCode, keyOptions: MorphicInput.KeyOptions) -> Bool {
+        return MorphicInput.sendKey(keyCode: CGKeyCode(keyCode), keyOptions: keyOptions, inputEventSource: .loginSession)
     }
-    
-    public func send(keyCodes: [Int]) -> Bool {
-        for code in keyCodes {
-            if !send(keyCode: code, down: true) {
-                return false
-            }
-        }
-        for code in keyCodes {
-            if !send(keyCode: code, down: false) {
-                return false
-            }
-        }
-        return true
-    }
-    
 }

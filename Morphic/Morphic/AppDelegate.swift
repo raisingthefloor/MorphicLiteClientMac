@@ -271,12 +271,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             os_log(.error, log: logger, "Failed to construct bundled configurator app URL")
             return
         }
-        let config = NSWorkspace.OpenConfiguration()
-        config.activates = true
-        config.arguments = [argument]
-        NSWorkspace.shared.openApplication(at: url, configuration: config) {
+        MorphicProcess.openProcess(at: url, arguments: [argument], activate: true, hide: false) {
             (app, error) in
-            guard error == nil else{
+            guard error == nil else {
                 os_log(.error, log: logger, "Failed to launch configurator: %{public}s", error!.localizedDescription)
                 return
             }

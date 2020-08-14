@@ -61,14 +61,12 @@ class AboutBoxWindowController: NSWindowController, NSWindowDelegate {
         if let shortVersionAsString = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
             versionTextField.stringValue = shortVersionAsString
         } else {
-            assertionFailure("could not retrieve application version #")
             versionTextField.stringValue = "[version is unknown]"
         }
         //
         if let buildAsString = Bundle.main.infoDictionary?["CFBundleVersion" as String] {
             buildTextField.stringValue = "(build \(buildAsString))"
         } else {
-            assertionFailure("could not retrieve application build #")
             buildTextField.stringValue = "[build version is unknown]"
         }
     }

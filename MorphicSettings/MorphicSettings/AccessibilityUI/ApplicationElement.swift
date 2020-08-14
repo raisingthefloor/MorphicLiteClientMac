@@ -91,13 +91,10 @@ public class ApplicationElement: UIElement {
         }
         runningApplication = NSRunningApplication.runningApplications(withBundleIdentifier: bundleIdentifier).first
         if runningApplication == nil {
-            let config = NSWorkspace.OpenConfiguration()
-            config.activates = false
-            config.hides = true
-            NSWorkspace.shared.openApplication(at: url, configuration: config) {
+            MorphicProcess.openProcess(at: url, arguments: [], activate: false, hide: true) {
                 (runningApplication, error) in
                 DispatchQueue.main.async {
-                    guard runningApplication != nil else{
+                    guard runningApplication != nil else {
                         os_log(.error, log: logger, "Failed to launch application")
                         completion(false)
                         return

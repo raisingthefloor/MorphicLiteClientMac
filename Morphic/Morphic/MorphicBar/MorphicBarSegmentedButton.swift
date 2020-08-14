@@ -35,6 +35,8 @@ import Cocoa
 // Given the styling and behavior constraints, it seemed better to make a custom control
 // that draws a series of connected buttons than to use NSSegmentedControl.
 class MorphicBarSegmentedButton: NSControl {
+    // NOTE: in macOS 10.14, setting integerValue to a segment index # doesn't necessarily persist the value; selectedSegmentIndex serves the purpose explicitly instead
+    var selectedSegmentIndex: Int = 0
     
     // MARK: - Creating a Segmented Button
     
@@ -315,6 +317,7 @@ class MorphicBarSegmentedButton: NSControl {
             return
         }
         integerValue = button.tag
+        selectedSegmentIndex = button.tag
         sendAction(action, to: target)
     }
 }
