@@ -49,6 +49,7 @@ class StorageTests: XCTestCase {
     let defaultsUserId:String? = nil
 
     let noSuchPrefsId = "NoSuchPrefsIdZzz"
+    let fileManager:FileManager = .default
 
     override func setUpWithError() throws {
         prefsToStore = Preferences(identifier: prefsId)
@@ -61,6 +62,18 @@ class StorageTests: XCTestCase {
         prefsToStore.remove(key: magFactorKey)      // necessary?
         prefsToStore.remove(key: inverseVideoKey)   // necessary?
         prefsToStore = nil
+
+        // Delete the preferences files created for testing
+        // JS: Should be better way of getting the filepath -- this is brittle
+        let prefsFile = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask)
+            .first?.appendingPathComponent("org.raisingthefloor.Morphic", isDirectory: true)
+            .appendingPathComponent("Data", isDirectory: true)
+            .appendingPathComponent(Preferences.typeName, isDirectory: true)
+            .appendingPathComponent(prefsId)
+            .appendingPathExtension("json")
+        if (prefsFile != nil) && (fileManager.fileExists(atPath: prefsFile!.path)) {
+            try fileManager.removeItem(at: prefsFile!)
+        }
     }
 
     func testSaveReload() {
@@ -99,7 +112,7 @@ class StorageTests: XCTestCase {
                 isContained = self.storage.contains(identifier: self.noSuchPrefsId, type: Preferences.self)
                 XCTAssertFalse(isContained, "Test store does not contains unknown preferences")
             } else {
-                XCTFail("Test store for known preferences: failure to save preferences")
+                XCTFail("Test store for contains preferences: failure to save preferences")
             }
             containExpect.fulfill()
         })
