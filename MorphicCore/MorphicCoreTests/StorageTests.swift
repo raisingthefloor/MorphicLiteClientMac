@@ -67,7 +67,7 @@ class StorageTests: XCTestCase {
         })
         wait(for: [removeExpect], timeout: 10.0)
 
-        prefsToStore.remove(key: magFactorKey)      // necessary?""
+        prefsToStore.remove(key: magFactorKey)      // necessary?
         prefsToStore.remove(key: inverseVideoKey)   // necessary?
         prefsToStore = nil
     }
