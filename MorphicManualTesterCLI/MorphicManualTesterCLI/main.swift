@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import Darwin
 
 var manager = RegistryManager()
 let appname = "morphictest"
@@ -37,7 +38,7 @@ if CommandLine.argc > 2 //run single automated command, do not begin interactive
         case "info":
             if(CommandLine.argc != 5)
             {
-                print("[ERROR]: Incorrect number of parameters. Use: \(appname) [filename] info [solution] [setting]")
+                print("[ERROR]: Incorrect number of parameters. Use: \(appname) [filename] info [solution] [preference]")
             }
             else
             {
@@ -47,7 +48,7 @@ if CommandLine.argc > 2 //run single automated command, do not begin interactive
         case "read":
             if(CommandLine.argc != 5)
             {
-                print("[ERROR]: Incorrect number of parameters. Use: \(appname) [filename] read [solution] [setting]")
+                print("[ERROR]: Incorrect number of parameters. Use: \(appname) [filename] read [solution] [preference]")
             }
             else
             {
@@ -57,7 +58,7 @@ if CommandLine.argc > 2 //run single automated command, do not begin interactive
         case "write":
             if(CommandLine.argc != 6)
             {
-                print("[ERROR]: Incorrect number of parameters. Use: \(appname) [filename] write [solution] [setting] [value]")
+                print("[ERROR]: Incorrect number of parameters. Use: \(appname) [filename] write [solution] [preference] [value]")
             }
             else
             {
@@ -76,20 +77,22 @@ else
     {
         loaded = manager.load(registry: CommandLine.arguments[1])
     }
-    else
-    {
-        print("Please input a valid solutions registry JSON file")
-    }
     while(!loaded)
     {
+        print("Please provide the file path to a valid solutions registry JSON file: ")
+        print("> ", terminator:"")
         let address : String = readLine() ?? ""
+        if(address == "quit" || address == "exit")
+        {
+            exit(0)
+        }
         loaded = manager.load(registry: address)
     }
     print("Solutions file loaded successfully.")
-    var loop = true
-    while(loop)
+    while(true)
     {
         print("Please enter a command, type 'help' to list all commands:")
+        print("> ", terminator:"")
         let line = readLine()
         let args = line?.components(separatedBy: " ") ?? []
         if(args.count > 0)
@@ -101,7 +104,7 @@ else
             case "info":
                 if(args.count != 3)
                 {
-                    print("[ERROR]: Incorrect number of parameters. Use: info [solution] [setting]")
+                    print("[ERROR]: Incorrect number of parameters. Use: info [solution] [preference]")
                 }
                 else
                 {
@@ -111,7 +114,7 @@ else
             case "read":
                 if(args.count != 3)
                 {
-                    print("[ERROR]: Incorrect number of parameters. Use: read [solution] [setting]")
+                    print("[ERROR]: Incorrect number of parameters. Use: read [solution] [preference]")
                 }
                 else
                 {
@@ -121,7 +124,7 @@ else
             case "write":
                 if(args.count != 4)
                 {
-                    print("[ERROR]: Incorrect number of parameters. Use: write [solution] [setting] [value]")
+                    print("[ERROR]: Incorrect number of parameters. Use: write [solution] [preference] [value]")
                 }
                 else
                 {
@@ -130,18 +133,26 @@ else
                 break
             case "help":
                 print("list:")
-                print("\tLists all solutions and settings")
-                print("info [solution] [setting]:")
-                print("\tGives you info on a particular setting (for now just data type)")
-                print("read [solution] [setting]:")
-                print("\tLists the current value of a setting")
-                print("write [solution] [setting] [value]:")
+                print("\tLists all solutions and settings from the registry")
+                print()
+                print("info [solution] [preference]:")
+                print("\tGives you info on a particular setting in the registry")
+                print()
+                print("read [solution] [preference]:")
+                print("\tLists the current value of a setting on your system")
+                print()
+                print("write [solution] [preference] [value]:")
                 print("\tChanges the value of a setting, if possible")
-                print("quit:")
+                print()
+                print("exit:")
                 print("\tEnds the program")
+                print()
                 break
             case "quit":
-                loop = false
+                exit(0)
+                break
+            case "exit":
+                exit(0)
                 break
             default:
                 print("[ERROR]: Invalid command")

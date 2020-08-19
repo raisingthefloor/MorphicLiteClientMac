@@ -121,6 +121,10 @@ public class RegistryManager
             {
                 print("Value applied successfully!")
             }
+            else
+            {
+                print("Value application failed")
+            }
         }
     }
 }
