@@ -60,14 +60,29 @@ public class SystemPreferencesElement: ApplicationElement {
     }
     
     public func show<ElementType: UIElement>(pane identifier: PaneIdentifier, completion: @escaping (_ success: Bool, _ pane: ElementType?) -> Void) {
-        guard let window = mainWindow else {
-            completion(false, nil)
-            return
+        var window: WindowElement! = mainWindow
+        if window == nil {
+            // if System Preferences does not expose a mainWindow, we need to try to find its main (only) window and raise it
+            guard let windows = windows else {
+                completion(false, nil)
+                return
+            }
+            // if there is more than one window, we have an unknown situation; perhaps we could raise them all but for now we should just assert
+            guard windows.count == 1 else {
+                assertionFailure("System Preferences does not expose a main window, but exposes multiple windows (so we don't know which one to raise)")
+                completion(false, nil)
+                return
+            }
+            window = windows[0]
+
+            // raise the sole System Preferences window (so it becomes the mainWindow)
+            // NOTE: if desired, in the future we could requery for the "mainWindow"
+            guard window.raise() else {
+                completion(false, nil)
+                return
+            }
         }
-        guard window.raise() else {
-            completion(false, nil)
-            return
-        }
+        //
         guard window.title != identifier.windowTitle else {
             completion(true, ElementType(accessibilityElement: window.accessibilityElement))
             return

@@ -109,7 +109,7 @@ public class ApplicationElement: UIElement {
         }
     }
     
-    public func terminate() -> Bool{
+    public func terminate() -> Bool {
         guard let runningApplication = runningApplication else {
             return true
         }
@@ -120,7 +120,7 @@ public class ApplicationElement: UIElement {
     }
     
     public var mainWindow: WindowElement? {
-        get{
+        get {
             guard accessibilityElement != nil else {
                 return nil
             }
@@ -128,6 +128,24 @@ public class ApplicationElement: UIElement {
                 return nil
             }
             return WindowElement(accessibilityElement: mainWindow)
+        }
+    }
+    
+    public var windows: [WindowElement]? {
+        get {
+            guard accessibilityElement != nil else {
+                return nil
+            }
+            guard let windows: [MorphicA11yUIElement] = accessibilityElement.values(forAttribute: .windows) else {
+                return nil
+            }
+
+            var windowElements: [WindowElement] = []
+            for window in windows {
+                let windowElement = WindowElement(accessibilityElement: window)
+                windowElements.append(windowElement)
+            }
+            return windowElements
         }
     }
     
