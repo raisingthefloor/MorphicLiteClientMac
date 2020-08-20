@@ -33,7 +33,22 @@ if CommandLine.argc > 2 //run single automated command, do not begin interactive
     {
         switch CommandLine.arguments[2] {
         case "list":
-            manager.list()
+            if(CommandLine.argc == 3)
+            {
+                manager.list()
+            }
+            else if(CommandLine.argc != 4)
+            {
+                print("[ERROR]: Incorrect number of parameters. Use: \(appname) [filename] list [solution], \(appname) [filename] list -s, or \(appname) [filename] list")
+            }
+            else if(CommandLine.arguments[3] == "-s")
+            {
+                manager.listSolutions()
+            }
+            else
+            {
+                manager.listSpecific(solution: CommandLine.arguments[3])
+            }
             break
         case "info":
             if(CommandLine.argc != 5)
@@ -99,7 +114,21 @@ else
         {
             switch args[0] {
             case "list":
-                manager.list()
+                if(args.count == 1)
+                {
+                    manager.list()
+                }
+                else if(args.count == 2)
+                {
+                    if(args[1] == "-s")
+                    {
+                        manager.listSolutions()
+                    }
+                    else
+                    {
+                        manager.listSpecific(solution: args[1])
+                    }
+                }
                 break
             case "info":
                 if(args.count != 3)
@@ -134,6 +163,10 @@ else
             case "help":
                 print("list:")
                 print("\tLists all solutions and settings from the registry")
+                print("list -s")
+                print("\tLists all solutions without their settings")
+                print("list [solution]")
+                print("\tLists only the settings for a specific solution")
                 print()
                 print("info [solution] [preference]:")
                 print("\tGives you info on a particular setting in the registry")

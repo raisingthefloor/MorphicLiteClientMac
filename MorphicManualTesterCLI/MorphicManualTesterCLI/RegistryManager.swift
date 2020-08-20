@@ -43,6 +43,29 @@ public class RegistryManager
             }
         }
     }
+    public func listSolutions()
+    {
+        for solution in SettingsManager.shared.solutions
+        {
+            print(solution.identifier)
+        }
+    }
+    public func listSpecific(solution: String)
+    {
+        for sol in SettingsManager.shared.solutions
+        {
+            if sol.identifier == solution
+            {
+                print(sol.identifier + ":")
+                for setting in sol.settings
+                {
+                    print("\t" + setting.name + " [" + setting.type.rawValue + "]")
+                }
+                return
+            }
+        }
+        print("[ERROR]: Solution not found. Please provide list with a solution in the registry, -s for solutions, or no parameter to list all settings.")
+    }
     public func info(solution: String, preference: String)
     {
         let setting = SettingsManager.shared.setting(for: Preferences.Key(solution: solution, preference: preference))
