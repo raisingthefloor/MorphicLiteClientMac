@@ -39,7 +39,7 @@ public class RegistryManager
             print(solution.identifier + ":")
             for setting in solution.settings
             {
-                print("\t" + setting.name + " [" + setting.type.rawValue + "]")
+                print("\t\(setting.name) [\(setting.type.rawValue)]")
             }
         }
     }
@@ -56,10 +56,10 @@ public class RegistryManager
         {
             if sol.identifier == solution
             {
-                print(sol.identifier + ":")
+                print("\(sol.identifier):")
                 for setting in sol.settings
                 {
-                    print("\t" + setting.name + " [" + setting.type.rawValue + "]")
+                    print("\t\(setting.name) [\(setting.type.rawValue)]")
                 }
                 return
             }
@@ -78,7 +78,7 @@ public class RegistryManager
             value in
             if(value != nil)
             {
-                print("Value: " + (value as! String))
+                print("Value: \(value as! String)")
             }
         }
     }
