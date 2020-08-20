@@ -78,7 +78,22 @@ public class RegistryManager
             value in
             if(value != nil)
             {
-                print("Value: \(value as! String)")
+                if let sval = value as? String
+                {
+                    print("Value: \(sval)")
+                }
+                else if let bval = value as? Bool
+                {
+                    print("Value: \(bval ? "true" : "false")")
+                }
+                else if let ival = value as? Int
+                {
+                    print("Value: \(String(ival))")
+                }
+                else if let dval = value as? Double
+                {
+                    print("Value: \(String(dval))")
+                }
             }
         }
     }
