@@ -110,7 +110,6 @@ if CommandLine.argc > 2 //run single automated command, do not begin interactive
 }
 else
 {
-    var loaded = false
     if CommandLine.argc == 2
     {
         if !manager.load(registry: CommandLine.arguments[1])
@@ -122,17 +121,6 @@ else
     {
         print("[ERROR]: Valid solutions registry file path required. Use: \(appname) <filename>")
         exit(0)
-    }
-    while(!loaded)
-    {
-        print("Please provide the file path to a valid solutions registry JSON file: ")
-        print("> ", terminator:"")
-        let address : String = readLine() ?? ""
-        if(address == "quit" || address == "exit")
-        {
-            exit(0)
-        }
-        loaded = manager.load(registry: address)
     }
     print("Solutions file loaded successfully.")
     print("Welcome to the Morphic Manual Solutions Registry Tester.")
