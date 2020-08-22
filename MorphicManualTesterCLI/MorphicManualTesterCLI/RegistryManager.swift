@@ -71,7 +71,21 @@ public class RegistryManager
         let setting = SettingsManager.shared.setting(for: Preferences.Key(solution: solution, preference: preference))
         print(setting.debugDescription)
     }
-    public func read(solution: String, preference: String)
+    public func get(solution: String? = nil)
+    {
+        let allSolutions = (solution == nil)
+        for sol in SettingsManager.shared.solutions
+        {
+            if(allSolutions || solution == sol.identifier)
+            {
+                for setting in sol.settings
+                {
+                    get(solution: sol.identifier, preference: setting.name)
+                }
+            }
+        }
+    }
+    public func get(solution: String, preference: String)
     {
         SettingsManager.shared.capture(valueFor: Preferences.Key(solution: solution, preference: preference))
         {
@@ -97,7 +111,7 @@ public class RegistryManager
             }
         }
     }
-    public func write(solution: String, preference: String, value: String)
+    public func set(solution: String, preference: String, value: String)
     {
         let setting = SettingsManager.shared.setting(for: Preferences.Key(solution: solution, preference: preference))
         var data : Interoperable? = nil
@@ -144,7 +158,7 @@ public class RegistryManager
             data = value
             break
         case .none:
-            print("[ERROR]: setting data type invalid")
+            print("[ERROR]: not a valid setting, check parameters")
             return
         }
         if data == nil

@@ -37,51 +37,74 @@ if CommandLine.argc > 2 //run single automated command, do not begin interactive
             {
                 manager.list()
             }
-            else if(CommandLine.argc != 4)
-            {
-                print("[ERROR]: Incorrect number of parameters. Use: \(appname) [filename] list [solution], \(appname) [filename] list -s, or \(appname) [filename] list")
-            }
-            else if(CommandLine.arguments[3] == "-s")
-            {
-                manager.listSolutions()
-            }
-            else
+            else if(CommandLine.argc == 4)
             {
                 manager.listSpecific(solution: CommandLine.arguments[3])
             }
+            else
+            {
+                print("[ERROR]: Incorrect number of parameters. Use: \(appname) <filename> list [solution]")
+            }
+            break
+        case "listsol":
+            manager.listSolutions()
             break
         case "info":
-            if(CommandLine.argc != 5)
-            {
-                print("[ERROR]: Incorrect number of parameters. Use: \(appname) [filename] info [solution] [preference]")
-            }
-            else
+            if(CommandLine.argc == 5)
             {
                 manager.info(solution: CommandLine.arguments[3], preference: CommandLine.arguments[4])
             }
+            else
+            {
+                print("[ERROR]: Incorrect number of parameters. Use: \(appname) <filename> info <solution> <preference>")
+            }
             break
         case "read":
-            if(CommandLine.argc != 5)
+            if(CommandLine.argc == 3)
             {
-                print("[ERROR]: Incorrect number of parameters. Use: \(appname) [filename] read [solution] [preference]")
+                manager.get()
+            }
+            else if(CommandLine.argc == 4)
+            {
+                manager.get(solution: CommandLine.arguments[3])
+            }
+            else if(CommandLine.argc == 5)
+            {
+                manager.get(solution: CommandLine.arguments[3], preference: CommandLine.arguments[4])
             }
             else
             {
-                manager.read(solution: CommandLine.arguments[3], preference: CommandLine.arguments[4])
+                print("[ERROR]: Incorrect number of parameters. Use: \(appname) <filename> get [solution] [preference]")
             }
             break
         case "write":
-            if(CommandLine.argc != 6)
+            if(CommandLine.argc == 6)
             {
-                print("[ERROR]: Incorrect number of parameters. Use: \(appname) [filename] write [solution] [preference] [value]")
+                manager.set(solution: CommandLine.arguments[3], preference: CommandLine.arguments[4], value: CommandLine.arguments[5])
             }
             else
             {
-                manager.write(solution: CommandLine.arguments[3], preference: CommandLine.arguments[4], value: CommandLine.arguments[5])
+                print("[ERROR]: Incorrect number of parameters. Use: \(appname) <filename> set <solution> <preference> <value>")
             }
             break
+            case "help":
+                print("\(appname) <filename> list [solution]:")
+                print("\tLists all solutions and settings from the registry, or if provided a solution, only lists settings for that solution")
+                print("\(appname) <filename> listsol")
+                print("\tLists all solutions without their settings for quick lookup")
+                print()
+                print("\(appname) <filename> info <solution> <preference>:")
+                print("\tGives you verbose info on a particular setting in the registry")
+                print()
+                print("\(appname) <filename> read [solution] [preference]:")
+                print("\tLists the current value of a setting, all settings in a solution, or all settings in the registry depending on provided parameters")
+                print()
+                print("\(appname) <filename> write <solution> <preference> <value>:")
+                print("\tChanges the value of a setting, if possible")
+                print()
+                break
         default:
-            print("[ERROR]: Unrecognized command. Command list: list, info, read, write")
+            print("[ERROR]: Unrecognized command. Commands: list, listsol, info, get, set, help")
         }
     }
 }
@@ -90,7 +113,15 @@ else
     var loaded = false
     if CommandLine.argc == 2
     {
-        loaded = manager.load(registry: CommandLine.arguments[1])
+        if !manager.load(registry: CommandLine.arguments[1])
+        {
+            print("[ERROR]: Could not load file \(CommandLine.arguments[1]) as a valid solutions registry JSON file. Check filename and try again.")
+        }
+    }
+    else
+    {
+        print("[ERROR]: Valid solutions registry file path required. Use: \(appname) <filename>")
+        exit(0)
     }
     while(!loaded)
     {
@@ -104,6 +135,9 @@ else
         loaded = manager.load(registry: address)
     }
     print("Solutions file loaded successfully.")
+    print("Welcome to the Morphic Manual Solutions Registry Tester.")
+    print("Morphic is Copyright 2020 Raising the Floor - International")
+    print()
     while(true)
     {
         print("Please enter a command, type 'help' to list all commands:")
@@ -120,61 +154,67 @@ else
                 }
                 else if(args.count == 2)
                 {
-                    if(args[1] == "-s")
-                    {
-                        manager.listSolutions()
-                    }
-                    else
-                    {
-                        manager.listSpecific(solution: args[1])
-                    }
-                }
-                break
-            case "info":
-                if(args.count != 3)
-                {
-                    print("[ERROR]: Incorrect number of parameters. Use: info [solution] [preference]")
+                    manager.listSpecific(solution: args[1])
                 }
                 else
+                {
+                    print("[ERROR]: Incorrect number of parameters. Use: list [solution]")
+                }
+                break
+            case "listsol":
+                manager.listSolutions()
+                break
+            case "info":
+                if(args.count == 3)
                 {
                     manager.info(solution: args[1], preference: args[2])
                 }
+                else
+                {
+                    print("[ERROR]: Incorrect number of parameters. Use: info <solution> <preference>")
+                }
                 break
             case "read":
-                if(args.count != 3)
+                if(args.count == 1)
                 {
-                    print("[ERROR]: Incorrect number of parameters. Use: read [solution] [preference]")
+                    manager.get()
+                }
+                else if(args.count == 2)
+                {
+                    manager.get(solution: args[1])
+                }
+                else if(args.count == 3)
+                {
+                    manager.get(solution: args[1], preference: args[2])
                 }
                 else
                 {
-                    manager.read(solution: args[1], preference: args[2])
+                    print("[ERROR]: Incorrect number of parameters. Use: get [solution] [preference]")
                 }
                 break
             case "write":
                 if(args.count != 4)
                 {
-                    print("[ERROR]: Incorrect number of parameters. Use: write [solution] [preference] [value]")
+                    print("[ERROR]: Incorrect number of parameters. Use: set <solution> <preference> <value>")
                 }
                 else
                 {
-                    manager.write(solution: args[1], preference: args[2], value: args[3])
+                    manager.set(solution: args[1], preference: args[2], value: args[3])
                 }
                 break
             case "help":
-                print("list:")
-                print("\tLists all solutions and settings from the registry")
-                print("list -s")
-                print("\tLists all solutions without their settings")
-                print("list [solution]")
-                print("\tLists only the settings for a specific solution")
+                print("list [solution]:")
+                print("\tLists all solutions and settings from the registry, or if provided a solution, only lists settings for that solution")
+                print("listsol")
+                print("\tLists all solutions without their settings for quick lookup")
                 print()
-                print("info [solution] [preference]:")
-                print("\tGives you info on a particular setting in the registry")
+                print("info <solution> <preference>:")
+                print("\tGives you verbose info on a particular setting in the registry")
                 print()
                 print("read [solution] [preference]:")
-                print("\tLists the current value of a setting on your system")
+                print("\tLists the current value of a setting, all settings in a solution, or all settings in the registry depending on provided parameters")
                 print()
-                print("write [solution] [preference] [value]:")
+                print("write <solution> <preference> <value>:")
                 print("\tChanges the value of a setting, if possible")
                 print()
                 print("exit:")
