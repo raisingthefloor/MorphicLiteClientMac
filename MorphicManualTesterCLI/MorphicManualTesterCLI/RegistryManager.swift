@@ -78,8 +78,10 @@ public class RegistryManager
         {
             if(allSolutions || solution == sol.identifier)
             {
+                print("\(sol.identifier):")
                 for setting in sol.settings
                 {
+                    print("\t\(setting.name): ", terminator:"")
                     get(solution: sol.identifier, preference: setting.name)
                 }
             }
@@ -94,19 +96,19 @@ public class RegistryManager
             {
                 if let sval = value as? String
                 {
-                    print("Value: \(sval)")
+                    print("[string] value: \(sval)")
                 }
                 else if let bval = value as? Bool
                 {
-                    print("Value: \(bval ? "true" : "false")")
+                    print("[bool] value: \(bval ? "true" : "false")")
                 }
                 else if let ival = value as? Int
                 {
-                    print("Value: \(String(ival))")
+                    print("[int] value: \(String(ival))")
                 }
                 else if let dval = value as? Double
                 {
-                    print("Value: \(String(dval))")
+                    print("[double] value: \(String(dval))")
                 }
             }
         }
