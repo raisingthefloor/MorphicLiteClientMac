@@ -36,7 +36,7 @@ public class RegistryManager
     {
         for solution in SettingsManager.shared.solutions
         {
-            print(solution.identifier + ":")
+            print("\(solution.identifier):")
             for setting in solution.settings
             {
                 print("\t\(setting.name) [\(setting.type.rawValue)]")
@@ -64,7 +64,7 @@ public class RegistryManager
                 return
             }
         }
-        print("[ERROR]: Solution not found. Please provide list with a solution in the registry, -s for solutions, or no parameter to list all settings.")
+        print("[ERROR]: Solution not found. Please provide list command with a solution in the registry or no parameter to list all settings.")
     }
     public func info(solution: String, preference: String)
     {
