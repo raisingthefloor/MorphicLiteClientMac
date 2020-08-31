@@ -71,27 +71,29 @@ class UserTests: XCTestCase {
     }
 
     func testInits() throws {
-        XCTAssert((UUID(uuidString: freshNewUser.identifier) != nil) && (UUID(uuidString: freshNewUser.preferencesId) != nil), "Create new User")
+        XCTAssertNotNil(UUID(uuidString: freshNewUser.identifier), "Create new User, user ID")
+        XCTAssertNotNil(UUID(uuidString: freshNewUser.preferencesId), "Create new User, preferences ID")
 
-        XCTAssert((UUID(uuidString: knownUserNoPrefs.identifier) != nil) && knownUserNoPrefs.preferencesId == nil, "Create User with identifier only")
+        XCTAssertNotNil(UUID(uuidString: knownUserNoPrefs.identifier), "Create User with identifier only, user ID")
+        XCTAssertNil(knownUserNoPrefs.preferencesId, "Create User with identifier only, preferences ID")
         
         // test init(from: decoder)
         let msg = "User decoded from JSON"
-        XCTAssert(UUID(uuidString: userFromJson.identifier) != nil, msg + " identifier")
-        XCTAssert(UUID(uuidString: userFromJson.preferencesId) != nil, msg + " preferencesId")
-        XCTAssert(userFromJson.firstName != nil, msg + " firstName")
-        XCTAssert(userFromJson.lastName != nil, msg + " lastName")
-        XCTAssert(userFromJson.email != nil, msg + " email")
+        XCTAssertNotNil(UUID(uuidString: userFromJson.identifier), msg + " identifier")
+        XCTAssertNotNil(UUID(uuidString: userFromJson.preferencesId), msg + " preferencesId")
+        XCTAssertNotNil(userFromJson.firstName, msg + " firstName")
+        XCTAssertNotNil(userFromJson.lastName, msg + " lastName")
+        XCTAssertNotNil(userFromJson.email, msg + " email")
     }
 
     func testEncode() throws {
         let jsonData = try JSONEncoder().encode(userToEncode)
         let decodedUser = try JSONDecoder().decode(User.self, from: jsonData)
         let msg = "User encode(),"
-        XCTAssert(userToEncode.identifier == decodedUser.identifier, msg + " identifier")
-        XCTAssert(userToEncode.preferencesId == decodedUser.preferencesId, msg + " preferencesId")
-        XCTAssert(userToEncode.firstName == decodedUser.firstName, msg + " firstName")
-        XCTAssert(userToEncode.lastName == decodedUser.lastName, msg + " lastName")
-        XCTAssert(userToEncode.email == decodedUser.email, msg + " email")
+        XCTAssertEqual(userToEncode.identifier, decodedUser.identifier, msg + " identifier")
+        XCTAssertEqual(userToEncode.preferencesId, decodedUser.preferencesId, msg + " preferencesId")
+        XCTAssertEqual(userToEncode.firstName, decodedUser.firstName, msg + " firstName")
+        XCTAssertEqual(userToEncode.lastName, decodedUser.lastName, msg + " lastName")
+        XCTAssertEqual(userToEncode.email, decodedUser.email, msg + " email")
     }
 }

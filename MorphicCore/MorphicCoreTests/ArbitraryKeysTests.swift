@@ -48,7 +48,7 @@ class ArbitraryKeysTests: XCTestCase {
     }
 
     func testInits() throws {
-        XCTAssert(aKeyGivenInt.intValue == testInt, "ArbitraryKey created with integer")
-        XCTAssert(aKeyGivenString.stringValue == testString, "Arbitrary key created with string")
+        XCTAssertEqual(aKeyGivenInt.intValue, testInt, "ArbitraryKey created with integer")
+        XCTAssertEqual(aKeyGivenString.stringValue, testString, "Arbitrary key created with string")
     }
 }
