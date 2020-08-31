@@ -140,7 +140,31 @@ public class Storage {
             }
         }
     }
-    
+    /// Delete the object
+    /// - parameters:
+    ///   - record: The record  to remove
+    internal func remove<RecordType>(record: RecordType, completion: @escaping (_ status: LoadStatus, _ document: RecordType?) -> Void) throws where RecordType: Record {
+        guard let prefsUrl = url(for: record.identifier, type: RecordType.self) else {
+            os_log(.error, log: logger, "Could not obtain a valid file url for removing")
+            DispatchQueue.main.async {
+                completion(.fileUrlMissing, record)
+            }
+            return
+        }
+        // Same logic as contains() where file doesn't exist
+        // i.e. doesn't exist? "already" removed.
+        guard fileManager.fileExists(atPath: prefsUrl.path) else {
+            DispatchQueue.main.async {
+                completion(.success, record)
+            }
+            return
+        }
+        try fileManager.removeItem(at: prefsUrl)
+        DispatchQueue.main.async {
+            completion(.success, record)
+        }
+    }
+
     /// Check if a record exists
     /// - parameters:
     ///   - identifier: The identifier of the object to load

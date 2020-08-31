@@ -98,16 +98,16 @@ public struct Preferences: Codable, Record {
         return defaults?[key.solution]?.values[key.preference] ?? nil
     }
     
-    public func remove(key: Key) {
-        guard var defaults = defaults else {
+    public mutating func remove(key: Key) {
+        guard defaults != nil else {
             return
         }
-        guard var solution = defaults[key.solution] else {
+        guard var solution = defaults?[key.solution] else {
             return
         }
         solution.values.removeValue(forKey: key.preference)
-        if solution.values.count == 0 {
-            defaults.removeValue(forKey: key.solution)
+        if solution.values.isEmpty {
+            defaults?.removeValue(forKey: key.solution)
         }
     }
     
