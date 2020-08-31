@@ -42,7 +42,7 @@ if CommandLine.argc > 2 //run single automated command, do not begin interactive
             default:
                 print("[ERROR]: Incorrect number of parameters. Use: \(appname) <filename> list [solution]")
             }
-        case "listsol":
+        case "listsolutions":
             manager.listSolutions()
         case "info":
             if(CommandLine.argc == 5)
@@ -77,7 +77,7 @@ if CommandLine.argc > 2 //run single automated command, do not begin interactive
         case "help":
             helpdoc(cmdline: true)
         default:
-            print("[ERROR]: Unrecognized command. Commands: list, listsol, info, get, set, help")
+            print("[ERROR]: Unrecognized command. Commands: list, listsolutions, info, get, set, help")
         }
     }
     else
@@ -89,10 +89,10 @@ else if(CommandLine.argc == 2)
 {
     if manager.load(registry: CommandLine.arguments[1])
     {
-        print("\u{001B}[2J")
+        print("Morphic Manual Solutions Registry Tester")
+        print("Copyright 2020 Raising the Floor - International")
+        print()
         print("Solutions file loaded successfully.")
-        print("Welcome to the Morphic Manual Solutions Registry Tester.")
-        print("Morphic is Copyright 2020 Raising the Floor - International")
         print()
         var loop = true
         while(loop)
@@ -114,7 +114,7 @@ else if(CommandLine.argc == 2)
                     default:
                         print("[ERROR]: Incorrect number of parameters. Use: list [solution]")
                     }
-                case "listsol":
+                case "listsolutions":
                     manager.listSolutions()
                 case "info":
                     if(args.count == 3)
@@ -174,32 +174,37 @@ else
 
 func helpdoc(cmdline: Bool)
 {
-    print("\u{001B}[2J")
     var header = ""
     if cmdline
     {
         header = "\(appname) <filename> "
+        print("Morphic Manual Solutions Registry Tester")
+        print("Copyright 2020 Raising the Floor - International")
+        print()
     }
-    print("\t\(header)list [solution]:")
-    print("Lists all solutions and settings from the registry, or if provided a solution, only lists settings for that solution")
-    print()
-    print("\t\(header)listsol")
+    print("\t\(header)listsolutions")
     print("Lists all solutions without their settings for quick lookup")
     print()
-    print("\t\(header)info <solution> <preference>:")
+    print("\t\(header)list")
+    print("\t\(header)list <solution>")
+    print("Lists all solutions and settings from the registry, or if provided a solution, only lists settings for that solution")
+    print()
+    print("\t\(header)info <solution> <preference>")
     print("Gives you verbose info on a particular setting in the registry")
     print()
-    print("\t\(header)get [solution] [preference]:")
-    print("Lists the current value of a setting, all settings in a solution, or all settings in the registry depending on provided parameters")
+    print("\t\(header)get")
+    print("\t\(header)get <solution>")
+    print("\t\(header)get <solution> <preference>")
+    print("Displays the current value of a setting, all settings in a solution, or all settings in the registry depending on provided parameters")
     print()
-    print("\t\(header)set <solution> <preference> <value>:")
+    print("\t\(header)set <solution> <preference> <value>")
     print("Changes the value of a setting, if possible")
     print()
     if cmdline
     {
         return
     }
-    print("\texit:")
+    print("\texit")
     print("Ends the program")
     print()
 }

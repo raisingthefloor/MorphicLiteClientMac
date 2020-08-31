@@ -111,6 +111,10 @@ public class RegistryManager
                     print("[double] value: \(String(dval))")
                 }
             }
+            else
+            {
+                print("[ERROR]: Failed to retrieve value")
+            }
         }
     }
     public func set(solution: String, preference: String, value: String)
@@ -133,7 +137,6 @@ public class RegistryManager
                 print("[ERROR]: value not a boolean")
                 return
             }
-            break
         case .double:
             if let dbl = Double(value)
             {
@@ -144,7 +147,6 @@ public class RegistryManager
                 print("[ERROR]: value not a double")
                 return
             }
-            break
         case .integer:
             if let int = Int(value)
             {
@@ -155,10 +157,8 @@ public class RegistryManager
                 print("[ERROR]: value not an integer")
                 return
             }
-            break
         case .string:
             data = value
-            break
         case .none:
             print("[ERROR]: not a valid setting, check parameters")
             return
@@ -177,7 +177,7 @@ public class RegistryManager
             }
             else
             {
-                print("Value application failed")
+                print("[ERROR]: Value application failed")
             }
         }
     }
