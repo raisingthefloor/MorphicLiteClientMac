@@ -183,7 +183,7 @@ class MorphicBarControlItem: MorphicBarItem{
     
     @objc
     func zoom(_ sender: Any?) {
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
             return
         }
         guard let display = Display.main else {
@@ -200,7 +200,7 @@ class MorphicBarControlItem: MorphicBarItem{
     
     @objc
     func volume(_ sender: Any?) {
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
             return
         }
         guard let output = AudioOutput.main else {
@@ -225,7 +225,7 @@ class MorphicBarControlItem: MorphicBarItem{
     
     @objc
     func contrast(_ sender: Any?) {
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
             return
         }
         if segment == 0 {
@@ -241,7 +241,7 @@ class MorphicBarControlItem: MorphicBarItem{
 
     @objc
     func nightShift(_ sender: Any?) {
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
             return
         }
         if segment == 0 {
@@ -253,7 +253,7 @@ class MorphicBarControlItem: MorphicBarItem{
 
     @objc
     func reader(_ sender: Any?) {
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
             return
         }
         if segment == 0 {
@@ -349,7 +349,7 @@ class MorphicBarControlItem: MorphicBarItem{
 
     @objc
     func magnifier(_ sender: Any?) {
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.integerValue else {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
             return
         }
         let session = Session.shared
@@ -370,7 +370,7 @@ class MorphicBarControlItem: MorphicBarItem{
                     }
                 }
             }
-        }else{
+        } else {
             session.storage.load(identifier: "__magnifier__") {
                 (_, preferences: Preferences?) in
                 if let preferences = preferences {
