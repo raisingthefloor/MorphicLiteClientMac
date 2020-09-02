@@ -215,13 +215,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func showMorphicBar(_ sender: Any?) {
         if morphicBarWindow == nil {
             morphicBarWindow = MorphicBarWindow()
+            morphicBarWindow?.orientation = .horizontal
             morphicBarWindow?.delegate = self
         }
         NSApplication.shared.activate(ignoringOtherApps: true)
         morphicBarWindow?.makeKeyAndOrderFront(nil)
         showMorphicBarItem?.isHidden = true
         hideMorphicBarItem?.isHidden = false
-        if sender != nil{
+        if sender != nil {
             Session.shared.set(true, for: .morphicBarVisible)
         }
     }
@@ -232,7 +233,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         showMorphicBarItem?.isHidden = false
         hideMorphicBarItem?.isHidden = true
         QuickHelpWindow.hide()
-        if sender != nil{
+        if sender != nil {
             Session.shared.set(false, for: .morphicBarVisible)
         }
     }

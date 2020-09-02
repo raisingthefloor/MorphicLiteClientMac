@@ -32,6 +32,8 @@ public class MorphicBarViewController: NSViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        updateConstraints()
+        morphicBarView.orientation = self.orientation
         view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
         view.layer?.cornerRadius = 6
         self.logoutMenuItem?.isHidden = Session.shared.user == nil
@@ -79,17 +81,89 @@ public class MorphicBarViewController: NSViewController {
         mainMenu.popUp(positioning: nil, at: NSPoint(x: logoButton.bounds.origin.x, y: logoButton.bounds.origin.y + logoButton.bounds.size.height), in: logoButton)
     }
     
+    // MARK: - Orientation and orientation-related constraints
+    
+    public var orientation: MorphicBarOrientation = .horizontal {
+        didSet {
+            updateConstraints()
+            morphicBarView?.orientation = self.orientation
+        }
+    }
+
+    private func updateConstraints() {
+        switch orientation {
+        case .horizontal:
+            // deactivate the vertical constraints
+            logoButtonToMorphicBarViewVerticalTopConstraint?.isActive = false
+            logoButtonToViewVerticalCenterXConstraint?.isActive = false
+            viewToMorphicBarViewVerticalTrailingConstraint?.isActive = false
+            viewToLogoButtonVerticalBottomConstraint?.isActive = false
+
+            // deactivate any old copies of our horizontal constraints
+            logoButtonToMorphicBarViewHorizontalLeadingConstraint?.isActive = false
+            logoButtonToViewHorizontalTopConstraint?.isActive = false
+            viewToLogoButtonHorizontalTrailingConstraint?.isActive = false
+            viewToMorphicBarViewHorizontalBottomConstraint?.isActive = false
+
+            logoButtonToMorphicBarViewHorizontalLeadingConstraint = NSLayoutConstraint(item: logoButton!, attribute: .leading, relatedBy: .equal, toItem: morphicBarView!, attribute: .trailing, multiplier: 1, constant: 18)
+            logoButtonToViewHorizontalTopConstraint = NSLayoutConstraint(item: logoButton!, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 7)
+            viewToLogoButtonHorizontalTrailingConstraint = NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: logoButton!, attribute: .trailing, multiplier: 1, constant: 7)
+            viewToMorphicBarViewHorizontalBottomConstraint = NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: morphicBarView!, attribute: .bottom, multiplier: 1, constant: 7)
+
+            self.view.addConstraints([
+                logoButtonToMorphicBarViewHorizontalLeadingConstraint!,
+                logoButtonToViewHorizontalTopConstraint!,
+                viewToLogoButtonHorizontalTrailingConstraint!,
+                viewToMorphicBarViewHorizontalBottomConstraint!
+            ])
+        case .vertical:
+            // deactivate the horizontal constraints
+            logoButtonToMorphicBarViewHorizontalLeadingConstraint?.isActive = false
+            logoButtonToViewHorizontalTopConstraint?.isActive = false
+            viewToLogoButtonHorizontalTrailingConstraint?.isActive = false
+            viewToMorphicBarViewHorizontalBottomConstraint?.isActive = false
+
+            // deactivate any old copies of our vertical constraints
+            logoButtonToMorphicBarViewVerticalTopConstraint?.isActive = false
+            logoButtonToViewVerticalCenterXConstraint?.isActive = false
+            viewToMorphicBarViewVerticalTrailingConstraint?.isActive = false
+            viewToLogoButtonVerticalBottomConstraint?.isActive = false
+            
+            logoButtonToMorphicBarViewVerticalTopConstraint = NSLayoutConstraint(item: logoButton!, attribute: .top, relatedBy: .equal, toItem: morphicBarView!, attribute: .bottom, multiplier: 1, constant: 18)
+            logoButtonToViewVerticalCenterXConstraint = NSLayoutConstraint(item: logoButton!, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+            viewToMorphicBarViewVerticalTrailingConstraint = NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: morphicBarView!, attribute: .trailing, multiplier: 1, constant: 7)
+            viewToLogoButtonVerticalBottomConstraint = NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: logoButton!, attribute: .bottom, multiplier: 1, constant: 7)
+
+            self.view.addConstraints([
+                logoButtonToMorphicBarViewVerticalTopConstraint!,
+                logoButtonToViewVerticalCenterXConstraint!,
+                viewToMorphicBarViewVerticalTrailingConstraint!,
+                viewToLogoButtonVerticalBottomConstraint!
+            ])
+        }
+    }
+    
     // MARK: - Items
     
     /// The MorphicBar view managed by this controller
     @IBOutlet weak var morphicBarView: MorphicBarView!
     
+    /// View constraints
+    var logoButtonToMorphicBarViewHorizontalLeadingConstraint: NSLayoutConstraint?
+    var logoButtonToMorphicBarViewVerticalTopConstraint : NSLayoutConstraint?
+    var logoButtonToViewHorizontalTopConstraint : NSLayoutConstraint?
+    var logoButtonToViewVerticalCenterXConstraint: NSLayoutConstraint?
+    var viewToLogoButtonHorizontalTrailingConstraint : NSLayoutConstraint?
+    var viewToLogoButtonVerticalBottomConstraint: NSLayoutConstraint?
+    var viewToMorphicBarViewHorizontalBottomConstraint: NSLayoutConstraint?
+    var viewToMorphicBarViewVerticalTrailingConstraint: NSLayoutConstraint?
+
     /// The items that should be shown on the MorphicBar
     public var items = [MorphicBarItem]() {
         didSet {
             _ = view
             morphicBarView.removeAllItemViews()
-            for item in items{
+            for item in items {
                 if let itemView = item.view() {
                     itemView.showsHelp = showsHelp
                     morphicBarView.add(itemView: itemView)
@@ -147,7 +221,7 @@ class LogoButton: NSButton {
     }
     
     private func createBoundsTrackingArea() {
-        if boundsTrackingArea != nil{
+        if boundsTrackingArea != nil {
             removeTrackingArea(boundsTrackingArea)
         }
         if showsHelp {

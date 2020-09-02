@@ -88,7 +88,7 @@ public class MorphicBarWindow: NSWindow {
             guard let screen = window.screen else{
                 return .zero
             }
-            switch self{
+            switch self {
             case .topLeft:
                 return NSPoint(x: screen.visibleFrame.origin.x + window.screenInsets.left, y: screen.visibleFrame.origin.y + screen.visibleFrame.size.height - window.frame.size.height - window.screenInsets.top)
             case .topRight:
@@ -151,6 +151,13 @@ public class MorphicBarWindow: NSWindow {
         setFrame(frame, display: true, animate: animated)
     }
     
+    public var orientation: MorphicBarOrientation = .horizontal {
+        didSet {
+            morphicBarViewController.orientation = self.orientation
+            reposition(animated: false)
+        }
+    }    
+
     public override func mouseUp(with event: NSEvent) {
         super.mouseUp(with: event)
         setPosition(nearestPosition, animated: true)
@@ -194,4 +201,9 @@ public extension Preferences.Key {
     
     /// The preference key that stores which items appear on the MorphicBar
     static var morphicBarItems = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbar", preference: "items")
+}
+
+public enum MorphicBarOrientation {
+    case horizontal
+    case vertical
 }

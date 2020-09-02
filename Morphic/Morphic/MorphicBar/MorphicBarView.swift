@@ -68,30 +68,63 @@ public class MorphicBarView: NSView {
     }
     
     public override func layout() {
-        var frame = CGRect(x: 0, y: 0, width: 0, height: bounds.size.height)
-        for itemView in itemViews {
-            let size = itemView.intrinsicContentSize
-            frame.size.width = size.width
-            itemView.frame = frame
-            frame.origin.x += frame.size.width + itemSpacing
+        switch orientation {
+        case .horizontal:
+            var frame = CGRect(x: 0, y: 0, width: 0, height: bounds.size.height)
+            for itemView in itemViews {
+                let size = itemView.intrinsicContentSize
+                frame.size.width = size.width
+                itemView.frame = frame
+                //
+                frame.origin.x += frame.size.width + itemSpacing
+            }
+        case .vertical:
+            var frame = CGRect(x: 0, y: 0, width: bounds.size.width, height: 0)
+            for itemView in itemViews {
+                let size = itemView.intrinsicContentSize
+                frame.size.height = size.height
+                itemView.frame = frame
+                //
+                frame.origin.y += frame.size.height + itemSpacing
+            }
         }
     }
     
+    /// The orientation of the list of items
+    public var orientation: MorphicBarOrientation = .horizontal {
+        didSet {
+            needsLayout = true
+            invalidateIntrinsicContentSize()
+        }
+    }
+
     /// The desired spacing between each item
     public var itemSpacing: CGFloat = 18.0 {
-        didSet{
+        didSet {
             needsLayout = true
             invalidateIntrinsicContentSize()
         }
     }
     
     public override var intrinsicContentSize: NSSize {
-        var size = NSSize(width: itemSpacing * CGFloat(itemViews.count - 1), height: NSView.noIntrinsicMetric)
-        for itemView in itemViews {
-            let itemSize = itemView.intrinsicContentSize
-            size.width += itemSize.width
+        switch orientation {
+        case .horizontal:
+            var size = NSSize(width: itemSpacing * CGFloat(max(itemViews.count - 1, 0)), height: 0)
+            for itemView in itemViews {
+                let itemSize = itemView.intrinsicContentSize
+                size.height = max(size.height, itemSize.height)
+                size.width += itemSize.width
+            }
+            return size
+        case .vertical:
+            var size = NSSize(width: 0, height: itemSpacing * CGFloat(max(itemViews.count - 1, 0)))
+            for itemView in itemViews {
+                let itemSize = itemView.intrinsicContentSize
+                size.height += itemSize.height
+                size.width = max(size.width, itemSize.width)
+            }
+            return size
         }
-        return size
     }
     
     public override func acceptsFirstMouse(for event: NSEvent?) -> Bool {

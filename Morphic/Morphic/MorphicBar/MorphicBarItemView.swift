@@ -80,7 +80,7 @@ class MorphicBarSegmentedButtonItemView: MorphicBarItemView {
     override var intrinsicContentSize: NSSize {
         let labelSize = titleLabel.intrinsicContentSize.roundedUp()
         let buttonSize = segmentedButton.intrinsicContentSize
-        return NSSize(width: ceil(max(labelSize.width, buttonSize.width)), height: NSView.noIntrinsicMetric)
+        return NSSize(width: ceil(max(labelSize.width, buttonSize.width)), height: titleYAdjustment + labelSize.height + titleButtonSpacing + buttonSize.height)
     }
     
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool {

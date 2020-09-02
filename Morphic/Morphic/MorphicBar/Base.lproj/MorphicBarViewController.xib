@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -37,18 +38,17 @@
                         <action selector="showMainMenu:" target="-2" id="ZqU-v5-d0Q"/>
                     </connections>
                 </button>
-                <customView translatesAutoresizingMaskIntoConstraints="NO" id="hJk-BO-TPf" customClass="MorphicBarView" customModule="Morphic" customModuleProvider="target">
+                <customView horizontalHuggingPriority="500" verticalHuggingPriority="500" translatesAutoresizingMaskIntoConstraints="NO" id="hJk-BO-TPf" customClass="MorphicBarView" customModule="Morphic" customModuleProvider="target">
                     <rect key="frame" x="7" y="7" width="364" height="44"/>
                 </customView>
             </subviews>
             <constraints>
-                <constraint firstItem="ead-JY-BhL" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="7" id="MMq-9i-bl2"/>
-                <constraint firstAttribute="trailing" secondItem="ead-JY-BhL" secondAttribute="trailing" constant="7" id="PeV-mu-cPY"/>
+                <constraint firstItem="ead-JY-BhL" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="7" placeholder="YES" id="MMq-9i-bl2"/>
+                <constraint firstAttribute="trailing" secondItem="ead-JY-BhL" secondAttribute="trailing" constant="7" placeholder="YES" id="PeV-mu-cPY"/>
                 <constraint firstItem="hJk-BO-TPf" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="7" id="T5H-0J-mCf"/>
                 <constraint firstItem="hJk-BO-TPf" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="7" id="WCk-Cp-tfU"/>
-                <constraint firstItem="ead-JY-BhL" firstAttribute="leading" secondItem="hJk-BO-TPf" secondAttribute="trailing" constant="18" id="X7I-GO-sbl"/>
-                <constraint firstAttribute="bottom" secondItem="hJk-BO-TPf" secondAttribute="bottom" constant="7" id="pJY-6a-tbR"/>
-                <constraint firstAttribute="bottom" secondItem="ead-JY-BhL" secondAttribute="bottom" constant="7" id="srO-DZ-tfV"/>
+                <constraint firstItem="ead-JY-BhL" firstAttribute="leading" secondItem="hJk-BO-TPf" secondAttribute="trailing" constant="18" placeholder="YES" id="X7I-GO-sbl"/>
+                <constraint firstAttribute="bottom" secondItem="hJk-BO-TPf" secondAttribute="bottom" constant="7" placeholder="YES" id="pJY-6a-tbR"/>
             </constraints>
             <point key="canvasLocation" x="-48" y="67"/>
         </customView>

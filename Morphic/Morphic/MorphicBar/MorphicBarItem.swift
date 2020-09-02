@@ -213,7 +213,7 @@ class MorphicBarControlItem: MorphicBarItem{
                 _ = output.setVolume(output.volume + 0.1)
             }
         } else if segment == 1 {
-            if output.isMuted{
+            if output.isMuted {
                 _ = output.setMuted(false)
             } else {
                 _ = output.setVolume(output.volume - 0.1)
@@ -483,7 +483,7 @@ fileprivate class QuickHelpTextSizeSmallerProvider: QuickHelpContentProvider {
     }
 }
 
-fileprivate class QuickHelpVolumeUpProvider: QuickHelpContentProvider{
+fileprivate class QuickHelpVolumeUpProvider: QuickHelpContentProvider {
     
     init(audioOutput: AudioOutput?, localized: LocalizedStrings) {
         output = audioOutput
@@ -516,7 +516,7 @@ fileprivate class QuickHelpVolumeUpProvider: QuickHelpContentProvider{
     
 }
 
-fileprivate class QuickHelpVolumeDownProvider: QuickHelpContentProvider{
+fileprivate class QuickHelpVolumeDownProvider: QuickHelpContentProvider {
     
     init(audioOutput: AudioOutput?, localized: LocalizedStrings) {
         output = audioOutput
@@ -549,7 +549,7 @@ fileprivate class QuickHelpVolumeDownProvider: QuickHelpContentProvider{
     
 }
 
-fileprivate class QuickHelpVolumeMuteProvider: QuickHelpContentProvider{
+fileprivate class QuickHelpVolumeMuteProvider: QuickHelpContentProvider {
     
     init(audioOutput: AudioOutput?, localized: LocalizedStrings) {
         output = audioOutput
@@ -577,7 +577,7 @@ fileprivate class QuickHelpVolumeMuteProvider: QuickHelpContentProvider{
     
 }
 
-private extension NSImage{
+private extension NSImage {
     
     static func plus() -> NSImage {
         return NSImage(named: "SegmentIconPlus")!

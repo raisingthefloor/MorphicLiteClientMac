@@ -264,7 +264,7 @@ class MorphicBarSegmentedButton: NSControl {
         button.contentInsets = contentInsets
         if let title = segment.title {
             button.title = title
-        }else if let icon = segment.icon {
+        } else if let icon = segment.icon {
             button.image = icon
         }
         button.setAccessibilityLabel(segment.accessibilityLabel)

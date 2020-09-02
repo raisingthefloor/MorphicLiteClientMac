@@ -345,7 +345,7 @@ public class Session {
             if let auth = auth {
                 _ = self.keychain.save(usernameCredentials: credentials, for: self.service.endpoint)
                 self.authToken = auth.token
-                self.signin(user: auth.user, preFetchedPreferences: nil){
+                self.signin(user: auth.user, preFetchedPreferences: nil) {
                     completion(true)
                 }
             } else {
@@ -544,13 +544,18 @@ public class Session {
                     }
                     if self.user != nil {
                         os_log(.info, log: logger, "Saving prefefences to server")
-                        _ = self.service.save(preferences) {
-                            success in
-                            if success {
-                                os_log(.info, log: logger, "Saved preferences to server")
-                            } else {
-                                os_log(.error, log: logger, "Failed to save preference to server")
+                        if preferences.userId != nil {
+                            _ = self.service.save(preferences) {
+                                success in
+                                if success {
+                                    os_log(.info, log: logger, "Saved preferences to server")
+                                } else {
+                                    os_log(.error, log: logger, "Failed to save preference to server")
+                                }
                             }
+                        } else {
+                            os_log(.error, log: logger, "Failed to save preference to server because userId is nil")
+                            return
                         }
                     }
                 }
