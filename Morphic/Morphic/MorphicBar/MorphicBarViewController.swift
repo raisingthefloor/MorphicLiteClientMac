@@ -180,6 +180,22 @@ public class MorphicBarViewController: NSViewController {
             }
         }
     }
+    
+    public func getAccessChildren() -> [Any] {
+        var reply = [Any]()
+        for itemView in morphicBarView.itemViews {
+            let children = itemView.getAccessChildren()
+            for child in children {
+                if child != nil {
+                    reply.append(child!)
+                }
+            }
+        }
+        if logoButton != nil {
+            reply.append(logoButton!)
+        }
+        return reply
+    }
 
 }
 

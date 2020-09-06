@@ -33,6 +33,10 @@ public class MorphicBarItemView: NSView {
         return true
     }
     
+    public func getAccessChildren() -> [Any?] {
+        return [nil]
+    }
+    
 }
 
 class MorphicBarSegmentedButtonItemView: MorphicBarItemView {
@@ -87,6 +91,14 @@ class MorphicBarSegmentedButtonItemView: MorphicBarItemView {
         // accept first mouse so the event propagates up to the window and we
         // can intercept mouseUp to snap the window to a corner
         return true
+    }
+    
+    override func getAccessChildren() -> [Any?] {
+        var reply = [Any]()
+        for button in segmentedButton.segmentButtons {
+            reply.append(button)
+        }
+        return reply
     }
     
 }

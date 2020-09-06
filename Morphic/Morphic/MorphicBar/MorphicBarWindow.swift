@@ -66,6 +66,7 @@ public class MorphicBarWindow: NSWindow {
             morphicBarViewController.items = MorphicBarItem.items(from: preferredItems)
         }
         reposition(animated: false)
+        setAccessibilityChildren(morphicBarViewController.getAccessChildren())
     }
     
     public override var canBecomeKey: Bool {
