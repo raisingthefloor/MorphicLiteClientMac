@@ -534,7 +534,7 @@ public class Session {
             timer in
             self.preferencesSaveTimer = nil
             if let preferences = self.preferences {
-                os_log(.info, log: logger, "Saving prefefences to disk")
+                os_log(.info, log: logger, "Saving preferences to disk")
                 self.storage.save(record: preferences) {
                     success in
                     if success {
@@ -543,7 +543,7 @@ public class Session {
                         os_log(.error, log: logger, "Failed to save preferences to disk")
                     }
                     if self.user != nil {
-                        os_log(.info, log: logger, "Saving prefefences to server")
+                        os_log(.info, log: logger, "Saving preferences to server")
                         if preferences.userId != nil {
                             _ = self.service.save(preferences) {
                                 success in
