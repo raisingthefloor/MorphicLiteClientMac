@@ -32,6 +32,14 @@ variables:
 - name: extraArgs
   value: 'OTHER_CODE_SIGN_FLAGS="--timestamp" CURRENT_PROJECT_VERSION="$(Build.BuildNumber)"'
 
+resources:
+  repositories:
+    - repository: deploy-morphicweb
+      type: github
+      endpoint: oregondesignservices
+      name: oregondesignservices/deploy-morphicweb
+      ref: master
+
 pool:
   vmImage: 'macos-latest'
 
@@ -118,6 +126,9 @@ steps:
   inputs:
     targetType: 'filePath'
     filePath: dmg-notarize.sh
+- checkout: deploy-morphicweb
+  persistCredentials: true
+  path: deploy-morphicweb
 - task: Bash@3
   displayName: publish to s3
   env:
@@ -131,3 +142,5 @@ steps:
   inputs:
     targetType: 'filePath'
     filePath: push-to-s3.sh
+    # the previous checkout step changed our working dir, so we need to jump up a dir
+    workingDirectory: ".."

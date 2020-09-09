@@ -57,3 +57,23 @@ S3_OBJECT_NAME="${S3_OBJECT_PREFIX}/Morphic-v${VERSION}.dmg"
 LOCAL_DMG="./Morphic/Morphic.dmg"
 
 aws s3 cp $EXTRA_ARGS "${LOCAL_DMG}" "s3://${BUCKET}/${S3_OBJECT_NAME}"
+
+S3_PUBLISHED_HTTP_URL="https://d23vryjv7k8eyb.cloudfront.net"
+
+# TODO: do we want this to update staging and prod automatically, depending on branch?
+if [[ "${BRANCH_NAME}" == "master" ]]; then
+  echo "updating dev environment urls"
+  cd deploy-morphicweb
+  # azure checks out headlessly, so we need to swap to the branch
+  git checkout ${BRANCH_NAME}
+
+  TO_EDIT=environments/dev/patches/set-env.yaml
+
+  # client
+  go run update-env-var.go ${TO_EDIT} "MORPHIC_MAC_DOWNLOAD_URL" "${S3_PUBLISHED_HTTP_URL}/${S3_OBJECT_NAME}"
+
+  git config --global user.email "buildmaster@raisingthefloor.org"
+  git config --global user.name "buildmaster"
+  git commit ${TO_EDIT} -m "buildmaster: updating osx client urls"
+  git push
+fi
