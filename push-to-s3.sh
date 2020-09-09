@@ -61,7 +61,7 @@ aws s3 cp $EXTRA_ARGS "${LOCAL_DMG}" "s3://${BUCKET}/${S3_OBJECT_NAME}"
 S3_PUBLISHED_HTTP_URL="https://d23vryjv7k8eyb.cloudfront.net"
 
 # TODO: do we want this to update staging and prod automatically, depending on branch?
-if [[ "${BRANCH_NAME}" == "master" ]]; then
+if [[ "${BRANCH_NAME}" != "master" ]]; then
   echo "updating dev environment urls"
   cd ../deploy-morphicweb
   # azure checks out headlessly, so we need to swap to the branch
