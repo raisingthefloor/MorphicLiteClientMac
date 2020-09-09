@@ -117,6 +117,13 @@ steps:
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
 - task: Bash@3
+  displayName:  debug
+  inputs:
+    targetType: 'inline'
+    script: |
+      pwd
+      ls -al
+- task: Bash@3
   displayName: notarize dmg
   env:
     BRANCH: $(Build.SourceBranch)
@@ -130,6 +137,13 @@ steps:
 - checkout: deploy-morphicweb
   persistCredentials: true
   path: deploy-morphicweb
+- task: Bash@3
+  displayName:  debug2
+  inputs:
+    targetType: 'inline'
+    script: |
+      pwd
+      ls -al
 - task: Bash@3
   displayName: publish to s3
   env:
