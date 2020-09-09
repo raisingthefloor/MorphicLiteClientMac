@@ -44,7 +44,18 @@ pool:
   vmImage: 'macos-latest'
 
 steps:
+- checkout: deploy-morphicweb
+  persistCredentials: true
+  path: deploy-morphicweb
 - checkout: self
+  path: MorphicLiteClientMac
+- task: Bash@3
+  displayName:  debug
+  inputs:
+    targetType: 'inline'
+    script: |
+      pwd
+      ls -al
 - task: InstallAppleCertificate@2
   inputs:
     certSecureFile: 'raising_the_floor_5AAXYGZ428.p12'
@@ -116,13 +127,6 @@ steps:
     useXcpretty: false
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
-- task: Bash@3
-  displayName:  debug
-  inputs:
-    targetType: 'inline'
-    script: |
-      pwd
-      ls -al
 - task: Bash@3
   displayName: notarize dmg
   env:
