@@ -54,4 +54,43 @@ public extension Service {
         return session.runningTask(with: request, completion: completion)
     }
     
+    
+    struct UserCommunityDetails: Codable {
+        public var id: String
+        public var name: String
+        public var bar: Bar
+        
+        public struct Bar: Codable {
+            public var id: String
+            public var name: String
+            public var items: [BarItem]
+        }
+        
+        // NOTE: we intentionally do not convert snake casing to lower camel case here; we may want to reconsider that in the future
+        public struct BarItem: Codable {
+            public var kind: BarItemKind
+            public var is_primary: Bool
+            // NOTE: in the future, we may want to dynamically parse the 'configuration' data as the respective subtype (rather than capturing it as a union with loose optionals and then validating the data higher up our call chain).
+            public var configuration: BarConfigurationUnion
+        }
+
+        public enum BarItemKind: String, Codable {
+            case link = "link"
+            case application = "application"
+            case action = "action"
+        }
+        
+        // NOTE: this struct is the union of all possible ButtonConfiguration types and their subtypes (necessary for our current abstracted (codable) data decoding strategy)
+        // NOTE: we intentionally do not convert snake casing to lower camel case here; we may want to reconsider that in the future
+        public struct BarConfigurationUnion: Codable {
+            public var color: String?
+            public var `default`: String?
+            public var exe: String?
+            public var identifier: String?
+            public var image_url: String?
+            public var label: String?
+            public var subkind: String?
+            public var url: String?
+        }
+    }
 }
