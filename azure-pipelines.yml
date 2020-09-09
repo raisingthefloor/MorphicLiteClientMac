@@ -134,6 +134,7 @@ steps:
   inputs:
     targetType: 'filePath'
     filePath: dmg-notarize.sh
+    workingDirectory: MorphicLiteClientMac
 - checkout: deploy-morphicweb
   persistCredentials: true
   path: deploy-morphicweb
@@ -157,5 +158,4 @@ steps:
   inputs:
     targetType: 'filePath'
     filePath: push-to-s3.sh
-    # the previous checkout step changed our working dir, so we need to jump up a dir
-    workingDirectory: ".."
+    workingDirectory: MorphicLiteClientMac
