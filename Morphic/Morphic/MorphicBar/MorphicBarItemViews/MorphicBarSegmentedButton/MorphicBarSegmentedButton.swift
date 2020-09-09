@@ -127,7 +127,7 @@ class MorphicBarSegmentedButton: NSControl {
     
     /// Amount of inset each button segment should have
     var contentInsets = NSEdgeInsets(top: 7, left: 9, bottom: 7, right: 9) {
-        didSet{
+        didSet {
             invalidateIntrinsicContentSize()
             for button in segmentButtons {
                 button.contentInsets = contentInsets
@@ -147,7 +147,7 @@ class MorphicBarSegmentedButton: NSControl {
     
     override func layout() {
         var frame = NSRect(origin: .zero, size: NSSize(width: 0, height: bounds.height))
-        for button in segmentButtons{
+        for button in segmentButtons {
             let buttonSize = button.intrinsicContentSize
             frame.size.width = buttonSize.width
             button.frame = frame

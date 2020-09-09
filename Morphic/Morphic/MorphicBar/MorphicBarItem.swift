@@ -35,7 +35,7 @@ public class MorphicBarItem {
         self.interoperable = interoperable
     }
     
-    func view() -> MorphicBarItemView? {
+    func view() -> MorphicBarItemViewProtocol? {
         return nil
     }
     
@@ -55,6 +55,8 @@ public class MorphicBarItem {
         switch interoperable.string(for: "type") {
         case "control":
             return MorphicBarControlItem(interoperable: interoperable)
+        case "link":
+            return MorphicBarLinkItem(interoperable: interoperable)
         default:
             return nil
         }
@@ -62,7 +64,52 @@ public class MorphicBarItem {
     
 }
 
-class MorphicBarControlItem: MorphicBarItem{
+class MorphicBarLinkItem: MorphicBarItem {
+    var label: String
+    var color: NSColor?
+    var imageUrl: String?
+    var url: URL?
+     
+    override init(interoperable: [String : Interoperable?]) {
+        // NOTE: argument 'label' should never be nil, but we use an empty string as a backup
+        label = interoperable.string(for: "label") ?? ""
+        //
+        if let colorAsString = interoperable.string(for: "color") {
+            color = NSColor.createFromRgbHexString(colorAsString)
+        } else {
+            color = nil
+        }
+        //
+        imageUrl = interoperable.string(for: "imageUrl")
+        //
+        // NOTE: argument 'url' should never be nil, but we use an empty string as a backup
+        if let urlAsString = interoperable.string(for: "url") {
+            // NOTE: if the url was malformed, that may result in a "nil" URL
+            // SECURITY NOTE: we should strongly consider filtering urls by scheme (or otherwise) here
+            url = URL(string: urlAsString)
+        } else {
+            url = nil
+        }
+        
+        super.init(interoperable: interoperable)
+    }
+
+    override func view() -> MorphicBarItemViewProtocol? {
+        let view = MorphicBarButtonItemView(label: label, labelColor: nil, icon: nil, iconColor: color)
+        view.target = self
+        view.action = #selector(MorphicBarLinkItem.openLink(_:))
+        return view
+    }
+    
+    @objc
+    func openLink(_ sender: Any?) {
+        if let url = self.url {
+            NSWorkspace.shared.open(url)
+        }
+    }
+}
+
+class MorphicBarControlItem: MorphicBarItem {
     
     enum Feature: String {
         case resolution
@@ -77,7 +124,7 @@ class MorphicBarControlItem: MorphicBarItem{
         init(string: String?) {
             if let known = Feature(rawValue: string ?? "") {
                 self = known
-            }else{
+            } else {
                 self = .unknown
             }
         }
@@ -90,7 +137,7 @@ class MorphicBarControlItem: MorphicBarItem{
         super.init(interoperable: interoperable)
     }
     
-    override func view() -> MorphicBarItemView? {
+    override func view() -> MorphicBarItemViewProtocol? {
         switch feature {
         case .resolution:
             let localized = LocalizedStrings(prefix: "control.feature.resolution")
@@ -587,4 +634,47 @@ private extension NSImage {
         return NSImage(named: "SegmentIconMinus")!
     }
     
+}
+
+private extension NSColor {
+    
+    // string must be formatted as #rrggbb
+    static func createFromRgbHexString(_ rgbHexString: String) -> NSColor? {
+        if rgbHexString.count != 7 {
+            return nil
+        }
+        
+        let hashStartIndex = rgbHexString.startIndex
+        let redStartIndex = rgbHexString.index(hashStartIndex, offsetBy: 1)
+        let greenStartIndex = rgbHexString.index(redStartIndex, offsetBy: 2)
+        let blueStartIndex = rgbHexString.index(greenStartIndex, offsetBy: 2)
+        
+        let hashAsString = rgbHexString[hashStartIndex..<redStartIndex]
+        guard hashAsString == "#" else {
+            return nil
+        }
+        
+        let redAsHexString = rgbHexString[redStartIndex..<greenStartIndex]
+        guard let redAsInt = Int(redAsHexString, radix: 16),
+            redAsInt >= 0,
+            redAsInt <= 255 else {
+            //
+            return nil
+        }
+        let greenAsHexString = rgbHexString[greenStartIndex..<blueStartIndex]
+        guard let greenAsInt = Int(greenAsHexString, radix: 16),
+            greenAsInt >= 0,
+            greenAsInt <= 255 else {
+            return nil
+        }
+        let blueAsHexString = rgbHexString[blueStartIndex...]
+        guard let blueAsInt = Int(blueAsHexString, radix: 16),
+            blueAsInt >= 0,
+            blueAsInt <= 255 else {
+            //
+            return nil
+        }
+        
+        return NSColor(red: CGFloat(redAsInt) / 255.0, green: CGFloat(greenAsInt) / 255.0, blue: CGFloat(blueAsInt) / 255.0, alpha: 1.0)
+    }
 }

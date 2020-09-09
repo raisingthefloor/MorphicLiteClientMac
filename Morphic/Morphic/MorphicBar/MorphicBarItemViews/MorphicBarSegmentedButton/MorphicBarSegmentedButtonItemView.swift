@@ -23,19 +23,23 @@
 
 import Cocoa
 
-public class MorphicBarItemView: NSView {
-    
-    public weak var morphicBarView: MorphicBarView?
-    
-    public var showsHelp: Bool = true
-    
+class MorphicBarSegmentedButtonItemView: NSView, MorphicBarItemViewProtocol {
+    // MorphicBarItemView protocol requirements
+    //
+    var showsHelp: Bool = true {
+        didSet {
+            segmentedButton.showsHelp = showsHelp
+        }
+    }
+    //
+    // NOTE: the following must also be implemented in all classes conforming to MorphicBarItemViewProtocol
     public override var isFlipped: Bool {
         return true
     }
-    
-}
+    //
+    public weak var morphicBarView: MorphicBarView?
 
-class MorphicBarSegmentedButtonItemView: MorphicBarItemView {
+    //
     
     var titleLabel: NSTextField
     var segmentedButton: MorphicBarSegmentedButton
@@ -50,12 +54,6 @@ class MorphicBarSegmentedButtonItemView: MorphicBarItemView {
         addSubview(titleLabel)
         addSubview(segmentedButton)
         self.needsLayout = true
-    }
-    
-    override var showsHelp: Bool {
-        didSet{
-            segmentedButton.showsHelp = showsHelp
-        }
     }
     
     private var titleYAdjustment: CGFloat {

@@ -23,12 +23,36 @@
 
 import Cocoa
 
-class MorphicBarButtonItemView: NSButton {
+class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
+    // MorphicBarItemView protocol requirements
+    //
+    var showsHelp: Bool = true
+    //
+    // NOTE: the following must also be implemented in all classes conforming to MorphicBarItemViewProtocol
+    public override var isFlipped: Bool {
+        return true
+    }
+    //
+    public weak var morphicBarView: MorphicBarView?
+
+    //
     
     private var titleBoxLayer: CAShapeLayer!
     private var iconCircleLayer: CAShapeLayer!
     private var iconImageLayer: CALayer!
     private var titleTextLayer: CATextLayer!
+
+    init(label: String, labelColor: NSColor?, icon: MorphicBarButtonItemIcon?, iconColor: NSColor?) {
+        super.init(frame: NSRect(x: 0, y: 0, width: 100, height: 96))
+        //
+        self.title = label
+        self.icon = icon
+        self.iconColor = iconColor
+        self.font = .morphicRegular
+        self.fontColor = labelColor
+        //
+        initialize()
+    }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -41,7 +65,7 @@ class MorphicBarButtonItemView: NSButton {
         //
         initialize()
     }
-
+    
     override func draw(_ dirtyRect: NSRect) {
         // NOTE: we draw a background so that macOS doesn't draw a button background (including 3D border) for us
         layer?.backgroundColor = self.backgroundColor?.cgColor ?? .clear
@@ -71,7 +95,7 @@ class MorphicBarButtonItemView: NSButton {
         configureIconImageLayer()
         configureTitleTextLayer()
     }
-
+    
     private func configureIconCircleLayer() {
         // calculate the diameter and bounds of the circle around our icon
         let iconCircleDiameter = calculateIconCircleDiameter()
@@ -191,10 +215,11 @@ class MorphicBarButtonItemView: NSButton {
         guard let titleFont = self.font else {
             return
         }
-        
-        // get size of our title (using its attributed font attributes)
-        let titleTextSize = calculateTitleTextSize()
 
+        // get size and lines of our title
+        let (titleTextPixelWidth, titleTextPixelHeight, titleLines) = measureAndSplitText(title)
+        let titleMultilineText = titleLines.joined(separator: "\n")
+        
         // calculate the bounds of our title text
         let titleTextBounds = calculateTitleTextBounds()
         
@@ -207,14 +232,15 @@ class MorphicBarButtonItemView: NSButton {
         }
 
         // frame
-        newTitleTextLayer.frame = NSRect(x: titleTextBounds.minX, y: titleTextBounds.minY, width: titleTextSize.width, height: titleTextSize.height)
+        newTitleTextLayer.frame = NSRect(x: titleTextBounds.minX, y: titleTextBounds.minY, width: titleTextPixelWidth, height: titleTextPixelHeight)
         // font properties
         newTitleTextLayer.font = titleFont
         newTitleTextLayer.fontSize = titleFont.pointSize
-        newTitleTextLayer.foregroundColor = .white
+        newTitleTextLayer.foregroundColor = fontColor?.cgColor ?? .white
         //
         // title string
-        newTitleTextLayer.string = self.title
+        newTitleTextLayer.alignmentMode = .center
+        newTitleTextLayer.string = titleMultilineText
         
         self.layer?.replaceSublayer(self.titleTextLayer, with: newTitleTextLayer)
         self.titleTextLayer = newTitleTextLayer
@@ -259,7 +285,7 @@ class MorphicBarButtonItemView: NSButton {
     private func calculateIconCircleDiameter(usingFrameWidth customFrameWidth: CGFloat? = nil) -> CGFloat {
         // get the size of our frame
         let frameSize = self.frame.size
-        
+
         let frameWidthForCalculation = customFrameWidth ?? frameSize.width
         
         // calculate the size of the circle around our icon
@@ -305,31 +331,143 @@ class MorphicBarButtonItemView: NSButton {
         return titleBoxBounds
     }
     
-    // NOTE: this function returns a fixed value based on the title (and not on the current size of the frame)
-    private func calculateTitleTextSize() -> NSSize {
-        // get size of our title (using its attributed font attributes)
-        let titleAsNSString = self.title as NSString
-        let titleTextSize = titleAsNSString.size(withAttributes: [ NSAttributedString.Key.font: self.font as Any ])
+    private func measureAndSplitText(_ text: String, maxWidth: CGFloat? = nil) -> (pixelWidth: CGFloat, pixelHeight: CGFloat, lines: [String]) {
+        // get the size of our frame
+        let frameSize = self.frame.size
         
-        return titleTextSize
+        // calculate the maximum allowed text width
+        let maximumTextWidth = maxWidth ?? (frameSize.width - (titleLeftAndRightPadding * 2))
+
+        // establish the maximum number of lines we're willing to support in this control
+        let maximumNumberOfLines = 2
+        
+        var lines: [String] = []
+        var remainingText = text
+        //
+        var numberOfWordsInCurrentLine = 0
+        var currentLine = ""
+
+        // measure each word sequence in our title (to make sure each one fits on a single line); replace text with elipses where necessary
+        while remainingText.count > 0 && lines.count < maximumNumberOfLines {
+            var nextWord: String
+            if let nextWordEndIndex = remainingText.firstIndex(of: " ") {
+                nextWord = String(remainingText[...nextWordEndIndex])
+            } else {
+                nextWord = String(remainingText[..<remainingText.endIndex])
+            }
+
+            // append the next word (plus the trailing space)
+            var proposedCurrentLine = currentLine + nextWord
+            var numberOfWordsInProposedCurrentLine = numberOfWordsInCurrentLine + 1
+            
+            // determine if the line is now too long for the line
+            if calculateWidthOfText(proposedCurrentLine) > maximumTextWidth {
+                // line is too long
+                
+                if numberOfWordsInProposedCurrentLine == 1 {
+                    // truncate the word by using ellipses
+                    proposedCurrentLine = truncateText(proposedCurrentLine, toWidth: maximumTextWidth, withEllipses: true)
+
+                    // remove the leading text we just copied from the remainingText variable
+                    remainingText.removeFirst(nextWord.count)
+                } else {
+                    // remove the word we just added
+                    proposedCurrentLine = currentLine
+                    numberOfWordsInProposedCurrentLine -= 1
+                }
+                
+                // append the current line to 'lines' and reset the current line
+                lines.append(proposedCurrentLine)
+                //
+                currentLine = ""
+                numberOfWordsInCurrentLine = 0
+            } else {
+                // line still fits; keep the proposed changes and keep adding words
+                currentLine = proposedCurrentLine
+                numberOfWordsInCurrentLine = numberOfWordsInProposedCurrentLine
+                
+                // remove the leading text we just copied from the remainingText variable
+                remainingText.removeFirst(nextWord.count)
+            }
+        }
+        
+        // if there was one remaining line being built, append it to our list of lines now
+        if currentLine != "" && lines.count < maximumNumberOfLines {
+            lines.append(currentLine)
+        }
+        
+        // remove any trailing spaces from the lines
+        for index in 0..<lines.count {
+            lines[index] = lines[index].trimmingCharacters(in: [" "])
+        }
+        
+        // now measure the width of each line and the combined line height
+        var pixelWidth: CGFloat = 0
+        var pixelHeight: CGFloat = 0
+        
+        for line in lines {
+            let linePixelSize = calculateSizeOfText(line)
+            pixelWidth = max(pixelWidth, linePixelSize.width)
+            pixelHeight = pixelHeight + linePixelSize.height + titleVerticalLineSpacing
+        }
+        // remove the spacing included after the last line
+        pixelHeight -= titleVerticalLineSpacing
+        
+        return (pixelWidth: pixelWidth, pixelHeight: pixelHeight, lines: lines)
     }
     
+    private func truncateText(_ text: String, toWidth maxWidth: CGFloat, withEllipses: Bool) -> String {
+        // if the text already fits, return it as-is
+        if calculateWidthOfText(text) <= maxWidth {
+            return text
+        }
+        
+        for currentLength in stride(from: text.count, to: 0, by: -1) {
+            let endIndex = text.index(text.startIndex, offsetBy: currentLength)
+            var proposedText = String(text[text.startIndex..<endIndex])
+            if withEllipses == true {
+                proposedText += "..."
+            }
+            
+            if calculateWidthOfText(proposedText) <= maxWidth {
+                return proposedText
+            }
+        }
+        
+        // if we could not fit any text, return the minimal text (empty or ellipses)
+        return (withEllipses == true) ? "..." : ""
+    }
+    
+    private func calculateSizeOfText(_ text: String) -> CGSize {
+        // get size of our text (using its attributed font attributes)
+        let textAsNSString = text as NSString
+        let textSize = textAsNSString.size(withAttributes: [ NSAttributedString.Key.font: self.font as Any ])
+        
+        return textSize
+    }
+    
+    private func calculateWidthOfText(_ text: String) -> CGFloat {
+        let textSize = calculateSizeOfText(text)
+
+        return textSize.width
+    }
+
     private func calculateTitleTextBounds() -> NSRect {
         // get the size of our frame
         let frameSize = self.frame.size
 
         let titleBoxBounds = calculateTitleBoxBounds()
         
-        let titleTextSize = calculateTitleTextSize()
-        //
-        let titleTextPosX = (frameSize.width - titleTextSize.width) / 2.0
-        let titleTextPosY = titleBoxBounds.maxY - titleTextSize.height - self.titleBottomPadding
+        let (titleTextPixelWidth, titleTextPixelHeight, _) = measureAndSplitText(title)
+                //
+        let titleTextPosX = (frameSize.width - titleTextPixelWidth) / 2.0
+        let titleTextPosY = titleBoxBounds.maxY - titleTextPixelHeight - self.titleBottomPadding
         
-        let titleTextBounds = NSRect(x: titleTextPosX, y: titleTextPosY, width: titleTextSize.width, height: titleTextSize.height)
+        let titleTextBounds = NSRect(x: titleTextPosX, y: titleTextPosY, width: titleTextPixelWidth, height: titleTextPixelHeight)
         
         return titleTextBounds
     }
-    
+        
     private func calculateImageFrameSizeForPdf(pdfBounds: NSRect, maxWidth: CGFloat, maxHeight: CGFloat) -> NSSize {
         var width: CGFloat = 0
         var height: CGFloat = 0
@@ -365,8 +503,8 @@ class MorphicBarButtonItemView: NSButton {
             
             var height: CGFloat = 0
             //
-            let titleTextSize = calculateTitleTextSize()
-            height += titleTextSize.height
+            let (_, titleTextPixelHeight, _) = measureAndSplitText(title, maxWidth: width)
+            height += titleTextPixelHeight
             //
             height += self.titleBottomPadding
             //
@@ -379,6 +517,13 @@ class MorphicBarButtonItemView: NSButton {
         }
     }
     
+    override func layout() {
+        configureTitleBoxLayer()
+        configureIconCircleLayer()
+        configureIconImageLayer()
+        configureTitleTextLayer()
+    }
+
     // MARK: utils
     
     private func backingScaleFactor() -> CGFloat? {
@@ -411,6 +556,12 @@ class MorphicBarButtonItemView: NSButton {
     }
     
     override var font: NSFont? {
+        didSet {
+            configureTitleTextLayer()
+        }
+    }
+    
+    var fontColor: NSColor? {
         didSet {
             configureTitleTextLayer()
         }
@@ -456,6 +607,22 @@ class MorphicBarButtonItemView: NSButton {
     }
 
     public var titleTopPadding: CGFloat = 3.0 {
+        didSet {
+            configureTitleBoxLayer()
+            configureTitleTextLayer()
+            self.needsLayout = true
+        }
+    }
+    
+    public var titleLeftAndRightPadding: CGFloat = 3.0 {
+        didSet {
+            configureTitleBoxLayer()
+            configureTitleTextLayer()
+            self.needsLayout = true
+        }
+    }
+    
+    public var titleVerticalLineSpacing: CGFloat = 2.0 {
         didSet {
             configureTitleBoxLayer()
             configureTitleTextLayer()

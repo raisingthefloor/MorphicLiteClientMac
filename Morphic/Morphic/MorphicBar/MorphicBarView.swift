@@ -29,13 +29,13 @@ public class MorphicBarView: NSView {
     // MARK: - Item Views
     
     /// The item views in order of appearance
-    public private(set) var itemViews = [MorphicBarItemView]()
+    public private(set) var itemViews = [MorphicBarItemViewProtocol]()
     
     /// Add an item view to the end of the MorphicBar
     ///
     /// - parameters:
     ///   - itemView: The item view to add
-    public func add(itemView: MorphicBarItemView) {
+    public func add(itemView: MorphicBarItemViewProtocol) {
         itemViews.append(itemView)
         itemView.morphicBarView = self
         addSubview(itemView)
@@ -70,19 +70,23 @@ public class MorphicBarView: NSView {
     public override func layout() {
         switch orientation {
         case .horizontal:
-            var frame = CGRect(x: 0, y: 0, width: 0, height: bounds.size.height)
+            var frame = CGRect(x: 0, y: 0, width: 0, height: self.bounds.size.height)
             for itemView in itemViews {
-                let size = itemView.intrinsicContentSize
-                frame.size.width = size.width
+                let itemViewIntrinsicSize = itemView.intrinsicContentSize
+                frame.size.width = itemViewIntrinsicSize.width
+                frame.size.height = itemView.intrinsicContentSize.height
+                frame.origin.y = (self.bounds.size.height - itemViewIntrinsicSize.height) / 2.0
                 itemView.frame = frame
                 //
                 frame.origin.x += frame.size.width + itemSpacing
             }
         case .vertical:
-            var frame = CGRect(x: 0, y: 0, width: bounds.size.width, height: 0)
+            var frame = CGRect(x: 0, y: 0, width: self.bounds.size.width, height: 0)
             for itemView in itemViews {
-                let size = itemView.intrinsicContentSize
-                frame.size.height = size.height
+                let itemViewIntrinsicSize = itemView.intrinsicContentSize
+                frame.size.width = itemViewIntrinsicSize.width
+                frame.size.height = itemViewIntrinsicSize.height
+                frame.origin.x = (self.bounds.size.width - itemViewIntrinsicSize.width) / 2.0
                 itemView.frame = frame
                 //
                 frame.origin.y += frame.size.height + itemSpacing
