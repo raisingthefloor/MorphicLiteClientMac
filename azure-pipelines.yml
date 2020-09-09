@@ -133,7 +133,7 @@ steps:
     SIGNING_IDENTITY: '$(SIGNING_IDENTITY)'
   inputs:
     targetType: 'filePath'
-    filePath: dmg-notarize.sh
+    filePath: MorphicLiteClientMac/dmg-notarize.sh
     workingDirectory: MorphicLiteClientMac
 - checkout: deploy-morphicweb
   persistCredentials: true
@@ -157,5 +157,5 @@ steps:
     VERSION: '$(finalVersion)'
   inputs:
     targetType: 'filePath'
-    filePath: push-to-s3.sh
+    filePath: MorphicLiteClientMac/push-to-s3.sh
     workingDirectory: MorphicLiteClientMac
