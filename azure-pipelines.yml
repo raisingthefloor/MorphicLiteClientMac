@@ -135,9 +135,6 @@ steps:
     targetType: 'filePath'
     filePath: MorphicLiteClientMac/dmg-notarize.sh
     workingDirectory: MorphicLiteClientMac
-- checkout: deploy-morphicweb
-  persistCredentials: true
-  path: deploy-morphicweb
 - task: Bash@3
   displayName:  debug2
   inputs:
