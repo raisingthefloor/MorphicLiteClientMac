@@ -32,10 +32,29 @@ variables:
 - name: extraArgs
   value: 'OTHER_CODE_SIGN_FLAGS="--timestamp" CURRENT_PROJECT_VERSION="$(Build.BuildNumber)"'
 
+resources:
+  repositories:
+    - repository: deploy-morphicweb
+      type: github
+      endpoint: oregondesignservices
+      name: oregondesignservices/deploy-morphicweb
+      ref: master
+
 pool:
   vmImage: 'macos-latest'
 
 steps:
+#- checkout: self
+#- checkout: deploy-morphicweb
+#  persistCredentials: true
+#  path: deploy-morphicweb
+- task: Bash@3
+  displayName:  debug
+  inputs:
+    targetType: 'inline'
+    script: |
+      pwd
+      ls -al
 - task: InstallAppleCertificate@2
   inputs:
     certSecureFile: 'raising_the_floor_5AAXYGZ428.p12'
@@ -117,7 +136,15 @@ steps:
     SIGNING_IDENTITY: '$(SIGNING_IDENTITY)'
   inputs:
     targetType: 'filePath'
-    filePath: dmg-notarize.sh
+    filePath: MorphicLiteClientMac/dmg-notarize.sh
+    workingDirectory: MorphicLiteClientMac
+- task: Bash@3
+  displayName:  debug2
+  inputs:
+    targetType: 'inline'
+    script: |
+      pwd
+      ls -al
 - task: Bash@3
   displayName: publish to s3
   env:
@@ -130,4 +157,5 @@ steps:
     VERSION: '$(finalVersion)'
   inputs:
     targetType: 'filePath'
-    filePath: push-to-s3.sh
+    filePath: MorphicLiteClientMac/push-to-s3.sh
+    workingDirectory: MorphicLiteClientMac
