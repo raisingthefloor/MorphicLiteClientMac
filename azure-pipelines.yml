@@ -44,6 +44,7 @@ pool:
   vmImage: 'macos-latest'
 
 steps:
+- checkout: self
 - task: InstallAppleCertificate@2
   inputs:
     certSecureFile: 'raising_the_floor_5AAXYGZ428.p12'
