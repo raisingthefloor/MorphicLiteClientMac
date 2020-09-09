@@ -91,13 +91,10 @@ public class ApplicationElement: UIElement {
         }
         runningApplication = NSRunningApplication.runningApplications(withBundleIdentifier: bundleIdentifier).first
         if runningApplication == nil {
-            let config = NSWorkspace.OpenConfiguration()
-            config.activates = false
-            config.hides = true
-            NSWorkspace.shared.openApplication(at: url, configuration: config) {
+            MorphicProcess.openProcess(at: url, arguments: [], activate: false, hide: true) {
                 (runningApplication, error) in
                 DispatchQueue.main.async {
-                    guard runningApplication != nil else{
+                    guard runningApplication != nil else {
                         os_log(.error, log: logger, "Failed to launch application")
                         completion(false)
                         return
@@ -112,7 +109,7 @@ public class ApplicationElement: UIElement {
         }
     }
     
-    public func terminate() -> Bool{
+    public func terminate() -> Bool {
         guard let runningApplication = runningApplication else {
             return true
         }
@@ -123,7 +120,7 @@ public class ApplicationElement: UIElement {
     }
     
     public var mainWindow: WindowElement? {
-        get{
+        get {
             guard accessibilityElement != nil else {
                 return nil
             }
@@ -131,6 +128,24 @@ public class ApplicationElement: UIElement {
                 return nil
             }
             return WindowElement(accessibilityElement: mainWindow)
+        }
+    }
+    
+    public var windows: [WindowElement]? {
+        get {
+            guard accessibilityElement != nil else {
+                return nil
+            }
+            guard let windows: [MorphicA11yUIElement] = accessibilityElement.values(forAttribute: .windows) else {
+                return nil
+            }
+
+            var windowElements: [WindowElement] = []
+            for window in windows {
+                let windowElement = WindowElement(accessibilityElement: window)
+                windowElements.append(windowElement)
+            }
+            return windowElements
         }
     }
     

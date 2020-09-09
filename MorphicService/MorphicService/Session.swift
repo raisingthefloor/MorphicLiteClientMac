@@ -623,6 +623,31 @@ extension URLRequest{
     }
 }
 
+extension HTTPURLResponse {
+    // NOTE: this function re-implements functionality present in macOS 10.15 and beyond (for macOS <=10.14 compatibility)
+    @available(macOS, obsoleted: 10.15)
+    public func value(forHTTPHeaderField field: String) -> String? {
+        // if we found a case-sensitive result, return it immediately
+        if let value = self.allHeaderFields[field] {
+            return value as? String
+        }
+
+        // do a case-insensitive search on the key
+        for (key, value) in self.allHeaderFields {
+            guard let keyAsString = key as? String else {
+                continue
+            }
+            
+            if keyAsString.caseInsensitiveCompare(field) == .orderedSame {
+                return value as? String
+            }
+        }
+        
+        // if we did not find a value, return nil
+        return nil
+    }
+}
+
 extension URLResponse{
     
     /// Get a Morphic model object by decoding the response JSON data
