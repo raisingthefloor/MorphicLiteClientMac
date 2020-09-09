@@ -44,10 +44,10 @@ pool:
   vmImage: 'macos-latest'
 
 steps:
-- checkout: self
-- checkout: deploy-morphicweb
-  persistCredentials: true
-  path: deploy-morphicweb
+#- checkout: self
+#- checkout: deploy-morphicweb
+#  persistCredentials: true
+#  path: deploy-morphicweb
 - task: Bash@3
   displayName:  debug
   inputs:
