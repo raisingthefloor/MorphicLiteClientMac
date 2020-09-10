@@ -595,6 +595,7 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
     override var title: String {
         didSet {
             configureTitleTextLayer()
+            self.needsLayout = true
         }
     }
     

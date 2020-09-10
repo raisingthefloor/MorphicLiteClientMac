@@ -95,7 +95,12 @@ class MorphicBarLinkItem: MorphicBarItem {
     }
 
     override func view() -> MorphicBarItemViewProtocol? {
-        let view = MorphicBarButtonItemView(label: label, labelColor: nil, icon: nil, iconColor: color)
+        var icon: MorphicBarButtonItemIcon? = nil
+        if let imageUrl = self.imageUrl {
+            icon = MorphicBarButtonItemIcon(rawValue: imageUrl)
+        }
+        
+        let view = MorphicBarButtonItemView(label: label, labelColor: nil, icon: icon, iconColor: color)
         view.target = self
         view.action = #selector(MorphicBarLinkItem.openLink(_:))
         return view

@@ -70,6 +70,21 @@
 		31E1E185244683DC009C4092 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E1E184244683DC009C4092 /* Theme.swift */; };
 		31E1E187244792D9009C4092 /* DefaultPreferences.json in Resources */ = {isa = PBXBuildFile; fileRef = 31E1E186244792D9009C4092 /* DefaultPreferences.json */; };
 		31E1E188244794EF009C4092 /* MorphicBarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31E1E18A244794EF009C4092 /* MorphicBarViewController.xib */; };
+		9D2593DF250A830100C38DA3 /* envelope-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D0250A830100C38DA3 /* envelope-solid.pdf */; };
+		9D2593E0250A830100C38DA3 /* music-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D1250A830100C38DA3 /* music-solid.pdf */; };
+		9D2593E1250A830100C38DA3 /* google-brands.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D2250A830100C38DA3 /* google-brands.pdf */; };
+		9D2593E2250A830100C38DA3 /* camera-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D3250A830100C38DA3 /* camera-solid.pdf */; };
+		9D2593E3250A830100C38DA3 /* calendar-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D4250A830100C38DA3 /* calendar-solid.pdf */; };
+		9D2593E4250A830100C38DA3 /* images-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D5250A830100C38DA3 /* images-solid.pdf */; };
+		9D2593E5250A830100C38DA3 /* link-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D6250A830100C38DA3 /* link-solid.pdf */; };
+		9D2593E6250A830100C38DA3 /* comment-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D7250A830100C38DA3 /* comment-solid.pdf */; };
+		9D2593E7250A830100C38DA3 /* video-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D8250A830100C38DA3 /* video-solid.pdf */; };
+		9D2593E8250A830100C38DA3 /* question-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D9250A830100C38DA3 /* question-solid.pdf */; };
+		9D2593E9250A830100C38DA3 /* skype-brands.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DA250A830100C38DA3 /* skype-brands.pdf */; };
+		9D2593EA250A830100C38DA3 /* google-drive-brands.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DB250A830100C38DA3 /* google-drive-brands.pdf */; };
+		9D2593EB250A830100C38DA3 /* newspaper-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DC250A830100C38DA3 /* newspaper-solid.pdf */; };
+		9D2593EC250A830100C38DA3 /* shopping-cart-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DD250A830100C38DA3 /* shopping-cart-solid.pdf */; };
+		9D2593ED250A830100C38DA3 /* amazon-brands.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DE250A830100C38DA3 /* amazon-brands.pdf */; };
 		9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */; };
 		9D82576F24D31C1E00F6E932 /* AboutBoxWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D82576D24D31C1E00F6E932 /* AboutBoxWindowController.xib */; };
 		9D82577124D353C800F6E932 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82577024D353C800F6E932 /* HyperlinkTextField.swift */; };
@@ -223,6 +238,21 @@
 		31E1E184244683DC009C4092 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		31E1E186244792D9009C4092 /* DefaultPreferences.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = DefaultPreferences.json; sourceTree = "<group>"; };
 		31E1E189244794EF009C4092 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MorphicBarViewController.xib; sourceTree = "<group>"; };
+		9D2593D0250A830100C38DA3 /* envelope-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "envelope-solid.pdf"; sourceTree = "<group>"; };
+		9D2593D1250A830100C38DA3 /* music-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "music-solid.pdf"; sourceTree = "<group>"; };
+		9D2593D2250A830100C38DA3 /* google-brands.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "google-brands.pdf"; sourceTree = "<group>"; };
+		9D2593D3250A830100C38DA3 /* camera-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "camera-solid.pdf"; sourceTree = "<group>"; };
+		9D2593D4250A830100C38DA3 /* calendar-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "calendar-solid.pdf"; sourceTree = "<group>"; };
+		9D2593D5250A830100C38DA3 /* images-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "images-solid.pdf"; sourceTree = "<group>"; };
+		9D2593D6250A830100C38DA3 /* link-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "link-solid.pdf"; sourceTree = "<group>"; };
+		9D2593D7250A830100C38DA3 /* comment-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "comment-solid.pdf"; sourceTree = "<group>"; };
+		9D2593D8250A830100C38DA3 /* video-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "video-solid.pdf"; sourceTree = "<group>"; };
+		9D2593D9250A830100C38DA3 /* question-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "question-solid.pdf"; sourceTree = "<group>"; };
+		9D2593DA250A830100C38DA3 /* skype-brands.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "skype-brands.pdf"; sourceTree = "<group>"; };
+		9D2593DB250A830100C38DA3 /* google-drive-brands.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "google-drive-brands.pdf"; sourceTree = "<group>"; };
+		9D2593DC250A830100C38DA3 /* newspaper-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "newspaper-solid.pdf"; sourceTree = "<group>"; };
+		9D2593DD250A830100C38DA3 /* shopping-cart-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "shopping-cart-solid.pdf"; sourceTree = "<group>"; };
+		9D2593DE250A830100C38DA3 /* amazon-brands.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "amazon-brands.pdf"; sourceTree = "<group>"; };
 		9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutBoxWindowController.swift; sourceTree = "<group>"; };
 		9D82576D24D31C1E00F6E932 /* AboutBoxWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutBoxWindowController.xib; sourceTree = "<group>"; };
 		9D82577024D353C800F6E932 /* HyperlinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperlinkTextField.swift; sourceTree = "<group>"; };
@@ -389,6 +419,7 @@
 		31751B3F2444E01B00EEDF14 /* MorphicBar */ = {
 			isa = PBXGroup;
 			children = (
+				9D2593CE250A82D200C38DA3 /* Assets */,
 				9DDAE61125094C720072C711 /* MorphicBarItemViews */,
 				31E1E17A24466D28009C4092 /* MorphicBarItem.swift */,
 				31751B9C2444F22900EEDF14 /* MorphicBarWindow.swift */,
@@ -457,6 +488,36 @@
 				31C12CC324B1441E00B617A8 /* PageControl.swift */,
 			);
 			path = "Help Window";
+			sourceTree = "<group>";
+		};
+		9D2593CE250A82D200C38DA3 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				9D2593CF250A82DE00C38DA3 /* Icons */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		9D2593CF250A82DE00C38DA3 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				9D2593DE250A830100C38DA3 /* amazon-brands.pdf */,
+				9D2593D4250A830100C38DA3 /* calendar-solid.pdf */,
+				9D2593D3250A830100C38DA3 /* camera-solid.pdf */,
+				9D2593D7250A830100C38DA3 /* comment-solid.pdf */,
+				9D2593D0250A830100C38DA3 /* envelope-solid.pdf */,
+				9D2593D2250A830100C38DA3 /* google-brands.pdf */,
+				9D2593DB250A830100C38DA3 /* google-drive-brands.pdf */,
+				9D2593D5250A830100C38DA3 /* images-solid.pdf */,
+				9D2593D6250A830100C38DA3 /* link-solid.pdf */,
+				9D2593D1250A830100C38DA3 /* music-solid.pdf */,
+				9D2593DC250A830100C38DA3 /* newspaper-solid.pdf */,
+				9D2593D9250A830100C38DA3 /* question-solid.pdf */,
+				9D2593DD250A830100C38DA3 /* shopping-cart-solid.pdf */,
+				9D2593DA250A830100C38DA3 /* skype-brands.pdf */,
+				9D2593D8250A830100C38DA3 /* video-solid.pdf */,
+			);
+			path = Icons;
 			sourceTree = "<group>";
 		};
 		9D82576724D3160600F6E932 /* About Box */ = {
@@ -675,17 +736,32 @@
 			buildActionMask = 2147483647;
 			files = (
 				31C12CC224B143A000B617A8 /* QuickHelpStepViewController.xib in Resources */,
+				9D2593E5250A830100C38DA3 /* link-solid.pdf in Resources */,
+				9D2593EA250A830100C38DA3 /* google-drive-brands.pdf in Resources */,
 				31751B822444E11600EEDF14 /* Local.xcconfig in Resources */,
+				9D2593EC250A830100C38DA3 /* shopping-cart-solid.pdf in Resources */,
+				9D2593E0250A830100C38DA3 /* music-solid.pdf in Resources */,
+				9D2593E8250A830100C38DA3 /* question-solid.pdf in Resources */,
+				9D2593E9250A830100C38DA3 /* skype-brands.pdf in Resources */,
 				9D82576F24D31C1E00F6E932 /* AboutBoxWindowController.xib in Resources */,
 				31CE56F5244A407000A52A7B /* QuickHelpViewController.xib in Resources */,
 				31751B3C2444DFAA00EEDF14 /* Main.xib in Resources */,
+				9D2593ED250A830100C38DA3 /* amazon-brands.pdf in Resources */,
+				9D2593E1250A830100C38DA3 /* google-brands.pdf in Resources */,
+				9D2593E7250A830100C38DA3 /* video-solid.pdf in Resources */,
 				31E1E188244794EF009C4092 /* MorphicBarViewController.xib in Resources */,
+				9D2593E3250A830100C38DA3 /* calendar-solid.pdf in Resources */,
 				31751B842444E11600EEDF14 /* Debug.xcconfig in Resources */,
+				9D2593E2250A830100C38DA3 /* camera-solid.pdf in Resources */,
 				31751B0F2444DE8B00EEDF14 /* Assets.xcassets in Resources */,
 				31751B832444E11600EEDF14 /* Release.xcconfig in Resources */,
 				314EB6DB24A697C300CF3D48 /* macos.solutions.json in Resources */,
 				31E1E187244792D9009C4092 /* DefaultPreferences.json in Resources */,
+				9D2593E6250A830100C38DA3 /* comment-solid.pdf in Resources */,
+				9D2593EB250A830100C38DA3 /* newspaper-solid.pdf in Resources */,
 				31C12CBC24B11F5A00B617A8 /* QuickHelpVolumeViewController.xib in Resources */,
+				9D2593E4250A830100C38DA3 /* images-solid.pdf in Resources */,
+				9D2593DF250A830100C38DA3 /* envelope-solid.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
