@@ -55,6 +55,21 @@ public extension Service {
     }
     
     
+    struct UserCommunity: Codable {
+        public var id: String
+        public var name: String
+        public var role: Role
+        
+        public enum Role: String, Codable {
+            case manager = "manager"
+            case member = "member"
+        }
+    }
+    
+    struct UserCommunitiesResponse: Codable {
+        public var communities: [UserCommunity]
+    }
+    
     struct UserCommunityDetails: Codable {
         public var id: String
         public var name: String
