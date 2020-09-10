@@ -28,6 +28,10 @@ import MorphicSettings
 /// The View Controller for a MorphicBar showing a collection of actions the user can take
 public class MorphicBarViewController: NSViewController {
     
+    @IBOutlet weak var captureMenuItem: NSMenuItem!
+    @IBOutlet weak var loginMenuItem: NSMenuItem!
+    @IBOutlet weak var logoutMenuItem: NSMenuItem!
+    
     // MARK: - View Lifecycle
 
     public override func viewDidLoad() {
@@ -37,6 +41,7 @@ public class MorphicBarViewController: NSViewController {
         view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
         view.layer?.cornerRadius = 6
         self.logoutMenuItem?.isHidden = Session.shared.user == nil
+        updateMainMenu()
         NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
         DistributedNotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.appleInterfaceThemeDidChange(_:)), name: .appleInterfaceThemeChanged, object: nil)
 
@@ -70,8 +75,6 @@ public class MorphicBarViewController: NSViewController {
     /// The MorphicBar's main menu, accessible via the Logo image button
     @IBOutlet var mainMenu: NSMenu!
     
-    @IBOutlet var logoutMenuItem: NSMenuItem!
-    
     /// The button that displays the Morphic logo
     @IBOutlet weak var logoButton: LogoButton!
     
@@ -81,6 +84,17 @@ public class MorphicBarViewController: NSViewController {
         mainMenu.popUp(positioning: nil, at: NSPoint(x: logoButton.bounds.origin.x, y: logoButton.bounds.origin.y + logoButton.bounds.size.height), in: logoButton)
     }
     
+    private func updateMainMenu() {
+        #if EDITION_BASIC
+            // NOTE: the default menu items are already configured for Morphic Basic
+        #elseif EDITION_COMMUNITY
+            // configure menu items to match the Morphic Community scheme
+            captureMenuItem?.isHidden = true
+            loginMenuItem?.title = "Sign In..."
+            logoutMenuItem?.title = "Sign Out"
+        #endif
+    }
+
     // MARK: - Orientation and orientation-related constraints
     
     public var orientation: MorphicBarOrientation = .horizontal {

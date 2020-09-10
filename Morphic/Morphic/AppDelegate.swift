@@ -35,10 +35,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     static var shared: AppDelegate!
     
     @IBOutlet var menu: NSMenu!
-    @IBOutlet weak var showMorphicBarItem: NSMenuItem?
-    @IBOutlet weak var hideMorphicBarItem: NSMenuItem?
-    @IBOutlet weak var logoutItem: NSMenuItem?
-    
+    @IBOutlet weak var showMorphicBarMenuItem: NSMenuItem?
+    @IBOutlet weak var hideMorphicBarMenuItem: NSMenuItem?
+    @IBOutlet weak var captureMenuItem: NSMenuItem!
+    @IBOutlet weak var loginMenuItem: NSMenuItem!
+    @IBOutlet weak var logoutMenuItem: NSMenuItem?
+
     // MARK: - Application Lifecycle
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -51,7 +53,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         createEmptyDefaultPreferencesIfNotExist {
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
-                self.logoutItem?.isHidden = Session.shared.user == nil
+                self.logoutMenuItem?.isHidden = Session.shared.user == nil
                 if Session.shared.bool(for: .morphicBarVisible) ?? true {
                     self.showMorphicBar(nil)
                 }
@@ -85,7 +87,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         guard let session = notification.object as? Session else {
             return
         }
-        self.logoutItem?.isHidden = session.user == nil
+        self.logoutMenuItem?.isHidden = session.user == nil
     }
     
     // MARK: - Actions
@@ -93,7 +95,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     @IBAction
     func logout(_ sender: Any) {
         Session.shared.signout {
-            self.logoutItem?.isHidden = true
+            self.logoutMenuItem?.isHidden = true
         }
     }
     
@@ -184,14 +186,28 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     /// Create our `statusItem` for the macOS menu bar
     ///
     /// Should be called during application launch
-    func createStatusItem(){
+    func createStatusItem() {
         os_log(.info, log: logger, "Creating status item")
         statusItem = NSStatusBar.system.statusItem(withLength: -1)
         statusItem.menu = menu
         
+        // update the menu to match the proper edition of Morphic
+        updateMenu()
+        
         let buttonImage = NSImage(named: "MenuIconBlack")
         buttonImage?.isTemplate = true
         statusItem.button?.image = buttonImage
+    }
+    
+    private func updateMenu() {
+        #if EDITION_BASIC
+            // NOTE: the default menu items are already configured for Morphic Basic
+        #elseif EDITION_COMMUNITY
+            // configure menu items to match the Morphic Community scheme
+            captureMenuItem?.isHidden = true
+            loginMenuItem?.title = "Sign In..."
+            logoutMenuItem?.title = "Sign Out"
+        #endif
     }
      
     // MARK: - MorphicBar
@@ -206,7 +222,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func toggleMorphicBar(_ sender: Any?) {
         if morphicBarWindow != nil {
             hideMorphicBar(nil)
-        }else{
+        } else {
             showMorphicBar(nil)
         }
     }
@@ -220,8 +236,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
         NSApplication.shared.activate(ignoringOtherApps: true)
         morphicBarWindow?.makeKeyAndOrderFront(nil)
-        showMorphicBarItem?.isHidden = true
-        hideMorphicBarItem?.isHidden = false
+        showMorphicBarMenuItem?.isHidden = true
+        hideMorphicBarMenuItem?.isHidden = false
         if sender != nil {
             Session.shared.set(true, for: .morphicBarVisible)
         }
@@ -230,8 +246,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     @IBAction
     func hideMorphicBar(_ sender: Any?) {
         morphicBarWindow?.close()
-        showMorphicBarItem?.isHidden = false
-        hideMorphicBarItem?.isHidden = true
+        showMorphicBarMenuItem?.isHidden = false
+        hideMorphicBarMenuItem?.isHidden = true
         QuickHelpWindow.hide()
         if sender != nil {
             Session.shared.set(false, for: .morphicBarVisible)
