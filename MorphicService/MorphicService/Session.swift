@@ -162,7 +162,7 @@ public class Session {
                     // If our token expired, try to reauthenticate with saved credentials
                     task.urlTask = self.authenticate {
                         success in
-                        if success{
+                        if success {
                             // If we got a new token, try the request again
                             os_log(.info, log: logger, "%{public}s %{public}s", request.httpMethod!, request.url!.path)
                             request.setValue(self.authToken, forHTTPHeaderField: "X-Morphic-Auth-Token")
@@ -378,21 +378,25 @@ public class Session {
         let saveDefaultPreferencesIfNeeded: (@escaping () -> Void) -> Void = {
             completion in
             if self.user == nil {
-                // If we're going from no user to a logged in user, capture the
-                // computer's current settings as the default preference that will
-                // be applied back when the user logs out.
-                if let preferences = self.preferences {
-                    if preferences.identifier == "__default__" {
-                        let capture = CaptureSession(settingsManager: self.settings, preferences: preferences)
-                        capture.addAllSolutions()
-                        capture.run {
-                            self.storage.save(record: capture.preferences){
-                                success in
-                                completion()
+                #if EDITION_BASIC
+                    // If we're going from no user to a logged in user, capture the
+                    // computer's current settings as the default preference that will
+                    // be applied back when the user logs out.
+                    if let preferences = self.preferences {
+                        if preferences.identifier == "__default__" {
+                            let capture = CaptureSession(settingsManager: self.settings, preferences: preferences)
+                            capture.addAllSolutions()
+                            capture.run {
+                                self.storage.save(record: capture.preferences) {
+                                    success in
+                                    completion()
+                                }
                             }
                         }
                     }
-                }
+                #elseif EDITION_COMMUNITY
+                    completion()
+                #endif
             } else {
                 // If we are going from one user to another, we don't want to do
                 // anything because the computer's current settings are the first
@@ -436,13 +440,18 @@ public class Session {
         user = nil
         storage.load(identifier: "__default__") {
             (_, defaultPreferences: Preferences?) in
-            self.preferences = defaultPreferences
-            let apply = ApplySession(settingsManager: self.settings, preferences: defaultPreferences!)
-            apply.run {
+            #if EDITION_BASIC
+                self.preferences = defaultPreferences
+                let apply = ApplySession(settingsManager: self.settings, preferences: defaultPreferences!)
+                apply.run {
+                    completion()
+                    NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: self)
+                }
+            #elseif EDITION_COMMUNITY
                 completion()
                 NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: self)
+            #endif
             }
-        }
     }
     
     public func register(user: User, credentials: UsernameCredentials, preferences: Preferences, completion: @escaping (_ result: RegistrationResult) -> Void) {

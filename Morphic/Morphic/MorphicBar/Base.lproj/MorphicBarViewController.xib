@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.3"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="MorphicBarViewController" customModule="Morphic" customModuleProvider="target">
             <connections>
+                <outlet property="captureMenuItem" destination="jUa-06-vgJ" id="Uvj-o5-5tv"/>
+                <outlet property="loginMenuItem" destination="iGo-my-5Ga" id="7tj-Ss-QYR"/>
                 <outlet property="logoButton" destination="ead-JY-BhL" id="cLt-cn-cEr"/>
-                <outlet property="logoutMenuItem" destination="O7a-6a-ADF" id="wIr-CK-VBa"/>
+                <outlet property="logoutMenuItem" destination="O7a-6a-ADF" id="0Vq-o3-uOm"/>
                 <outlet property="mainMenu" destination="Tdd-O7-ejt" id="2yx-wr-veu"/>
                 <outlet property="morphicBarView" destination="hJk-BO-TPf" id="6Yt-7q-x61"/>
                 <outlet property="view" destination="c22-O7-iKe" id="gRp-Cf-8sn"/>

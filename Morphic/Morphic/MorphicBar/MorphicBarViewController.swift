@@ -40,7 +40,10 @@ public class MorphicBarViewController: NSViewController {
         morphicBarView.orientation = self.orientation
         view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
         view.layer?.cornerRadius = 6
-        self.logoutMenuItem?.isHidden = Session.shared.user == nil
+        #if EDITION_COMMUNITY
+            self.loginMenuItem?.isHidden = (Session.shared.user != nil)
+        #endif
+        self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
         updateMainMenu()
         NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
         DistributedNotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.appleInterfaceThemeDidChange(_:)), name: .appleInterfaceThemeChanged, object: nil)
@@ -67,7 +70,10 @@ public class MorphicBarViewController: NSViewController {
         guard let session = notification.object as? Session else {
             return
         }
-        self.logoutMenuItem?.isHidden = session.user == nil
+        #if EDITION_COMMUNITY
+            self.loginMenuItem?.isHidden = (session.user != nil)
+        #endif
+        self.logoutMenuItem?.isHidden = (session.user == nil)
     }
     
     // MARK: - Logo Button & Main Menu

@@ -53,7 +53,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         createEmptyDefaultPreferencesIfNotExist {
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
-                self.logoutMenuItem?.isHidden = Session.shared.user == nil
+                #if EDITION_COMMUNITY
+                    self.loginMenuItem?.isHidden = (Session.shared.user != nil)
+                #endif
+                self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
                 if Session.shared.bool(for: .morphicBarVisible) ?? true {
                     self.showMorphicBar(nil)
                 }
@@ -73,12 +76,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         os_log(.info, log: logger, "Got signin notification from configurator")
         Session.shared.open {
             NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: Session.shared)
-            let userInfo = notification.userInfo ?? [:]
-            if !(userInfo["isRegister"] as? Bool ?? false) {
-                os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
-                Session.shared.applyAllPreferences {
+            #if EDITION_BASIC
+                let userInfo = notification.userInfo ?? [:]
+                if !(userInfo["isRegister"] as? Bool ?? false) {
+                    os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
+                    Session.shared.applyAllPreferences {
+                    }
                 }
-            }
+            #endif
         }
     }
     
@@ -87,7 +92,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         guard let session = notification.object as? Session else {
             return
         }
-        self.logoutMenuItem?.isHidden = session.user == nil
+        #if EDITION_COMMUNITY
+            self.loginMenuItem?.isHidden = (session.user != nil)
+        #endif
+        self.logoutMenuItem?.isHidden = (session.user == nil)
     }
     
     // MARK: - Actions
@@ -95,6 +103,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     @IBAction
     func logout(_ sender: Any) {
         Session.shared.signout {
+            #if EDITION_COMMUNITY
+                self.loginMenuItem?.isHidden = false
+            #endif
             self.logoutMenuItem?.isHidden = true
         }
     }

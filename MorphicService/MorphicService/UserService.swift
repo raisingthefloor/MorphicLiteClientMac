@@ -54,6 +54,15 @@ public extension Service {
         return session.runningTask(with: request, completion: completion)
     }
     
+    func userCommunities(user: User, completion: @escaping (_ communities: UserCommunitiesResponse?) -> Void) -> Session.Task {
+        let request = URLRequest(session: session, path: "v1/users/\(user.identifier)/communities", method: .get)
+        return session.runningTask(with: request, completion: completion)
+    }
+
+    func userCommunityDetails(user: User, community: UserCommunity, completion: @escaping (_ communityDetails: UserCommunityDetails?) -> Void) -> Session.Task {
+        let request = URLRequest(session: session, path: "v1/users/\(user.identifier)/communities/\(community.id)", method: .get)
+        return session.runningTask(with: request, completion: completion)
+    }
     
     struct UserCommunity: Codable {
         public var id: String
