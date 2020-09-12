@@ -344,6 +344,7 @@ public class Session {
             auth in
             if let auth = auth {
                 _ = self.keychain.save(usernameCredentials: credentials, for: self.service.endpoint)
+                self.user = auth.user
                 self.authToken = auth.token
                 self.signin(user: auth.user, preFetchedPreferences: nil) {
                     completion(true)
