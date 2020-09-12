@@ -129,8 +129,14 @@ public extension Service {
                     // not implemented (no mappings)
                     break
                 case .application:
-                    // not implemented (no mappings)
-                    break
+                    morphicBarItem["type"] = "application"
+                    morphicBarItem["label"] = itemConfiguration.label
+                    morphicBarItem["color"] = itemConfiguration.color
+                    morphicBarItem["imageUrl"] = itemConfiguration.image_url
+                    morphicBarItem["default"] = itemConfiguration.default
+                    morphicBarItem["exe"] = itemConfiguration.exe
+                    //
+                    morphicbarItems.append(morphicBarItem)
                 case .link:
                     morphicBarItem["type"] = "link"
                     morphicBarItem["label"] = itemConfiguration.label

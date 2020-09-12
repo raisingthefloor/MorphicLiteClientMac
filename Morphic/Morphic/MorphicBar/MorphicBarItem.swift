@@ -57,6 +57,14 @@ public class MorphicBarItem {
             return MorphicBarControlItem(interoperable: interoperable)
         case "link":
             return MorphicBarLinkItem(interoperable: interoperable)
+        case "application":
+            let morphicBarApplicationItem = MorphicBarApplicationItem(interoperable: interoperable)
+            // NOTE: we do not support "EXE" buttons on macOS, so only show items with a supported 'default' application
+            if morphicBarApplicationItem.default != nil {
+                return morphicBarApplicationItem
+            } else {
+                return nil
+            }
         default:
             return nil
         }
@@ -110,6 +118,83 @@ class MorphicBarLinkItem: MorphicBarItem {
     func openLink(_ sender: Any?) {
         if let url = self.url {
             NSWorkspace.shared.open(url)
+        }
+    }
+}
+
+enum MorphicBarApplicationDefaultOption: String {
+    case email
+}
+
+
+class MorphicBarApplicationItem: MorphicBarItem {
+    var label: String
+    var color: NSColor?
+    var imageUrl: String?
+    var `default`: MorphicBarApplicationDefaultOption?
+    var exe: String?
+
+    override init(interoperable: [String : Interoperable?]) {
+        // NOTE: argument 'label' should never be nil, but we use an empty string as a backup
+        label = interoperable.string(for: "label") ?? ""
+        //
+        if let colorAsString = interoperable.string(for: "color") {
+            color = NSColor.createFromRgbHexString(colorAsString)
+        } else {
+            color = nil
+        }
+        //
+        imageUrl = interoperable.string(for: "imageUrl")
+        //
+        // NOTE: either argument "default" (application type) or "exe" should always be populated, but we assign a nil application and exe as a backup
+        if let `default` = interoperable.string(for: "default") {
+            // NOTE: this function call will either return a known 'default' application option...or it will return nil (if the application isn't supported on macOS)
+            self.default = MorphicBarApplicationDefaultOption(rawValue: `default`)
+        } else {
+            self.default = nil
+        }
+        //
+        // NOTE: we do not currently support EXE on macOS, so ignore this option
+//        if let exe = interoperable.string(for: "exe") {
+//            self.exe = exe
+//        } else {
+            self.exe = nil
+//        }
+        
+        super.init(interoperable: interoperable)
+    }
+
+    override func view() -> MorphicBarItemViewProtocol? {
+        var icon: MorphicBarButtonItemIcon? = nil
+        if let imageUrl = self.imageUrl {
+            icon = MorphicBarButtonItemIcon(rawValue: imageUrl)
+        }
+        
+        let view = MorphicBarButtonItemView(label: label, labelColor: nil, fillColor: color, icon: icon, iconColor: nil)
+        view.target = self
+        // NOTE: generally, we should give preference to opening an executable directly ("exe") over opening the default application by type ("default")
+        if self.exe != nil {
+            view.action = #selector(MorphicBarApplicationItem.openExe(_:))
+        } else {
+            view.action = #selector(MorphicBarApplicationItem.openDefault(_:))
+        }
+        return view
+    }
+    
+    @objc
+    func openDefault(_ sender: Any?) {
+        if let `default` = self.default {
+            switch `default` {
+            case .email:
+                NSWorkspace.shared.open(URL(string: "mailto:")!)
+            }
+        }
+    }
+    
+    @objc
+    func openExe(_ sender: Any?) {
+        if let _ = self.exe {
+            fatalError("Opening EXEs is not supported on macOS")
         }
     }
 }
