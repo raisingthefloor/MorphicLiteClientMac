@@ -42,14 +42,17 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
     private var iconImageLayer: CALayer!
     private var titleTextLayer: CATextLayer!
 
-    init(label: String, labelColor: NSColor?, icon: MorphicBarButtonItemIcon?, iconColor: NSColor?) {
+    init(label: String, labelColor: NSColor?, fillColor: NSColor?, icon: MorphicBarButtonItemIcon?, iconColor: NSColor?) {
         super.init(frame: NSRect(x: 0, y: 0, width: 100, height: 96))
         //
         self.title = label
-        self.icon = icon
-        self.iconColor = iconColor
         self.font = .morphicRegular
         self.fontColor = labelColor
+        if let fillColor = fillColor {
+            self.fillColor = fillColor
+        }
+        self.icon = icon
+        self.iconColor = iconColor
         //
         initialize()
     }
@@ -97,6 +100,11 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
     }
     
     private func configureIconCircleLayer() {
+        guard let iconAsNonOptional = self.icon else {
+            self.iconImageLayer.contents = nil
+            return
+        }
+
         // calculate the diameter and bounds of the circle around our icon
         let iconCircleDiameter = calculateIconCircleDiameter()
         let iconCircleRadius = iconCircleDiameter / 2.0
@@ -131,7 +139,7 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
         insideCircleLayer.fillColor = NSColor.white.cgColor
         //
         newIconCircleLayer.addSublayer(insideCircleLayer)
-        
+
         self.layer?.replaceSublayer(self.iconCircleLayer, with: newIconCircleLayer)
         self.iconCircleLayer = newIconCircleLayer
     }
@@ -314,8 +322,13 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
 
         let iconCircleDiameter = calculateIconCircleDiameter()
         
-        // NOTE: 2/3 of the circle is above the box; the remainder of the circle is inside the box
-        let titleBoxSize = NSSize(width: frameSize.width, height: frameSize.height - (iconCircleDiameter * 2.0/3))
+        let titleBoxSize: NSSize
+        if icon != nil {
+            // NOTE: 2/3 of the circle is above the box; the remainder of the circle is inside the box
+            titleBoxSize = NSSize(width: frameSize.width, height: frameSize.height - (iconCircleDiameter * 2.0/3))
+        } else {
+            titleBoxSize = NSSize(width: frameSize.width, height: frameSize.height)
+        }
         
         return titleBoxSize
     }
@@ -508,10 +521,14 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
             //
             height += self.titleBottomPadding
             //
-            height += self.titleTopPadding
-            //
-            let iconCircleDiameter = calculateIconCircleDiameter(usingFrameWidth: width)
-            height += iconCircleDiameter
+            if icon != nil {
+                height += self.titleTopPadding
+                //
+                let iconCircleDiameter = calculateIconCircleDiameter(usingFrameWidth: width)
+                height += iconCircleDiameter
+            } else {
+                height += self.titleBottomPadding
+            }
             
             return NSSize(width: width, height: height)
         }
@@ -569,7 +586,10 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
 
     public var icon: MorphicBarButtonItemIcon? {
         didSet {
+            configureIconCircleLayer()
             configureIconImageLayer()
+            configureTitleBoxLayer()
+            configureTitleTextLayer()
         }
     }
     

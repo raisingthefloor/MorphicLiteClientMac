@@ -100,7 +100,7 @@ class MorphicBarLinkItem: MorphicBarItem {
             icon = MorphicBarButtonItemIcon(rawValue: imageUrl)
         }
         
-        let view = MorphicBarButtonItemView(label: label, labelColor: nil, icon: icon, iconColor: color)
+        let view = MorphicBarButtonItemView(label: label, labelColor: nil, fillColor: color, icon: icon, iconColor: nil)
         view.target = self
         view.action = #selector(MorphicBarLinkItem.openLink(_:))
         return view
