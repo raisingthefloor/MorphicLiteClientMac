@@ -53,12 +53,31 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         createEmptyDefaultPreferencesIfNotExist {
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
-                #if EDITION_COMMUNITY
+                #if EDITION_BASIC
+                #else
+        //        #elseif EDITION_COMMUNITY
+                    if Session.shared.user == nil {
+                        self.showMorphicBarMenuItem?.isHidden = true
+                    }
+                #endif
+                #if EDITION_BASIC
+                #else
+        //        #elseif EDITION_COMMUNITY
                     self.loginMenuItem?.isHidden = (Session.shared.user != nil)
                 #endif
                 self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
-                if Session.shared.bool(for: .morphicBarVisible) ?? true {
-                    self.showMorphicBar(nil)
+                if Session.shared.user != nil {
+                    if Session.shared.bool(for: .morphicBarVisible) ?? true {
+                        self.showMorphicBar(nil)
+                    }
+                    #if EDITION_BASIC
+                    #else
+//                    #elseif EDITION_COMMUNITY
+                        // reload the community bar
+                        self.reloadMorphicCommunityBar() {
+                            _ in
+                        }
+                    #endif
                 }
                 DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.userDidSignin), name: .morphicSignin, object: nil)
                 NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
@@ -92,18 +111,96 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         guard let session = notification.object as? Session else {
             return
         }
-        #if EDITION_COMMUNITY
+        #if EDITION_BASIC
+        #else
+//        #elseif EDITION_COMMUNITY
             self.loginMenuItem?.isHidden = (session.user != nil)
         #endif
         self.logoutMenuItem?.isHidden = (session.user == nil)
+        
+        #if EDITION_BASIC
+        #else
+//        #elseif EDITION_COMMUNITY
+            if session.user != nil {
+                // reload the community bar
+                reloadMorphicCommunityBar() {
+                    success in
+                    if success == true {
+                        self.showMorphicBar(nil)
+                    } else {
+                        /* NOTE: logging in but then not being able to get a community bar typically comes down to one of three things:
+                         * 1. User is not a Morphic Community user
+                         * 2. User does not have any community bars
+                         * 3. Intermittent server failure
+                         */
+                        self.logout(nil)
+                    }
+                }
+            }
+        #endif
     }
     
+    func reloadMorphicCommunityBar(completion: @escaping (_ success: Bool) -> Void) {
+        guard let user = Session.shared.user else {
+            completion(false)
+            return
+        }
+
+        // capture a list of the user's communities
+        _ = Session.shared.service.userCommunities(user: user) {
+            userCommunities in
+            if let userCommunities = userCommunities {
+                // now get the community details
+                for userCommunity in userCommunities.communities {
+                    _ = Session.shared.service.userCommunityDetails(user: user, community: userCommunity) {
+                        userCommunityDetails in
+                        if let userCommunityDetails = userCommunityDetails {
+                            let morphicBarItems = userCommunityDetails.encodeAsMorphicBarItems()
+                            
+                            Session.shared.set(morphicBarItems, for: .morphicBarItems)
+                            Session.shared.savePreferencesToDisk() {
+                                success in
+                                if success == true {
+                                    // now it's time to update/show the morphic bar
+                                    self.morphicBarWindow?.updateMorphicBar()
+                                    completion(true)
+                                } else {
+                                    completion(false)
+                                }
+                            }
+                        } else {
+                            completion(false)
+                        }
+                    }
+                }
+            } else {
+                completion(false)
+            }
+        }
+    }
+        
     // MARK: - Actions
     
     @IBAction
-    func logout(_ sender: Any) {
+    func logout(_ sender: Any?) {
         Session.shared.signout {
-            #if EDITION_COMMUNITY
+            #if EDITION_BASIC
+            #else
+//            #elseif EDITION_COMMUNITY
+                Session.shared.set([], for: .morphicBarItems)
+                Session.shared.savePreferencesToDisk() {
+                    success in
+                    if success == true {
+                        // now it's time to update/show the morphic bar
+                        self.morphicBarWindow?.updateMorphicBar()
+                        self.hideMorphicBar(nil)
+                    }
+                }
+            #endif
+            
+            #if EDITION_BASIC
+            #else
+//            #elseif EDITION_COMMUNITY
                 self.loginMenuItem?.isHidden = false
             #endif
             self.logoutMenuItem?.isHidden = true
@@ -213,7 +310,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private func updateMenu() {
         #if EDITION_BASIC
             // NOTE: the default menu items are already configured for Morphic Basic
-        #elseif EDITION_COMMUNITY
+        #else
+//        #elseif EDITION_COMMUNITY
             // configure menu items to match the Morphic Community scheme
             captureMenuItem?.isHidden = true
             loginMenuItem?.title = "Sign In..."
@@ -242,7 +340,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func showMorphicBar(_ sender: Any?) {
         if morphicBarWindow == nil {
             morphicBarWindow = MorphicBarWindow()
+        #if EDITION_BASIC
             morphicBarWindow?.orientation = .horizontal
+        #else
+//        #elseif EDITION_COMMUNITY
+            morphicBarWindow?.orientation = .vertical
+        #endif
             morphicBarWindow?.delegate = self
         }
         NSApplication.shared.activate(ignoringOtherApps: true)
@@ -257,7 +360,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     @IBAction
     func hideMorphicBar(_ sender: Any?) {
         morphicBarWindow?.close()
-        showMorphicBarMenuItem?.isHidden = false
+        #if EDITION_BASIC
+            showMorphicBarMenuItem?.isHidden = false
+        #else
+//        #elseif EDITION_COMMUNITY
+            if Session.shared.user != nil {
+                showMorphicBarMenuItem?.isHidden = false
+            } else {
+                showMorphicBarMenuItem?.isHidden = true
+            }
+        #endif
         hideMorphicBarMenuItem?.isHidden = true
         QuickHelpWindow.hide()
         if sender != nil {

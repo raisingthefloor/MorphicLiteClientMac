@@ -133,6 +133,9 @@ public class Keychain {
     }
     
     public func save(authToken: String, for url: URL, userIdentifier: String) -> Bool {
+        // NOTE: sometimes overwriting a token returns success but does not overwrite it; therefore we erase any existing token beforehand
+        _ = removeAuthToken(for: url, userIdentifier: userIdentifier)
+        
         let query = identifyingAttributes(for: url, service: authTokenService, userIdentifier: userIdentifier)
         var attributes = query
         attributes[kSecValueData] = authToken.data(using: .utf8)! as CFData

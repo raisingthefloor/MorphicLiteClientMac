@@ -394,7 +394,8 @@ public class Session {
                             }
                         }
                     }
-                #elseif EDITION_COMMUNITY
+                #else
+//                #elseif EDITION_COMMUNITY
                     completion()
                 #endif
             } else {
@@ -405,13 +406,21 @@ public class Session {
                 completion()
             }
         }
+        
         let fetchPreferencesIfNeeded: (@escaping (_ preferences: Preferences?) -> Void) -> Void = {
             completion in
-            if let preferences = preFetchedPreferences {
+            #if EDITION_BASIC
+                if let preferences = preFetchedPreferences {
+                    completion(preferences)
+                } else {
+                    _ = self.service.fetch(userPreferences: user, completion: completion)
+                }
+            #else
+//            #elseif EDITION_COMMUNITY
+                var preferences = Preferences(identifier: user.identifier)
+                preferences.userId = user.preferencesId
                 completion(preferences)
-            } else {
-                _ = self.service.fetch(userPreferences: user, completion: completion)
-            }
+            #endif
         }
         
         saveDefaultPreferencesIfNeeded {
@@ -447,7 +456,8 @@ public class Session {
                     completion()
                     NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: self)
                 }
-            #elseif EDITION_COMMUNITY
+            #else
+//            #elseif EDITION_COMMUNITY
                 completion()
                 NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: self)
             #endif
@@ -499,7 +509,12 @@ public class Session {
         preferences?.set(value, for: key)
         setNeedsPreferencesSave()
     }
-    
+
+    public func set(_ value: [Interoperable?], for key: Preferences.Key) {
+        preferences?.set(value, for: key)
+        setNeedsPreferencesSave()
+    }
+
     public func string(for key: Preferences.Key) -> String? {
         return (preferences?.get(key: key) ?? Session.initialPreferences?.get(key: key)) as? String
     }
@@ -544,33 +559,53 @@ public class Session {
             self.preferencesSaveTimer = nil
             if let preferences = self.preferences {
                 os_log(.info, log: logger, "Saving preferences to disk")
-                self.storage.save(record: preferences) {
+                self.savePreferencesToDisk {
                     success in
-                    if success {
-                        os_log(.info, log: logger, "Saved preferences to disk")
-                    } else {
-                        os_log(.error, log: logger, "Failed to save preferences to disk")
-                    }
-                    if self.user != nil {
-                        os_log(.info, log: logger, "Saving preferences to server")
-                        if preferences.userId != nil {
-                            _ = self.service.save(preferences) {
-                                success in
-                                if success {
-                                    os_log(.info, log: logger, "Saved preferences to server")
-                                } else {
-                                    os_log(.error, log: logger, "Failed to save preference to server")
+                    #if EDITION_BASIC
+                        if self.user != nil {
+                            os_log(.info, log: logger, "Saving preferences to server")
+                            if preferences.userId != nil {
+                                _ = self.service.save(preferences) {
+                                    success in
+                                    if success {
+                                        os_log(.info, log: logger, "Saved preferences to server")
+                                    } else {
+                                        os_log(.error, log: logger, "Failed to save preference to server")
+                                    }
                                 }
+                            } else {
+                                os_log(.error, log: logger, "Failed to save preference to server because userId is nil")
+                                return
                             }
-                        } else {
-                            os_log(.error, log: logger, "Failed to save preference to server because userId is nil")
-                            return
                         }
-                    }
+                    #else
+//                    #elseif EDITION_COMMUNITY
+                        // in Morphic Community, we do not save preferences to the server
+                    #endif
                 }
             } else {
                 os_log(.error, log: logger, "Save preferences timer fired with nil preferences")
             }
+        }
+    }
+    
+    public func savePreferencesToDisk(callback: @escaping (Bool) -> ()) {
+        if let preferences = self.preferences {
+            os_log(.info, log: logger, "Saving preferences to disk")
+            self.storage.save(record: preferences) {
+                success in
+                if success {
+                    os_log(.info, log: logger, "Saved preferences to disk")
+                } else {
+                    os_log(.error, log: logger, "Failed to save preferences to disk")
+                }
+                
+                callback(success)
+            }
+        } else {
+            os_log(.error, log: logger, "Save preferences calledd with nil preferences")
+
+            callback(false)
         }
     }
     
@@ -580,7 +615,7 @@ public class Session {
 
 // MARK: - URL Request/Response Extensions
 
-extension URLRequest{
+extension URLRequest {
     
     /// Create a new request for the given morphic session
     ///

@@ -26,5 +26,10 @@
 
 // It's a pain, but values here cannot contain //, so the most used hack
 // is to put an empty variable between the two slashes in the URL
+#ifdef EDITION_BASIC
 MORPHIC_SERVICE_ENDPOINT=https:/$()/morphic-lite.raisingthefloor.org/
+#else
+//#elseif EDITION_COMMUNITY
+MORPHIC_SERVICE_ENDPOINT=https:/$()/dev-morphic.morphiclite-oregondesignservices.org/
+#endif
 FRONT_END_URL=https:/$()/app.morphic.org/

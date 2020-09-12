@@ -116,5 +116,33 @@ public extension Service {
             public var subkind: String?
             public var url: String?
         }
+        
+        public func encodeAsMorphicBarItems() -> [[String: Interoperable?]] {
+            var morphicbarItems: [[String: Interoperable?]] = []
+            
+            for item in self.bar.items {
+                let itemConfiguration = item.configuration
+                var morphicBarItem: [String: Interoperable?] = [:]
+
+                switch item.kind {
+                case .action:
+                    // not implemented (no mappings)
+                    break
+                case .application:
+                    // not implemented (no mappings)
+                    break
+                case .link:
+                    morphicBarItem["type"] = "link"
+                    morphicBarItem["label"] = itemConfiguration.label
+                    morphicBarItem["color"] = itemConfiguration.color
+                    morphicBarItem["imageUrl"] = itemConfiguration.image_url
+                    morphicBarItem["url"] = itemConfiguration.url
+                    //
+                    morphicbarItems.append(morphicBarItem)
+                }
+            }
+            
+            return morphicbarItems
+        }
     }
 }
