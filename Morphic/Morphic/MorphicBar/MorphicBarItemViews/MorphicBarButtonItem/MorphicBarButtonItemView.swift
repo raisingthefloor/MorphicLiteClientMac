@@ -48,10 +48,12 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
         self.title = label
         self.font = .morphicRegular
         self.fontColor = labelColor
+        // NOTE: if fillColor is nil, the default color is used instead
         if let fillColor = fillColor {
             self.fillColor = fillColor
         }
         self.icon = icon
+        // NOTE: if iconColor is nil, then the icon is filled with the fillColor instead
         self.iconColor = iconColor
         //
         initialize()
@@ -100,7 +102,7 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
     }
     
     private func configureIconCircleLayer() {
-        guard let iconAsNonOptional = self.icon else {
+        guard let _ = self.icon else {
             self.iconImageLayer.contents = nil
             return
         }
