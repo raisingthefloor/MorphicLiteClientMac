@@ -57,12 +57,6 @@ class MorphicBarSegmentedButton: NSControl {
     
     // MARK: - Style
     
-    /// The color of segments with the `isPrimary` flag set to `true`
-    var primarySegmentColor: NSColor = .morphicPrimaryColor
-    
-    /// The color of segments with the `isPrimary` flag set to `false`
-    var secondarySegmentColor: NSColor = .morphicPrimaryColorLightend
-    
     /// The color of text or icons on the segments
     ///
     /// - note: Since primary and secondary segments share the same title color,
@@ -86,26 +80,26 @@ class MorphicBarSegmentedButton: NSControl {
         ///   the `title` property takes precedence
         var icon: NSImage?
         
-        /// Indicates the segment is a primary button and should be colored differently from non-primary buttons
-        var isPrimary: Bool = false
+        /// Indicates the color of the button segment
+        let fillColor: NSColor
         
         var helpProvider: QuickHelpContentProvider?
         
         var accessibilityLabel: String?
         
         /// Create a segment with a title
-        init(title: String, isPrimary: Bool, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?) {
+        init(title: String, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?) {
             self.title = title
             self.helpProvider = helpProvider
-            self.isPrimary = isPrimary
+            self.fillColor = fillColor
             self.accessibilityLabel = accessibilityLabel
         }
         
         /// Create a segment with an icon
-        init(icon: NSImage, isPrimary: Bool, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?) {
+        init(icon: NSImage, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?) {
             self.icon = icon
             self.helpProvider = helpProvider
-            self.isPrimary = isPrimary
+            self.fillColor = fillColor
             self.accessibilityLabel = accessibilityLabel
         }
     }
@@ -269,9 +263,7 @@ class MorphicBarSegmentedButton: NSControl {
         }
         button.setAccessibilityLabel(segment.accessibilityLabel)
         button.helpProvider = segment.helpProvider
-        (button.cell as? NSButtonCell)?.backgroundColor = primarySegmentColor
-        // NOTE: to use two alternating (contrasting) colors, uncomment the following line and set horizontalMarginBetweenSegments to 0.
-//        (button.cell as? NSButtonCell)?.backgroundColor = segment.isPrimary ? primarySegmentColor : secondarySegmentColor
+        (button.cell as? NSButtonCell)?.backgroundColor = segment.fillColor
         button.font = font
         return button
     }
