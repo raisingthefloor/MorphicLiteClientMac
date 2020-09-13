@@ -43,6 +43,7 @@ hdiutil detach "${MOUNT_PATH}" -quiet -force && echo "[dmg] unmounted ${MOUNT_PA
 rm -f "${CONFIGURATION_BUILD_DIR}/${PRODUCT_NAME}.dmg"
 
 # This outputs to the Morphic root in the git repo structure, rather than DerivedData
+rm -f "${SRCROOT}/${PRODUCT_NAME}.dmg"
 hdiutil convert "${TEMPLATE_NAME}" -quiet -format UDZO -imagekey -zlib-level=9 -o "${SRCROOT}/${PRODUCT_NAME}.dmg" && echo "[dmg] created ${SRCROOT}/${PRODUCT_NAME}.dmg" || exit
 cd ..
 rm -rf "${TEMP_FOLDER}" && echo "[dmg] cleaned up ${TEMP_FOLDER}" || exit

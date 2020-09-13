@@ -123,10 +123,10 @@ public class Keychain {
     
     public func authToken(for url: URL, userIdentifier: String) -> String? {
         let query = identifyingAttributes(for: url, service: authTokenService, userIdentifier: userIdentifier)
-        guard let result = first(matching: query) else{
+        guard let result = first(matching: query) else {
             return nil
         }
-        guard let token = result.string(for: kSecValueData, encoding: .utf8) else{
+        guard let token = result.string(for: kSecValueData, encoding: .utf8) else {
             return nil
         }
         return token

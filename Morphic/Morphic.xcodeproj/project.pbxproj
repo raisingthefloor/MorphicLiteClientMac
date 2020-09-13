@@ -844,7 +844,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    codesign --timestamp --force --options=runtime --sign \"Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)\" \"${CONFIGURATION_BUILD_DIR}/Morphic.app/Contents/MacOS/Morphic\"\nfi\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    codesign --timestamp --force --options=runtime --entitlements \"${SRCROOT}/Morphic/Morphic.entitlements\" --sign \"Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)\" \"${CONFIGURATION_BUILD_DIR}/Morphic.app/Contents/MacOS/Morphic\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

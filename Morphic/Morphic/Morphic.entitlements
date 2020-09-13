@@ -4,8 +4,8 @@
 <dict>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)org.raisingthefloor.MorphicClient</string>
-		<string>$(AppIdentifierPrefix)org.raisingthefloor.Morphic</string>
+		<string>5AAXYGZ428.org.raisingthefloor.MorphicClient</string>
+		<string>5AAXYGZ428.org.raisingthefloor.Morphic</string>
 	</array>
 </dict>
 </plist>
