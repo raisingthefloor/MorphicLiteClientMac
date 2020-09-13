@@ -2,10 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>com.apple.security.cs.disable-library-validation</key>
+	<true/>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>5AAXYGZ428.org.raisingthefloor.MorphicClient</string>
-		<string>5AAXYGZ428.org.raisingthefloor.Morphic</string>
+		<string>$(AppIdentifierPrefix)org.raisingthefloor.MorphicConfigurator</string>
+		<string>$(AppIdentifierPrefix)org.raisingthefloor.Morphic</string>
 	</array>
 </dict>
 </plist>

@@ -189,7 +189,7 @@
 		31751B0C2444DE8900EEDF14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		31751B0E2444DE8B00EEDF14 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		31751B132444DE8B00EEDF14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		31751B142444DE8B00EEDF14 /* Morphic.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Morphic.entitlements; sourceTree = "<group>"; };
+		31751B142444DE8B00EEDF14 /* MorphicDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicDebug.entitlements; sourceTree = "<group>"; };
 		31751B192444DE8B00EEDF14 /* MorphicTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MorphicTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		31751B1D2444DE8B00EEDF14 /* MorphicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicTests.swift; sourceTree = "<group>"; };
 		31751B1F2444DE8B00EEDF14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -205,7 +205,7 @@
 		31751B592444E0E400EEDF14 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		31751B5C2444E0E400EEDF14 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		31751B5E2444E0E400EEDF14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		31751B5F2444E0E400EEDF14 /* MorphicConfigurator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicConfigurator.entitlements; sourceTree = "<group>"; };
+		31751B5F2444E0E400EEDF14 /* MorphicConfiguratorDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicConfiguratorDebug.entitlements; sourceTree = "<group>"; };
 		31751B642444E0E400EEDF14 /* MorphicConfiguratorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MorphicConfiguratorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		31751B682444E0E400EEDF14 /* MorphicConfiguratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicConfiguratorTests.swift; sourceTree = "<group>"; };
 		31751B6A2444E0E400EEDF14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -253,6 +253,8 @@
 		9D2593DC250A830100C38DA3 /* newspaper-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "newspaper-solid.pdf"; sourceTree = "<group>"; };
 		9D2593DD250A830100C38DA3 /* shopping-cart-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "shopping-cart-solid.pdf"; sourceTree = "<group>"; };
 		9D2593DE250A830100C38DA3 /* amazon-brands.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "amazon-brands.pdf"; sourceTree = "<group>"; };
+		9D2593F2250EA81000C38DA3 /* MorphicRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicRelease.entitlements; sourceTree = "<group>"; };
+		9D2593F3250EA87E00C38DA3 /* MorphicConfiguratorRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicConfiguratorRelease.entitlements; sourceTree = "<group>"; };
 		9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutBoxWindowController.swift; sourceTree = "<group>"; };
 		9D82576D24D31C1E00F6E932 /* AboutBoxWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutBoxWindowController.xib; sourceTree = "<group>"; };
 		9D82577024D353C800F6E932 /* HyperlinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperlinkTextField.swift; sourceTree = "<group>"; };
@@ -382,7 +384,8 @@
 			isa = PBXGroup;
 			children = (
 				31751B132444DE8B00EEDF14 /* Info.plist */,
-				31751B142444DE8B00EEDF14 /* Morphic.entitlements */,
+				31751B142444DE8B00EEDF14 /* MorphicDebug.entitlements */,
+				9D2593F2250EA81000C38DA3 /* MorphicRelease.entitlements */,
 				31751B0E2444DE8B00EEDF14 /* Assets.xcassets */,
 				31751B3A2444DFAA00EEDF14 /* Main.xib */,
 				31751B0C2444DE8900EEDF14 /* AppDelegate.swift */,
@@ -444,7 +447,8 @@
 			isa = PBXGroup;
 			children = (
 				31751B5E2444E0E400EEDF14 /* Info.plist */,
-				31751B5F2444E0E400EEDF14 /* MorphicConfigurator.entitlements */,
+				31751B5F2444E0E400EEDF14 /* MorphicConfiguratorDebug.entitlements */,
+				9D2593F3250EA87E00C38DA3 /* MorphicConfiguratorRelease.entitlements */,
 				31751B592444E0E400EEDF14 /* Assets.xcassets */,
 				31751B5B2444E0E400EEDF14 /* MainMenu.xib */,
 				31751B572444E0E300EEDF14 /* AppDelegate.swift */,
@@ -844,7 +848,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    codesign --timestamp --force --options=runtime --entitlements \"${SRCROOT}/Morphic/Morphic.entitlements\" --sign \"Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)\" \"${CONFIGURATION_BUILD_DIR}/Morphic.app/Contents/MacOS/Morphic\"\nfi\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    codesign --timestamp --force --options=runtime --entitlements \"${SRCROOT}/Morphic/MorphicRelease.entitlements\" --sign \"Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)\" \"${CONFIGURATION_BUILD_DIR}/Morphic.app/Contents/MacOS/Morphic\"\n\n    codesign --timestamp --force --options=runtime --entitlements \"${SRCROOT}/MorphicConfigurator/MorphicConfiguratorRelease.entitlements\" --sign \"Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)\" \"${CONFIGURATION_BUILD_DIR}/Morphic.app/Contents/Library/MorphicConfigurator.app/Contents/MacOS/MorphicConfigurator\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1104,7 +1108,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Morphic/Morphic.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Morphic/MorphicDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -1127,7 +1131,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Morphic/Morphic.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Morphic/MorphicRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -1234,7 +1238,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = MorphicConfigurator/MorphicConfigurator.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MorphicConfigurator/MorphicConfiguratorDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -1257,7 +1261,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = MorphicConfigurator/MorphicConfigurator.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MorphicConfigurator/MorphicConfiguratorRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
