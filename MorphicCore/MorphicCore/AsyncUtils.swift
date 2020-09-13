@@ -21,37 +21,32 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Foundation
-import MorphicCore
-
-public class PopUpButtonElement: UIElement {
-    
-    public var value: String? {
-        get{
-            accessibilityElement.value(forAttribute: .value)
-        }
-    }
-    
-    public func setValue(_ value: String, completion: @escaping (_ success: Bool) -> Void) {
-        guard accessibilityElement.perform(action: .showMenu) else {
-            completion(false)
+public class AsyncUtils {
+    public static func wait(atMost: TimeInterval, for condition: @escaping () -> Bool, completion: @escaping (_ success: Bool) -> Void) {
+        guard !condition() else {
+            completion(true)
             return
         }
-        AsyncUtils.wait(atMost: 2.0, for: { self.menu != nil }) {
-            sucess in
-            guard let menu = self.menu else {
-                completion(false)
-                return
-            }
-            guard menu.select(itemTitled: value) else {
-                completion(false)
-                return
-            }
-            AsyncUtils.wait(atMost: 2.0, for: { self.value == value }) {
-                success in
-                completion(success)
+        var checkTimer: Timer?
+        let timeoutTimer = Timer.scheduledTimer(withTimeInterval: atMost, repeats: false) {
+            _ in
+            checkTimer?.invalidate()
+            completion(condition())
+        }
+        var checkInterval: TimeInterval = 0.1
+        var check: (() -> Void)!
+        check = {
+            checkTimer = Timer.scheduledTimer(withTimeInterval: checkInterval, repeats: false) {
+                _ in
+                if condition() {
+                    timeoutTimer.invalidate()
+                    completion(true)
+                } else {
+                    checkInterval *= 2
+                    check()
+                }
             }
         }
+        check()
     }
-    
 }

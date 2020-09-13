@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
 
 public class AccessibilityPreferencesElement: UIElement {
     
@@ -66,7 +67,7 @@ public class AccessibilityPreferencesElement: UIElement {
                 completion(false)
                 return
             }
-            self.wait(atMost: 1.0, for: { self.tabGroup?.tab(titled: "Display") != nil}) {
+            AsyncUtils.wait(atMost: 1.0, for: { self.tabGroup?.tab(titled: "Display") != nil}) {
                 success in
                 completion(success)
             }
@@ -90,7 +91,7 @@ public class AccessibilityPreferencesElement: UIElement {
                 waitForCheckboxTitle = "Enable announcements"
             }
             //
-            self.wait(atMost: 1.0, for: { self.checkbox(titled: waitForCheckboxTitle) != nil}) {
+            AsyncUtils.wait(atMost: 1.0, for: { self.checkbox(titled: waitForCheckboxTitle) != nil}) {
                 success in
                 completion(success)
             }
@@ -104,7 +105,7 @@ public class AccessibilityPreferencesElement: UIElement {
                 completion(false)
                 return
             }
-            self.wait(atMost: 1.0, for: { self.checkbox(titled: "Enable VoiceOver") != nil}) {
+            AsyncUtils.wait(atMost: 1.0, for: { self.checkbox(titled: "Enable VoiceOver") != nil}) {
                 success in
                 completion(success)
             }
@@ -118,7 +119,7 @@ public class AccessibilityPreferencesElement: UIElement {
                 completion(false)
                 return
             }
-            self.wait(atMost: 1.0, for: { self.checkbox(titled: "Use keyboard shortcuts to zoom") != nil}) {
+            AsyncUtils.wait(atMost: 1.0, for: { self.checkbox(titled: "Use keyboard shortcuts to zoom") != nil}) {
                 success in
                 completion(success)
             }
@@ -127,7 +128,7 @@ public class AccessibilityPreferencesElement: UIElement {
     }
 
     public func select(category identifier: CategoryIdentifier, completion: @escaping (_ success: Bool) -> Void) {
-        wait(atMost: 1.0, for: { self.categoriesTable != nil }) {
+        AsyncUtils.wait(atMost: 1.0, for: { self.categoriesTable != nil }) {
             success in
             guard success else {
                 completion(false)

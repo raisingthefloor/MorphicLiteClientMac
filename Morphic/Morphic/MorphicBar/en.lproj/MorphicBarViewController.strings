@@ -193,3 +193,24 @@
 
 /* Message for the help window for the 'turn off night mode' button */
 "control.feature.nightshift.off.help.message" = "";
+
+/* Label for the buttons that copy and paste */
+"control.feature.copypaste.title" = "Copy & Paste";
+
+/* Label for the button that copies the selection */
+"control.feature.copypaste.copy" = "Copy";
+
+/* Title for the help window for the copy button */
+"control.feature.copypaste.copy.help.title" = "Copy the Current Selection";
+
+/* Message for the help window for the copy button */
+"control.feature.copypaste.copy.help.message" = "";
+
+/* Label for the button that pastes the selection */
+"control.feature.copypaste.paste" = "Paste";
+
+/* Title for the help window for the paste button */
+"control.feature.copypaste.paste.help.title" = "Paste from the Pasteboard";
+
+/* Message for the help window for the paste button */
+"control.feature.copypaste.paste.help.message" = "";

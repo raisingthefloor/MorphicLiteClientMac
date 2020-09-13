@@ -126,8 +126,13 @@ public extension Service {
 
                 switch item.kind {
                 case .action:
-                    // not implemented (no mappings)
-                    break
+                    morphicBarItem["type"] = "action"
+                    morphicBarItem["label"] = itemConfiguration.label
+                    morphicBarItem["color"] = itemConfiguration.color
+                    morphicBarItem["imageUrl"] = itemConfiguration.image_url
+                    morphicBarItem["identifier"] = itemConfiguration.identifier
+                    //
+                    morphicbarItems.append(morphicBarItem)
                 case .application:
                     morphicBarItem["type"] = "application"
                     morphicBarItem["label"] = itemConfiguration.label

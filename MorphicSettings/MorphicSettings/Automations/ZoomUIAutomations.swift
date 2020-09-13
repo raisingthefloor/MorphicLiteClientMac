@@ -159,13 +159,13 @@ public class ZoomEnabledUIAutomation: AccessibilityUIAutomation {
                 return
             }
             if #available(macOS 10.15, *) {
-                accessibility.wait(atMost: 5.0, for: { checked == defaults.bool(forKey: "closeViewZoomedIn") }) {
+                AsyncUtils.wait(atMost: 5.0, for: { checked == defaults.bool(forKey: "closeViewZoomedIn") }) {
                     success in
                     completion(success)
                 }
             } else {
                 // backwards compatibility for macOS 10.14
-                accessibility.wait(atMost: 5.0, for: {
+                AsyncUtils.wait(atMost: 5.0, for: {
                     if checked == true {
                         return 1.0 != defaults.double(forKey: "closeViewZoomFactor")
                     } else {

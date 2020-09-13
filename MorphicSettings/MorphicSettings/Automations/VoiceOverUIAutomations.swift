@@ -51,7 +51,7 @@ public class VoiceOverUIAutomation: AccessibilityUIAutomation {
                 completion(false)
                 return
             }
-            accessibility.wait(atMost: 5.0, for: {
+            AsyncUtils.wait(atMost: 5.0, for: {
                 let running = NSWorkspace.shared.runningApplications.contains(where: { $0.bundleIdentifier == "com.apple.VoiceOver" })
                 return running == checked
             }) {
