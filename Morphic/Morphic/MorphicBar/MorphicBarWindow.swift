@@ -61,7 +61,13 @@ public class MorphicBarWindow: NSWindow {
     }
     
     func updateMorphicBar() {
-        morphicBarViewController.showsHelp = Session.shared.bool(for: .morphicBarShowsHelp) ?? true
+        #if EDITION_BASIC
+            let showsHelpByDefault = true
+        #else
+//        #elseif EDITION_COMMUNITY
+            let showsHelpByDefault = false
+        #endif
+        morphicBarViewController.showsHelp = Session.shared.bool(for: .morphicBarShowsHelp) ?? showsHelpByDefault
         if let preferredItems = Session.shared.array(for: .morphicBarItems) {
             morphicBarViewController.items = MorphicBarItem.items(from: preferredItems)
         }
