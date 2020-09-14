@@ -100,7 +100,7 @@ public class MorphicBarItem {
         }
 
         let morphicBarControlItem = MorphicBarControlItem(interoperable: transformedInteroperable)
-        morphicBarControlItem.style = .communityEdition
+        morphicBarControlItem.style = .fixedWidth
         
         return morphicBarControlItem
     }
@@ -233,8 +233,8 @@ class MorphicBarApplicationItem: MorphicBarItem {
 }
 
 enum MorphicBarControlItemStyle {
-    case basicEdition
-    case communityEdition
+    case autoWidth
+    case fixedWidth
 }
 //
 class MorphicBarControlItem: MorphicBarItem {
@@ -263,7 +263,7 @@ class MorphicBarControlItem: MorphicBarItem {
     var feature: Feature
     var fillColor: NSColor? = nil 
     
-    var style: MorphicBarControlItemStyle = .basicEdition
+    var style: MorphicBarControlItemStyle = .autoWidth
     
     override init(interoperable: [String : Interoperable?]) {
         feature = Feature(string: interoperable.string(for: "feature"))
@@ -276,8 +276,6 @@ class MorphicBarControlItem: MorphicBarItem {
     }
     
     override func view() -> MorphicBarItemViewProtocol? {
-        let useHelpProvider = (style == .basicEdition)
-        
         let buttonColor: NSColor = fillColor ?? .morphicPrimaryColor
         let alternateButtonColor: NSColor = fillColor ?? .morphicPrimaryColor
         // NOTE: to alternate the color of button segments, uncomment the following line instead
@@ -287,8 +285,8 @@ class MorphicBarControlItem: MorphicBarItem {
         case .resolution:
             let localized = LocalizedStrings(prefix: "control.feature.resolution")
             let segments = [
-                MorphicBarSegmentedButton.Segment(icon: .plus(), fillColor: buttonColor, helpProvider: useHelpProvider ?  QuickHelpTextSizeBiggerProvider(display: Display.main, localized: localized) : nil, accessibilityLabel: localized.string(for: "bigger.help.title")),
-                MorphicBarSegmentedButton.Segment(icon: .minus(), fillColor: alternateButtonColor, helpProvider: useHelpProvider ? QuickHelpTextSizeSmallerProvider(display: Display.main, localized: localized) : nil, accessibilityLabel: localized.string(for: "smaller.help.title"))
+                MorphicBarSegmentedButton.Segment(icon: .plus(), fillColor: buttonColor, helpProvider:  QuickHelpTextSizeBiggerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "bigger.help.title")),
+                MorphicBarSegmentedButton.Segment(icon: .minus(), fillColor: alternateButtonColor, helpProvider: QuickHelpTextSizeSmallerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "smaller.help.title"))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.target = self
@@ -299,8 +297,8 @@ class MorphicBarControlItem: MorphicBarItem {
             let showHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "show.help.title"), message: localized.string(for: "show.help.message")) }
             let hideHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "hide.help.title"), message: localized.string(for: "hide.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "show"), fillColor: buttonColor, helpProvider: useHelpProvider ? showHelpProvider : nil, accessibilityLabel: localized.string(for: "show.help.title")),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "hide"), fillColor: alternateButtonColor, helpProvider: useHelpProvider ? hideHelpProvider : nil, accessibilityLabel: localized.string(for: "hide.help.title"))
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "show"), fillColor: buttonColor, helpProvider: showHelpProvider, accessibilityLabel: localized.string(for: "show.help.title")),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "hide"), fillColor: alternateButtonColor, helpProvider: hideHelpProvider, accessibilityLabel: localized.string(for: "hide.help.title"))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
@@ -312,8 +310,8 @@ class MorphicBarControlItem: MorphicBarItem {
             let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: useHelpProvider ? onHelpProvider : nil, accessibilityLabel: localized.string(for: "on.help.title")),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: useHelpProvider ? offHelpProvider : nil, accessibilityLabel: localized.string(for: "off.help.title"))
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title")),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
@@ -324,7 +322,7 @@ class MorphicBarControlItem: MorphicBarItem {
             let localized = LocalizedStrings(prefix: "control.feature.readselected")
             let playStopHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "playstop.help.title"), message: localized.string(for: "playstop.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "playstop"), fillColor: buttonColor, helpProvider: useHelpProvider ? playStopHelpProvider : nil, accessibilityLabel: localized.string(for: "playstop.help.title"))
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "playstop"), fillColor: buttonColor, helpProvider: playStopHelpProvider, accessibilityLabel: localized.string(for: "playstop.help.title"))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
@@ -334,9 +332,9 @@ class MorphicBarControlItem: MorphicBarItem {
         case .volume:
             let localized = LocalizedStrings(prefix: "control.feature.volume")
             let segments = [
-                MorphicBarSegmentedButton.Segment(icon: .plus(), fillColor: buttonColor, helpProvider: useHelpProvider ? QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized) : nil, accessibilityLabel: localized.string(for: "up.help.title")),
-                MorphicBarSegmentedButton.Segment(icon: .minus(), fillColor: alternateButtonColor, helpProvider: useHelpProvider ? QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized) : nil, accessibilityLabel: localized.string(for: "down.help.title")),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "mute"), fillColor: buttonColor, helpProvider: useHelpProvider ? QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized) : nil, accessibilityLabel: localized.string(for: "mute.help.title"))
+                MorphicBarSegmentedButton.Segment(icon: .plus(), fillColor: buttonColor, helpProvider: QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "up.help.title")),
+                MorphicBarSegmentedButton.Segment(icon: .minus(), fillColor: alternateButtonColor, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "down.help.title")),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "mute"), fillColor: buttonColor, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "mute.help.title"))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.target = self
@@ -345,8 +343,8 @@ class MorphicBarControlItem: MorphicBarItem {
         case .volumewithoutmute:
             let localized = LocalizedStrings(prefix: "control.feature.volume")
             let segments = [
-                MorphicBarSegmentedButton.Segment(icon: .plus(), fillColor: buttonColor, helpProvider: useHelpProvider ? QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized) : nil, accessibilityLabel: localized.string(for: "up.help.title")),
-                MorphicBarSegmentedButton.Segment(icon: .minus(), fillColor: alternateButtonColor, helpProvider: useHelpProvider ? QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized) : nil, accessibilityLabel: localized.string(for: "down.help.title"))
+                MorphicBarSegmentedButton.Segment(icon: .plus(), fillColor: buttonColor, helpProvider: QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "up.help.title")),
+                MorphicBarSegmentedButton.Segment(icon: .minus(), fillColor: alternateButtonColor, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "down.help.title"))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.target = self
@@ -357,8 +355,8 @@ class MorphicBarControlItem: MorphicBarItem {
             let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: useHelpProvider ? onHelpProvider : nil, accessibilityLabel: localized.string(for: "on.help.title")),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: useHelpProvider ? offHelpProvider : nil, accessibilityLabel: localized.string(for: "off.help.title"))
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title")),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
@@ -370,8 +368,8 @@ class MorphicBarControlItem: MorphicBarItem {
             let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: useHelpProvider ? onHelpProvider : nil, accessibilityLabel: localized.string(for: "on.help.title")),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: useHelpProvider ? offHelpProvider : nil, accessibilityLabel: localized.string(for: "off.help.title"))
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title")),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
@@ -383,8 +381,8 @@ class MorphicBarControlItem: MorphicBarItem {
             let copyHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
             let pasteHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "paste.help.title"), message: localized.string(for: "paste.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "copy"), fillColor: buttonColor, helpProvider: useHelpProvider ? copyHelpProvider : nil, accessibilityLabel: localized.string(for: "copy.help.title")),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "paste"), fillColor: alternateButtonColor, helpProvider: useHelpProvider ? pasteHelpProvider : nil, accessibilityLabel: localized.string(for: "paste.help.title"))
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "copy"), fillColor: buttonColor, helpProvider: copyHelpProvider, accessibilityLabel: localized.string(for: "copy.help.title")),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "paste"), fillColor: alternateButtonColor, helpProvider: pasteHelpProvider, accessibilityLabel: localized.string(for: "paste.help.title"))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
