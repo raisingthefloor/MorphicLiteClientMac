@@ -203,10 +203,12 @@ class MorphicBarSegmentedButton: NSControl {
         }
         
         func updateHelpWindow() {
-            guard let viewController = helpProvider?.quickHelpViewController() else {
-                return
+            if showsHelp == true {
+                guard let viewController = helpProvider?.quickHelpViewController() else {
+                    return
+                }
+                QuickHelpWindow.show(viewController: viewController)
             }
-            QuickHelpWindow.show(viewController: viewController)
         }
         
         override func updateTrackingAreas() {
