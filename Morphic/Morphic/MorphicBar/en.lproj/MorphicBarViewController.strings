@@ -45,13 +45,13 @@
 "control.feature.resolution.smaller.limit.help.message" = "";
 
 /* Label for the buttons that control the magnifier */
-"control.feature.magnifier.title" = "Magnifying Glass";
+"control.feature.magnifier.title" = "Magnifier";
 
 /* Label for the button that shows the magnifier */
 "control.feature.magnifier.show" = "Show";
 
 /* Title for the help window for the show magnifier button */
-"control.feature.magnifier.show.help.title" = "Show a Magnifying Glass";
+"control.feature.magnifier.show.help.title" = "Show the Magnifying Glass";
 
 /* Message for the help window for the show magnifier button */
 "control.feature.magnifier.show.help.message" = "Magnify the area around your mouse";
@@ -64,6 +64,24 @@
 
 /* Message for the help window for the hide magnifier button */
 "control.feature.magnifier.hide.help.message" = "";
+
+/* Label for the button that shows the magnifier */
+"control.feature.magnifier.on" = "On";
+
+/* Title for the help window for the show ("on") magnifier button */
+"control.feature.magnifier.on.help.title" = "Turn on the Magnifier";
+
+/* Message for the help window for the show ("on") magnifier button */
+"control.feature.magnifier.on.help.message" = "Magnify the area around your mouse";
+
+/* Label for the button that hides the magnifier */
+"control.feature.magnifier.off" = "Off";
+
+/* Title for the help window for the hide ("off") magnifier button */
+"control.feature.magnifier.off.help.title" = "Turn Off the Magnifier";
+
+/* Message for the help window for the hide ("off") magnifier button */
+"control.feature.magnifier.off.help.message" = "";
 
 /* Label for the buttons that control the reader */
 "control.feature.reader.title" = "Screen Reader";

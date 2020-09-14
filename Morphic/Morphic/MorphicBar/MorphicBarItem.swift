@@ -89,7 +89,7 @@ public class MorphicBarItem {
         case "copy-paste":
             transformedInteroperable["feature"] = "copypaste"
         case "magnify":
-            transformedInteroperable["feature"] = "magnifier"
+            transformedInteroperable["feature"] = "magnifieronoff"
         case "screen-zoom":
             transformedInteroperable["feature"] = "resolution"
         case "volume":
@@ -242,6 +242,7 @@ class MorphicBarControlItem: MorphicBarItem {
     enum Feature: String {
         case resolution
         case magnifier
+        case magnifieronoff
         case reader
         case readselected
         case volume
@@ -292,13 +293,17 @@ class MorphicBarControlItem: MorphicBarItem {
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.zoom(_:))
             return view
-        case .magnifier:
+        case .magnifier,
+             .magnifieronoff:
+            // NOTE: magnifieronoff is identical to magnifier but shows "on/off" buttons instead of "show/hide" buttons
+            let isOnOff = (feature == .magnifieronoff)
+            //
             let localized = LocalizedStrings(prefix: "control.feature.magnifier")
-            let showHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "show.help.title"), message: localized.string(for: "show.help.message")) }
-            let hideHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "hide.help.title"), message: localized.string(for: "hide.help.message")) }
+            let showHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: isOnOff ? "on.help.title" : "show.help.title"), message: localized.string(for: isOnOff ? "on.help.message" : "show.help.message")) }
+            let hideHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: isOnOff ? "off.help.title" : "hide.help.title"), message: localized.string(for: isOnOff ? "off.help.message" : "hide.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "show"), fillColor: buttonColor, helpProvider: showHelpProvider, accessibilityLabel: localized.string(for: "show.help.title")),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "hide"), fillColor: alternateButtonColor, helpProvider: hideHelpProvider, accessibilityLabel: localized.string(for: "hide.help.title"))
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: isOnOff ? "on" : "show"), fillColor: buttonColor, helpProvider: showHelpProvider, accessibilityLabel: localized.string(for: isOnOff ? "on.help.title" : "show.help.title")),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: isOnOff ? "off" : "hide"), fillColor: alternateButtonColor, helpProvider: hideHelpProvider, accessibilityLabel: localized.string(for: isOnOff ? "off.help.title" : "hide.help.title"))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
