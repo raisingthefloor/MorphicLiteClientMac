@@ -81,6 +81,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 }
                 DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.userDidSignin), name: .morphicSignin, object: nil)
                 NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
+
+                #if EDITION_BASIC
+                #else
+//                #elseif EDITION_COMMUNITY
+                    // if no user is logged in, launch the login window at startup of Morphic Community
+                    if (Session.shared.user == nil) {
+                        self.launchConfigurator(argument: "login")
+                    }
+                #endif
             }
         }
     }
