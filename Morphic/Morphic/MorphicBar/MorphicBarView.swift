@@ -110,6 +110,8 @@ public class MorphicBarView: NSView {
         }
     }
     
+    public var minimumWidthInVerticalOrientation: CGFloat = 100
+    
     public override var intrinsicContentSize: NSSize {
         switch orientation {
         case .horizontal:
@@ -121,7 +123,7 @@ public class MorphicBarView: NSView {
             }
             return size
         case .vertical:
-            var size = NSSize(width: 0, height: itemSpacing * CGFloat(max(itemViews.count - 1, 0)))
+            var size = NSSize(width: minimumWidthInVerticalOrientation, height: itemSpacing * CGFloat(max(itemViews.count - 1, 0)))
             for itemView in itemViews {
                 let itemSize = itemView.intrinsicContentSize
                 size.height += itemSize.height

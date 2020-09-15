@@ -41,7 +41,7 @@
                         <action selector="showMainMenu:" target="-2" id="ZqU-v5-d0Q"/>
                     </connections>
                 </button>
-                <customView horizontalHuggingPriority="500" verticalHuggingPriority="500" translatesAutoresizingMaskIntoConstraints="NO" id="hJk-BO-TPf" customClass="MorphicBarView" customModule="Morphic" customModuleProvider="target">
+                <customView horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hJk-BO-TPf" customClass="MorphicBarView" customModule="Morphic" customModuleProvider="target">
                     <rect key="frame" x="7" y="7" width="364" height="44"/>
                 </customView>
             </subviews>
