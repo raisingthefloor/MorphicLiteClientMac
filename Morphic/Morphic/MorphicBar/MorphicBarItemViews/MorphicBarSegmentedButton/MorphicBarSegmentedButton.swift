@@ -42,7 +42,12 @@ class MorphicBarSegmentedButton: NSControl {
     
     init(segments: [Segment]) {
         super.init(frame: NSRect(x: 0, y: 0, width: 100, height: 100))
-        font = .morphicBold
+        switch style {
+        case .autoWidth:
+            font = .morphicBold
+        case .fixedWidth(_):
+            font = .morphicBold // .morphicRegular
+        }
         wantsLayer = true
         layer?.masksToBounds = true
         layer?.cornerRadius = 3
@@ -85,22 +90,26 @@ class MorphicBarSegmentedButton: NSControl {
         
         var helpProvider: QuickHelpContentProvider?
         
+        var style: MorphicBarControlItemStyle
+        
         var accessibilityLabel: String?
         
         /// Create a segment with a title
-        init(title: String, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?) {
+        init(title: String, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, style: MorphicBarControlItemStyle) {
             self.title = title
             self.helpProvider = helpProvider
             self.fillColor = fillColor
             self.accessibilityLabel = accessibilityLabel
+            self.style = style
         }
         
         /// Create a segment with an icon
-        init(icon: NSImage, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?) {
+        init(icon: NSImage, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, style: MorphicBarControlItemStyle) {
             self.icon = icon
             self.helpProvider = helpProvider
             self.fillColor = fillColor
             self.accessibilityLabel = accessibilityLabel
+            self.style = style
         }
     }
     
@@ -115,6 +124,8 @@ class MorphicBarSegmentedButton: NSControl {
     
     let horizontalMarginBetweenSegments = CGFloat(1.5)
     
+    var style: MorphicBarControlItemStyle = .autoWidth
+
     override var isFlipped: Bool {
         return true
     }
@@ -130,13 +141,20 @@ class MorphicBarSegmentedButton: NSControl {
     }
     
     override var intrinsicContentSize: NSSize {
-        var size = NSSize(width: 0, height: contentInsets.top + contentInsets.bottom + 13)
-        for button in segmentButtons {
-            let buttonSize = button.intrinsicContentSize
-            size.width += buttonSize.width
+        switch self.style {
+        case .autoWidth:
+            var size = NSSize(width: 0, height: contentInsets.top + contentInsets.bottom + 13)
+            for button in segmentButtons {
+                let buttonSize = button.intrinsicContentSize
+                size.width += buttonSize.width
+            }
+            size.width += CGFloat(max(segmentButtons.count - 1, 0)) * horizontalMarginBetweenSegments
+            return size
+        case .fixedWidth(let segmentWidth):
+            let totalWidth = (CGFloat(segments.count) * (segmentWidth + horizontalMarginBetweenSegments)) - horizontalMarginBetweenSegments
+            let size = NSSize(width: totalWidth, height: contentInsets.top + contentInsets.bottom + 13)
+            return size
         }
-        size.width += CGFloat(max(segmentButtons.count - 1, 0)) * horizontalMarginBetweenSegments
-        return size
     }
     
     override func layout() {
@@ -156,6 +174,8 @@ class MorphicBarSegmentedButton: NSControl {
         
         private var boundsTrackingArea: NSTrackingArea!
         
+        public var style: MorphicBarControlItemStyle = .autoWidth
+        
         public override init(frame frameRect: NSRect) {
             super.init(frame: frameRect)
             createBoundsTrackingArea()
@@ -173,8 +193,13 @@ class MorphicBarSegmentedButton: NSControl {
         
         override var intrinsicContentSize: NSSize {
             var size = super.intrinsicContentSize.roundedUp()
-            size.width += contentInsets.left + contentInsets.right
-            size.height += contentInsets.top + contentInsets.bottom
+            switch style {
+            case .autoWidth:
+                size.width += contentInsets.left + contentInsets.right
+                size.height += contentInsets.top + contentInsets.bottom
+            case .fixedWidth(let width):
+                size.width = width
+            }
             return size
         }
         
@@ -266,7 +291,15 @@ class MorphicBarSegmentedButton: NSControl {
         button.setAccessibilityLabel(segment.accessibilityLabel)
         button.helpProvider = segment.helpProvider
         (button.cell as? NSButtonCell)?.backgroundColor = segment.fillColor
-        button.font = font
+        //
+        button.style = segment.style
+        switch segment.style {
+        case .autoWidth:
+            button.font = .morphicBold
+        case .fixedWidth(_):
+            button.font = .morphicBold // .morphicRegular
+        }
+        //
         return button
     }
     

@@ -45,9 +45,17 @@ class MorphicBarSegmentedButtonItemView: NSView, MorphicBarItemViewProtocol {
     var segmentedButton: MorphicBarSegmentedButton
     var titleButtonSpacing: CGFloat = 4.0
     
-    init(title: String, segments: [MorphicBarSegmentedButton.Segment]) {
+    var style: MorphicBarControlItemStyle
+    
+    init(title: String, segments: [MorphicBarSegmentedButton.Segment], style: MorphicBarControlItemStyle) {
         titleLabel = NSTextField(labelWithString: title)
-        titleLabel.font = .morphicBold
+        self.style = style
+        switch style {
+        case .autoWidth:
+            titleLabel.font = .morphicBold
+        case .fixedWidth(_):
+            titleLabel.font = .morphicBold // .morphicRegular
+        }
         titleLabel.alignment = .center
         segmentedButton = MorphicBarSegmentedButton(segments: segments)
         super.init(frame: NSRect(x: 0, y: 0, width: 100, height: 100))
