@@ -13,6 +13,7 @@
                 <outlet property="loginMenuItem" destination="S6R-h6-1Yz" id="zO2-OE-N39"/>
                 <outlet property="logoutMenuItem" destination="fdS-ef-rqr" id="2v2-vJ-y1T"/>
                 <outlet property="menu" destination="iDk-eb-5cB" id="OjZ-YL-Pes"/>
+                <outlet property="selectCommunityMenuItem" destination="qcc-Q2-sYr" id="Gm9-io-FQH"/>
                 <outlet property="showMorphicBarMenuItem" destination="4BS-cA-IvL" id="elS-Jc-raC"/>
             </connections>
         </customObject>
@@ -35,6 +36,10 @@
                     <connections>
                         <action selector="hideMorphicBar:" target="-1" id="YMq-QB-Pag"/>
                     </connections>
+                </menuItem>
+                <menuItem title="Select Community" id="qcc-Q2-sYr">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Select Community" id="l0C-IM-POV"/>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="vgQ-je-MGT"/>
                 <menuItem title="Take Settings With Me..." id="pzh-qC-88t">

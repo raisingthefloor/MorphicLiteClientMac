@@ -40,7 +40,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     @IBOutlet weak var captureMenuItem: NSMenuItem!
     @IBOutlet weak var loginMenuItem: NSMenuItem!
     @IBOutlet weak var logoutMenuItem: NSMenuItem?
-
+    @IBOutlet weak var selectCommunityMenuItem: NSMenuItem!
+    
     // MARK: - Application Lifecycle
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -175,8 +176,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 completion(false, .networkOrAuthorizationOrSaveToDiskFailure)
                 return
             }
-            
-            // capture our list of now-saved morphic user communities
+
+            // update our list of communities
+            self.updateSelectCommunityMenuItem(selectCommunityMenuItem: self.selectCommunityMenuItem)
+            if let morphicBarWindow = self.morphicBarWindow {
+                self.updateSelectCommunityMenuItem(selectCommunityMenuItem: morphicBarWindow.morphicBarViewController.selectCommunityMenuItem)
+            }
+
+            // capture our list of now-cached morphic user communities
             guard let communityBarsAsJson = Session.shared.dictionary(for: .morphicBarCommunityBarsAsJson) else {
                 completion(false, .networkOrAuthorizationOrSaveToDiskFailure)
                 return
@@ -184,6 +191,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             
             // if the user has no communities, return that error as a failure
             if communityBarsAsJson.count == 0 {
+                // NOTE: we do not clear out any previous "selected community" the user had specified; this preserves their "last chosen community"; if desired we could erase the default here
                 completion(false, .userHasNoCommunities)
                 return
             }
@@ -203,8 +211,126 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             completion(true, nil)
         }
     }
+    
+    func updateSelectCommunityMenuItem(selectCommunityMenuItem: NSMenuItem) {
+        guard let user = Session.shared.user else {
+            return
+        }
 
+        // capture our current-selected community id
+        let userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
         
+        // get a sorted array of our community ids and names (sorted by name first, then by id)
+        guard let userCommunityIdsAndNames = createSortedArrayOfCommunityIdsAndNames() else {
+            return
+        }
+        
+        // now populate the menu with the community names...and highlight the currently-selected community (9)with a checkmark)
+        selectCommunityMenuItem.submenu?.removeAllItems()
+        for userCommunityIdAndName in userCommunityIdsAndNames {
+            let communityMenuItem = NSMenuItem(title: userCommunityIdAndName.name, action: #selector(AppDelegate.communitySelected), keyEquivalent: "")
+            if userCommunityIdAndName.id == userSelectedCommunityId {
+                communityMenuItem.state = .on
+            }
+            // NOTE: we tag each menu item with its id's hashValue (which is only stable during the same run of the program); we do this to help disambiguate multiple communities with the same name
+            communityMenuItem.tag = userCommunityIdAndName.id.hashValue
+            selectCommunityMenuItem.submenu?.addItem(communityMenuItem)
+        }
+    }
+    
+    func createSortedArrayOfCommunityIdsAndNames() -> [(id: String, name: String)]? {
+        // capture our list of cached morphic user communities
+        guard let communityBarsAsJson = Session.shared.dictionary(for: .morphicBarCommunityBarsAsJson) as? [String: String] else {
+            return nil
+        }
+        
+        // populate a dictionary of community ids and names
+        var userCommunityIdsAndNames: [(id: String, name: String)] = []
+        for (communityId, communityBarAsJsonString) in communityBarsAsJson {
+            let communityBarAsJsonData = communityBarAsJsonString.data(using: .utf8)!
+            let communityBar = try! JSONDecoder().decode(Service.UserCommunityDetails.self, from: communityBarAsJsonData)
+            
+            let communityName = communityBar.name
+            userCommunityIdsAndNames.append((communityId, communityName))
+        }
+        
+        // sort the communities by name (and then secondarily by id, in case two have the same name)
+        userCommunityIdsAndNames.sort { (arg0: (id: String, name: String), arg1: (id: String, name: String)) -> Bool in
+            if arg0.name.lowercased() < arg1.name.lowercased() {
+                return true
+            } else if arg0.name.lowercased() == arg1.name.lowercased() {
+                if arg0.id.lowercased() < arg1.id.lowercased() {
+                    return true
+                }
+            }
+            
+            return false
+        }
+
+        return userCommunityIdsAndNames
+    }
+    
+    @objc
+    func communitySelected(_ sender: NSMenuItem) {
+        guard let user = Session.shared.user else {
+            return
+        }
+        
+        // save the newly-selected community id
+        
+        let communityName = sender.title
+        let communityIdHashValue = sender.tag
+        
+        // get a sorted array of our community ids and names (sorted by name first, then by id)
+        guard let userCommunityIdsAndNames = createSortedArrayOfCommunityIdsAndNames() else {
+            return
+        }
+
+        // calculate the community id of the selected community
+        var selectedCommunityIdAndName = userCommunityIdsAndNames.first { (arg0) -> Bool in
+            if arg0.id.hashValue == communityIdHashValue {
+                return true
+            } else {
+                return false
+            }
+        }
+        
+        // if the selected community's tag doesn't match the name (i.e. there are multiple entries with the same name)
+        if selectedCommunityIdAndName == nil || (selectedCommunityIdAndName!.name != communityName) {
+            // if the hash value didn't work (which shouldn't be possible), gracefully degrade by finding the first entry with this name
+            selectedCommunityIdAndName = userCommunityIdsAndNames.first { (arg0) -> Bool in
+                if arg0.name == communityName {
+                    return true
+                } else {
+                    return false
+                }
+            }
+        }
+        
+        // if we still didn't get an entry, then fail
+        guard selectedCommunityIdAndName != nil else {
+            NSLog("User selected a community which cannot be found")
+            return
+        }
+
+        // save the newly-selected community id
+        UserDefaults.morphic.set(selectedUserCommunityIdentifier: selectedCommunityIdAndName!.id, for: user.identifier)
+
+        // update our list of communities (so that we move the checkbox to the appropriate entry)
+        self.updateSelectCommunityMenuItem(selectCommunityMenuItem: self.selectCommunityMenuItem)
+        if let morphicBarWindow = morphicBarWindow {
+            self.updateSelectCommunityMenuItem(selectCommunityMenuItem: morphicBarWindow.morphicBarViewController.selectCommunityMenuItem)
+        }
+        
+        // now that the user has selected a new community bar, we switch to it using our cached data
+        self.morphicBarWindow?.updateMorphicBar()
+
+        // optionally, we can reload the data (asynchronously)
+        reloadMorphicCommunityBar { (success, error) in
+            // ignore callback
+        }
+    }
+    
     // MARK: - Actions
     
     @IBAction
@@ -220,6 +346,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                         // now it's time to update/show the morphic bar
                         self.morphicBarWindow?.updateMorphicBar()
                         self.hideMorphicBar(nil)
+                    } else {
+		    	// NOTE: we may want to consider letting the user know that we could not save
                     }
                 }
             #endif

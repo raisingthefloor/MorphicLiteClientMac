@@ -57,11 +57,13 @@ public extension Service {
     // MARK: - Morphic User Communities
     
     func userCommunities(user: User, completion: @escaping (_ communities: UserCommunitiesResponse?) -> Void) -> Session.Task {
+    	// NOTE: we do not urlescape the user identifiers (which we get from our server); if Swift doesn't do this natively we should consider doing it manually here out of an abundance of caution
         let request = URLRequest(session: session, path: "v1/users/\(user.identifier)/communities", method: .get)
         return session.runningTask(with: request, completion: completion)
     }
 
     func userCommunityDetails(user: User, community: UserCommunity, completion: @escaping (_ communityDetails: UserCommunityDetails?) -> Void) -> Session.Task {
+    	// NOTE: we do not urlescape the user identifiers (which we get from our server); if Swift doesn't do this natively we should consider doing it manually here out of an abundance of caution
         let request = URLRequest(session: session, path: "v1/users/\(user.identifier)/communities/\(community.id)", method: .get)
         return session.runningTask(with: request, completion: completion)
     }
