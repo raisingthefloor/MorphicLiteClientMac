@@ -423,13 +423,13 @@ class MorphicBarControlItem: MorphicBarItem {
             if output.isMuted {
                 _ = output.setMuted(false)
             } else {
-                _ = output.setVolume(output.volume + 0.1)
+                _ = output.setVolume(output.volume + 0.05)
             }
         } else if segment == 1 {
             if output.isMuted {
                 _ = output.setMuted(false)
             } else {
-                _ = output.setVolume(output.volume - 0.1)
+                _ = output.setVolume(output.volume - 0.05)
             }
         } else if segment == 2 {
             _ = output.setMuted(true)
@@ -448,13 +448,13 @@ class MorphicBarControlItem: MorphicBarItem {
             if output.isMuted {
                 _ = output.setMuted(false)
             } else {
-                _ = output.setVolume(output.volume + 0.1)
+                _ = output.setVolume(output.volume + 0.05)
             }
         } else if segment == 1 {
             if output.isMuted {
                 _ = output.setMuted(false)
             } else {
-                _ = output.setVolume(output.volume - 0.1)
+                _ = output.setVolume(output.volume - 0.05)
             }
         }
     }
