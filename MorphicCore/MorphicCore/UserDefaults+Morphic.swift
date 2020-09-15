@@ -24,7 +24,7 @@
 import Foundation
 
 public extension UserDefaults {
-    static var morphic = UserDefaults(suiteName: "org.raisingthefloor.Morphic")!
+    static var morphic = UserDefaults(suiteName: "org.raisingthefloor.MorphicClient")!
     
     func morphicUsername(for userIdentifier: String) -> String? {
         let usernamesByIdentifier = dictionary(forKey: .morphicDefaultsKeyUsernamesByIdentifier)
