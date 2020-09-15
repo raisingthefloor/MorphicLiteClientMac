@@ -134,6 +134,7 @@ public class Keychain {
     
     public func save(authToken: String, for url: URL, userIdentifier: String) -> Bool {
         // NOTE: sometimes overwriting a token returns success but does not overwrite it; therefore we erase any existing token beforehand
+        // NOTE: if we store additional data in the keychain in the future, consider moving this "remove" code to the "save(attributes:matching:) function (and also possibly checking if it exists before removing it, to surpress intentional failures in macOS Console's logs).
         _ = removeAuthToken(for: url, userIdentifier: userIdentifier)
         
         let query = identifyingAttributes(for: url, service: authTokenService, userIdentifier: userIdentifier)

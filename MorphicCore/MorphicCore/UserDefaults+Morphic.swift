@@ -24,7 +24,7 @@
 import Foundation
 
 public extension UserDefaults {
-    static var morphic = UserDefaults(suiteName: "org.raisingthefloor.MorphicLite")!
+    static var morphic = UserDefaults(suiteName: "org.raisingthefloor.Morphic")!
     
     func morphicUsername(for userIdentifier: String) -> String? {
         let usernamesByIdentifier = dictionary(forKey: .morphicDefaultsKeyUsernamesByIdentifier)
@@ -36,9 +36,21 @@ public extension UserDefaults {
         usernamesByIdentifier[userIdentifier] = morphicUsername
         setValue(usernamesByIdentifier, forKey: .morphicDefaultsKeyUsernamesByIdentifier)
     }
+    
+    func selectedUserCommunityId(for userIdentifier: String) -> String? {
+        let userCommunityIdentifiersByUserIdentifier = dictionary(forKey: .morphicDefaultsKeyUserCommunityIdentifiersByUserIdentifier)
+        return userCommunityIdentifiersByUserIdentifier?[userIdentifier] as? String
+    }
+    
+    func set(selectedUserCommunityIdentifier: String?, for userIdentifier: String) {
+        var userCommunityIdentifiersByUserIdentifier = dictionary(forKey: .morphicDefaultsKeyUserCommunityIdentifiersByUserIdentifier) ?? [String : Any]()
+        userCommunityIdentifiersByUserIdentifier[userIdentifier] = selectedUserCommunityIdentifier
+        setValue(userCommunityIdentifiersByUserIdentifier, forKey: .morphicDefaultsKeyUserCommunityIdentifiersByUserIdentifier)
+    }
 }
 
 public extension String {
     static var morphicDefaultsKeyUserIdentifier = "userIdentifier"
     static var morphicDefaultsKeyUsernamesByIdentifier = "usernamesByIdentifier"
+    static var morphicDefaultsKeyUserCommunityIdentifiersByUserIdentifier = "userCommunityIdentifiersByUserIdentifier"
 }

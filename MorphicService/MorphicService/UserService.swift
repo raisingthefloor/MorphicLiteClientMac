@@ -54,6 +54,8 @@ public extension Service {
         return session.runningTask(with: request, completion: completion)
     }
     
+    // MARK: - Morphic User Communities
+    
     func userCommunities(user: User, completion: @escaping (_ communities: UserCommunitiesResponse?) -> Void) -> Session.Task {
         let request = URLRequest(session: session, path: "v1/users/\(user.identifier)/communities", method: .get)
         return session.runningTask(with: request, completion: completion)

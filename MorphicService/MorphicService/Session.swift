@@ -369,6 +369,21 @@ public class Session {
         }
     }
     
+    var selectedUserCommunityIdentifier: String? {
+        get {
+            guard let currentUserIdentifier = self.currentUserIdentifier else {
+                return nil
+            }
+            return UserDefaults.morphic.selectedUserCommunityId(for: currentUserIdentifier)
+        }
+        set {
+            guard let currentUserIdentifier = self.currentUserIdentifier else {
+                return
+            }
+            UserDefaults.morphic.set(selectedUserCommunityIdentifier: newValue, for: currentUserIdentifier)
+        }
+    }
+    
     /// The current user
     public var user: User? {
         didSet {
@@ -497,6 +512,90 @@ public class Session {
         }
     }
     
+    // MARK: Community Bar
+    
+    func downloadMorphicUserCommunity(user: User, userCommunity: Service.UserCommunity, completion: @escaping (_ success: Bool, _ userCommunityDetails: Service.UserCommunityDetails?) -> Void) {
+        _ = self.service.userCommunityDetails(user: user, community: userCommunity) {
+            userCommunityDetails in
+            if let userCommunityDetails = userCommunityDetails {
+                completion(true, userCommunityDetails)
+                return
+            } else {
+                completion(false, nil)
+            }
+        }
+    }
+    
+    func downloadMorphicUserCommunities(user: User, userCommunities: [Service.UserCommunity], completion: @escaping (_ success: Bool, _ detailsByUserCommunityId: [String : Service.UserCommunityDetails]?) -> Void) {
+        var userCommunityQueue = userCommunities
+        
+        var detailsByUserCommunityId: [String : Service.UserCommunityDetails] = [:]
+        
+        var downloadNextCommunity: (() -> Void)!
+        downloadNextCommunity = {
+            if userCommunityQueue.count == 0 {
+                // if we're all out of communities, return our result
+                completion(true, detailsByUserCommunityId)
+                return
+            }
+            
+            let userCommunity = userCommunityQueue.removeFirst()
+            
+            // download the next userCommunity in our queue
+            self.downloadMorphicUserCommunity(user: user, userCommunity: userCommunity) {
+                success, userCommunityDetails in
+                //
+                guard success == true else {
+                    completion(false, nil)
+                    return
+                }
+                
+                // if we successfully downloaded the user community, add its details to our response and then call ourselves again
+                detailsByUserCommunityId[userCommunity.id] = userCommunityDetails
+                downloadNextCommunity()
+            }
+        }
+        // start the download chain by downloading the first community
+        downloadNextCommunity()
+    }
+
+    public func downloadAndSaveMorphicUserCommunities(user: User, completion: @escaping (_ success: Bool) -> Void) {
+        _ = self.service.userCommunities(user: user) {
+            userCommunities in
+                        
+            if let userCommunities = userCommunities {
+                self.downloadMorphicUserCommunities(user: user, userCommunities: userCommunities.communities) {
+                    success, detailsByUserCommunityId in
+                    
+                    if success == false {
+                        completion(false)
+                        return
+                    }
+                    
+                    var communityBarsItems: [String: String] = [:]
+                    
+                    // encode each community bar's items into JSON and then store them all
+                    for (userCommunityId, userCommunityDetails) in detailsByUserCommunityId! {
+                        let userCommunityDetailsAsJsonData = try! JSONEncoder().encode(userCommunityDetails)
+                        let userCommunityDetailsAsJsonString = String(data: userCommunityDetailsAsJsonData, encoding: .utf8)!
+                        communityBarsItems[userCommunityId] = userCommunityDetailsAsJsonString
+                    }
+
+                    self.set(communityBarsItems, for: .morphicBarCommunityBarsAsJson)
+                    self.savePreferencesToDisk() {
+                        success in
+                        
+                        completion(success)
+                    }
+                }
+            } else {
+                completion(false)
+            }
+        }
+    }
+    
+    // MARK: Fields
+    
     /// The initial default preferences
     public static var initialPreferences: Preferences?
     
@@ -513,6 +612,11 @@ public class Session {
     }
 
     public func set(_ value: [Interoperable?], for key: Preferences.Key) {
+        preferences?.set(value, for: key)
+        setNeedsPreferencesSave()
+    }
+    
+    public func set(_ value: [String: Interoperable?], for key: Preferences.Key) {
         preferences?.set(value, for: key)
         setNeedsPreferencesSave()
     }
@@ -631,6 +735,7 @@ extension URLRequest {
         let url = URL(string: path, relativeTo: session.service.endpoint)!
         self.init(url: url)
         httpMethod = method.rawValue
+	// NOTE: consider making the bearer token optional (so that we don't send it with login requests, etc.)
         if let token = session.authToken {
             self.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
@@ -782,4 +887,9 @@ public extension NSNotification.Name {
     
     static let morphicSessionUserDidChange = NSNotification.Name(rawValue: "org.raisingthefloor.morphicSessionUserDidChange")
     
+}
+
+public extension Preferences.Key {
+    /// The preference key that stores which items appear in each community on the MorphicBar (Morphic Community managed community bar)
+    static var morphicBarCommunityBarsAsJson = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbar", preference: "communityBarsAsJson")
 }

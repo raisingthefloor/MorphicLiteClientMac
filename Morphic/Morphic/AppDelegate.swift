@@ -75,7 +75,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 //                    #elseif EDITION_COMMUNITY
                         // reload the community bar
                         self.reloadMorphicCommunityBar() {
-                            _ in
+                            success, error in
+                            
+                            if error == .userHasNoCommunities {
+                                // if the user has no communities, log them back out
+                                self.logout(nil)
+                            }
                         }
                     #endif
                 }
@@ -86,6 +91,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 #else
 //                #elseif EDITION_COMMUNITY
                     // if no user is logged in, launch the login window at startup of Morphic Community
+                    // NOTE: in the future we may want to consider only auto-launching the login window on first-run (perhaps as part of an animated sequence introducing Morphic to the user).
                     if (Session.shared.user == nil) {
                         self.launchConfigurator(argument: "login")
                     }
@@ -133,7 +139,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             if session.user != nil {
                 // reload the community bar
                 reloadMorphicCommunityBar() {
-                    success in
+                    success, error in
                     if success == true {
                         self.showMorphicBar(nil)
                     } else {
@@ -149,44 +155,55 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         #endif
     }
     
-    func reloadMorphicCommunityBar(completion: @escaping (_ success: Bool) -> Void) {
+    enum ReloadMorphicCommunityBarError : Error {
+        case noUserSpecified
+        case userHasNoCommunities
+        case networkOrAuthorizationOrSaveToDiskFailure
+    }
+    //
+    func reloadMorphicCommunityBar(completion: @escaping (_ success: Bool, _ error: ReloadMorphicCommunityBarError?) -> Void) {
         guard let user = Session.shared.user else {
-            completion(false)
+            completion(false, .noUserSpecified)
             return
         }
 
         // capture a list of the user's communities
-        _ = Session.shared.service.userCommunities(user: user) {
-            userCommunities in
-            if let userCommunities = userCommunities {
-                // now get the community details
-                for userCommunity in userCommunities.communities {
-                    _ = Session.shared.service.userCommunityDetails(user: user, community: userCommunity) {
-                        userCommunityDetails in
-                        if let userCommunityDetails = userCommunityDetails {
-                            let morphicBarItems = userCommunityDetails.encodeAsMorphicBarItems()
-                            
-                            Session.shared.set(morphicBarItems, for: .morphicBarItems)
-                            Session.shared.savePreferencesToDisk() {
-                                success in
-                                if success == true {
-                                    // now it's time to update/show the morphic bar
-                                    self.morphicBarWindow?.updateMorphicBar()
-                                    completion(true)
-                                } else {
-                                    completion(false)
-                                }
-                            }
-                        } else {
-                            completion(false)
-                        }
-                    }
-                }
-            } else {
-                completion(false)
+        Session.shared.downloadAndSaveMorphicUserCommunities(user: user) {
+            success in
+            
+            if success == false {
+                completion(false, .networkOrAuthorizationOrSaveToDiskFailure)
+                return
             }
+            
+            // capture our list of now-saved morphic user communities
+            guard let communityBarsAsJson = Session.shared.dictionary(for: .morphicBarCommunityBarsAsJson) else {
+                completion(false, .networkOrAuthorizationOrSaveToDiskFailure)
+                return
+            }
+            
+            // if the user has no communities, return that error as a failure
+            if communityBarsAsJson.count == 0 {
+                completion(false, .userHasNoCommunities)
+                return
+            }
+ 
+            // determine if the user's previously-selected community still exists; if not, choose another community
+            var userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
+
+            if userSelectedCommunityId == nil || communityBarsAsJson[userSelectedCommunityId!] == nil {
+                // the user has left the previous community; choose the first community bar instead (and save our change)
+                userSelectedCommunityId = communityBarsAsJson.keys.first!
+                UserDefaults.morphic.set(selectedUserCommunityIdentifier: userSelectedCommunityId, for: user.identifier)
+            }
+
+            // now it's time to update the morphic bar
+            self.morphicBarWindow?.updateMorphicBar()
+            
+            completion(true, nil)
         }
     }
+
         
     // MARK: - Actions
     

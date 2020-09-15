@@ -70,9 +70,28 @@ public class MorphicBarWindow: NSWindow {
             let showsHelpByDefault = false
             morphicBarViewController.showsHelp = showsHelpByDefault
         #endif
-        if let preferredItems = Session.shared.array(for: .morphicBarItems) {
-            morphicBarViewController.items = MorphicBarItem.items(from: preferredItems)
-        }
+        
+        #if EDITION_BASIC
+            if let preferredItems = Session.shared.array(for: .morphicBarItems) {
+                morphicBarViewController.items = MorphicBarItem.items(from: preferredItems)
+            }
+        #else
+//        #elseif EDITION_COMMUNITY
+            if let communityBarsAsJson = Session.shared.dictionary(for: .morphicBarCommunityBarsAsJson),
+                communityBarsAsJson.count > 0 {
+                if let user = Session.shared.user {
+                    let userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
+                    if userSelectedCommunityId != nil && communityBarsAsJson[userSelectedCommunityId!] != nil {
+                        let selectedCommunityBarAsJsonString = communityBarsAsJson[userSelectedCommunityId!] as! String
+                        let selectedCommunityBarAsJsonData = selectedCommunityBarAsJsonString.data(using: .utf8)!
+                        let selectedCommunityBar = try! JSONDecoder().decode(Service.UserCommunityDetails.self, from: selectedCommunityBarAsJsonData)
+                        
+                        let encodedMorphicBarItems = selectedCommunityBar.encodeAsMorphicBarItems()
+                        morphicBarViewController.items = MorphicBarItem.items(from: encodedMorphicBarItems)
+                    }
+                }
+            }
+        #endif
         reposition(animated: false)
     }
     
@@ -207,7 +226,7 @@ public extension Preferences.Key {
     /// The preference key that stores whether the MorphicBar buttons should show giant help tips
     static var morphicBarShowsHelp = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbar", preference: "showsHelp")
     
-    /// The preference key that stores which items appear on the MorphicBar
+    /// The preference key that stores which items appear on the MorphicBar (Morphic Basic personal bar)
     static var morphicBarItems = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbar", preference: "items")
 }
 
