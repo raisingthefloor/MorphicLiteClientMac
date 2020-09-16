@@ -92,6 +92,8 @@ public class MorphicBarWindow: NSWindow {
                 }
             }
         #endif
+        // now that we have updated the items in our bar, update the accessibility children list as well (so that left/right voiceover nav works properly)
+        setAccessibilityChildren(morphicBarViewController.accessibilityChildren())
         reposition(animated: false)
     }
     

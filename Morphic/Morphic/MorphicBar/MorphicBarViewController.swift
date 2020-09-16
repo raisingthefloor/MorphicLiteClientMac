@@ -207,6 +207,22 @@ public class MorphicBarViewController: NSViewController {
         }
     }
 
+    // NOTE: we are mirroring the NSView's accessibilityChildren function here to combine and proxy the list to our owner
+    public func accessibilityChildren() -> [Any]? {
+        var result = [Any]()
+        for itemView in morphicBarView.itemViews {
+            if let children = itemView.accessibilityChildren() {
+                for child in children {
+                    result.append(child)
+                }
+            }
+        }
+        if let logoButton = self.logoButton {
+            result.append(logoButton)
+        }
+        return result
+    }
+
 }
 
 class LogoButton: NSButton {
