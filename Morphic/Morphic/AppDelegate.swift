@@ -83,6 +83,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                                 self.logout(nil)
                             }
                         }
+                        // schedule daily refreshes of the Morphic community bars
+                        self.scheduleDailyMorphicCommunityBarReloads()
                     #endif
                 }
                 DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.userDidSignin), name: .morphicSignin, object: nil)
@@ -154,6 +156,33 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 }
             }
         #endif
+    }
+    
+    var dailyReloadTimer: Timer? = nil
+    func scheduleDailyMorphicCommunityBarReloads() {
+        // NOTE: we schedule a community bar reload for 3am every morning local time (+ random 0..<3600 second offset to minimize server peak loads) so that the user gets the latest community bar updates; if their computer is sleeping at 3am then Swift should execute the timer when their computer wakes up
+        
+        let randomOffsetInSeconds = Int.random(in: 0..<3600)
+        let secondsInOneDay = 60 * 60 * 24
+        
+        // create a date which represents today at our requested reload time
+        var dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .second], from: Date())
+        dateComponents.hour = 3
+        dateComponents.minute = 0
+        dateComponents.second = 0
+        // convert these date components to a date
+        let todayReloadDate = Calendar.current.date(from: dateComponents)!
+        // add our random number of seconds
+        let todayReloadDateWithRandomOffset = Date(timeInterval: TimeInterval(randomOffsetInSeconds), since: todayReloadDate)
+        // add one day to our date (to reflect tomorrow morning)
+        let tomorrowReloadDate = Date(timeInterval: TimeInterval(secondsInOneDay), since: todayReloadDateWithRandomOffset)
+        
+        dailyReloadTimer = Timer(fire: tomorrowReloadDate, interval: TimeInterval(secondsInOneDay), repeats: true) { (timer) in
+            // reload the Morphic bar
+            self.reloadMorphicCommunityBar { (success, error) in
+                // ignore results
+            }
+        }
     }
     
     enum ReloadMorphicCommunityBarError : Error {
