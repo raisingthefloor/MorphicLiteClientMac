@@ -49,8 +49,7 @@ extension Session {
                 os_log(.fault, log: logger, "Missing morphic endpoint.  Check build config files")
                 return nil
             }
-        #else
-//        #elseif EDITION_COMMUNITY
+        #elseif EDITION_COMMUNITY
             guard let endpointString = Bundle.main.infoDictionary?["MorphicCommunityServiceEndpoint"] as? String else {
                 os_log(.fault, log: logger, "Missing morphic endpoint.  Check build config files")
                 return nil

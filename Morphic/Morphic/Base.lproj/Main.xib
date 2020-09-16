@@ -37,7 +37,7 @@
                         <action selector="hideMorphicBar:" target="-1" id="YMq-QB-Pag"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Select Community" id="qcc-Q2-sYr">
+                <menuItem title="Select Community" hidden="YES" id="qcc-Q2-sYr">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Select Community" id="l0C-IM-POV"/>
                 </menuItem>

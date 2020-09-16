@@ -42,8 +42,7 @@ public class MorphicBarViewController: NSViewController {
         view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
         view.layer?.cornerRadius = 6
         #if EDITION_BASIC
-        #else
-//        #elseif EDITION_COMMUNITY
+        #elseif EDITION_COMMUNITY
             self.loginMenuItem?.isHidden = (Session.shared.user != nil)
         #endif
         self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
@@ -74,8 +73,7 @@ public class MorphicBarViewController: NSViewController {
             return
         }
         #if EDITION_BASIC
-        #else
-//        #elseif EDITION_COMMUNITY
+        #elseif EDITION_COMMUNITY
             self.loginMenuItem?.isHidden = (session.user != nil)
         #endif
         self.logoutMenuItem?.isHidden = (session.user == nil)
@@ -98,8 +96,7 @@ public class MorphicBarViewController: NSViewController {
     private func updateMainMenu() {
         #if EDITION_BASIC
             // NOTE: the default menu items are already configured for Morphic Basic
-        #else
-//        #elseif EDITION_COMMUNITY
+        #elseif EDITION_COMMUNITY
             // configure menu items to match the Morphic Community scheme
             captureMenuItem?.isHidden = true
             loginMenuItem?.title = "Sign In..."

@@ -64,8 +64,7 @@ public class MorphicBarWindow: NSWindow {
         #if EDITION_BASIC
             let showsHelpByDefault = true
             morphicBarViewController.showsHelp = Session.shared.bool(for: .morphicBarShowsHelp) ?? showsHelpByDefault
-        #else
-//        #elseif EDITION_COMMUNITY
+        #elseif EDITION_COMMUNITY
             // NOTE: for now, permanently surpress the help pop-up in Morphic Community
             let showsHelpByDefault = false
             morphicBarViewController.showsHelp = showsHelpByDefault
@@ -75,8 +74,7 @@ public class MorphicBarWindow: NSWindow {
             if let preferredItems = Session.shared.array(for: .morphicBarItems) {
                 morphicBarViewController.items = MorphicBarItem.items(from: preferredItems)
             }
-        #else
-//        #elseif EDITION_COMMUNITY
+        #elseif EDITION_COMMUNITY
             if let communityBarsAsJson = Session.shared.dictionary(for: .morphicBarCommunityBarsAsJson),
                 communityBarsAsJson.count > 0 {
                 if let user = Session.shared.user {
@@ -220,16 +218,32 @@ public extension Preferences.Key {
     /// It is platform specific because mac controls tend to be at the top of the screen while windows
     /// controls tend to be at the bottom.  A user who works between platforms can move the MorphicBar
     /// on one platform without affecting the MorphicBar's location on the other.
-    static var morphicBarPosition = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbar", preference: "position.mac")
+    #if EDITION_BASIC
+        static var morphicBarPosition = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "position.mac")
+    #elseif EDITION_COMMUNITY
+        static var morphicBarPosition = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "position.mac")
+    #endif
     
     /// The preference key that stores whether the MorphicBar should appear by default
-    static var morphicBarVisible = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbar", preference: "visible")
+    #if EDITION_BASIC
+        static var morphicBarVisible = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "visible")
+    #elseif EDITION_COMMUNITY
+        static var morphicBarVisible = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "visible")
+    #endif
     
     /// The preference key that stores whether the MorphicBar buttons should show giant help tips
-    static var morphicBarShowsHelp = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbar", preference: "showsHelp")
+    #if EDITION_BASIC
+        static var morphicBarShowsHelp = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "showsHelp")
+    #elseif EDITION_COMMUNITY
+        static var morphicBarShowsHelp = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "showsHelp")
+    #endif
     
     /// The preference key that stores which items appear on the MorphicBar (Morphic Basic personal bar)
-    static var morphicBarItems = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbar", preference: "items")
+    #if EDITION_BASIC
+        static var morphicBarItems = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "items")
+    #elseif EDITION_COMMUNITY
+//        static var morphicBarItems = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "items")
+    #endif
 }
 
 public enum MorphicBarOrientation {

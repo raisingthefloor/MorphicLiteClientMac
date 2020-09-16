@@ -55,25 +55,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
                 #if EDITION_BASIC
-                #else
-        //        #elseif EDITION_COMMUNITY
+                    Session.shared.isCaptureAndApplyEnabled = true
+                    Session.shared.isServerPreferencesSyncEnabled = true 
+                #elseif EDITION_COMMUNITY
+                    Session.shared.isCaptureAndApplyEnabled = false
+                    Session.shared.isServerPreferencesSyncEnabled = false
+                #endif
+                #if EDITION_BASIC
+                #elseif EDITION_COMMUNITY
                     if Session.shared.user == nil {
                         self.showMorphicBarMenuItem?.isHidden = true
                     }
                 #endif
                 #if EDITION_BASIC
-                #else
-        //        #elseif EDITION_COMMUNITY
+                #elseif EDITION_COMMUNITY
                     self.loginMenuItem?.isHidden = (Session.shared.user != nil)
                 #endif
                 self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
-                if Session.shared.user != nil {
+                #if EDITION_BASIC
                     if Session.shared.bool(for: .morphicBarVisible) ?? true {
                         self.showMorphicBar(nil)
                     }
+                #elseif EDITION_COMMUNITY
+                    if Session.shared.user != nil && Session.shared.bool(for: .morphicBarVisible) ?? true {
+                        self.showMorphicBar(nil)
+                    }
+                #endif
+                if Session.shared.user != nil {
                     #if EDITION_BASIC
-                    #else
-//                    #elseif EDITION_COMMUNITY
+                    #elseif EDITION_COMMUNITY
                         // reload the community bar
                         self.reloadMorphicCommunityBar() {
                             success, error in
@@ -91,8 +101,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
 
                 #if EDITION_BASIC
-                #else
-//                #elseif EDITION_COMMUNITY
+                #elseif EDITION_COMMUNITY
                     // if no user is logged in, launch the login window at startup of Morphic Community
                     // NOTE: in the future we may want to consider only auto-launching the login window on first-run (perhaps as part of an animated sequence introducing Morphic to the user).
                     if (Session.shared.user == nil) {
@@ -120,6 +129,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                     Session.shared.applyAllPreferences {
                     }
                 }
+            #elseif EDITION_COMMUNITY
             #endif
         }
     }
@@ -130,15 +140,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             return
         }
         #if EDITION_BASIC
-        #else
-//        #elseif EDITION_COMMUNITY
+        #elseif EDITION_COMMUNITY
             self.loginMenuItem?.isHidden = (session.user != nil)
         #endif
         self.logoutMenuItem?.isHidden = (session.user == nil)
         
         #if EDITION_BASIC
-        #else
-//        #elseif EDITION_COMMUNITY
+        #elseif EDITION_COMMUNITY
             if session.user != nil {
                 // reload the community bar
                 reloadMorphicCommunityBar() {
@@ -222,12 +230,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 return
             }
 
-            // update our list of communities
-            self.updateSelectCommunityMenuItem(selectCommunityMenuItem: self.selectCommunityMenuItem)
-            if let morphicBarWindow = self.morphicBarWindow {
-                self.updateSelectCommunityMenuItem(selectCommunityMenuItem: morphicBarWindow.morphicBarViewController.selectCommunityMenuItem)
-            }
-
             // capture our list of now-cached morphic user communities
             guard let communityBarsAsJson = Session.shared.dictionary(for: .morphicBarCommunityBarsAsJson) else {
                 completion(false, .networkOrAuthorizationOrSaveToDiskFailure)
@@ -250,6 +252,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 UserDefaults.morphic.set(selectedUserCommunityIdentifier: userSelectedCommunityId, for: user.identifier)
             }
 
+            // update our list of communities (after any community re-selection has been done)
+            self.updateSelectCommunityMenuItem(selectCommunityMenuItem: self.selectCommunityMenuItem)
+            if let morphicBarWindow = self.morphicBarWindow {
+                self.updateSelectCommunityMenuItem(selectCommunityMenuItem: morphicBarWindow.morphicBarViewController.selectCommunityMenuItem)
+            }
+
             // now it's time to update the morphic bar
             self.morphicBarWindow?.updateMorphicBar()
             
@@ -259,9 +267,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     func updateSelectCommunityMenuItem(selectCommunityMenuItem: NSMenuItem) {
         guard let user = Session.shared.user else {
+            selectCommunityMenuItem.isHidden = true
             return
         }
-
+        selectCommunityMenuItem.isHidden = false
+        
         // capture our current-selected community id
         let userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
         
@@ -374,6 +384,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         reloadMorphicCommunityBar { (success, error) in
             // ignore callback
         }
+        
+        // finally, for good user experience, show the MorphicBar if it's not already shown
+        if morphicBarWindow == nil || morphicBarWindow!.isVisible == false {
+            // NOTE: we pass in showMorphicBarMenuItem as the parameter to emulate that it was pressed (so the setting is captured)
+            self.showMorphicBar(showMorphicBarMenuItem)
+        }
     }
     
     // MARK: - Actions
@@ -382,25 +398,24 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func logout(_ sender: Any?) {
         Session.shared.signout {
             #if EDITION_BASIC
-            #else
-//            #elseif EDITION_COMMUNITY
-                Session.shared.set([], for: .morphicBarItems)
+            #elseif EDITION_COMMUNITY
+                // flush out any preferences changes that may have taken effect because of logout
                 Session.shared.savePreferences(waitFiveSecondsBeforeSave: false) {
                     success in
                     if success == true {
-                        // now it's time to update/show the morphic bar
+                        // now it's time to update and hide the morphic bar
                         self.morphicBarWindow?.updateMorphicBar()
                         self.hideMorphicBar(nil)
                     } else {
-		    	// NOTE: we may want to consider letting the user know that we could not save
+                        // NOTE: we may want to consider letting the user know that we could not save
                     }
                 }
             #endif
             
             #if EDITION_BASIC
-            #else
-//            #elseif EDITION_COMMUNITY
+            #elseif EDITION_COMMUNITY
                 self.loginMenuItem?.isHidden = false
+                self.selectCommunityMenuItem.isHidden = true
             #endif
             self.logoutMenuItem?.isHidden = true
         }
@@ -450,8 +465,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 
                 saveIsComplete = true
             }
-            // wait up to 2 seconds to save our preferences, then shut down
-            AsyncUtils.wait(atMost: TimeInterval(2), for: { saveIsComplete == true }) {
+            // wait up to 5 seconds for save of our preferences to complete, then shut down
+            AsyncUtils.wait(atMost: TimeInterval(5), for: { saveIsComplete == true }) {
                 _ in
                 
                 // shut down regardless of whether the save completed in two seconds or not; it should have saved within milliseconds...and we don't have any guards around apps terminating mid-save in any scenarios
@@ -533,8 +548,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private func updateMenu() {
         #if EDITION_BASIC
             // NOTE: the default menu items are already configured for Morphic Basic
-        #else
-//        #elseif EDITION_COMMUNITY
+        #elseif EDITION_COMMUNITY
             // configure menu items to match the Morphic Community scheme
             captureMenuItem?.isHidden = true
             loginMenuItem?.title = "Sign In..."
@@ -565,8 +579,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             morphicBarWindow = MorphicBarWindow()
         #if EDITION_BASIC
             morphicBarWindow?.orientation = .horizontal
-        #else
-//        #elseif EDITION_COMMUNITY
+        #elseif EDITION_COMMUNITY
             morphicBarWindow?.orientation = .vertical
         #endif
             morphicBarWindow?.delegate = self
@@ -585,8 +598,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         morphicBarWindow?.close()
         #if EDITION_BASIC
             showMorphicBarMenuItem?.isHidden = false
-        #else
-//        #elseif EDITION_COMMUNITY
+        #elseif EDITION_COMMUNITY
             if Session.shared.user != nil {
                 showMorphicBarMenuItem?.isHidden = false
             } else {
@@ -630,7 +642,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 //        let url = URL(string: "morphicconfig:\(argument)")!
 //        NSWorkspace.shared.open(url)
         os_log(.info, log: logger, "launching configurator")
-        guard let url = Bundle.main.resourceURL?.deletingLastPathComponent().appendingPathComponent("Library").appendingPathComponent("MorphicConfigurator.app") else {
+        
+        #if EDITION_BASIC
+            let morphicConfiguratorAppName = "MorphicConfigurator.app"
+        #elseif EDITION_COMMUNITY
+            let morphicConfiguratorAppName = "MorphicCommunityConfigurator.app"
+        #endif
+        guard let url = Bundle.main.resourceURL?.deletingLastPathComponent().appendingPathComponent("Library").appendingPathComponent(morphicConfiguratorAppName) else {
             os_log(.error, log: logger, "Failed to construct bundled configurator app URL")
             return
         }

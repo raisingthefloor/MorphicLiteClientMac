@@ -63,7 +63,7 @@
                         <action selector="hideMorphicBar:" target="-1" id="8CC-hU-78U"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Select Community" id="eJF-8G-qpw">
+                <menuItem title="Select Community" hidden="YES" id="eJF-8G-qpw">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Select Community" id="UaH-F4-gmM"/>
                 </menuItem>
