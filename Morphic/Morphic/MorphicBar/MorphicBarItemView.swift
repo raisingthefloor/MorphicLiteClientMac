@@ -32,11 +32,6 @@ public class MorphicBarItemView: NSView {
     public override var isFlipped: Bool {
         return true
     }
-    
-    public func getAccessChildren() -> [Any?] {
-        return [nil]
-    }
-    
 }
 
 class MorphicBarSegmentedButtonItemView: MorphicBarItemView {
@@ -54,6 +49,13 @@ class MorphicBarSegmentedButtonItemView: MorphicBarItemView {
         addSubview(titleLabel)
         addSubview(segmentedButton)
         self.needsLayout = true
+
+	// set our accessibility children so that VoiceOver navigates our control properly        
+        var accessibilityChildren: [Any]! = []
+        for button in segmentedButton.segmentButtons {
+            accessibilityChildren.append(button)
+        }
+        setAccessibilityChildren(accessibilityChildren)
     }
     
     override var showsHelp: Bool {
@@ -92,13 +94,4 @@ class MorphicBarSegmentedButtonItemView: MorphicBarItemView {
         // can intercept mouseUp to snap the window to a corner
         return true
     }
-    
-    override func getAccessChildren() -> [Any?] {
-        var reply = [Any]()
-        for button in segmentedButton.segmentButtons {
-            reply.append(button)
-        }
-        return reply
-    }
-    
 }

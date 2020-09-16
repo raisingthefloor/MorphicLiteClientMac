@@ -158,7 +158,7 @@ class MorphicBarSegmentedButton: NSControl {
     // MARK: - Segment Buttons
     
     /// NSButton subclass that provides a custom intrinsic size with content insets
-    public class Button: NSButton {
+    class Button: NSButton {
         
         private var boundsTrackingArea: NSTrackingArea!
         
@@ -241,7 +241,7 @@ class MorphicBarSegmentedButton: NSControl {
     }
     
     /// The list of buttons corresponding to the segments
-    public var segmentButtons = [Button]()
+    var segmentButtons = [Button]()
     
     /// Update the segment buttons
     private func updateButtons() {
