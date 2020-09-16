@@ -694,6 +694,9 @@ public class Session {
                                 completion(false)
                                 return
                             }
+                        } else {
+                            completion(true)
+                            return
                         }
                     } else {
                         // in Morphic Community, we do not save preferences to the server
