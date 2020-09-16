@@ -158,6 +158,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         #endif
     }
     
+    // NOTE: we maintain a reference to the timer just in case we want to cancel (invalidate) it
     var dailyReloadTimer: Timer? = nil
     func scheduleDailyMorphicCommunityBarReloads() {
         // NOTE: we schedule a community bar reload for 3am every morning local time (+ random 0..<3600 second offset to minimize server peak loads) so that the user gets the latest community bar updates; if their computer is sleeping at 3am then Swift should execute the timer when their computer wakes up
@@ -183,6 +184,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 // ignore results
             }
         }
+        RunLoop.main.add(dailyReloadTimer!, forMode: .common)
     }
     
     enum ReloadMorphicCommunityBarError : Error {
