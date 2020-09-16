@@ -25,7 +25,6 @@
 
 echo "---- Running CreateDiskImage.sh -----"
 
-TEMPLATE_NAME="MorphicTemplate.dmg"
 MOUNT_PATH="MorphicInstaller"
 APP_NAME="${PRODUCT_NAME}.app"
 COMPRESSED_TEMPLATE_PATH="${SRCROOT}/Morphic/${TEMPLATE_NAME}.bz2"
