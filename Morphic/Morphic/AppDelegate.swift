@@ -47,6 +47,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         os_log(.info, log: logger, "applicationDidFinishLaunching")
         AppDelegate.shared = self
+        
+        // before we open any storage or use UserDefaults, set up our ApplicationSupport path and UserDefaults suiteName
+        #if EDITION_BASIC
+            Storage.setApplicationSupportDirectoryName("org.raisingthefloor.MorphicBasic")
+            UserDefaults.setMorphicSuiteName("org.raisingthefloor.MorphicBasic")
+        #elseif EDITION_COMMUNITY
+            Storage.setApplicationSupportDirectoryName("org.raisingthefloor.MorphicCommunity")
+            UserDefaults.setMorphicSuiteName("org.raisingthefloor.MorphicCommunity")
+        #endif
+        
         os_log(.info, log: logger, "opening morphic session...")
         populateSolutions()
         createStatusItem()

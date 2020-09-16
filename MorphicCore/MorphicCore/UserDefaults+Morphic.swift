@@ -24,7 +24,19 @@
 import Foundation
 
 public extension UserDefaults {
-    static var morphic = UserDefaults(suiteName: "org.raisingthefloor.MorphicClient")!
+    private struct MorphicUserDefaultsStaticValues {
+        // NOTE: we intentionally make suiteName an optional so that we detect if it hasn't been configured
+        static var suiteName: String? = nil
+    }
+
+    static func setMorphicSuiteName(_ suiteName: String) {
+        MorphicUserDefaultsStaticValues.suiteName = suiteName
+    }
+    
+    static var morphic: UserDefaults {
+        // NOTE: if morphicSuiteName has not been set, this will intentionally assert; the caller must ALWAYS set the suite name beforehand
+        return UserDefaults(suiteName: MorphicUserDefaultsStaticValues.suiteName!)!
+    }
     
     func morphicUsername(for userIdentifier: String) -> String? {
         let usernamesByIdentifier = dictionary(forKey: .morphicDefaultsKeyUsernamesByIdentifier)

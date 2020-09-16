@@ -22,12 +22,21 @@
 // * Consumer Electronics Association Foundation
 
 import Cocoa
+import MorphicCore
 import MorphicService
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+      #if EDITION_BASIC
+           Storage.setApplicationSupportDirectoryName("org.raisingthefloor.MorphicBasic")
+           UserDefaults.setMorphicSuiteName("org.raisingthefloor.MorphicBasic")
+       #elseif EDITION_COMMUNITY
+           Storage.setApplicationSupportDirectoryName("org.raisingthefloor.MorphicCommunity")
+           UserDefaults.setMorphicSuiteName("org.raisingthefloor.MorphicCommunity")
+       #endif
+
         populateSolutions()
         Session.shared.open {
             for arg in ProcessInfo.processInfo.arguments[1...] {
