@@ -84,7 +84,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                             }
                         }
                         // schedule daily refreshes of the Morphic community bars
-                        self.scheduleDailyMorphicCommunityBarReloads()
+                        self.scheduleNextDailyMorphicCommunityBarRefresh()
                     #endif
                 }
                 DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.userDidSignin), name: .morphicSignin, object: nil)
@@ -158,14 +158,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         #endif
     }
     
-    // NOTE: we maintain a reference to the timer just in case we want to cancel (invalidate) it
-    var dailyReloadTimer: Timer? = nil
-    func scheduleDailyMorphicCommunityBarReloads() {
+    // NOTE: we maintain a reference to the timer so that we can cancel (invalidate) it, reschedule it, etc.
+    var dailyCommunityBarRefreshTimer: Timer? = nil
+    func scheduleNextDailyMorphicCommunityBarRefresh() {
         // NOTE: we schedule a community bar reload for 3am every morning local time (+ random 0..<3600 second offset to minimize server peak loads) so that the user gets the latest community bar updates; if their computer is sleeping at 3am then Swift should execute the timer when their computer wakes up
         
-        let randomOffsetInSeconds = Int.random(in: 0..<3600)
-        let secondsInOneDay = 60 * 60 * 24
+        let secondsInOneDay = 24 * 60 * 60
         
+        let randomOffsetInSeconds = Int.random(in: 0..<3600)
         // create a date which represents today at our requested reload time
         var dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .second], from: Date())
         dateComponents.hour = 3
@@ -176,15 +176,29 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         // add our random number of seconds
         let todayReloadDateWithRandomOffset = Date(timeInterval: TimeInterval(randomOffsetInSeconds), since: todayReloadDate)
         // add one day to our date (to reflect tomorrow morning)
-        let tomorrowReloadDate = Date(timeInterval: TimeInterval(secondsInOneDay), since: todayReloadDateWithRandomOffset)
+        let nextRefreshDate: Date
+        if todayReloadDateWithRandomOffset > Date(timeInterval: TimeInterval(0), since: Date()) {
+            // if the reload date is in the future today (i.e. if the current time is before the firing time), then fire today
+            nextRefreshDate = todayReloadDateWithRandomOffset
+        } else {
+            // if the reload date was earlier today, then fire tomorrow instead
+            nextRefreshDate = Date(timeInterval: TimeInterval(secondsInOneDay), since: todayReloadDateWithRandomOffset)
+        }
         
-        dailyReloadTimer = Timer(fire: tomorrowReloadDate, interval: TimeInterval(secondsInOneDay), repeats: true) { (timer) in
+        // NOTE: in our initial testing, macOS does _not_ reliably fire timers after the user's computer wakes up from sleep mode (if the timer was supposed to go off while the computer was sleeping).  So as a workaround we ask the timer to fire every 15 seconds AFTER that time as well; when the timer is fired we disable and reconfigure it to fire again the following day.
+        dailyCommunityBarRefreshTimer = Timer(fire: nextRefreshDate, interval: TimeInterval(15), repeats: true) { (timer) in
+            // deactivate our timer
+            self.dailyCommunityBarRefreshTimer?.invalidate()
+            
             // reload the Morphic bar
             self.reloadMorphicCommunityBar { (success, error) in
                 // ignore results
             }
+
+            // reschedule our timer for the next day as well
+            self.scheduleNextDailyMorphicCommunityBarRefresh()
         }
-        RunLoop.main.add(dailyReloadTimer!, forMode: .common)
+        RunLoop.main.add(dailyCommunityBarRefreshTimer!, forMode: .common)
     }
     
     enum ReloadMorphicCommunityBarError : Error {
