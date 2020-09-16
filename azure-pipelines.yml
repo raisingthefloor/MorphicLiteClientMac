@@ -132,10 +132,25 @@ steps:
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
 - task: Bash@3
-  displayName: notarize dmg
+  displayName: Notarize 'Morphic.dmg'
   env:
     BRANCH: $(Build.SourceBranch)
     BRANCH_NAME: $(Build.SourceBranchName)
+    DMG_PATH: './Morphic/Morphic.dmg'
+    BUNDLE_ID: 'org.raisingthefloor.Morphic.dmg'
+    USERNAME: '$(ALTOOL_USERNAME)'
+    APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
+    SIGNING_IDENTITY: '$(SIGNING_IDENTITY)'
+  inputs:
+    targetType: 'filePath'
+    filePath: dmg-notarize.sh
+- task: Bash@3
+  displayName: Notarize 'Morphic Community.dmg'
+  env:
+    BRANCH: $(Build.SourceBranch)
+    BRANCH_NAME: $(Build.SourceBranchName)
+    DMG_PATH: './Morphic/Morphic Community.dmg'
+    BUNDLE_ID: 'org.raisingthefloor.MorphicCommunity.dmg'
     USERNAME: '$(ALTOOL_USERNAME)'
     APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
     SIGNING_IDENTITY: '$(SIGNING_IDENTITY)'
