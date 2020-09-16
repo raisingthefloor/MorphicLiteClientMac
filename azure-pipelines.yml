@@ -96,6 +96,18 @@ steps:
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
 - task: Xcode@5
+displayName: Build MorphicCommunityConfigurator
+inputs:
+  actions: 'build'
+  sdk: $(sdk)
+  scheme: 'MorphicCommunityConfigurator'
+  configuration: '$(configuration)'
+  xcWorkspacePath: '$(workspacePath)'
+  xcodeVersion: $(xcodeVersionNum)
+  useXcpretty: false
+  signingOption: '$(signingOption)'
+  args: '$(extraArgs)'
+- task: Xcode@5
   displayName: Build Morphic
   inputs:
     actions: 'build'
@@ -107,6 +119,18 @@ steps:
     useXcpretty: false
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
+- task: Xcode@5
+displayName: Build Morphic Community
+inputs:
+  actions: 'build'
+  sdk: $(sdk)
+  scheme: 'Morphic Community'
+  configuration: '$(configuration)'
+  xcWorkspacePath: '$(workspacePath)'
+  xcodeVersion: $(xcodeVersionNum)
+  useXcpretty: false
+  signingOption: '$(signingOption)'
+  args: '$(extraArgs)'
 - task: Bash@3
   displayName: notarize dmg
   env:
