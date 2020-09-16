@@ -608,17 +608,17 @@ public class Session {
     
     public func set(_ value: Interoperable?, for key: Preferences.Key) {
         preferences?.set(value, for: key)
-        setNeedsPreferencesSave()
+        savePreferences(waitFiveSecondsBeforeSave: true) { _ in }
     }
 
     public func set(_ value: [Interoperable?], for key: Preferences.Key) {
         preferences?.set(value, for: key)
-        setNeedsPreferencesSave()
+        savePreferences(waitFiveSecondsBeforeSave: true) { _ in }
     }
     
     public func set(_ value: [String: Interoperable?], for key: Preferences.Key) {
         preferences?.set(value, for: key)
-        setNeedsPreferencesSave()
+        savePreferences(waitFiveSecondsBeforeSave: true) { _ in }
     }
 
     public func string(for key: Preferences.Key) -> String? {
@@ -657,11 +657,11 @@ public class Session {
     /// Save the preferences after a delay
     ///
     /// Allows many rapid changes to be batched into a single HTTP request
-    private func setNeedsPreferencesSave() {
+    public func savePreferences(waitFiveSecondsBeforeSave: Bool, completion: @escaping (_ success: Bool) -> Void) {
         os_log(.error, log: logger, "Queueing preferences save")
         preferencesSaveTimer?.invalidate()
-        preferencesSaveTimer = .scheduledTimer(withTimeInterval: 5, repeats: false) {
-            timer in
+        
+        let savePreferencesAsynchronously: (() -> Void) = {
             self.preferencesSaveTimer = nil
             if let preferences = self.preferences {
                 os_log(.info, log: logger, "Saving preferences to disk")
@@ -675,27 +675,46 @@ public class Session {
                                     success in
                                     if success {
                                         os_log(.info, log: logger, "Saved preferences to server")
+                                        completion(true)
+                                        return
                                     } else {
                                         os_log(.error, log: logger, "Failed to save preference to server")
+                                        completion(true)
+                                        return
                                     }
                                 }
                             } else {
                                 os_log(.error, log: logger, "Failed to save preference to server because userId is nil")
+                                completion(false)
                                 return
                             }
                         }
                     #else
 //                    #elseif EDITION_COMMUNITY
                         // in Morphic Community, we do not save preferences to the server
+                    completion(success)
+                    return
                     #endif
                 }
             } else {
                 os_log(.error, log: logger, "Save preferences timer fired with nil preferences")
+                completion(false)
+                return
             }
+        }
+        
+        if waitFiveSecondsBeforeSave == true {
+            preferencesSaveTimer = .scheduledTimer(withTimeInterval: 5, repeats: false) {
+                timer in
+                //
+                savePreferencesAsynchronously()
+            }
+        } else {
+            savePreferencesAsynchronously()
         }
     }
     
-    public func savePreferencesToDisk(callback: @escaping (Bool) -> ()) {
+    private func savePreferencesToDisk(callback: @escaping (Bool) -> ()) {
         if let preferences = self.preferences {
             os_log(.info, log: logger, "Saving preferences to disk")
             self.storage.save(record: preferences) {

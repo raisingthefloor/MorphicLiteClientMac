@@ -385,7 +385,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             #else
 //            #elseif EDITION_COMMUNITY
                 Session.shared.set([], for: .morphicBarItems)
-                Session.shared.savePreferencesToDisk() {
+                Session.shared.savePreferences(waitFiveSecondsBeforeSave: false) {
                     success in
                     if success == true {
                         // now it's time to update/show the morphic bar
@@ -437,6 +437,30 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         
         aboutBoxWindowController.showWindow(self)
         NSApp.activate(ignoringOtherApps: true)
+    }
+    
+    @IBAction func quitApplication(_ sender: Any) {
+        // immediately hide our MorphicBar window
+        morphicBarWindow?.setIsVisible(false)
+        
+        if Session.shared.preferencesSaveIsQueued == true {
+            var saveIsComplete = false
+            Session.shared.savePreferences(waitFiveSecondsBeforeSave: false) {
+                _ in
+                
+                saveIsComplete = true
+            }
+            // wait up to 2 seconds to save our preferences, then shut down
+            AsyncUtils.wait(atMost: TimeInterval(2), for: { saveIsComplete == true }) {
+                _ in
+                
+                // shut down regardless of whether the save completed in two seconds or not; it should have saved within milliseconds...and we don't have any guards around apps terminating mid-save in any scenarios
+                NSApplication.shared.terminate(self)
+            }
+        } else {
+            // shut down immediately
+            NSApplication.shared.terminate(self)
+        }
     }
 
     // MARK: - Default Preferences
