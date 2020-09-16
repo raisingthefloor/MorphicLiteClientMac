@@ -158,7 +158,7 @@ steps:
     targetType: 'filePath'
     filePath: dmg-notarize.sh
 - task: Bash@3
-  displayName: publish to s3
+  displayName: Publish Morphic to AWS S3
   env:
     AWS_ACCESS_KEY_ID: $(accessKey)
     AWS_SECRET_ACCESS_KEY: $(secretKey)
@@ -166,6 +166,23 @@ steps:
     AWS_DEFAULT_REGION: $(region)
     BRANCH: $(Build.SourceBranch)
     BRANCH_NAME: $(Build.SourceBranchName)
+    LOCAL_DMG: './Morphic/Morphic.dmg'
+    AWS_FILE_PREFIX: 'Morphic'
+    VERSION: '$(finalVersion)'
+  inputs:
+    targetType: 'filePath'
+    filePath: push-to-s3.sh
+- task: Bash@3
+  displayName: Publish Morphic Community to AWS S3
+  env:
+    AWS_ACCESS_KEY_ID: $(accessKey)
+    AWS_SECRET_ACCESS_KEY: $(secretKey)
+    BUCKET: $(bucket)
+    AWS_DEFAULT_REGION: $(region)
+    BRANCH: $(Build.SourceBranch)
+    BRANCH_NAME: $(Build.SourceBranchName)
+    LOCAL_DMG: './Morphic/Morphic Community.dmg'
+    AWS_FILE_PREFIX: 'MorphicCommunity'
     VERSION: '$(finalVersion)'
   inputs:
     targetType: 'filePath'

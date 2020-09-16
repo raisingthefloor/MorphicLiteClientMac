@@ -3,6 +3,8 @@ VERSION="${VERSION}"
 BRANCH_NAME="${BRANCH_NAME}"
 BRANCH="${BRANCH}"
 BUCKET="${BUCKET}"
+LOCAL_DMG="${LOCAL_DMG}"
+AWS_FILE_PREFIX="${AWS_FILE_PREFIX}"
 if [[ "$VERSION" == "" ]]; then
   echo "VERSION env var must be provided"
   exit 1
@@ -52,8 +54,6 @@ fi
 set -e
 set -x
 
-S3_OBJECT_NAME="${S3_OBJECT_PREFIX}/Morphic-v${VERSION}.dmg"
-
-LOCAL_DMG="./Morphic/Morphic.dmg"
+S3_OBJECT_NAME="${S3_OBJECT_PREFIX}/{AWS_FILE_PREFIX}-v${VERSION}.dmg"
 
 aws s3 cp $EXTRA_ARGS "${LOCAL_DMG}" "s3://${BUCKET}/${S3_OBJECT_NAME}"
