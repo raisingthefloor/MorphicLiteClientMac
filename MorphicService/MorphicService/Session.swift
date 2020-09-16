@@ -654,14 +654,18 @@ public class Session {
         apply.run(completion: completion)
     }
     
+    public private(set) var preferencesSaveIsQueued: Bool = false
+    
     /// Save the preferences after a delay
     ///
     /// Allows many rapid changes to be batched into a single HTTP request
     public func savePreferences(waitFiveSecondsBeforeSave: Bool, completion: @escaping (_ success: Bool) -> Void) {
         os_log(.error, log: logger, "Queueing preferences save")
+        preferencesSaveIsQueued = true
         preferencesSaveTimer?.invalidate()
         
         let savePreferencesAsynchronously: (() -> Void) = {
+            self.preferencesSaveIsQueued = false
             self.preferencesSaveTimer = nil
             if let preferences = self.preferences {
                 os_log(.info, log: logger, "Saving preferences to disk")
