@@ -68,17 +68,36 @@ public class MorphicBarView: NSView {
     }
     
     public override func layout() {
+        let itemViewsWithFrames = calculateFramesOfItemViews(itemViews, orientation: self.orientation)
+        for itemViewWithFrame in itemViewsWithFrames {
+            itemViewWithFrame.itemView.frame = itemViewWithFrame.frame
+        }
+        
+    }
+    
+    func calculateFramesOfItemViews(_ itemViews: [MorphicBarItemViewProtocol], orientation: MorphicBarOrientation) -> [(itemView: MorphicBarItemViewProtocol, frame: CGRect)] {
+        var result: [(itemView: MorphicBarItemViewProtocol, frame: CGRect)] = []
+        
         switch orientation {
         case .horizontal:
             var frame = CGRect(x: 0, y: 0, width: 0, height: self.bounds.size.height)
-            for itemView in itemViews {
+            for index in 0..<itemViews.count {
+                let itemView = itemViews[index]
                 let itemViewIntrinsicSize = itemView.intrinsicContentSize
                 frame.size.width = itemViewIntrinsicSize.width
-                frame.size.height = itemView.intrinsicContentSize.height
+                frame.size.height = itemViewIntrinsicSize.height
                 frame.origin.y = (self.bounds.size.height - itemViewIntrinsicSize.height) / 2.0
-                itemView.frame = frame
+                result.append((itemView: itemView, frame: frame))
                 //
-                frame.origin.x += frame.size.width + itemSpacing
+                if index < itemViews.count - 1 {
+                    let currentItemViewOrigin = NSPoint(x: frame.origin.x, y: frame.origin.y)
+                    let nextItemY = (self.bounds.size.height - itemViews[index + 1].intrinsicContentSize.height) / 2.0
+                    let nextItemViewOrigin = NSPoint(x: frame.origin.x + frame.size.width, y: nextItemY)
+                    //
+                    let horizontalSpacing = calculateHorizontalSpacingBetweenItemViews(leftOrigin: currentItemViewOrigin, leftView: itemView, leftViewClippingSize: itemViewIntrinsicSize, rightOrigin: nextItemViewOrigin, rightView: itemViews[index + 1], rightViewClippingSize: nil, logicalHorizontalSpacing: itemSpacing)
+                    //
+                    frame.origin.x += frame.size.width + horizontalSpacing
+                }
             }
         case .vertical:
             var frame = CGRect(x: 0, y: 0, width: self.bounds.size.width, height: 0)
@@ -87,11 +106,86 @@ public class MorphicBarView: NSView {
                 frame.size.width = itemViewIntrinsicSize.width
                 frame.size.height = itemViewIntrinsicSize.height
                 frame.origin.x = (self.bounds.size.width - itemViewIntrinsicSize.width) / 2.0
-                itemView.frame = frame
+                result.append((itemView: itemView, frame: frame))
                 //
                 frame.origin.y += frame.size.height + itemSpacing
             }
         }
+        
+        return result
+    }
+    
+    func calculateHorizontalSpacingBetweenItemViews(leftOrigin: CGPoint, leftView: MorphicBarItemViewProtocol, leftViewClippingSize: CGSize?, rightOrigin: CGPoint, rightView: MorphicBarItemViewProtocol, rightViewClippingSize: CGSize?, logicalHorizontalSpacing: CGFloat) -> CGFloat {
+        let addOriginsToRects: (_ rects: [CGRect], _ origin: CGPoint) -> [CGRect] = {
+            rects, origin in
+            
+            var result: [CGRect] = []
+            for rect in rects {
+                result.append(CGRect(x: rect.minX + origin.x, y: rect.minY + origin.y, width: rect.width, height: rect.height))
+            }
+            return result
+        }
+        
+        let clipContentRectsToControlSize: (_ contentRects: [CGRect], _ controlSize: CGSize?) -> [CGRect] = {
+            contentRects, controlSize in
+        
+            var mutableControlSize: CGSize
+            if let controlSize = controlSize {
+                mutableControlSize = controlSize
+            } else {
+                mutableControlSize = CGSize(width: 0, height: 0)
+                for contentRect in contentRects {
+                    mutableControlSize.width = max(mutableControlSize.width, contentRect.maxX)
+                    mutableControlSize.height = max(mutableControlSize.height, contentRect.maxY)
+                }
+            }
+            
+            var result: [CGRect] = []
+            for contentRect in contentRects {
+                let xOffset: CGFloat = (contentRect.minX < 0) ? -contentRect.minX : 0
+                let yOffset: CGFloat = (contentRect.minY < 0) ? -contentRect.minY : 0
+
+                let newRect = CGRect(x: max(contentRect.minX, 0), y: max(contentRect.minY, 0), width: min(contentRect.width - xOffset, mutableControlSize.width), height: min(contentRect.height - yOffset, mutableControlSize.height))
+                result.append(newRect)
+            }
+            return result
+        }
+
+        var leftViewContentRects = addOriginsToRects(leftView.contentFrames, leftOrigin)
+        leftViewContentRects = clipContentRectsToControlSize(leftViewContentRects, leftViewClippingSize)
+        var rightViewContentRects = addOriginsToRects(rightView.contentFrames, rightOrigin)
+        // NOTE: the caller must pass in leftViewIntrinsicSize IF the contents need to be clipped
+        rightViewContentRects = clipContentRectsToControlSize(rightViewContentRects, rightViewClippingSize)
+
+        var result: CGFloat = 0
+        
+        if leftViewContentRects.count == 0 || rightViewContentRects.count == 0 {
+            // if one of the views has no elements, then return the logical spacing
+            return logicalHorizontalSpacing
+        }
+        
+        // calculate the minimum spacing necessary to keep any elements from the leftView from overlapping with the rightView
+        for leftRect in leftViewContentRects {
+            for rightRect in rightViewContentRects {
+                // determine if the rectangles are in the same vertical space
+                var viewsAreInSameVerticalSpace: Bool = false
+                if (rightRect.minY >= leftRect.minY && rightRect.minY <= leftRect.maxY) ||
+                    (rightRect.maxY >= leftRect.minY && rightRect.maxY <= leftRect.maxY) {
+                    viewsAreInSameVerticalSpace = true
+                }
+                
+                if viewsAreInSameVerticalSpace == true {
+                    if rightRect.minX < leftRect.maxX + logicalHorizontalSpacing {
+                        let extraHorizontalSpacingRequired = logicalHorizontalSpacing - (rightRect.minX - leftRect.maxX)
+                        if extraHorizontalSpacingRequired > result {
+                            result = extraHorizontalSpacingRequired
+                        }
+                    }
+                }
+            }
+        }
+
+        return result
     }
     
     /// The orientation of the list of items
@@ -113,24 +207,15 @@ public class MorphicBarView: NSView {
     public var minimumWidthInVerticalOrientation: CGFloat = 100
     
     public override var intrinsicContentSize: NSSize {
-        switch orientation {
-        case .horizontal:
-            var size = NSSize(width: itemSpacing * CGFloat(max(itemViews.count - 1, 0)), height: 0)
-            for itemView in itemViews {
-                let itemSize = itemView.intrinsicContentSize
-                size.height = max(size.height, itemSize.height)
-                size.width += itemSize.width
-            }
-            return size
-        case .vertical:
-            var size = NSSize(width: minimumWidthInVerticalOrientation, height: itemSpacing * CGFloat(max(itemViews.count - 1, 0)))
-            for itemView in itemViews {
-                let itemSize = itemView.intrinsicContentSize
-                size.height += itemSize.height
-                size.width = max(size.width, itemSize.width)
-            }
-            return size
+        let itemViewsWithFrames = calculateFramesOfItemViews(itemViews, orientation: self.orientation)
+        
+        var size = NSSize.zero
+        for itemViewWithFrame in itemViewsWithFrames {
+            let itemViewFrame = itemViewWithFrame.frame
+            size.width = max(size.width, itemViewFrame.maxX)
+            size.height = max(size.height, itemViewFrame.maxY)
         }
+        return size 
     }
     
     public override func acceptsFirstMouse(for event: NSEvent?) -> Bool {

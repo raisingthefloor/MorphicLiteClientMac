@@ -34,6 +34,12 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
     }
     //
     public weak var morphicBarView: MorphicBarView?
+    //
+    public var contentFrames: [CGRect] {
+        var result: [CGRect] = []
+        result.append(CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height))
+        return result
+    }
 
     //
     

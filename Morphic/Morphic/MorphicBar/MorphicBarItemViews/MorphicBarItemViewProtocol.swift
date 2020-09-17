@@ -34,5 +34,7 @@ public protocol MorphicBarItemViewProtocol: NSView {
 
     // NOTE: the protocol field must be implemented as WEAK:
     // public weak var morphicBarView: MorphicBarView?
-    var morphicBarView: MorphicBarView? { get set }    
+    var morphicBarView: MorphicBarView? { get set }
+    
+    var contentFrames: [CGRect] { get }
 }
