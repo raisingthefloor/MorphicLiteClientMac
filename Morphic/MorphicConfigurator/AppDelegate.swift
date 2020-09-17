@@ -37,6 +37,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
            UserDefaults.setMorphicSuiteName("org.raisingthefloor.MorphicCommunity")
        #endif
 
+        // set up options for the current edition of Morphic
+        #if EDITION_BASIC
+            Session.shared.isCaptureAndApplyEnabled = true
+            Session.shared.isServerPreferencesSyncEnabled = true
+        #elseif EDITION_COMMUNITY
+            Session.shared.isCaptureAndApplyEnabled = false
+            Session.shared.isServerPreferencesSyncEnabled = false
+        #endif
+
         populateSolutions()
         Session.shared.open {
             for arg in ProcessInfo.processInfo.arguments[1...] {

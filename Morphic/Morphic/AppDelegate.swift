@@ -56,7 +56,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             Storage.setApplicationSupportDirectoryName("org.raisingthefloor.MorphicCommunity")
             UserDefaults.setMorphicSuiteName("org.raisingthefloor.MorphicCommunity")
         #endif
-        
+
+        // set up options for the current edition of Morphic
+        #if EDITION_BASIC
+            Session.shared.isCaptureAndApplyEnabled = true
+            Session.shared.isServerPreferencesSyncEnabled = true
+        #elseif EDITION_COMMUNITY
+            Session.shared.isCaptureAndApplyEnabled = false
+            Session.shared.isServerPreferencesSyncEnabled = false
+        #endif
+
         os_log(.info, log: logger, "opening morphic session...")
         populateSolutions()
         createStatusItem()
@@ -64,13 +73,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         createEmptyDefaultPreferencesIfNotExist {
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
-                #if EDITION_BASIC
-                    Session.shared.isCaptureAndApplyEnabled = true
-                    Session.shared.isServerPreferencesSyncEnabled = true 
-                #elseif EDITION_COMMUNITY
-                    Session.shared.isCaptureAndApplyEnabled = false
-                    Session.shared.isServerPreferencesSyncEnabled = false
-                #endif
                 #if EDITION_BASIC
                 #elseif EDITION_COMMUNITY
                     if Session.shared.user == nil {
