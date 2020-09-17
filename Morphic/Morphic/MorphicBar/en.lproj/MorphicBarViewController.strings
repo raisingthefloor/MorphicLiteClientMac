@@ -21,25 +21,25 @@
 "control.feature.resolution.title" = "Text Size";
 
 /* Title for the help window for the larger text/icon size button */
-"control.feature.resolution.bigger.help.title" = "Increase Screen Zoom";
+"control.feature.resolution.bigger.help.title" = "Increase Text Size";
 
 /* Message for the help window for the larger text/icon size button */
 "control.feature.resolution.bigger.help.message" = "Make everything bigger";
 
 /* Title for the help window for the larger text/icon size button when at its limit */
-"control.feature.resolution.bigger.limit.help.title" = "Screen Zoom Cannot Go Bigger";
+"control.feature.resolution.bigger.limit.help.title" = "Text Size Cannot Go Bigger";
 
 /* Message for the help window for the larger text/icon size button when at its limit */
 "control.feature.resolution.bigger.limit.help.message" = "";
 
 /* Title for the help window for the smaller text/icon size button */
-"control.feature.resolution.smaller.help.title" = "Decrease Screen Zoom";
+"control.feature.resolution.smaller.help.title" = "Decrease Text Size";
 
 /* Message for the help window for the smaller text/icon size button */
 "control.feature.resolution.smaller.help.message" = "Make everything smaller";
 
 /* Title for the help window for the smaller text/icon size button when at its limit */
-"control.feature.resolution.smaller.limit.help.title" = "Screen Zoom Cannot Go Smaller";
+"control.feature.resolution.smaller.limit.help.title" = "Text Size Cannot Go Smaller";
 
 /* Message for the help window for the smaller text/icon size button when at its limit */
 "control.feature.resolution.smaller.limit.help.message" = "";
@@ -252,7 +252,7 @@
 "control.feature.contrastcolordarknight.contrast" = "Contrast";
 
 /* Title for the help window for the contrast button */
-"control.feature.contrastcolordarknight.contrast.help.title" = "Toggle On/Off High Contrast";
+"control.feature.contrastcolordarknight.contrast.help.title" = "Toggle High Contrast";
 
 /* Message for the help window for the contrast button */
 "control.feature.contrastcolordarknight.contrast.help.message" = "Makes it easier for some people to read";
@@ -261,7 +261,7 @@
 "control.feature.contrastcolordarknight.color" = "Color";
 
 /* Title for the help window for the color filters button */
-"control.feature.contrastcolordarknight.color.help.title" = "Toggle On/Off Color Filters";
+"control.feature.contrastcolordarknight.color.help.title" = "Toggle Color Filters";
 
 /* Message for the help window for the color filters button */
 "control.feature.contrastcolordarknight.color.help.message" = "";
@@ -279,7 +279,7 @@
 "control.feature.contrastcolordarknight.night" = "Night";
 
 /* Title for the help window for the night shift button */
-"control.feature.contrastcolordarknight.night.help.title" = "Turn On/Off Night Mode";
+"control.feature.contrastcolordarknight.night.help.title" = "Toggle Night Mode";
 
 /* Message for the help window for the night shift button */
 "control.feature.contrastcolordarknight.night.help.message" = "";
