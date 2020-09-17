@@ -25,7 +25,7 @@ variables:
 - name: workspacePath
   value: '**/MorphicLite.xcworkspace'
 - name: finalVersion
-  value: '0.$(Build.BuildNumber)'
+  value: '1.$(Build.BuildNumber)'
 # This means the pipeline will configure all signing options
 - name: signingOption
   value: 'default' # this setting uses the builtin project configuration options for signing
