@@ -14,15 +14,15 @@
             },
             {
                 "type": "control",
+                "feature": "screensnip"
+            },
+            {
+                "type": "control",
                 "feature": "readselected"
             },
             {
                 "type": "control",
-                "feature": "volume"
-            },
-            {
-                "type": "control",
-                "feature": "nightshift"
+                "feature": "contrastcolordarknight"
             }
         ]
     },

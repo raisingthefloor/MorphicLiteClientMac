@@ -248,8 +248,10 @@ class MorphicBarControlItem: MorphicBarItem {
         case volume
         case volumewithoutmute
         case contrast
+        case contrastcolordarknight
         case nightshift
         case copypaste
+        case screensnip
         case unknown
         
         init(string: String?) {
@@ -363,6 +365,23 @@ class MorphicBarControlItem: MorphicBarItem {
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.contrast(_:))
             return view
+        case .contrastcolordarknight:
+            let localized = LocalizedStrings(prefix: "control.feature.contrastcolordarknight")
+            let contrastHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "contrast.help.title"), message: localized.string(for: "contrast.help.message")) }
+            let colorHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "color.help.title"), message: localized.string(for: "color.help.message")) }
+            let darkHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "dark.help.title"), message: localized.string(for: "dark.help.message")) }
+            let nightHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "night.help.title"), message: localized.string(for: "night.help.message")) }
+            let segments = [
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "contrast"), fillColor: buttonColor, helpProvider: contrastHelpProvider, accessibilityLabel: localized.string(for: "contrast.help.title"), style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "color"), fillColor: alternateButtonColor, helpProvider: colorHelpProvider, accessibilityLabel: localized.string(for: "color.help.title"), style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "dark"), fillColor: buttonColor, helpProvider: darkHelpProvider, accessibilityLabel: localized.string(for: "dark.help.title"), style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "night"), fillColor: alternateButtonColor, helpProvider: nightHelpProvider, accessibilityLabel: localized.string(for: "night.help.title"), style: style)
+            ]
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(MorphicBarControlItem.contrastcolordarknight(_:))
+            return view
         case .nightshift:
             let localized = LocalizedStrings(prefix: "control.feature.nightshift")
             let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
@@ -388,6 +407,17 @@ class MorphicBarControlItem: MorphicBarItem {
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.copyPaste(_:))
+            return view
+        case .screensnip:
+            let localized = LocalizedStrings(prefix: "control.feature.screensnip")
+            let copyHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
+            let segments = [
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "copy"), fillColor: buttonColor, helpProvider: copyHelpProvider, accessibilityLabel: localized.string(for: "copy.help.title"), style: style)
+            ]
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(MorphicBarControlItem.screensnip)
             return view
         default:
             return nil
@@ -518,6 +548,20 @@ class MorphicBarControlItem: MorphicBarItem {
     }
 
     @objc
+    func screensnip(_ sender: Any?) {
+        let keyCode: CGKeyCode = CGKeyCode(kVK_ANSI_4)
+        let keyOptions: MorphicInput.KeyOptions = [
+            .withCommandKey,
+            .withShiftKey
+        ]
+        
+        guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
+            NSLog("Could not send 'screen snip' hotkey to the keyboard input stream")
+            return
+        }
+    }
+    
+    @objc
     func contrast(_ sender: Any?) {
         guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
             return
@@ -530,6 +574,30 @@ class MorphicBarControlItem: MorphicBarItem {
             Session.shared.apply(false, for: .macosDisplayContrastEnabled) {
                 _ in
             }
+        }
+    }
+    
+    @objc
+    func contrastcolordarknight(_ sender: Any?) {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
+            return
+        }
+        switch segment {
+        case 0:
+            // contrast
+	    break
+        case 1:
+            // color
+            break
+        case 2:
+            // dark
+            break
+        case 3:
+            // night
+            let nightShiftEnabled = MorphicNightShift.getEnabled()
+            MorphicNightShift.setEnabled(!nightShiftEnabled)
+        default:
+            fatalError("impossible code branch")
         }
     }
 

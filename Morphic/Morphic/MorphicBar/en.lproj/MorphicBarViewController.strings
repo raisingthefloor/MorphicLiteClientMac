@@ -18,7 +18,7 @@
 "ead-JY-BhL.ibExternalUserDefinedRuntimeAttributesLocalizableStrings[1]" = "Customize buttons and take your settings with you anywhere";
 
 /* Label for the buttons that control text/icon size */
-"control.feature.resolution.title" = "Screen Zoom";
+"control.feature.resolution.title" = "Text Size";
 
 /* Title for the help window for the larger text/icon size button */
 "control.feature.resolution.bigger.help.title" = "Increase Screen Zoom";
@@ -232,3 +232,54 @@
 
 /* Message for the help window for the paste button */
 "control.feature.copypaste.paste.help.message" = "";
+
+/* Label for the buttons that activate screen snip */
+"control.feature.screensnip.title" = "Snip";
+
+/* Label for the button that activates screen snip */
+"control.feature.screensnip.copy" = "Copy";
+
+/* Title for the help window for the screen snip button */
+"control.feature.screensnip.copy.help.title" = "Copy a screenshot of part of the display";
+
+/* Message for the help window for the screen snip button */
+"control.feature.screensnip.copy.help.message" = "";
+
+/* Label for the buttons that toggle contrast, color, dark and night */
+"control.feature.contrastcolordarknight.title" = "Contrast & Color";
+
+/* Label for the button that toggles high contrast */
+"control.feature.contrastcolordarknight.contrast" = "Contrast";
+
+/* Title for the help window for the contrast button */
+"control.feature.contrastcolordarknight.contrast.help.title" = "Toggle On/Off High Contrast";
+
+/* Message for the help window for the contrast button */
+"control.feature.contrastcolordarknight.contrast.help.message" = "Makes it easier for some people to read";
+
+/* Label for the button that toggles color filters */
+"control.feature.contrastcolordarknight.color" = "Color";
+
+/* Title for the help window for the color filters button */
+"control.feature.contrastcolordarknight.color.help.title" = "Toggle On/Off Color Filters";
+
+/* Message for the help window for the color filters button */
+"control.feature.contrastcolordarknight.color.help.message" = "";
+
+/* Label for the button that toggles dark appearance */
+"control.feature.contrastcolordarknight.dark" = "Dark";
+
+/* Title for the help window for the dark appearance button */
+"control.feature.contrastcolordarknight.dark.help.title" = "Switch Between Dark and Light Appearance";
+
+/* Message for the help window for the dark appearance button */
+"control.feature.contrastcolordarknight.dark.help.message" = "";
+
+/* Label for the button that toggles night shift */
+"control.feature.contrastcolordarknight.night" = "Night";
+
+/* Title for the help window for the night shift button */
+"control.feature.contrastcolordarknight.night.help.title" = "Turn On/Off Night Mode";
+
+/* Message for the help window for the night shift button */
+"control.feature.contrastcolordarknight.night.help.message" = "";
