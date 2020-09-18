@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17156" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.3"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17156"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner"/>
         <customObject id="ZNk-5q-oDb" customClass="AppDelegate" customModule="Morphic" customModuleProvider="target">
             <connections>
-                <outlet property="captureMenuItem" destination="pzh-qC-88t" id="WSG-Dv-VRa"/>
                 <outlet property="hideMorphicBarMenuItem" destination="gOm-Gw-nLp" id="f86-ih-DaC"/>
-                <outlet property="loginMenuItem" destination="S6R-h6-1Yz" id="zO2-OE-N39"/>
                 <outlet property="logoutMenuItem" destination="fdS-ef-rqr" id="2v2-vJ-y1T"/>
                 <outlet property="menu" destination="iDk-eb-5cB" id="OjZ-YL-Pes"/>
                 <outlet property="selectCommunityMenuItem" destination="qcc-Q2-sYr" id="Gm9-io-FQH"/>
@@ -42,22 +40,134 @@
                     <menu key="submenu" title="Select Community" id="l0C-IM-POV"/>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="vgQ-je-MGT"/>
-                <menuItem title="Take Settings With Me..." id="pzh-qC-88t">
+                <menuItem title="Learn About Morphic" id="DeU-ED-RwS">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="launchCapture:" target="ZNk-5q-oDb" id="c6m-rl-T73"/>
+                        <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="rlv-X3-0Oa"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Apply My Settings..." id="S6R-h6-1Yz">
+                <menuItem title="Quick Demo Movies" id="d81-k0-YBn">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="launchLogin:" target="ZNk-5q-oDb" id="mYB-Jp-6w7"/>
+                        <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="HW0-Vl-q0r"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Settings to Make Computer Easier" id="pDn-p9-kW7">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Settings to Make Computer Easier" id="cly-1W-5Qg">
+                        <items>
+                            <menuItem title="macOS Settings for MorphicBar Controls " id="eF3-hP-q65">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Magnifier Settings" id="b1Z-FW-EwQ">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="v35-OR-FnQ"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Read Aloud Settings" id="yVb-9e-9TN">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="JML-5y-P2O"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Color Vision Settings" id="KW2-Yc-fA8">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="2SL-Ci-hQC"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Night Mode Settings" id="bNX-LY-aa2">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="qGz-ex-wnk"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Dark Mode Settings" id="2mx-T9-CEQ">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="1Wy-q9-iEH"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Contrast Settings" id="RHA-xv-t7n">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="Y7j-Am-hYE"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="I2I-6m-2ua"/>
+                            <menuItem title="Other Key macOS Settings" id="vMO-xL-Bfp">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Mouse Settings" id="WgB-hi-dss">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="rpz-rz-LSt"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Pointer Size" id="KpP-nc-KDu">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="CM9-U5-v1N"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Stop Key-repeat " id="PEe-T1-bhd">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="jCf-a9-8S5"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Brightness" id="JQV-M8-1cX">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="jsf-9e-K1o"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Language" id="opf-Uy-dBe">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="eiQ-P5-pN4"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="All Accessibility Options" id="ZA3-bo-s5U">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="Fdw-Jt-Aff"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Other Helpful Things" id="gkK-R4-V6Q">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="Vex-Di-pHQ"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="o45-X2-Eg1"/>
+                <menuItem title="Copy Settings Between Computers" id="WUC-ZR-CdM">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="w8B-hC-vDg"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Logout" hidden="YES" id="fdS-ef-rqr">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="logout:" target="ZNk-5q-oDb" id="VNp-5s-w1f"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="eWu-mW-zzY"/>
+                <menuItem title="Automatically Start Morphic" state="on" id="Ir1-cH-h7Z">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="handleUnimplementedCheckboxMenuItem:" target="ZNk-5q-oDb" id="To5-iq-OtC"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Show MorphicBar at Start" state="on" id="cGf-Qp-TV9">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="handleUnimplementedCheckboxMenuItem:" target="ZNk-5q-oDb" id="05a-kC-5Hl"/>
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="yYL-r6-1AR"/>

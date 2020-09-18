@@ -623,7 +623,20 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             Session.shared.set(false, for: .morphicBarVisible)
         }
     }
-     
+    
+    // TODO: this is a temporary function assigned to unimplemented menu buttons (so that they don't appear in gray); remove it once items are implemented
+    @IBAction
+    func handleUnimplementedMenuItem(_ sender: Any?) {
+        // do nothing
+    }
+    
+    // TODO: this is a temporary function assigned to unimplemented checkbox menu buttons (so that they don't appear in gray); remove it once items are implemented
+    @IBAction
+    func handleUnimplementedCheckboxMenuItem(_ sender: NSMenuItem) {
+        // for now, just toggle the checkbox
+        sender.state = (sender.state == .on) ? .off : .on
+    }
+
     func windowDidBecomeKey(_ notification: Notification) {
     }
      
