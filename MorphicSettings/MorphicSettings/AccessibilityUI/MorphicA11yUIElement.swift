@@ -123,7 +123,9 @@ public struct MorphicA11yUIElement {
         //
         var values: [T] = []
         for valueAsCFTypeRef in valuesAsCFArray! as [CFTypeRef] {
-            let value = MorphicA11yAttributeValueCompatibleSampleImpl.fromCFTypeRef(valueAsCFTypeRef)
+            guard let value = MorphicA11yAttributeValueCompatibleSampleImpl.fromCFTypeRef(valueAsCFTypeRef) else {
+                return nil
+            }
             values.append(value as! T)
         }
         //

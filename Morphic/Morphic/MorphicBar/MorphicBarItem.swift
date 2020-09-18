@@ -585,7 +585,24 @@ class MorphicBarControlItem: MorphicBarItem {
         switch segment {
         case 0:
             // contrast
-	    break
+            
+            // capture the current "contrast enabled" setting
+            SettingsManager.shared.capture(valueFor: .macosDisplayContrastEnabled) {
+                value in
+                
+                guard let valueAsBoolean = value as? Bool else {
+                    // could not get current contrast value
+                    return
+                }
+		// calculate the inverse state
+                let newValue = !valueAsBoolean
+                
+		// apply the inverse state
+                Session.shared.apply(newValue, for: .macosDisplayContrastEnabled) {
+                    success in
+                    // we do not currently have a mechanism to report success/failure
+                }
+            }
         case 1:
             // color
             break
