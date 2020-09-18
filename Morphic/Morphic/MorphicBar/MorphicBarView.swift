@@ -226,7 +226,7 @@ public class MorphicBarView: NSView {
     
 }
 
-extension NSSize{
+extension NSSize {
     
     public func roundedUp() -> NSSize {
         return NSSize(width: ceil(width), height: ceil(height))

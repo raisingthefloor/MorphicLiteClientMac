@@ -36,12 +36,15 @@ public class SystemPreferencesElement: ApplicationElement {
     
     public enum PaneIdentifier {
         case accessibility
+        case general
         
         public var buttonTitle: String {
             get{
                 switch self {
                 case .accessibility:
                     return "Accessibility"
+                case .general:
+                    return "General"
                 }
             }
         }
@@ -51,6 +54,8 @@ public class SystemPreferencesElement: ApplicationElement {
                 switch self {
                 case .accessibility:
                     return "Accessibility"
+                case .general:
+                    return "General"
                 }
             }
         }
@@ -58,6 +63,10 @@ public class SystemPreferencesElement: ApplicationElement {
     
     public func showAccessibility(completion: @escaping (_ success: Bool, _ pane: AccessibilityPreferencesElement?) -> Void) {
         return show(pane: .accessibility, completion: completion)
+    }
+    
+    public func showGeneral(completion: @escaping (_ success: Bool, _ pane: GeneralPreferencesElement?) -> Void) {
+        return show(pane: .general, completion: completion)
     }
     
     public func show<ElementType: UIElement>(pane identifier: PaneIdentifier, completion: @escaping (_ success: Bool, _ pane: ElementType?) -> Void) {

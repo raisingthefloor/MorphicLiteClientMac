@@ -621,7 +621,29 @@ class MorphicBarControlItem: MorphicBarItem {
             }
         case 2:
             // dark
-            break
+            switch NSApp.effectiveAppearance.name {
+            case .darkAqua,
+                 .vibrantDark,
+                 .accessibilityHighContrastDarkAqua,
+                 .accessibilityHighContrastVibrantDark:
+                let lightAppearanceCheckboxUIAutomation = LightAppearanceUIAutomation()
+                lightAppearanceCheckboxUIAutomation.apply(true) {
+                    success in
+                    // we do not currently have a mechanism to report success/failure
+                }
+            case .aqua,
+                 .vibrantLight,
+                 .accessibilityHighContrastAqua,
+                 .accessibilityHighContrastVibrantLight:
+                let darkAppearanceCheckboxUIAutomation = DarkAppearanceUIAutomation()
+                darkAppearanceCheckboxUIAutomation.apply(true) {
+                    success in
+                    // we do not currently have a mechanism to report success/failure
+                }
+            default:
+                // unknown appearance
+                break
+            }
         case 3:
             // night
             let nightShiftEnabled = MorphicNightShift.getEnabled()

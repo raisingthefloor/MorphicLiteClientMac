@@ -60,6 +60,8 @@
 		31F9AEEE24AA575B0026EBDA /* SliderElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F9AEED24AA575B0026EBDA /* SliderElement.swift */; };
 		9D0AF73724A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF73624A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift */; };
 		9D0AF73924A0FB78007E177E /* MorphicA11yUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */; };
+		9D4B24BF25143D0000F0B2E2 /* GeneralUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24BE25143D0000F0B2E2 /* GeneralUIAutomations.swift */; };
+		9D4B24C225143F8700F0B2E2 /* GeneralPreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */; };
 		9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */; };
 		9DCE209224CF1AAF00D3445B /* MorphicA11yAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */; };
 		9DD22FBA24DCB8B800C2FA52 /* SpeechUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */; };
@@ -146,6 +148,8 @@
 		31F9AEED24AA575B0026EBDA /* SliderElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderElement.swift; sourceTree = "<group>"; };
 		9D0AF73624A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yUIAttributeValueCompatible.swift; sourceTree = "<group>"; };
 		9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yUIElement.swift; sourceTree = "<group>"; };
+		9D4B24BE25143D0000F0B2E2 /* GeneralUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralUIAutomations.swift; sourceTree = "<group>"; };
+		9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralPreferencesElement.swift; sourceTree = "<group>"; };
 		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
 		9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yAuthorization.swift; sourceTree = "<group>"; };
 		9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechUIAutomations.swift; sourceTree = "<group>"; };
@@ -195,6 +199,7 @@
 			children = (
 				314EB6DD24A6A67700CF3D48 /* UIAutomation.swift */,
 				31F9AEDC24A7F2D90026EBDA /* AccessibilityUIAutomation.swift */,
+				9D4B24BE25143D0000F0B2E2 /* GeneralUIAutomations.swift */,
 				314EB6DF24A6A69B00CF3D48 /* DisplayUIAutomations.swift */,
 				31F9AEE224A7F7EA0026EBDA /* VoiceOverUIAutomations.swift */,
 				31F9AEE424A803B90026EBDA /* ZoomUIAutomations.swift */,
@@ -241,6 +246,7 @@
 			children = (
 				315EEC9224A5520F0039C61D /* SystemPreferencesElement.swift */,
 				315EEC9624A56DF20039C61D /* AccessibilityPreferencesElement.swift */,
+				9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */,
 			);
 			path = SystemPrefs;
 			sourceTree = "<group>";
@@ -510,6 +516,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D4B24C225143F8700F0B2E2 /* GeneralPreferencesElement.swift in Sources */,
 				9D0AF73924A0FB78007E177E /* MorphicA11yUIElement.swift in Sources */,
 				31F9AEEE24AA575B0026EBDA /* SliderElement.swift in Sources */,
 				31CE56EB244A149B00A52A7B /* Audio.swift in Sources */,
@@ -547,6 +554,7 @@
 				3113364D2427F01100686AF6 /* SettingsManager.swift in Sources */,
 				31A16BCD2423E86C0081A72C /* MorphicInput.swift in Sources */,
 				9D0AF73724A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift in Sources */,
+				9D4B24BF25143D0000F0B2E2 /* GeneralUIAutomations.swift in Sources */,
 				31CE56E22448C8F700A52A7B /* SettingHandler.swift in Sources */,
 				315EEC8724A536A60039C61D /* TabGroupElement.swift in Sources */,
 				9DD22FBA24DCB8B800C2FA52 /* SpeechUIAutomations.swift in Sources */,
