@@ -32,7 +32,7 @@ public class ApplicationElement: UIElement {
     
     public static func from(bundleIdentifier: String) -> ApplicationElement {
         switch bundleIdentifier {
-        case "com.apple.systempreferences":
+        case SystemPreferencesElement.bundleIdentifier:
             return SystemPreferencesElement()
         default:
             return ApplicationElement(bundleIdentifier: bundleIdentifier)
@@ -53,6 +53,10 @@ public class ApplicationElement: UIElement {
     private var runningApplication: NSRunningApplication?
     
     public func open(completion: @escaping (_ success: Bool) -> Void) {
+        open(hide: true, completion: completion)
+    }
+    
+    public func open(hide: Bool, completion: @escaping (_ success: Bool) -> Void) {
         guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleIdentifier) else {
             os_log(.error, log: logger, "Failed to find url for application %{public}s", bundleIdentifier)
             completion(false)
@@ -92,7 +96,7 @@ public class ApplicationElement: UIElement {
         }
         runningApplication = NSRunningApplication.runningApplications(withBundleIdentifier: bundleIdentifier).first
         if runningApplication == nil {
-            MorphicProcess.openProcess(at: url, arguments: [], activate: false, hide: true) {
+            MorphicProcess.openProcess(at: url, arguments: [], activate: false, hide: hide) {
                 (runningApplication, error) in
                 DispatchQueue.main.async {
                     guard runningApplication != nil else {

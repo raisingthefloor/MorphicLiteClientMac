@@ -29,8 +29,13 @@ private let logger = OSLog(subsystem: "MorphicSettings", category: "Accessibilit
 
 
 public class AccessibilityUIAutomation: UIAutomation {
+    private var hideSystemPreferences: Bool = true
     
     public required init() {
+    }
+    
+    public init(hideSystemPreferences: Bool) {
+        self.hideSystemPreferences = hideSystemPreferences
     }
     
     public func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
@@ -39,7 +44,7 @@ public class AccessibilityUIAutomation: UIAutomation {
         
     public func showAccessibilityPreferences(completion: @escaping (_ accessibility: AccessibilityPreferencesElement?) -> Void) {
         let app = SystemPreferencesElement()
-        app.open {
+        app.open(hide: hideSystemPreferences) {
             success in
             guard success else {
                 os_log(.error, log: logger, "Failed to open system preferences")

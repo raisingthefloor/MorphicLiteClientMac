@@ -26,8 +26,10 @@ import MorphicCore
 
 public class SystemPreferencesElement: ApplicationElement {
     
+    public static let bundleIdentifier = "com.apple.systempreferences"
+    
     public init() {
-        super.init(bundleIdentifier: "com.apple.systempreferences")
+        super.init(bundleIdentifier: SystemPreferencesElement.bundleIdentifier)
     }
     
     public required init(accessibilityElement: MorphicA11yUIElement?) {
