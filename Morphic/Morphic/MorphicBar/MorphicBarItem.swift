@@ -711,7 +711,7 @@ class MorphicBarControlItem: MorphicBarItem {
     // TODO: this is a temporary function; refactor this function (or reorganize, generally)
     @objc
     func colorFilterSettings(_ sender: Any?) {
-        let accessibilityUIAutomation = AccessibilityUIAutomation(hideSystemPreferences: false)
+        let accessibilityUIAutomation = AccessibilityUIAutomation(hideSystemPreferences: true)
         accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: "Color Filters") {
             accessibilityPreferencesElement in
          
@@ -722,7 +722,7 @@ class MorphicBarControlItem: MorphicBarItem {
                 return
             }
 
-            // make sure that System Preferences is the topmost application
+            // show System Preferences and raise it to the top of the application window stack
             guard let systemPreferencesApplication = NSRunningApplication.runningApplications(withBundleIdentifier: SystemPreferencesElement.bundleIdentifier).first else {
                 return
             }
