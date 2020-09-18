@@ -38,6 +38,8 @@ class MorphicBarSegmentedButton: NSControl {
     // NOTE: in macOS 10.14, setting integerValue to a segment index # doesn't necessarily persist the value; selectedSegmentIndex serves the purpose explicitly instead
     var selectedSegmentIndex: Int = 0
     
+    var rightClickAction: Selector? = nil
+    
     // MARK: - Creating a Segmented Button
     
     init(segments: [Segment]) {
@@ -219,6 +221,11 @@ class MorphicBarSegmentedButton: NSControl {
             QuickHelpWindow.hide()
         }
         
+        public var rightClickAction: Selector? = nil
+        override func rightMouseDown(with event: NSEvent) {
+            super.sendAction(rightClickAction, to: target)
+        }
+        
         override func sendAction(_ action: Selector?, to target: Any?) -> Bool {
             guard super.sendAction(action, to: target) else {
                 return false
@@ -331,6 +338,7 @@ class MorphicBarSegmentedButton: NSControl {
         button.tag = index
         button.target = self
         button.action = #selector(MorphicBarSegmentedButton.segmentAction)
+        button.rightClickAction = #selector(MorphicBarSegmentedButton.segmentRightClickAction)
         segmentButtons.append(button)
         addSubview(button)
     }
@@ -346,5 +354,16 @@ class MorphicBarSegmentedButton: NSControl {
         integerValue = button.tag
         selectedSegmentIndex = button.tag
         sendAction(action, to: target)
+    }
+    
+    /// Handles a segment button click and calls this control's right click action
+    @objc
+    private func segmentRightClickAction(_ sender: Any?) {
+        guard let button = sender as? NSButton else {
+            return
+        }
+        integerValue = button.tag
+        selectedSegmentIndex = button.tag
+        sendAction(rightClickAction, to: target)
     }
 }

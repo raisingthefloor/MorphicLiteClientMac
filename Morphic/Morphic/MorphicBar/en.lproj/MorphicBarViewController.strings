@@ -27,7 +27,7 @@
 "control.feature.resolution.bigger.help.title" = "Increase Text Size Everywhere";
 
 /* Message for the help window for the larger text/icon size button */
-"control.feature.resolution.bigger.help.message" = "Makes everything on screen larger";
+"control.feature.resolution.bigger.help.message" = "Makes everything on the screen larger.";
 
 /* Title for the help window for the larger text/icon size button when at its limit */
 "control.feature.resolution.bigger.limit.help.title" = "Text Size Cannot Go Bigger";
@@ -39,10 +39,10 @@
 "control.feature.resolution.smaller.tts" = "Decrease Text Size";
 
 /* Title for the help window for the smaller text/icon size button */
-"control.feature.resolution.smaller.help.title" = "Decrease Text Size Everywhere";
+"control.feature.resolution.smaller.help.title" = "Decrease Text Size everywhere";
 
 /* Message for the help window for the smaller text/icon size button */
-"control.feature.resolution.smaller.help.message" = "Makes everything on screen smaller";
+"control.feature.resolution.smaller.help.message" = "Makes everything on the screen smaller.";
 
 /* Title for the help window for the smaller text/icon size button when at its limit */
 "control.feature.resolution.smaller.limit.help.title" = "Text Size Cannot Go Smaller";
@@ -60,7 +60,7 @@
 "control.feature.magnifier.show.tts" = "Show Magnifier";
 
 /* Title for the help window for the show magnifier button */
-"control.feature.magnifier.show.help.title" = "Turn on Magnifier that Follows Mouse";
+"control.feature.magnifier.show.help.title" = "Turn on Magnifier that follows mouse";
 
 /* Message for the help window for the show magnifier button */
 "control.feature.magnifier.show.help.message" = "Turns on a Magnifying Lens (Right-click to change settings)";
@@ -255,13 +255,13 @@
 "control.feature.screensnip.copy" = "Copy";
 
 /* Text for VoiceOver for the screen snip button */
-"control.feature.screensnip.copy.tts" = "Snip a copy of part of screen";
+"control.feature.screensnip.copy.tts" = "Snip copy of part of the screen";
 
 /* Title for the help window for the screen snip button */
 "control.feature.screensnip.copy.help.title" = "Copies a selected part of the screen";
 
 /* Message for the help window for the screen snip button */
-"control.feature.screensnip.copy.help.message" = "Drag with your mouse to copy part of screen. Then paste into any document.";
+"control.feature.screensnip.copy.help.message" = "Drag with your mouse to copy part of screen.  Then paste into any document.";
 
 /* Label for the buttons that toggle contrast, color, dark and night */
 "control.feature.contrastcolordarknight.title" = "Contrast & Color";

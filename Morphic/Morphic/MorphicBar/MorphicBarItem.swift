@@ -381,6 +381,7 @@ class MorphicBarControlItem: MorphicBarItem {
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.contrastcolordarknight(_:))
+            view.segmentedButton.rightClickAction = #selector(MorphicBarControlItem.contrastcolordarknightMenu(_:))
             return view
         case .nightshift:
             let localized = LocalizedStrings(prefix: "control.feature.nightshift")
@@ -584,7 +585,7 @@ class MorphicBarControlItem: MorphicBarItem {
         }
         switch segment {
         case 0:
-            // contrast (contrast enabled)
+            // contrast (increase contrast enabled)
             
             // capture the current "contrast enabled" setting
             SettingsManager.shared.capture(valueFor: .macosDisplayContrastEnabled) {
@@ -621,6 +622,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
         case 2:
             // dark
+            
             switch NSApp.effectiveAppearance.name {
             case .darkAqua,
                  .vibrantDark,
@@ -646,12 +648,73 @@ class MorphicBarControlItem: MorphicBarItem {
             }
         case 3:
             // night
+            
             let nightShiftEnabled = MorphicNightShift.getEnabled()
             MorphicNightShift.setEnabled(!nightShiftEnabled)
         default:
             fatalError("impossible code branch")
         }
     }
+    
+    //
+    
+    @objc
+    func contrastcolordarknightMenu(_ sender: Any?) {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
+            return
+        }
+        switch segment {
+        case 0:
+            // contrast (increase contrast enabled)
+            break
+        case 1:
+            // color (color filter)
+            
+            let learnMoreMenuItem = NSMenuItem(title: "Learn more", action: #selector(self.colorFilterLearnMore), keyEquivalent: "")
+            learnMoreMenuItem.target = self
+            let quickDemoVideoMenuItem = NSMenuItem(title: "Quick Demo video", action: #selector(self.colorFilterQuickDemoVideo), keyEquivalent: "")
+            quickDemoVideoMenuItem.target = self
+            let settingsMenuItem = NSMenuItem(title: "Settings", action: #selector(self.colorFilterSettings), keyEquivalent: "")
+            settingsMenuItem.target = self
+            //
+            let rightClickMenu = NSMenu()
+            rightClickMenu.addItem(learnMoreMenuItem)
+            rightClickMenu.addItem(quickDemoVideoMenuItem)
+            rightClickMenu.addItem(settingsMenuItem)
+            
+            rightClickMenu.popUp(positioning: nil, at: NSEvent.mouseLocation, in: nil)
+        case 2:
+            // dark
+            
+            break
+        case 3:
+            // night
+            
+            break
+        default:
+            fatalError("impossible code branch")
+        }
+    }
+    
+    // TODO: this is a temporary function; refactor this function (or reorganize, generally)
+    @objc
+    func colorFilterLearnMore(_ sender: Any?) {
+        print("learn more about color filters")
+    }
+
+    // TODO: this is a temporary function; refactor this function (or reorganize, generally)
+    @objc
+    func colorFilterQuickDemoVideo(_ sender: Any?) {
+        print("quick demo video!")
+    }
+
+    // TODO: this is a temporary function; refactor this function (or reorganize, generally)
+    @objc
+    func colorFilterSettings(_ sender: Any?) {
+        print("settings!")
+    }
+    
+    //
 
     @objc
     func nightShift(_ sender: Any?) {
