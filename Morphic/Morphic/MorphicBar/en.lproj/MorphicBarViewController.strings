@@ -24,7 +24,7 @@
 "control.feature.resolution.bigger.tts" = "Increase Text Size";
 
 /* Title for the help window for the larger text/icon size button */
-"control.feature.resolution.bigger.help.title" = "Increase Text Size Everywhere";
+"control.feature.resolution.bigger.help.title" = "Increase Text Size everywhere";
 
 /* Message for the help window for the larger text/icon size button */
 "control.feature.resolution.bigger.help.message" = "Makes everything on the screen larger.";
@@ -63,7 +63,7 @@
 "control.feature.magnifier.show.help.title" = "Turn on Magnifier that follows mouse";
 
 /* Message for the help window for the show magnifier button */
-"control.feature.magnifier.show.help.message" = "Turns on a Magnifying Lens (Right-click to change settings)";
+"control.feature.magnifier.show.help.message" = "Turns on a Magnifying Lens. (Right-click to change settings.)";
 
 /* Label for the button that hides the magnifier */
 "control.feature.magnifier.hide" = "Hide";
@@ -75,7 +75,7 @@
 "control.feature.magnifier.hide.help.title" = "Turn off Magnifier";
 
 /* Message for the help window for the hide magnifier button */
-"control.feature.magnifier.hide.help.message" = "(Right click to change magnifier settings)";
+"control.feature.magnifier.hide.help.message" = "(Right click to change magnifier settings.)";
 
 /* Label for the button that shows the magnifier */
 "control.feature.magnifier.on" = "On";
@@ -201,10 +201,10 @@
 "control.feature.readselected.playstop.tts" = "Read Selected Text - Start and Stop";
 
 /* Title for the help window for the play/stop 'read selected text' button */
-"control.feature.readselected.playstop.help.title" = "Read or stop reading text that is selected";
+"control.feature.readselected.playstop.help.title" = "Read or stop reading text that is selected.";
 
 /* Message for the help window for the play/stop 'read selected text' button */
-"control.feature.readselected.playstop.help.message" = "Select any text and then click to have it read. Click to stop.";
+"control.feature.readselected.playstop.help.message" = "Select any text, and then click to have it read. Click again to stop.";
 
 /* Label for the buttons that control night mode */
 "control.feature.nightshift.title" = "Night Mode";
@@ -258,7 +258,7 @@
 "control.feature.screensnip.copy.tts" = "Snip copy of part of the screen";
 
 /* Title for the help window for the screen snip button */
-"control.feature.screensnip.copy.help.title" = "Copies a selected part of the screen";
+"control.feature.screensnip.copy.help.title" = "Copy a selected part of the screen";
 
 /* Message for the help window for the screen snip button */
 "control.feature.screensnip.copy.help.message" = "Drag with your mouse to copy part of screen.  Then paste into any document.";
@@ -276,7 +276,7 @@
 "control.feature.contrastcolordarknight.contrast.help.title" = "Turn Contrast on and off";
 
 /* Message for the help window for the contrast button */
-"control.feature.contrastcolordarknight.contrast.help.message" = "Makes screen easier to read for some (Right-click to adjust contrast)";
+"control.feature.contrastcolordarknight.contrast.help.message" = "Makes screen easier to read for some. (Right-click to adjust contrast.)";
 
 /* Label for the button that toggles color filters */
 "control.feature.contrastcolordarknight.color" = "Color";
@@ -285,10 +285,10 @@
 "control.feature.contrastcolordarknight.color.tts" = "Color Vision on, off";
 
 /* Title for the help window for the color filters button */
-"control.feature.contrastcolordarknight.color.help.title" = "Turn color vision filters on and off";
+"control.feature.contrastcolordarknight.color.help.title" = "Turn Color Vision filters on and off";
 
 /* Message for the help window for the color filters button */
-"control.feature.contrastcolordarknight.color.help.message" = "Changes colors to adapt for color blindness (Right click to choose type)";
+"control.feature.contrastcolordarknight.color.help.message" = "Changes colors to adapt for color blindness. (Right click to choose type.)";
 
 /* Label for the button that toggles dark appearance */
 "control.feature.contrastcolordarknight.dark" = "Dark";
@@ -297,10 +297,10 @@
 "control.feature.contrastcolordarknight.dark.tts" = "Dark Mode on, off";
 
 /* Title for the help window for the dark appearance button */
-"control.feature.contrastcolordarknight.dark.help.title" = "Turn Dark mode on and off";
+"control.feature.contrastcolordarknight.dark.help.title" = "Turn Dark Mode on and off";
 
 /* Message for the help window for the dark appearance button */
-"control.feature.contrastcolordarknight.dark.help.message" = "Toggles Dark mode on and off (Right click to adjust)";
+"control.feature.contrastcolordarknight.dark.help.message" = "Toggles Dark mode on and off. (Right click to adjust.)";
 
 /* Label for the button that toggles night shift */
 "control.feature.contrastcolordarknight.night" = "Night";
@@ -309,7 +309,7 @@
 "control.feature.contrastcolordarknight.night.tts" = "Night Shift on, off";
 
 /* Title for the help window for the night shift button */
-"control.feature.contrastcolordarknight.night.help.title" = "Turn ‘Night Shift’ feature on and off";
+"control.feature.contrastcolordarknight.night.help.title" = "Turn 'Night Shift' feature on and off";
 
 /* Message for the help window for the night shift button */
-"control.feature.contrastcolordarknight.night.help.message" = "Reduces eye strain and makes it easier to fall asleep at night";
+"control.feature.contrastcolordarknight.night.help.message" = "Reduces eye strain and makes it easier to fall asleep at night.";
