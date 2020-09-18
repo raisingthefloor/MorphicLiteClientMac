@@ -251,7 +251,7 @@ public class ArbitraryKeys: CodingKey {
     }
 }
 
-public extension KeyedDecodingContainer{
+public extension KeyedDecodingContainer {
     
     /// Decode an dictionary of `Interoperable`s in arbitrary keys
     func decodeInteroperableDictionary() throws -> [String: Interoperable?] {

@@ -23,22 +23,26 @@
 
 import Foundation
 
-public extension UserDefaults {
-    static var morphic = UserDefaults(suiteName: "org.raisingthefloor.MorphicLite")!
+enum MorphicBarButtonItemIcon: String {
+    case amazon = "amazon-brands"
+    case calendar = "calendar-solid"
+    case camera = "camera-solid"
+    case comment = "comment-solid"
+    case envelope = "envelope-solid"
+    case google = "google-brands"
+    case googleDrive = "google-drive-brands"
+    case images = "images-solid"
+    case link = "link-solid"
+    case music = "music-solid"
+    case newspaper = "newspaper-solid"
+    case question = "question-solid"
+    case shoppingCart = "shopping-cart-solid"
+    case skype = "skype-brands"
+    case video = "video-solid"
     
-    func morphicUsername(for userIdentifier: String) -> String? {
-        let usernamesByIdentifier = dictionary(forKey: .morphicDefaultsKeyUsernamesByIdentifier)
-        return usernamesByIdentifier?[userIdentifier] as? String
+    var pathToImage: String {
+        get {
+            return Bundle.main.path(forResource: self.rawValue, ofType: "pdf")!
+        }
     }
-    
-    func set(morphicUsername: String, for userIdentifier: String) {
-        var usernamesByIdentifier = dictionary(forKey: .morphicDefaultsKeyUsernamesByIdentifier) ?? [String: Any]()
-        usernamesByIdentifier[userIdentifier] = morphicUsername
-        setValue(usernamesByIdentifier, forKey: .morphicDefaultsKeyUsernamesByIdentifier)
-    }
-}
-
-public extension String {
-    static var morphicDefaultsKeyUserIdentifier = "userIdentifier"
-    static var morphicDefaultsKeyUsernamesByIdentifier = "usernamesByIdentifier"
 }

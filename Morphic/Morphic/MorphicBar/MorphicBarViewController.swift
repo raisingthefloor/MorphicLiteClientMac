@@ -28,13 +28,25 @@ import MorphicSettings
 /// The View Controller for a MorphicBar showing a collection of actions the user can take
 public class MorphicBarViewController: NSViewController {
     
+    @IBOutlet weak var captureMenuItem: NSMenuItem!
+    @IBOutlet weak var loginMenuItem: NSMenuItem!
+    @IBOutlet weak var logoutMenuItem: NSMenuItem!
+    @IBOutlet weak var selectCommunityMenuItem: NSMenuItem!
+    
     // MARK: - View Lifecycle
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        updateConstraints()
+        morphicBarView.orientation = self.orientation
         view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
         view.layer?.cornerRadius = 6
-        self.logoutMenuItem?.isHidden = Session.shared.user == nil
+        #if EDITION_BASIC
+        #elseif EDITION_COMMUNITY
+            self.loginMenuItem?.isHidden = (Session.shared.user != nil)
+        #endif
+        self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
+        updateMainMenu()
         NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
         DistributedNotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.appleInterfaceThemeDidChange(_:)), name: .appleInterfaceThemeChanged, object: nil)
 
@@ -60,15 +72,17 @@ public class MorphicBarViewController: NSViewController {
         guard let session = notification.object as? Session else {
             return
         }
-        self.logoutMenuItem?.isHidden = session.user == nil
+        #if EDITION_BASIC
+        #elseif EDITION_COMMUNITY
+            self.loginMenuItem?.isHidden = (session.user != nil)
+        #endif
+        self.logoutMenuItem?.isHidden = (session.user == nil)
     }
     
     // MARK: - Logo Button & Main Menu
     
     /// The MorphicBar's main menu, accessible via the Logo image button
     @IBOutlet var mainMenu: NSMenu!
-    
-    @IBOutlet var logoutMenuItem: NSMenuItem!
     
     /// The button that displays the Morphic logo
     @IBOutlet weak var logoButton: LogoButton!
@@ -79,17 +93,100 @@ public class MorphicBarViewController: NSViewController {
         mainMenu.popUp(positioning: nil, at: NSPoint(x: logoButton.bounds.origin.x, y: logoButton.bounds.origin.y + logoButton.bounds.size.height), in: logoButton)
     }
     
+    private func updateMainMenu() {
+        #if EDITION_BASIC
+            // NOTE: the default menu items are already configured for Morphic Basic
+        #elseif EDITION_COMMUNITY
+            // configure menu items to match the Morphic Community scheme
+            captureMenuItem?.isHidden = true
+            loginMenuItem?.title = "Sign In..."
+            logoutMenuItem?.title = "Sign Out"
+        #endif
+    }
+
+    // MARK: - Orientation and orientation-related constraints
+    
+    public var orientation: MorphicBarOrientation = .horizontal {
+        didSet {
+            updateConstraints()
+            morphicBarView?.orientation = self.orientation
+        }
+    }
+
+    private func updateConstraints() {
+        switch orientation {
+        case .horizontal:
+            // deactivate the vertical constraints
+            logoButtonToMorphicBarViewVerticalTopConstraint?.isActive = false
+            logoButtonToViewVerticalCenterXConstraint?.isActive = false
+            viewToMorphicBarViewVerticalTrailingConstraint?.isActive = false
+            viewToLogoButtonVerticalBottomConstraint?.isActive = false
+
+            // deactivate any old copies of our horizontal constraints
+            logoButtonToMorphicBarViewHorizontalLeadingConstraint?.isActive = false
+            logoButtonToViewHorizontalTopConstraint?.isActive = false
+            viewToLogoButtonHorizontalTrailingConstraint?.isActive = false
+            viewToMorphicBarViewHorizontalBottomConstraint?.isActive = false
+
+            logoButtonToMorphicBarViewHorizontalLeadingConstraint = NSLayoutConstraint(item: logoButton!, attribute: .leading, relatedBy: .equal, toItem: morphicBarView!, attribute: .trailing, multiplier: 1, constant: 18)
+            logoButtonToViewHorizontalTopConstraint = NSLayoutConstraint(item: logoButton!, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 7)
+            viewToLogoButtonHorizontalTrailingConstraint = NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: logoButton!, attribute: .trailing, multiplier: 1, constant: 7)
+            viewToMorphicBarViewHorizontalBottomConstraint = NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: morphicBarView!, attribute: .bottom, multiplier: 1, constant: 7)
+
+            self.view.addConstraints([
+                logoButtonToMorphicBarViewHorizontalLeadingConstraint!,
+                logoButtonToViewHorizontalTopConstraint!,
+                viewToLogoButtonHorizontalTrailingConstraint!,
+                viewToMorphicBarViewHorizontalBottomConstraint!
+            ])
+        case .vertical:
+            // deactivate the horizontal constraints
+            logoButtonToMorphicBarViewHorizontalLeadingConstraint?.isActive = false
+            logoButtonToViewHorizontalTopConstraint?.isActive = false
+            viewToLogoButtonHorizontalTrailingConstraint?.isActive = false
+            viewToMorphicBarViewHorizontalBottomConstraint?.isActive = false
+
+            // deactivate any old copies of our vertical constraints
+            logoButtonToMorphicBarViewVerticalTopConstraint?.isActive = false
+            logoButtonToViewVerticalCenterXConstraint?.isActive = false
+            viewToMorphicBarViewVerticalTrailingConstraint?.isActive = false
+            viewToLogoButtonVerticalBottomConstraint?.isActive = false
+            
+            logoButtonToMorphicBarViewVerticalTopConstraint = NSLayoutConstraint(item: logoButton!, attribute: .top, relatedBy: .equal, toItem: morphicBarView!, attribute: .bottom, multiplier: 1, constant: 18)
+            logoButtonToViewVerticalCenterXConstraint = NSLayoutConstraint(item: logoButton!, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+            viewToMorphicBarViewVerticalTrailingConstraint = NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: morphicBarView!, attribute: .trailing, multiplier: 1, constant: 7)
+            viewToLogoButtonVerticalBottomConstraint = NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: logoButton!, attribute: .bottom, multiplier: 1, constant: 7)
+
+            self.view.addConstraints([
+                logoButtonToMorphicBarViewVerticalTopConstraint!,
+                logoButtonToViewVerticalCenterXConstraint!,
+                viewToMorphicBarViewVerticalTrailingConstraint!,
+                viewToLogoButtonVerticalBottomConstraint!
+            ])
+        }
+    }
+    
     // MARK: - Items
     
     /// The MorphicBar view managed by this controller
     @IBOutlet weak var morphicBarView: MorphicBarView!
     
+    /// View constraints
+    var logoButtonToMorphicBarViewHorizontalLeadingConstraint: NSLayoutConstraint?
+    var logoButtonToMorphicBarViewVerticalTopConstraint : NSLayoutConstraint?
+    var logoButtonToViewHorizontalTopConstraint : NSLayoutConstraint?
+    var logoButtonToViewVerticalCenterXConstraint: NSLayoutConstraint?
+    var viewToLogoButtonHorizontalTrailingConstraint : NSLayoutConstraint?
+    var viewToLogoButtonVerticalBottomConstraint: NSLayoutConstraint?
+    var viewToMorphicBarViewHorizontalBottomConstraint: NSLayoutConstraint?
+    var viewToMorphicBarViewVerticalTrailingConstraint: NSLayoutConstraint?
+
     /// The items that should be shown on the MorphicBar
     public var items = [MorphicBarItem]() {
         didSet {
             _ = view
             morphicBarView.removeAllItemViews()
-            for item in items{
+            for item in items {
                 if let itemView = item.view() {
                     itemView.showsHelp = showsHelp
                     morphicBarView.add(itemView: itemView)
@@ -105,6 +202,22 @@ public class MorphicBarViewController: NSViewController {
                 itemView.showsHelp = showsHelp
             }
         }
+    }
+
+    // NOTE: we are mirroring the NSView's accessibilityChildren function here to combine and proxy the list to our owner
+    public func accessibilityChildren() -> [Any]? {
+        var result = [Any]()
+        for itemView in morphicBarView.itemViews {
+            if let children = itemView.accessibilityChildren() {
+                for child in children {
+                    result.append(child)
+                }
+            }
+        }
+        if let logoButton = self.logoButton {
+            result.append(logoButton)
+        }
+        return result
     }
 
 }
@@ -147,7 +260,7 @@ class LogoButton: NSButton {
     }
     
     private func createBoundsTrackingArea() {
-        if boundsTrackingArea != nil{
+        if boundsTrackingArea != nil {
             removeTrackingArea(boundsTrackingArea)
         }
         if showsHelp {

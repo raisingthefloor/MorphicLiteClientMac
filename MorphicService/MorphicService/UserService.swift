@@ -54,4 +54,110 @@ public extension Service {
         return session.runningTask(with: request, completion: completion)
     }
     
+    // MARK: - Morphic User Communities
+    
+    func userCommunities(user: User, completion: @escaping (_ communities: UserCommunitiesResponse?) -> Void) -> Session.Task {
+    	// NOTE: we do not urlescape the user identifiers (which we get from our server); if Swift doesn't do this natively we should consider doing it manually here out of an abundance of caution
+        let request = URLRequest(session: session, path: "v1/users/\(user.identifier)/communities", method: .get)
+        return session.runningTask(with: request, completion: completion)
+    }
+
+    func userCommunityDetails(user: User, community: UserCommunity, completion: @escaping (_ communityDetails: UserCommunityDetails?) -> Void) -> Session.Task {
+    	// NOTE: we do not urlescape the user identifiers (which we get from our server); if Swift doesn't do this natively we should consider doing it manually here out of an abundance of caution
+        let request = URLRequest(session: session, path: "v1/users/\(user.identifier)/communities/\(community.id)", method: .get)
+        return session.runningTask(with: request, completion: completion)
+    }
+    
+    struct UserCommunity: Codable {
+        public var id: String
+        public var name: String
+        public var role: Role
+        
+        public enum Role: String, Codable {
+            case manager = "manager"
+            case member = "member"
+        }
+    }
+    
+    struct UserCommunitiesResponse: Codable {
+        public var communities: [UserCommunity]
+    }
+    
+    struct UserCommunityDetails: Codable {
+        public var id: String
+        public var name: String
+        public var bar: Bar
+        
+        public struct Bar: Codable {
+            public var id: String
+            public var name: String
+            public var items: [BarItem]
+        }
+        
+        // NOTE: we intentionally do not convert snake casing to lower camel case here; we may want to reconsider that in the future
+        public struct BarItem: Codable {
+            public var kind: BarItemKind
+            public var is_primary: Bool
+            // NOTE: in the future, we may want to dynamically parse the 'configuration' data as the respective subtype (rather than capturing it as a union with loose optionals and then validating the data higher up our call chain).
+            public var configuration: BarConfigurationUnion
+        }
+
+        public enum BarItemKind: String, Codable {
+            case link = "link"
+            case application = "application"
+            case action = "action"
+        }
+        
+        // NOTE: this struct is the union of all possible ButtonConfiguration types and their subtypes (necessary for our current abstracted (codable) data decoding strategy)
+        // NOTE: we intentionally do not convert snake casing to lower camel case here; we may want to reconsider that in the future
+        public struct BarConfigurationUnion: Codable {
+            public var color: String?
+            public var `default`: String?
+            public var exe: String?
+            public var identifier: String?
+            public var image_url: String?
+            public var label: String?
+            public var subkind: String?
+            public var url: String?
+        }
+        
+        public func encodeAsMorphicBarItems() -> [[String: Interoperable?]] {
+            var morphicbarItems: [[String: Interoperable?]] = []
+            
+            for item in self.bar.items {
+                let itemConfiguration = item.configuration
+                var morphicBarItem: [String: Interoperable?] = [:]
+
+                switch item.kind {
+                case .action:
+                    morphicBarItem["type"] = "action"
+                    morphicBarItem["label"] = itemConfiguration.label
+                    morphicBarItem["color"] = itemConfiguration.color
+                    morphicBarItem["imageUrl"] = itemConfiguration.image_url
+                    morphicBarItem["identifier"] = itemConfiguration.identifier
+                    //
+                    morphicbarItems.append(morphicBarItem)
+                case .application:
+                    morphicBarItem["type"] = "application"
+                    morphicBarItem["label"] = itemConfiguration.label
+                    morphicBarItem["color"] = itemConfiguration.color
+                    morphicBarItem["imageUrl"] = itemConfiguration.image_url
+                    morphicBarItem["default"] = itemConfiguration.default
+                    morphicBarItem["exe"] = itemConfiguration.exe
+                    //
+                    morphicbarItems.append(morphicBarItem)
+                case .link:
+                    morphicBarItem["type"] = "link"
+                    morphicBarItem["label"] = itemConfiguration.label
+                    morphicBarItem["color"] = itemConfiguration.color
+                    morphicBarItem["imageUrl"] = itemConfiguration.image_url
+                    morphicBarItem["url"] = itemConfiguration.url
+                    //
+                    morphicbarItems.append(morphicBarItem)
+                }
+            }
+            
+            return morphicbarItems
+        }
+    }
 }

@@ -23,39 +23,52 @@
 
 import Cocoa
 
-public class MorphicBarItemView: NSView {
-    
-    public weak var morphicBarView: MorphicBarView?
-    
-    public var showsHelp: Bool = true
-    
+class MorphicBarSegmentedButtonItemView: NSView, MorphicBarItemViewProtocol {
+    // MorphicBarItemView protocol requirements
+    //
+    var showsHelp: Bool = true {
+        didSet {
+            segmentedButton.showsHelp = showsHelp
+        }
+    }
+    //
+    // NOTE: the following must also be implemented in all classes conforming to MorphicBarItemViewProtocol
     public override var isFlipped: Bool {
         return true
     }
-    
-}
+    //
+    public weak var morphicBarView: MorphicBarView?
 
-class MorphicBarSegmentedButtonItemView: MorphicBarItemView {
+    //
     
     var titleLabel: NSTextField
     var segmentedButton: MorphicBarSegmentedButton
     var titleButtonSpacing: CGFloat = 4.0
     
-    init(title: String, segments: [MorphicBarSegmentedButton.Segment]) {
+    var style: MorphicBarControlItemStyle
+    
+    init(title: String, segments: [MorphicBarSegmentedButton.Segment], style: MorphicBarControlItemStyle) {
         titleLabel = NSTextField(labelWithString: title)
-        titleLabel.font = .morphicBold
+        self.style = style
+        switch style {
+        case .autoWidth:
+            titleLabel.font = .morphicBold
+        case .fixedWidth(_):
+            titleLabel.font = .morphicBold // .morphicRegular
+        }
         titleLabel.alignment = .center
         segmentedButton = MorphicBarSegmentedButton(segments: segments)
         super.init(frame: NSRect(x: 0, y: 0, width: 100, height: 100))
         addSubview(titleLabel)
         addSubview(segmentedButton)
         self.needsLayout = true
-    }
-    
-    override var showsHelp: Bool {
-        didSet{
-            segmentedButton.showsHelp = showsHelp
+
+        // set our accessibility children so that VoiceOver navigates our control properly
+        var accessibilityChildren: [Any]! = []
+        for button in segmentedButton.segmentButtons {
+            accessibilityChildren.append(button.cell as Any)
         }
+        setAccessibilityChildren(accessibilityChildren)
     }
     
     private var titleYAdjustment: CGFloat {
@@ -80,7 +93,7 @@ class MorphicBarSegmentedButtonItemView: MorphicBarItemView {
     override var intrinsicContentSize: NSSize {
         let labelSize = titleLabel.intrinsicContentSize.roundedUp()
         let buttonSize = segmentedButton.intrinsicContentSize
-        return NSSize(width: ceil(max(labelSize.width, buttonSize.width)), height: NSView.noIntrinsicMetric)
+        return NSSize(width: ceil(max(labelSize.width, buttonSize.width)), height: titleYAdjustment + labelSize.height + titleButtonSpacing + buttonSize.height)
     }
     
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool {

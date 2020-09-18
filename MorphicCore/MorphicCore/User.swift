@@ -70,6 +70,9 @@ public struct User: Codable, Record {
         try container.encode(preferencesId, forKey: .preferencesId)
         try container.encode(firstName, forKey: .firstName)
         try container.encode(lastName, forKey: .lastName)
+        if let email = email {
+            try container.encode(email, forKey: .email)
+        }
     }
     
     // MARK: - Identification
