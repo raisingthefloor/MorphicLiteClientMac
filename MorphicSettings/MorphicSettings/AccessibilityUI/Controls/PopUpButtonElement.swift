@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
 
 public class PopUpButtonElement: UIElement {
     
@@ -36,7 +37,7 @@ public class PopUpButtonElement: UIElement {
             completion(false)
             return
         }
-        self.wait(atMost: 2.0, for: { self.menu != nil }) {
+        AsyncUtils.wait(atMost: 2.0, for: { self.menu != nil }) {
             sucess in
             guard let menu = self.menu else {
                 completion(false)
@@ -46,7 +47,7 @@ public class PopUpButtonElement: UIElement {
                 completion(false)
                 return
             }
-            self.wait(atMost: 2.0, for: { self.value == value }) {
+            AsyncUtils.wait(atMost: 2.0, for: { self.value == value }) {
                 success in
                 completion(success)
             }

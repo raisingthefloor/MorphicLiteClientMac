@@ -162,7 +162,7 @@ public class Session {
                     // If our token expired, try to reauthenticate with saved credentials
                     task.urlTask = self.authenticate {
                         success in
-                        if success{
+                        if success {
                             // If we got a new token, try the request again
                             os_log(.info, log: logger, "%{public}s %{public}s", request.httpMethod!, request.url!.path)
                             request.setValue(self.authToken, forHTTPHeaderField: "X-Morphic-Auth-Token")
@@ -344,8 +344,10 @@ public class Session {
             auth in
             if let auth = auth {
                 _ = self.keychain.save(usernameCredentials: credentials, for: self.service.endpoint)
+                UserDefaults.morphic.set(morphicUsername: credentials.username, for: auth.user.identifier)
+                self.user = auth.user
                 self.authToken = auth.token
-                self.signin(user: auth.user, preFetchedPreferences: nil){
+                self.signin(user: auth.user, preFetchedPreferences: nil) {
                     completion(true)
                 }
             } else {
@@ -367,6 +369,21 @@ public class Session {
         }
     }
     
+    var selectedUserCommunityIdentifier: String? {
+        get {
+            guard let currentUserIdentifier = self.currentUserIdentifier else {
+                return nil
+            }
+            return UserDefaults.morphic.selectedUserCommunityId(for: currentUserIdentifier)
+        }
+        set {
+            guard let currentUserIdentifier = self.currentUserIdentifier else {
+                return
+            }
+            UserDefaults.morphic.set(selectedUserCommunityIdentifier: newValue, for: currentUserIdentifier)
+        }
+    }
+    
     /// The current user
     public var user: User? {
         didSet {
@@ -374,24 +391,31 @@ public class Session {
         }
     }
     
+    public var isCaptureAndApplyEnabled: Bool = true
+    public var isServerPreferencesSyncEnabled: Bool = true
+    
     private func signin(user: User, preFetchedPreferences: Preferences?, completion: @escaping () -> Void) {
         let saveDefaultPreferencesIfNeeded: (@escaping () -> Void) -> Void = {
             completion in
             if self.user == nil {
-                // If we're going from no user to a logged in user, capture the
-                // computer's current settings as the default preference that will
-                // be applied back when the user logs out.
-                if let preferences = self.preferences {
-                    if preferences.identifier == "__default__" {
-                        let capture = CaptureSession(settingsManager: self.settings, preferences: preferences)
-                        capture.addAllSolutions()
-                        capture.run {
-                            self.storage.save(record: capture.preferences){
-                                success in
-                                completion()
+                if self.isCaptureAndApplyEnabled == true {
+                    // If we're going from no user to a logged in user, capture the
+                    // computer's current settings as the default preference that will
+                    // be applied back when the user logs out.
+                    if let preferences = self.preferences {
+                        if preferences.identifier == "__default__" {
+                            let capture = CaptureSession(settingsManager: self.settings, preferences: preferences)
+                            capture.addAllSolutions()
+                            capture.run {
+                                self.storage.save(record: capture.preferences) {
+                                    success in
+                                    completion()
+                                }
                             }
                         }
                     }
+                } else {
+                    completion()
                 }
             } else {
                 // If we are going from one user to another, we don't want to do
@@ -401,12 +425,20 @@ public class Session {
                 completion()
             }
         }
+        
         let fetchPreferencesIfNeeded: (@escaping (_ preferences: Preferences?) -> Void) -> Void = {
             completion in
-            if let preferences = preFetchedPreferences {
-                completion(preferences)
+            if self.isServerPreferencesSyncEnabled == true {
+                if let preferences = preFetchedPreferences {
+                    completion(preferences)
+                } else {
+                    _ = self.service.fetch(userPreferences: user, completion: completion)
+                }
             } else {
-                _ = self.service.fetch(userPreferences: user, completion: completion)
+                // create empty preference set
+                var preferences = Preferences(identifier: user.identifier)
+                preferences.userId = user.preferencesId
+                completion(preferences)
             }
         }
         
@@ -434,11 +466,17 @@ public class Session {
     
     public func signout(completion: @escaping () -> Void) {
         user = nil
+        authToken = nil
         storage.load(identifier: "__default__") {
             (_, defaultPreferences: Preferences?) in
-            self.preferences = defaultPreferences
-            let apply = ApplySession(settingsManager: self.settings, preferences: defaultPreferences!)
-            apply.run {
+            if self.isCaptureAndApplyEnabled == true {
+                self.preferences = defaultPreferences
+                let apply = ApplySession(settingsManager: self.settings, preferences: defaultPreferences!)
+                apply.run {
+                    completion()
+                    NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: self)
+                }
+            } else {
                 completion()
                 NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: self)
             }
@@ -476,6 +514,90 @@ public class Session {
         }
     }
     
+    // MARK: Community Bar
+    
+    func downloadMorphicUserCommunity(user: User, userCommunity: Service.UserCommunity, completion: @escaping (_ success: Bool, _ userCommunityDetails: Service.UserCommunityDetails?) -> Void) {
+        _ = self.service.userCommunityDetails(user: user, community: userCommunity) {
+            userCommunityDetails in
+            if let userCommunityDetails = userCommunityDetails {
+                completion(true, userCommunityDetails)
+                return
+            } else {
+                completion(false, nil)
+            }
+        }
+    }
+    
+    func downloadMorphicUserCommunities(user: User, userCommunities: [Service.UserCommunity], completion: @escaping (_ success: Bool, _ detailsByUserCommunityId: [String : Service.UserCommunityDetails]?) -> Void) {
+        var userCommunityQueue = userCommunities
+        
+        var detailsByUserCommunityId: [String : Service.UserCommunityDetails] = [:]
+        
+        var downloadNextCommunity: (() -> Void)!
+        downloadNextCommunity = {
+            if userCommunityQueue.count == 0 {
+                // if we're all out of communities, return our result
+                completion(true, detailsByUserCommunityId)
+                return
+            }
+            
+            let userCommunity = userCommunityQueue.removeFirst()
+            
+            // download the next userCommunity in our queue
+            self.downloadMorphicUserCommunity(user: user, userCommunity: userCommunity) {
+                success, userCommunityDetails in
+                //
+                guard success == true else {
+                    completion(false, nil)
+                    return
+                }
+                
+                // if we successfully downloaded the user community, add its details to our response and then call ourselves again
+                detailsByUserCommunityId[userCommunity.id] = userCommunityDetails
+                downloadNextCommunity()
+            }
+        }
+        // start the download chain by downloading the first community
+        downloadNextCommunity()
+    }
+
+    public func downloadAndSaveMorphicUserCommunities(user: User, completion: @escaping (_ success: Bool) -> Void) {
+        _ = self.service.userCommunities(user: user) {
+            userCommunities in
+                        
+            if let userCommunities = userCommunities {
+                self.downloadMorphicUserCommunities(user: user, userCommunities: userCommunities.communities) {
+                    success, detailsByUserCommunityId in
+                    
+                    if success == false {
+                        completion(false)
+                        return
+                    }
+                    
+                    var communityBarsItems: [String: String] = [:]
+                    
+                    // encode each community bar's items into JSON and then store them all
+                    for (userCommunityId, userCommunityDetails) in detailsByUserCommunityId! {
+                        let userCommunityDetailsAsJsonData = try! JSONEncoder().encode(userCommunityDetails)
+                        let userCommunityDetailsAsJsonString = String(data: userCommunityDetailsAsJsonData, encoding: .utf8)!
+                        communityBarsItems[userCommunityId] = userCommunityDetailsAsJsonString
+                    }
+
+                    self.set(communityBarsItems, for: .morphicBarCommunityBarsAsJson)
+                    self.savePreferences(waitFiveSecondsBeforeSave: false) {
+                        success in
+                        
+                        completion(success)
+                    }
+                }
+            } else {
+                completion(false)
+            }
+        }
+    }
+    
+    // MARK: Fields
+    
     /// The initial default preferences
     public static var initialPreferences: Preferences?
     
@@ -488,9 +610,19 @@ public class Session {
     
     public func set(_ value: Interoperable?, for key: Preferences.Key) {
         preferences?.set(value, for: key)
-        setNeedsPreferencesSave()
+        savePreferences(waitFiveSecondsBeforeSave: true) { _ in }
+    }
+
+    public func set(_ value: [Interoperable?], for key: Preferences.Key) {
+        preferences?.set(value, for: key)
+        savePreferences(waitFiveSecondsBeforeSave: true) { _ in }
     }
     
+    public func set(_ value: [String: Interoperable?], for key: Preferences.Key) {
+        preferences?.set(value, for: key)
+        savePreferences(waitFiveSecondsBeforeSave: true) { _ in }
+    }
+
     public func string(for key: Preferences.Key) -> String? {
         return (preferences?.get(key: key) ?? Session.initialPreferences?.get(key: key)) as? String
     }
@@ -524,39 +656,89 @@ public class Session {
         apply.run(completion: completion)
     }
     
+    public private(set) var preferencesSaveIsQueued: Bool = false
+    
     /// Save the preferences after a delay
     ///
     /// Allows many rapid changes to be batched into a single HTTP request
-    private func setNeedsPreferencesSave() {
+    public func savePreferences(waitFiveSecondsBeforeSave: Bool, completion: @escaping (_ success: Bool) -> Void) {
         os_log(.error, log: logger, "Queueing preferences save")
+        preferencesSaveIsQueued = true
         preferencesSaveTimer?.invalidate()
-        preferencesSaveTimer = .scheduledTimer(withTimeInterval: 5, repeats: false) {
-            timer in
+        
+        let savePreferencesAsynchronously: (() -> Void) = {
+            self.preferencesSaveIsQueued = false
             self.preferencesSaveTimer = nil
             if let preferences = self.preferences {
-                os_log(.info, log: logger, "Saving prefefences to disk")
-                self.storage.save(record: preferences) {
+                os_log(.info, log: logger, "Saving preferences to disk")
+                self.savePreferencesToDisk {
                     success in
-                    if success {
-                        os_log(.info, log: logger, "Saved preferences to disk")
-                    } else {
-                        os_log(.error, log: logger, "Failed to save preferences to disk")
-                    }
-                    if self.user != nil {
-                        os_log(.info, log: logger, "Saving prefefences to server")
-                        _ = self.service.save(preferences) {
-                            success in
-                            if success {
-                                os_log(.info, log: logger, "Saved preferences to server")
+                    if self.isServerPreferencesSyncEnabled == true {
+                        if self.user != nil {
+                            os_log(.info, log: logger, "Saving preferences to server")
+                            if preferences.userId != nil {
+                                _ = self.service.save(preferences) {
+                                    success in
+                                    if success {
+                                        os_log(.info, log: logger, "Saved preferences to server")
+                                        completion(true)
+                                        return
+                                    } else {
+                                        os_log(.error, log: logger, "Failed to save preference to server")
+                                        completion(true)
+                                        return
+                                    }
+                                }
                             } else {
-                                os_log(.error, log: logger, "Failed to save preference to server")
+                                os_log(.error, log: logger, "Failed to save preference to server because userId is nil")
+                                completion(false)
+                                return
                             }
+                        } else {
+                            completion(true)
+                            return
                         }
+                    } else {
+                        // in Morphic Community, we do not save preferences to the server
+                        completion(success)
+                        return
                     }
                 }
             } else {
                 os_log(.error, log: logger, "Save preferences timer fired with nil preferences")
+                completion(false)
+                return
             }
+        }
+        
+        if waitFiveSecondsBeforeSave == true {
+            preferencesSaveTimer = .scheduledTimer(withTimeInterval: 5, repeats: false) {
+                timer in
+                //
+                savePreferencesAsynchronously()
+            }
+        } else {
+            savePreferencesAsynchronously()
+        }
+    }
+    
+    private func savePreferencesToDisk(callback: @escaping (Bool) -> ()) {
+        if let preferences = self.preferences {
+            os_log(.info, log: logger, "Saving preferences to disk")
+            self.storage.save(record: preferences) {
+                success in
+                if success {
+                    os_log(.info, log: logger, "Saved preferences to disk")
+                } else {
+                    os_log(.error, log: logger, "Failed to save preferences to disk")
+                }
+                
+                callback(success)
+            }
+        } else {
+            os_log(.error, log: logger, "Save preferences calledd with nil preferences")
+
+            callback(false)
         }
     }
     
@@ -566,7 +748,7 @@ public class Session {
 
 // MARK: - URL Request/Response Extensions
 
-extension URLRequest{
+extension URLRequest {
     
     /// Create a new request for the given morphic session
     ///
@@ -580,6 +762,7 @@ extension URLRequest{
         let url = URL(string: path, relativeTo: session.service.endpoint)!
         self.init(url: url)
         httpMethod = method.rawValue
+	// NOTE: consider making the bearer token optional (so that we don't send it with login requests, etc.)
         if let token = session.authToken {
             self.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
@@ -731,4 +914,9 @@ public extension NSNotification.Name {
     
     static let morphicSessionUserDidChange = NSNotification.Name(rawValue: "org.raisingthefloor.morphicSessionUserDidChange")
     
+}
+
+public extension Preferences.Key {
+    /// The preference key that stores which items appear in each community on the MorphicBar (Morphic Community managed community bar)
+    static var morphicBarCommunityBarsAsJson = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "communityBarsAsJson")
 }

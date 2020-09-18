@@ -133,35 +133,7 @@ public class UIElement{
         }
         return nil
     }
-    
-    public func wait(atMost: TimeInterval, for condition: @escaping () -> Bool, completion: @escaping (_ success: Bool) -> Void) {
-        guard !condition() else {
-            completion(true)
-            return
-        }
-        var checkTimer: Timer?
-        let timeoutTimer = Timer.scheduledTimer(withTimeInterval: atMost, repeats: false) {
-            _ in
-            checkTimer?.invalidate()
-            completion(condition())
-        }
-        var checkInterval: TimeInterval = 0.1
-        var check: (() -> Void)!
-        check = {
-            checkTimer = Timer.scheduledTimer(withTimeInterval: checkInterval, repeats: false) {
-                _ in
-                if condition() {
-                    timeoutTimer.invalidate()
-                    completion(true)
-                } else {
-                    checkInterval *= 2
-                    check()
-                }
-            }
-        }
-        check()
-    }
-    
+        
     public func perform(action: Action, completion: @escaping (_ success: Bool, _ nextTarget: UIElement?) -> Void) {
         switch action {
         case .check(let title, let checked):

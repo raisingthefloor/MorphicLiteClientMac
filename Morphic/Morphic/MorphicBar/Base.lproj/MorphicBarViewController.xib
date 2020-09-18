@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.3"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="MorphicBarViewController" customModule="Morphic" customModuleProvider="target">
             <connections>
+                <outlet property="captureMenuItem" destination="jUa-06-vgJ" id="Uvj-o5-5tv"/>
+                <outlet property="loginMenuItem" destination="iGo-my-5Ga" id="7tj-Ss-QYR"/>
                 <outlet property="logoButton" destination="ead-JY-BhL" id="cLt-cn-cEr"/>
-                <outlet property="logoutMenuItem" destination="O7a-6a-ADF" id="wIr-CK-VBa"/>
+                <outlet property="logoutMenuItem" destination="O7a-6a-ADF" id="0Vq-o3-uOm"/>
                 <outlet property="mainMenu" destination="Tdd-O7-ejt" id="2yx-wr-veu"/>
                 <outlet property="morphicBarView" destination="hJk-BO-TPf" id="6Yt-7q-x61"/>
+                <outlet property="selectCommunityMenuItem" destination="eJF-8G-qpw" id="jHG-0d-CSo"/>
                 <outlet property="view" destination="c22-O7-iKe" id="gRp-Cf-8sn"/>
             </connections>
         </customObject>
@@ -37,18 +41,17 @@
                         <action selector="showMainMenu:" target="-2" id="ZqU-v5-d0Q"/>
                     </connections>
                 </button>
-                <customView translatesAutoresizingMaskIntoConstraints="NO" id="hJk-BO-TPf" customClass="MorphicBarView" customModule="Morphic" customModuleProvider="target">
+                <customView horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hJk-BO-TPf" customClass="MorphicBarView" customModule="Morphic" customModuleProvider="target">
                     <rect key="frame" x="7" y="7" width="364" height="44"/>
                 </customView>
             </subviews>
             <constraints>
-                <constraint firstItem="ead-JY-BhL" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="7" id="MMq-9i-bl2"/>
-                <constraint firstAttribute="trailing" secondItem="ead-JY-BhL" secondAttribute="trailing" constant="7" id="PeV-mu-cPY"/>
+                <constraint firstItem="ead-JY-BhL" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="7" placeholder="YES" id="MMq-9i-bl2"/>
+                <constraint firstAttribute="trailing" secondItem="ead-JY-BhL" secondAttribute="trailing" constant="7" placeholder="YES" id="PeV-mu-cPY"/>
                 <constraint firstItem="hJk-BO-TPf" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="7" id="T5H-0J-mCf"/>
                 <constraint firstItem="hJk-BO-TPf" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="7" id="WCk-Cp-tfU"/>
-                <constraint firstItem="ead-JY-BhL" firstAttribute="leading" secondItem="hJk-BO-TPf" secondAttribute="trailing" constant="18" id="X7I-GO-sbl"/>
-                <constraint firstAttribute="bottom" secondItem="hJk-BO-TPf" secondAttribute="bottom" constant="7" id="pJY-6a-tbR"/>
-                <constraint firstAttribute="bottom" secondItem="ead-JY-BhL" secondAttribute="bottom" constant="7" id="srO-DZ-tfV"/>
+                <constraint firstItem="ead-JY-BhL" firstAttribute="leading" secondItem="hJk-BO-TPf" secondAttribute="trailing" constant="18" placeholder="YES" id="X7I-GO-sbl"/>
+                <constraint firstAttribute="bottom" secondItem="hJk-BO-TPf" secondAttribute="bottom" constant="7" placeholder="YES" id="pJY-6a-tbR"/>
             </constraints>
             <point key="canvasLocation" x="-48" y="67"/>
         </customView>
@@ -59,6 +62,10 @@
                     <connections>
                         <action selector="hideMorphicBar:" target="-1" id="8CC-hU-78U"/>
                     </connections>
+                </menuItem>
+                <menuItem title="Select Community" hidden="YES" id="eJF-8G-qpw">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Select Community" id="UaH-F4-gmM"/>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="PsU-Tp-zqY"/>
                 <menuItem title="Take Settings With Me..." id="jUa-06-vgJ">
@@ -88,7 +95,7 @@
                 </menuItem>
                 <menuItem title="Quit Morphic" keyEquivalent="q" id="tHP-m8-Lto">
                     <connections>
-                        <action selector="terminate:" target="-1" id="AxL-78-D9D"/>
+                        <action selector="quitApplication:" target="-1" id="EHj-NU-bQv"/>
                     </connections>
                 </menuItem>
             </items>

@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
 
 public class SystemPreferencesElement: ApplicationElement {
     
@@ -95,7 +96,7 @@ public class SystemPreferencesElement: ApplicationElement {
             completion(false, nil)
             return
         }
-        wait(atMost: 3.0, for: { window.title == "System Preferences" }) {
+        AsyncUtils.wait(atMost: 3.0, for: { window.title == "System Preferences" }) {
             success in
             guard success else {
                 completion(false, nil)
@@ -109,7 +110,7 @@ public class SystemPreferencesElement: ApplicationElement {
                 completion(false, nil)
                 return
             }
-            self.wait(atMost: 3.0, for: { window.title == identifier.windowTitle }) {
+            AsyncUtils.wait(atMost: 3.0, for: { window.title == identifier.windowTitle }) {
                 success in
                 completion(success, ElementType(accessibilityElement: window.accessibilityElement))
             }

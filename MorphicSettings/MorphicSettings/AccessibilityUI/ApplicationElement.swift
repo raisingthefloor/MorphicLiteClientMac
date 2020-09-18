@@ -23,6 +23,7 @@
 
 import Foundation
 import Cocoa
+import MorphicCore
 import OSLog
 
 private let logger = OSLog(subsystem: "MorphicSettings", category: "ApplicationElement")
@@ -63,7 +64,7 @@ public class ApplicationElement: UIElement {
         }
         let complete = {
             let runningApplication: NSRunningApplication! = self.runningApplication
-            self.wait(atMost: 5.0, for: { runningApplication.isFinishedLaunching }) {
+            AsyncUtils.wait(atMost: 5.0, for: { runningApplication.isFinishedLaunching }) {
                 success in
                 guard success else {
                     os_log(.error, log: logger, "Timeout waiting for isFinishLaunching")

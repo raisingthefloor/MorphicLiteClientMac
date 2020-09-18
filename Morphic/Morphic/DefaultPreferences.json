@@ -1,5 +1,5 @@
 {
-    "org.raisingthefloor.morphic.morphicbar": {
+    "org.raisingthefloor.morphic.morphicbarbasic": {
         "visible": true,
         "position.mac": "topRight",
         "showsHelp": true,
@@ -25,5 +25,10 @@
                 "feature": "nightshift"
             }
         ]
+    },
+    "org.raisingthefloor.morphic.morphicbarcommunity": {
+        "visible": true,
+        "position.mac": "topRight",
+        "showsHelp": false
     }
 }

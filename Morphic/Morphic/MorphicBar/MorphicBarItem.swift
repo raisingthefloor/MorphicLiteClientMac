@@ -35,7 +35,7 @@ public class MorphicBarItem {
         self.interoperable = interoperable
     }
     
-    func view() -> MorphicBarItemView? {
+    func view() -> MorphicBarItemViewProtocol? {
         return nil
     }
     
@@ -55,62 +55,257 @@ public class MorphicBarItem {
         switch interoperable.string(for: "type") {
         case "control":
             return MorphicBarControlItem(interoperable: interoperable)
+        case "link":
+            return MorphicBarLinkItem(interoperable: interoperable)
+        case "application":
+            let morphicBarApplicationItem = MorphicBarApplicationItem(interoperable: interoperable)
+            // NOTE: we do not support "EXE" buttons on macOS, so only show items with a supported 'default' application
+            if morphicBarApplicationItem.default != nil {
+                return morphicBarApplicationItem
+            } else {
+                return nil
+            }
+        case "action":
+            return createMorphicBarActionItem(interoperable: interoperable)
         default:
             return nil
         }
     }
     
+    private static func createMorphicBarActionItem(interoperable: [String: Interoperable?]) -> MorphicBarItem? {
+        // NOTE: argument 'label' should never be nil, but it was nil in all API call test results; as a practical matter this does not matter as we are not using the parameter in our implementation
+                
+        guard let identifier = interoperable["identifier"] as? String else {
+            return nil
+        }
+                
+        // map the community action items to traditional control items (by mapping their interoperable data)
+        
+        var transformedInteroperable: [String: Interoperable?] = [:]
+        
+        transformedInteroperable["color"] = interoperable["color"] as? String
+
+        switch identifier {
+        case "copy-paste":
+            transformedInteroperable["feature"] = "copypaste"
+        case "magnify":
+            transformedInteroperable["feature"] = "magnifieronoff"
+        case "screen-zoom":
+            transformedInteroperable["feature"] = "resolution"
+        case "volume":
+            transformedInteroperable["feature"] = "volumewithoutmute"
+        default:
+            // no other action items are supported
+            break
+        }
+
+        let morphicBarControlItem = MorphicBarControlItem(interoperable: transformedInteroperable)
+        morphicBarControlItem.style = .fixedWidth(segmentWidth: 49.25)
+        
+        return morphicBarControlItem
+    }
 }
 
-class MorphicBarControlItem: MorphicBarItem{
+class MorphicBarLinkItem: MorphicBarItem {
+    var label: String
+    var color: NSColor?
+    var imageUrl: String?
+    var url: URL?
+     
+    override init(interoperable: [String : Interoperable?]) {
+        // NOTE: argument 'label' should never be nil, but we use an empty string as a backup
+        label = interoperable.string(for: "label") ?? ""
+        //
+        if let colorAsString = interoperable.string(for: "color") {
+            color = NSColor.createFromRgbHexString(colorAsString)
+        } else {
+            color = nil
+        }
+        //
+        imageUrl = interoperable.string(for: "imageUrl")
+        //
+        // NOTE: argument 'url' should never be nil, but we use an empty string as a backup
+        if let urlAsString = interoperable.string(for: "url") {
+            // NOTE: if the url was malformed, that may result in a "nil" URL
+            // SECURITY NOTE: we should strongly consider filtering urls by scheme (or otherwise) here
+            url = URL(string: urlAsString)
+        } else {
+            url = nil
+        }
+        
+        super.init(interoperable: interoperable)
+    }
+
+    override func view() -> MorphicBarItemViewProtocol? {
+        var icon: MorphicBarButtonItemIcon? = nil
+        if let imageUrl = self.imageUrl {
+            icon = MorphicBarButtonItemIcon(rawValue: imageUrl)
+        }
+        
+        let view = MorphicBarButtonItemView(label: label, labelColor: nil, fillColor: color, icon: icon, iconColor: nil)
+        view.target = self
+        view.action = #selector(MorphicBarLinkItem.openLink(_:))
+        return view
+    }
+    
+    @objc
+    func openLink(_ sender: Any?) {
+        if let url = self.url {
+            NSWorkspace.shared.open(url)
+        }
+    }
+}
+
+enum MorphicBarApplicationDefaultOption: String {
+    case email
+}
+//
+class MorphicBarApplicationItem: MorphicBarItem {
+    var label: String
+    var color: NSColor?
+    var imageUrl: String?
+    var `default`: MorphicBarApplicationDefaultOption?
+    var exe: String?
+
+    override init(interoperable: [String : Interoperable?]) {
+        // NOTE: argument 'label' should never be nil, but we use an empty string as a backup
+        label = interoperable.string(for: "label") ?? ""
+        //
+        if let colorAsString = interoperable.string(for: "color") {
+            color = NSColor.createFromRgbHexString(colorAsString)
+        } else {
+            color = nil
+        }
+        //
+        imageUrl = interoperable.string(for: "imageUrl")
+        //
+        // NOTE: either argument "default" (application type) or "exe" should always be populated, but we assign a nil application and exe as a backup
+        if let `default` = interoperable.string(for: "default") {
+            // NOTE: this function call will either return a known 'default' application option...or it will return nil (if the application isn't supported on macOS)
+            self.default = MorphicBarApplicationDefaultOption(rawValue: `default`)
+        } else {
+            self.default = nil
+        }
+        //
+        // NOTE: we do not currently support EXE on macOS, so ignore this option
+//        if let exe = interoperable.string(for: "exe") {
+//            self.exe = exe
+//        } else {
+            self.exe = nil
+//        }
+        
+        super.init(interoperable: interoperable)
+    }
+
+    override func view() -> MorphicBarItemViewProtocol? {
+        var icon: MorphicBarButtonItemIcon? = nil
+        if let imageUrl = self.imageUrl {
+            icon = MorphicBarButtonItemIcon(rawValue: imageUrl)
+        }
+        
+        let view = MorphicBarButtonItemView(label: label, labelColor: nil, fillColor: color, icon: icon, iconColor: nil)
+        view.target = self
+        // NOTE: generally, we should give preference to opening an executable directly ("exe") over opening the default application by type ("default")
+        if self.exe != nil {
+            view.action = #selector(MorphicBarApplicationItem.openExe(_:))
+        } else {
+            view.action = #selector(MorphicBarApplicationItem.openDefault(_:))
+        }
+        return view
+    }
+    
+    @objc
+    func openDefault(_ sender: Any?) {
+        if let `default` = self.default {
+            switch `default` {
+            case .email:
+                NSWorkspace.shared.open(URL(string: "mailto:")!)
+            }
+        }
+    }
+    
+    @objc
+    func openExe(_ sender: Any?) {
+        if let _ = self.exe {
+            fatalError("Opening EXEs is not supported on macOS")
+        }
+    }
+}
+
+enum MorphicBarControlItemStyle {
+    case autoWidth
+    case fixedWidth(segmentWidth: CGFloat)
+}
+//
+class MorphicBarControlItem: MorphicBarItem {
     
     enum Feature: String {
         case resolution
         case magnifier
+        case magnifieronoff
         case reader
         case readselected
         case volume
+        case volumewithoutmute
         case contrast
         case nightshift
+        case copypaste
         case unknown
         
         init(string: String?) {
             if let known = Feature(rawValue: string ?? "") {
                 self = known
-            }else{
+            } else {
                 self = .unknown
             }
         }
     }
     
     var feature: Feature
+    var fillColor: NSColor? = nil 
+    
+    var style: MorphicBarControlItemStyle = .autoWidth
     
     override init(interoperable: [String : Interoperable?]) {
         feature = Feature(string: interoperable.string(for: "feature"))
+        if let colorAsString = interoperable.string(for: "color") {
+            fillColor = NSColor.createFromRgbHexString(colorAsString)
+        } else {
+            fillColor = nil
+        }
         super.init(interoperable: interoperable)
     }
     
-    override func view() -> MorphicBarItemView? {
+    override func view() -> MorphicBarItemViewProtocol? {
+        let buttonColor: NSColor = fillColor ?? .morphicPrimaryColor
+        let alternateButtonColor: NSColor = fillColor ?? .morphicPrimaryColor
+        // NOTE: to alternate the color of button segments, uncomment the following line instead
+        //let alternateButtonColor: NSColor = fillColor ?? .morphicPrimaryColorLightend
+
         switch feature {
         case .resolution:
             let localized = LocalizedStrings(prefix: "control.feature.resolution")
             let segments = [
-                MorphicBarSegmentedButton.Segment(icon: .plus(), isPrimary: true, helpProvider: QuickHelpTextSizeBiggerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "bigger.help.title")),
-                MorphicBarSegmentedButton.Segment(icon: .minus(), isPrimary: false, helpProvider: QuickHelpTextSizeSmallerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "smaller.help.title"))
+                MorphicBarSegmentedButton.Segment(icon: .plus(), fillColor: buttonColor, helpProvider:  QuickHelpTextSizeBiggerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "bigger.help.title"), style: style),
+                MorphicBarSegmentedButton.Segment(icon: .minus(), fillColor: alternateButtonColor, helpProvider: QuickHelpTextSizeSmallerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "smaller.help.title"), style: style)
             ]
-            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.zoom(_:))
             return view
-        case .magnifier:
+        case .magnifier,
+             .magnifieronoff:
+            // NOTE: magnifieronoff is identical to magnifier but shows "on/off" buttons instead of "show/hide" buttons
+            let isOnOff = (feature == .magnifieronoff)
+            //
             let localized = LocalizedStrings(prefix: "control.feature.magnifier")
-            let showHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "show.help.title"), message: localized.string(for: "show.help.message")) }
-            let hideHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "hide.help.title"), message: localized.string(for: "hide.help.message")) }
+            let showHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: isOnOff ? "on.help.title" : "show.help.title"), message: localized.string(for: isOnOff ? "on.help.message" : "show.help.message")) }
+            let hideHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: isOnOff ? "off.help.title" : "hide.help.title"), message: localized.string(for: isOnOff ? "off.help.message" : "hide.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "show"), isPrimary: true, helpProvider: showHelpProvider, accessibilityLabel: localized.string(for: "show.help.title")),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "hide"), isPrimary: false, helpProvider: hideHelpProvider, accessibilityLabel: localized.string(for: "hide.help.title"))
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: isOnOff ? "on" : "show"), fillColor: buttonColor, helpProvider: showHelpProvider, accessibilityLabel: localized.string(for: isOnOff ? "on.help.title" : "show.help.title"), style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: isOnOff ? "off" : "hide"), fillColor: alternateButtonColor, helpProvider: hideHelpProvider, accessibilityLabel: localized.string(for: isOnOff ? "off.help.title" : "hide.help.title"), style: style)
             ]
-            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.magnifier(_:))
@@ -120,10 +315,10 @@ class MorphicBarControlItem: MorphicBarItem{
             let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), isPrimary: true, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title")),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), isPrimary: false, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"))
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), style: style)
             ]
-            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.reader(_:))
@@ -132,21 +327,26 @@ class MorphicBarControlItem: MorphicBarItem{
             let localized = LocalizedStrings(prefix: "control.feature.readselected")
             let playStopHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "playstop.help.title"), message: localized.string(for: "playstop.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "playstop"), isPrimary: true, helpProvider: playStopHelpProvider, accessibilityLabel: localized.string(for: "playstop.help.title"))
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "playstop"), fillColor: buttonColor, helpProvider: playStopHelpProvider, accessibilityLabel: localized.string(for: "playstop.help.title"), style: style)
             ]
-            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.readselected)
             return view
-        case .volume:
+        case .volume,
+             .volumewithoutmute:
             let localized = LocalizedStrings(prefix: "control.feature.volume")
-            let segments = [
-                MorphicBarSegmentedButton.Segment(icon: .plus(), isPrimary: true, helpProvider: QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "up.help.title")),
-                MorphicBarSegmentedButton.Segment(icon: .minus(), isPrimary: false, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "down.help.title")),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "mute"), isPrimary: true, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "mute.help.title"))
+            var segments = [
+                MorphicBarSegmentedButton.Segment(icon: .plus(), fillColor: buttonColor, helpProvider: QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "up.help.title"), style: style),
+                MorphicBarSegmentedButton.Segment(icon: .minus(), fillColor: alternateButtonColor, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "down.help.title"), style: style)
             ]
-            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
+            if feature == .volume {
+                segments.append(
+                    MorphicBarSegmentedButton.Segment(title: localized.string(for: "mute"), fillColor: buttonColor, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "mute.help.title"), style: style)
+                )
+            }
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.volume(_:))
             return view
@@ -155,10 +355,10 @@ class MorphicBarControlItem: MorphicBarItem{
             let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), isPrimary: true, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title")),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), isPrimary: false, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"))
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), style: style)
             ]
-            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.contrast(_:))
@@ -168,13 +368,26 @@ class MorphicBarControlItem: MorphicBarItem{
             let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), isPrimary: true, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title")),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), isPrimary: false, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"))
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), style: style)
             ]
-            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments)
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.nightShift(_:))
+            return view
+        case .copypaste:
+            let localized = LocalizedStrings(prefix: "control.feature.copypaste")
+            let copyHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
+            let pasteHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "paste.help.title"), message: localized.string(for: "paste.help.message")) }
+            let segments = [
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "copy"), fillColor: buttonColor, helpProvider: copyHelpProvider, accessibilityLabel: localized.string(for: "copy.help.title"), style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "paste"), fillColor: alternateButtonColor, helpProvider: pasteHelpProvider, accessibilityLabel: localized.string(for: "paste.help.title"), style: style)
+            ]
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(MorphicBarControlItem.copyPaste(_:))
             return view
         default:
             return nil
@@ -210,19 +423,100 @@ class MorphicBarControlItem: MorphicBarItem{
             if output.isMuted {
                 _ = output.setMuted(false)
             } else {
-                _ = output.setVolume(output.volume + 0.1)
+                _ = output.setVolume(output.volume + 0.05)
             }
         } else if segment == 1 {
-            if output.isMuted{
+            if output.isMuted {
                 _ = output.setMuted(false)
             } else {
-                _ = output.setVolume(output.volume - 0.1)
+                _ = output.setVolume(output.volume - 0.05)
             }
         } else if segment == 2 {
             _ = output.setMuted(true)
         }
     }
-    
+
+    @objc
+    func volumeWithoutMute(_ sender: Any?) {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
+            return
+        }
+        guard let output = AudioOutput.main else {
+            return
+        }
+        if segment == 0 {
+            if output.isMuted {
+                _ = output.setMuted(false)
+            } else {
+                _ = output.setVolume(output.volume + 0.05)
+            }
+        } else if segment == 1 {
+            if output.isMuted {
+                _ = output.setMuted(false)
+            } else {
+                _ = output.setVolume(output.volume - 0.05)
+            }
+        }
+    }
+
+    @objc
+    func copyPaste(_ sender: Any?) {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
+            return
+        }
+
+        // verify that we have accessibility permissions (since UI automation and sendKeys will not work without them)
+        // NOTE: this function call will prompt the user for authorization if they have not already granted it
+        guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+            NSLog("User had not granted 'accessibility' authorization; user now prompted")
+            return
+        }
+
+        let keyCode: CGKeyCode
+        if segment == 0 {
+            // copy
+            keyCode = CGKeyCode(kVK_ANSI_C)
+        } else if segment == 1 {
+            // paste
+            keyCode = CGKeyCode(kVK_ANSI_V)
+        } else {
+            // invalid segment
+            return
+        }
+        let keyOptions = MorphicInput.KeyOptions.withCommandKey
+        
+        // get the window ID of the topmost window
+        guard let (_ /* topmostWindowOwnerName */, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
+            NSLog("Could not get ID of topmost window")
+            return
+        }
+
+        // capture a reference to the topmost application
+        guard let topmostApplication = NSRunningApplication(processIdentifier: pid_t(topmostProcessId)) else {
+            NSLog("Could not get reference to application owning the topmost window")
+            return
+        }
+
+        // activate the topmost application
+        guard topmostApplication.activate(options: .activateIgnoringOtherApps) == true else {
+            NSLog("Could not activate the topmost window")
+            return
+        }
+
+        AsyncUtils.wait(atMost: 2.0, for: { topmostApplication.isActive == true }) {
+            success in
+            if success == false {
+                NSLog("Could not activate topmost application within two seconds")
+            }
+            
+            // send the appropriate hotkey to the system
+            guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
+                NSLog("Could not send copy/paste hotkey to the keyboard input stream")
+                return
+            }
+        }
+    }
+
     @objc
     func contrast(_ sender: Any?) {
         guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
@@ -325,10 +619,17 @@ class MorphicBarControlItem: MorphicBarItem{
                 return
             }
             
-            // send the "speak selected text key" to the system
-            guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
-                NSLog("Could not send 'Speak selected text' hotkey to the keyboard input stream")
-                return
+            AsyncUtils.wait(atMost: 2.0, for: { topmostApplication.isActive == true }) {
+                success in
+                if success == false {
+                    NSLog("Could not activate topmost application within two seconds")
+                }
+                
+                // send the "speak selected text key" to the system
+                guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
+                    NSLog("Could not send 'Speak selected text' hotkey to the keyboard input stream")
+                    return
+                }
             }
         }
         
@@ -483,7 +784,7 @@ fileprivate class QuickHelpTextSizeSmallerProvider: QuickHelpContentProvider {
     }
 }
 
-fileprivate class QuickHelpVolumeUpProvider: QuickHelpContentProvider{
+fileprivate class QuickHelpVolumeUpProvider: QuickHelpContentProvider {
     
     init(audioOutput: AudioOutput?, localized: LocalizedStrings) {
         output = audioOutput
@@ -516,7 +817,7 @@ fileprivate class QuickHelpVolumeUpProvider: QuickHelpContentProvider{
     
 }
 
-fileprivate class QuickHelpVolumeDownProvider: QuickHelpContentProvider{
+fileprivate class QuickHelpVolumeDownProvider: QuickHelpContentProvider {
     
     init(audioOutput: AudioOutput?, localized: LocalizedStrings) {
         output = audioOutput
@@ -549,7 +850,7 @@ fileprivate class QuickHelpVolumeDownProvider: QuickHelpContentProvider{
     
 }
 
-fileprivate class QuickHelpVolumeMuteProvider: QuickHelpContentProvider{
+fileprivate class QuickHelpVolumeMuteProvider: QuickHelpContentProvider {
     
     init(audioOutput: AudioOutput?, localized: LocalizedStrings) {
         output = audioOutput
@@ -577,7 +878,7 @@ fileprivate class QuickHelpVolumeMuteProvider: QuickHelpContentProvider{
     
 }
 
-private extension NSImage{
+private extension NSImage {
     
     static func plus() -> NSImage {
         return NSImage(named: "SegmentIconPlus")!
@@ -587,4 +888,47 @@ private extension NSImage{
         return NSImage(named: "SegmentIconMinus")!
     }
     
+}
+
+private extension NSColor {
+    
+    // string must be formatted as #rrggbb
+    static func createFromRgbHexString(_ rgbHexString: String) -> NSColor? {
+        if rgbHexString.count != 7 {
+            return nil
+        }
+        
+        let hashStartIndex = rgbHexString.startIndex
+        let redStartIndex = rgbHexString.index(hashStartIndex, offsetBy: 1)
+        let greenStartIndex = rgbHexString.index(redStartIndex, offsetBy: 2)
+        let blueStartIndex = rgbHexString.index(greenStartIndex, offsetBy: 2)
+        
+        let hashAsString = rgbHexString[hashStartIndex..<redStartIndex]
+        guard hashAsString == "#" else {
+            return nil
+        }
+        
+        let redAsHexString = rgbHexString[redStartIndex..<greenStartIndex]
+        guard let redAsInt = Int(redAsHexString, radix: 16),
+            redAsInt >= 0,
+            redAsInt <= 255 else {
+            //
+            return nil
+        }
+        let greenAsHexString = rgbHexString[greenStartIndex..<blueStartIndex]
+        guard let greenAsInt = Int(greenAsHexString, radix: 16),
+            greenAsInt >= 0,
+            greenAsInt <= 255 else {
+            return nil
+        }
+        let blueAsHexString = rgbHexString[blueStartIndex...]
+        guard let blueAsInt = Int(blueAsHexString, radix: 16),
+            blueAsInt >= 0,
+            blueAsInt <= 255 else {
+            //
+            return nil
+        }
+        
+        return NSColor(red: CGFloat(redAsInt) / 255.0, green: CGFloat(greenAsInt) / 255.0, blue: CGFloat(blueAsInt) / 255.0, alpha: 1.0)
+    }
 }

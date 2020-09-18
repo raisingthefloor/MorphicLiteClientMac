@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.3"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner"/>
         <customObject id="ZNk-5q-oDb" customClass="AppDelegate" customModule="Morphic" customModuleProvider="target">
             <connections>
-                <outlet property="hideMorphicBarItem" destination="gOm-Gw-nLp" id="f86-ih-DaC"/>
-                <outlet property="logoutItem" destination="fdS-ef-rqr" id="2v2-vJ-y1T"/>
+                <outlet property="captureMenuItem" destination="pzh-qC-88t" id="WSG-Dv-VRa"/>
+                <outlet property="hideMorphicBarMenuItem" destination="gOm-Gw-nLp" id="f86-ih-DaC"/>
+                <outlet property="loginMenuItem" destination="S6R-h6-1Yz" id="zO2-OE-N39"/>
+                <outlet property="logoutMenuItem" destination="fdS-ef-rqr" id="2v2-vJ-y1T"/>
                 <outlet property="menu" destination="iDk-eb-5cB" id="OjZ-YL-Pes"/>
-                <outlet property="showMorphicBarItem" destination="4BS-cA-IvL" id="elS-Jc-raC"/>
+                <outlet property="selectCommunityMenuItem" destination="qcc-Q2-sYr" id="Gm9-io-FQH"/>
+                <outlet property="showMorphicBarMenuItem" destination="4BS-cA-IvL" id="elS-Jc-raC"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
@@ -32,6 +36,10 @@
                     <connections>
                         <action selector="hideMorphicBar:" target="-1" id="YMq-QB-Pag"/>
                     </connections>
+                </menuItem>
+                <menuItem title="Select Community" hidden="YES" id="qcc-Q2-sYr">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Select Community" id="l0C-IM-POV"/>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="vgQ-je-MGT"/>
                 <menuItem title="Take Settings With Me..." id="pzh-qC-88t">
@@ -61,7 +69,7 @@
                 </menuItem>
                 <menuItem title="Quit Morphic" keyEquivalent="q" id="aYd-9o-084">
                     <connections>
-                        <action selector="terminate:" target="-1" id="oZz-fZ-cJR"/>
+                        <action selector="quitApplication:" target="ZNk-5q-oDb" id="8qb-cn-Wqb"/>
                     </connections>
                 </menuItem>
             </items>
