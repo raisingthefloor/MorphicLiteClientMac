@@ -699,19 +699,35 @@ class MorphicBarControlItem: MorphicBarItem {
     // TODO: this is a temporary function; refactor this function (or reorganize, generally)
     @objc
     func colorFilterLearnMore(_ sender: Any?) {
-        print("learn more about color filters")
+	//
     }
 
     // TODO: this is a temporary function; refactor this function (or reorganize, generally)
     @objc
     func colorFilterQuickDemoVideo(_ sender: Any?) {
-        print("quick demo video!")
+	//
     }
 
     // TODO: this is a temporary function; refactor this function (or reorganize, generally)
     @objc
     func colorFilterSettings(_ sender: Any?) {
-        print("settings!")
+        let accessibilityUIAutomation = AccessibilityUIAutomation(hideSystemPreferences: false)
+        accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: "Color Filters") {
+            accessibilityPreferencesElement in
+         
+            guard let _ = accessibilityPreferencesElement else {
+                // if we could not successfully launch System Preferences and navigate to this pane, log the error
+                // NOTE for future enhancement: notify the user of any errors here (and retry or try different methods)
+                NSLog("Could not open settings panel")
+                return
+            }
+
+            // make sure that System Preferences is the topmost application
+            guard let systemPreferencesApplication = NSRunningApplication.runningApplications(withBundleIdentifier: SystemPreferencesElement.bundleIdentifier).first else {
+                return
+            }
+            systemPreferencesApplication.activate(options: .activateIgnoringOtherApps)
+        }
     }
     
     //
