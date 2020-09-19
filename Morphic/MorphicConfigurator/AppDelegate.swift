@@ -90,6 +90,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         captureWindowController?.window?.delegate = self
     }
     
+    var permissionsGuidanceWindowController: NSWindowController?
+    
+    func showPermissionsGuidanceWindow(_ sender: Any?) {
+        if permissionsGuidanceWindowController == nil {
+            permissionsGuidanceWindowController = PermissionsGuidanceWindowController(windowNibName: "PermissionsGuidanceWindow")
+        }
+        permissionsGuidanceWindowController?.window?.makeKeyAndOrderFront(sender)
+        permissionsGuidanceWindowController?.window?.delegate = self
+    }
+    
     func windowWillClose(_ notification: Notification) {
         guard let window = notification.object as? NSWindow else {
             return
@@ -99,6 +109,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
         if window == loginWindowController?.window {
             loginWindowController = nil
+        }
+        if window == permissionsGuidanceWindowController?.window {
+            permissionsGuidanceWindowController = nil
         }
     }
 }
