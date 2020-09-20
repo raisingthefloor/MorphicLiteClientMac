@@ -173,6 +173,7 @@
 		9DE0736B25128A180030A978 /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B472444E04300EEDF14 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9DE0736C25128A180030A978 /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B492444E04300EEDF14 /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9DE0736D25128A180030A978 /* MorphicService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B482444E04300EEDF14 /* MorphicService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9DE45BAA25171C6000209421 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1216,6 +1217,7 @@
 				9DE0730E251289C20030A978 /* MorphicBarButtonItemIcon.swift in Sources */,
 				9DE0730F251289C20030A978 /* Theme.swift in Sources */,
 				9DE07310251289C20030A978 /* MorphicBarWindow.swift in Sources */,
+				9DE45BAA25171C6000209421 /* SettingsLinkActions.swift in Sources */,
 				9DE07311251289C20030A978 /* MorphicBarSegmentedButton.swift in Sources */,
 				9DE07312251289C20030A978 /* QuickHelpViewController.swift in Sources */,
 				9DE07313251289C20030A978 /* MorphicBarViewController.swift in Sources */,
