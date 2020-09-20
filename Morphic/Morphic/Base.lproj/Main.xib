@@ -68,7 +68,7 @@
                             <menuItem title="Read Aloud Settings" id="yVb-9e-9TN">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="JML-5y-P2O"/>
+                                    <action selector="launchReadAloudSettings:" target="-1" id="5tE-Or-AmI"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Color Vision Settings" id="KW2-Yc-fA8">

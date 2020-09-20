@@ -358,7 +358,7 @@ class MorphicBarControlItem: MorphicBarItem {
             let localized = LocalizedStrings(prefix: "control.feature.readselected")
             let playStopHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "playstop.help.title"), message: localized.string(for: "playstop.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "playstop"), fillColor: buttonColor, helpProvider: playStopHelpProvider, accessibilityLabel: localized.string(for: "playstop.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .readselMac), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .readselMac), settingsBlock: nil, style: style)
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "playstop"), fillColor: buttonColor, helpProvider: playStopHelpProvider, accessibilityLabel: localized.string(for: "playstop.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .readselMac), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .readselMac), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilitySpeech) }, style: style)
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)

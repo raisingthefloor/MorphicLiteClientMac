@@ -675,6 +675,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func launchNightModeSettings(_ sender: Any?) {
         SettingsLinkActions.openSystemPreferencesPane(.displaysNightShift)
     }
+    
+    @IBAction
+    func launchReadAloudSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.accessibilitySpeech)
+    }
 
     // TODO: this is a temporary function assigned to unimplemented menu buttons (so that they don't appear in gray); remove it once items are implemented
     @IBAction

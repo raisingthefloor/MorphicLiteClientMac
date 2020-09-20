@@ -31,6 +31,7 @@ class SettingsLinkActions {
         case accessibilityOverview
         case accessibilityDisplayColorFilters
         case accessibilityDisplayDisplay
+        case accessibilitySpeech
         case accessibilityZoom
         case displaysNightShift
         case general
@@ -47,6 +48,9 @@ class SettingsLinkActions {
         case .accessibilityDisplayDisplay:
             let accessibilityUIAutomation = AccessibilityUIAutomation()
             accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: "Display", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+        case .accessibilitySpeech:
+            let accessibilityUIAutomation = AccessibilityUIAutomation()
+            accessibilityUIAutomation.showAccessibilitySpeechPreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
         case .accessibilityZoom:
             let accessibilityUIAutomation = AccessibilityUIAutomation()
             accessibilityUIAutomation.showAccessibilityZoomPreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
