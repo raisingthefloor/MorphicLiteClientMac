@@ -25,17 +25,18 @@ import Foundation
 import MorphicCore
 import OSLog
 
-private let logger = OSLog(subsystem: "MorphicSettings", category: "DisplaysUIAutomation")
+private let logger = OSLog(subsystem: "MorphicSettings", category: "MouseUIAutomations")
 
-public class DisplaysUIAutomation: UIAutomation {
+public class MouseUIAutomation: UIAutomation {
+    
     public required init() {
     }
     
     public func apply(_ value: Interoperable?, completion: @escaping (Bool) -> Void) {
         fatalError("Not implemented")
     }
-        
-    public func showDisplaysPreferences(tabTitled tab: String, completion: @escaping (_ displays: DisplaysPreferencesElement?) -> Void) {
+
+    public func showMousePreferences(completion: @escaping (_ mouse: MousePreferencesElement?) -> Void) {
         let app = SystemPreferencesElement()
         app.open {
             success in
@@ -44,23 +45,19 @@ public class DisplaysUIAutomation: UIAutomation {
                 completion(nil)
                 return
             }
-            app.showDisplays {
-                success, displays in
+            app.showMouse {
+                success, mouse in
                 guard success else {
-                    os_log(.error, log: logger, "Failed to show Displays pane")
+                    os_log(.error, log: logger, "Failed to show Mouse pane")
                     completion(nil)
                     return
                 }
-                guard let displays = displays else {
-                    completion(nil)
-                    return
+                
+                // wait for the mouse pane to appear
+                AsyncUtils.wait(atMost: 1.0, for: { mouse?.button(titled: "Continue") != nil }) {
+                    success in
+                    completion(mouse)
                 }
-                guard displays.select(tabTitled: tab) else {
-                    os_log(.error, log: logger, "Failed to select tab")
-                    completion(nil)
-                    return
-                }
-                completion(displays)
             }
         }
     }

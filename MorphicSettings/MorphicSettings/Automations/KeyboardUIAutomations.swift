@@ -25,9 +25,9 @@ import Foundation
 import MorphicCore
 import OSLog
 
-private let logger = OSLog(subsystem: "MorphicSettings", category: "DisplaysUIAutomation")
+private let logger = OSLog(subsystem: "MorphicSettings", category: "KeyboardUIAutomation")
 
-public class DisplaysUIAutomation: UIAutomation {
+public class KeyboardUIAutomation: UIAutomation {
     public required init() {
     }
     
@@ -35,7 +35,7 @@ public class DisplaysUIAutomation: UIAutomation {
         fatalError("Not implemented")
     }
         
-    public func showDisplaysPreferences(tabTitled tab: String, completion: @escaping (_ displays: DisplaysPreferencesElement?) -> Void) {
+    public func showKeyboardPreferences(tabTitled tab: String, completion: @escaping (_ keyboard: KeyboardPreferencesElement?) -> Void) {
         let app = SystemPreferencesElement()
         app.open {
             success in
@@ -44,23 +44,23 @@ public class DisplaysUIAutomation: UIAutomation {
                 completion(nil)
                 return
             }
-            app.showDisplays {
-                success, displays in
+            app.showKeyboard {
+                success, keyboard in
                 guard success else {
-                    os_log(.error, log: logger, "Failed to show Displays pane")
+                    os_log(.error, log: logger, "Failed to show Keyboard pane")
                     completion(nil)
                     return
                 }
-                guard let displays = displays else {
+                guard let keyboard = keyboard else {
                     completion(nil)
                     return
                 }
-                guard displays.select(tabTitled: tab) else {
+                guard keyboard.select(tabTitled: tab) else {
                     os_log(.error, log: logger, "Failed to select tab")
                     completion(nil)
                     return
                 }
-                completion(displays)
+                completion(keyboard)
             }
         }
     }

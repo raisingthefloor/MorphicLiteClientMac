@@ -25,9 +25,9 @@ import Foundation
 import MorphicCore
 import OSLog
 
-private let logger = OSLog(subsystem: "MorphicSettings", category: "DisplaysUIAutomation")
+private let logger = OSLog(subsystem: "MorphicSettings", category: "LanguageAndRegionUIAutomation")
 
-public class DisplaysUIAutomation: UIAutomation {
+public class LanguageAndRegionUIAutomation: UIAutomation {
     public required init() {
     }
     
@@ -35,7 +35,7 @@ public class DisplaysUIAutomation: UIAutomation {
         fatalError("Not implemented")
     }
         
-    public func showDisplaysPreferences(tabTitled tab: String, completion: @escaping (_ displays: DisplaysPreferencesElement?) -> Void) {
+    public func showLanguageAndRegionPreferences(tabTitled tab: String, completion: @escaping (_ languageAndRegion: LanguageAndRegionPreferencesElement?) -> Void) {
         let app = SystemPreferencesElement()
         app.open {
             success in
@@ -44,23 +44,23 @@ public class DisplaysUIAutomation: UIAutomation {
                 completion(nil)
                 return
             }
-            app.showDisplays {
-                success, displays in
+            app.showLanguageAndRegion {
+                success, languageAndRegion in
                 guard success else {
-                    os_log(.error, log: logger, "Failed to show Displays pane")
+                    os_log(.error, log: logger, "Failed to show Language & Region pane")
                     completion(nil)
                     return
                 }
-                guard let displays = displays else {
+                guard let languageAndRegion = languageAndRegion else {
                     completion(nil)
                     return
                 }
-                guard displays.select(tabTitled: tab) else {
+                guard languageAndRegion.select(tabTitled: tab) else {
                     os_log(.error, log: logger, "Failed to select tab")
                     completion(nil)
                     return
                 }
-                completion(displays)
+                completion(languageAndRegion)
             }
         }
     }

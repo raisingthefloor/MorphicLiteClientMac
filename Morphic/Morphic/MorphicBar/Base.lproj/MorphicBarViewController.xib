@@ -128,19 +128,19 @@
                             <menuItem title="Mouse Settings" id="0gO-25-7cj">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="handleUnimplementedMenuItem:" target="-1" id="GeR-xQ-Lnt"/>
+                                    <action selector="launchMouseSettings:" target="-1" id="HrQ-T1-5w6"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Pointer Size" id="zpZ-AF-Hf7">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="handleUnimplementedMenuItem:" target="-1" id="S9l-ql-6IF"/>
+                                    <action selector="launchPointerSizeSettings:" target="-1" id="QRn-wA-jfx"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Stop Key-repeat " id="mgJ-yE-smb">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="handleUnimplementedMenuItem:" target="-1" id="c0h-Im-a9f"/>
+                                    <action selector="launchStopKeyRepeatSettings:" target="-1" id="6Sq-fH-iD1"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Brightness" id="Xa2-gj-4P1">
@@ -152,7 +152,7 @@
                             <menuItem title="Language " id="olb-mk-ZQg">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="handleUnimplementedMenuItem:" target="-1" id="sVS-1j-RQF"/>
+                                    <action selector="launchLanguageSettings:" target="-1" id="K79-oZ-fe8"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="All Accessibility Options" id="YEN-Q8-3kd">

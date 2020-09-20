@@ -672,8 +672,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     @IBAction
+    func launchLanguageSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.languageandregionGeneral)
+    }
+
+    @IBAction
     func launchMagnifierSettings(_ sender: Any?) {
         SettingsLinkActions.openSystemPreferencesPane(.accessibilityZoom)
+    }
+
+    @IBAction
+    func launchMouseSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.mouse)
     }
 
     @IBAction
@@ -682,8 +692,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     @IBAction
+    func launchPointerSizeSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayCursor)
+    }
+    
+    @IBAction
     func launchReadAloudSettings(_ sender: Any?) {
         SettingsLinkActions.openSystemPreferencesPane(.accessibilitySpeech)
+    }
+
+    @IBAction
+    func launchStopKeyRepeatSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.keyboardKeyboard)
     }
 
     // TODO: this is a temporary function assigned to unimplemented menu buttons (so that they don't appear in gray); remove it once items are implemented

@@ -36,7 +36,7 @@ public class GeneralUIAutomation: UIAutomation {
         fatalError("Not implemented")
     }
 
-    public func showGeneralPreferences(completion: @escaping (_ accessibility: GeneralPreferencesElement?) -> Void) {
+    public func showGeneralPreferences(completion: @escaping (_ general: GeneralPreferencesElement?) -> Void) {
         let app = SystemPreferencesElement()
         app.open {
             success in

@@ -30,12 +30,16 @@ class SettingsLinkActions {
     public enum SystemPreferencePane {
         case accessibilityOverview
         case accessibilityDisplayColorFilters
+        case accessibilityDisplayCursor
         case accessibilityDisplayDisplay
         case accessibilitySpeech
         case accessibilityZoom
         case displaysDisplay
         case displaysNightShift
         case general
+        case keyboardKeyboard
+        case languageandregionGeneral
+        case mouse
     }
     
     static func openSystemPreferencesPane(_ pane: SystemPreferencePane) {
@@ -46,6 +50,9 @@ class SettingsLinkActions {
         case .accessibilityDisplayColorFilters:
             let accessibilityUIAutomation = AccessibilityUIAutomation()
             accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: "Color Filters", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+        case .accessibilityDisplayCursor:
+            let accessibilityUIAutomation = AccessibilityUIAutomation()
+            accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: "Cursor", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
         case .accessibilityDisplayDisplay:
             let accessibilityUIAutomation = AccessibilityUIAutomation()
             accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: "Display", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
@@ -62,8 +69,17 @@ class SettingsLinkActions {
             let displaysUIAutomation = DisplaysUIAutomation()
             displaysUIAutomation.showDisplaysPreferences(tabTitled: "Night Shift", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
         case .general:
-            let accessibilityUIAutomation = GeneralUIAutomation()
-            accessibilityUIAutomation.showGeneralPreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+            let generalUIAutomation = GeneralUIAutomation()
+            generalUIAutomation.showGeneralPreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+        case .keyboardKeyboard:
+            let keyboardUIAutomation = KeyboardUIAutomation()
+            keyboardUIAutomation.showKeyboardPreferences(tabTitled: "Keyboard", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+        case .languageandregionGeneral:
+            let languageAndRegionUIAutomation = LanguageAndRegionUIAutomation()
+            languageAndRegionUIAutomation.showLanguageAndRegionPreferences(tabTitled: "General", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+        case .mouse:
+            let mouseUIAutomation = MouseUIAutomation()
+            mouseUIAutomation.showMousePreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
         }
     }
     

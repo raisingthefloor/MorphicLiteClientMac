@@ -65,6 +65,12 @@
 		9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */; };
 		9DCE209224CF1AAF00D3445B /* MorphicA11yAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */; };
 		9DD22FBA24DCB8B800C2FA52 /* SpeechUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */; };
+		9DD4F4842517ACCD00ADCC25 /* MousePreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F4832517ACCD00ADCC25 /* MousePreferencesElement.swift */; };
+		9DD4F48E2517ACDE00ADCC25 /* MouseUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F48D2517ACDE00ADCC25 /* MouseUIAutomations.swift */; };
+		9DD4F49A2517AF1600ADCC25 /* KeyboardPreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F4992517AF1600ADCC25 /* KeyboardPreferencesElement.swift */; };
+		9DD4F49D2517AF2A00ADCC25 /* KeyboardUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F49C2517AF2A00ADCC25 /* KeyboardUIAutomations.swift */; };
+		9DD4F4A12517B06200ADCC25 /* LanguageAndRegionUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F4A02517B06200ADCC25 /* LanguageAndRegionUIAutomations.swift */; };
+		9DD4F4A42517B0F200ADCC25 /* LanguageAndRegionPreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F4A32517B0F200ADCC25 /* LanguageAndRegionPreferencesElement.swift */; };
 		9DE45B962517114100209421 /* DisplaysUIAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE45B952517114100209421 /* DisplaysUIAutomation.swift */; };
 		9DE45B9F251712EB00209421 /* DisplaysPreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE45B9E251712EB00209421 /* DisplaysPreferencesElement.swift */; };
 /* End PBXBuildFile section */
@@ -155,6 +161,12 @@
 		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
 		9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yAuthorization.swift; sourceTree = "<group>"; };
 		9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechUIAutomations.swift; sourceTree = "<group>"; };
+		9DD4F4832517ACCD00ADCC25 /* MousePreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MousePreferencesElement.swift; sourceTree = "<group>"; };
+		9DD4F48D2517ACDE00ADCC25 /* MouseUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MouseUIAutomations.swift; sourceTree = "<group>"; };
+		9DD4F4992517AF1600ADCC25 /* KeyboardPreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardPreferencesElement.swift; sourceTree = "<group>"; };
+		9DD4F49C2517AF2A00ADCC25 /* KeyboardUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardUIAutomations.swift; sourceTree = "<group>"; };
+		9DD4F4A02517B06200ADCC25 /* LanguageAndRegionUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageAndRegionUIAutomations.swift; sourceTree = "<group>"; };
+		9DD4F4A32517B0F200ADCC25 /* LanguageAndRegionPreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageAndRegionPreferencesElement.swift; sourceTree = "<group>"; };
 		9DE45B952517114100209421 /* DisplaysUIAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaysUIAutomation.swift; sourceTree = "<group>"; };
 		9DE45B9E251712EB00209421 /* DisplaysPreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaysPreferencesElement.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -203,12 +215,15 @@
 			children = (
 				314EB6DD24A6A67700CF3D48 /* UIAutomation.swift */,
 				31F9AEDC24A7F2D90026EBDA /* AccessibilityUIAutomation.swift */,
-				9D4B24BE25143D0000F0B2E2 /* GeneralUIAutomations.swift */,
 				314EB6DF24A6A69B00CF3D48 /* DisplayUIAutomations.swift */,
 				9DE45B952517114100209421 /* DisplaysUIAutomation.swift */,
+				9D4B24BE25143D0000F0B2E2 /* GeneralUIAutomations.swift */,
+				9DD4F49C2517AF2A00ADCC25 /* KeyboardUIAutomations.swift */,
+				9DD4F4A02517B06200ADCC25 /* LanguageAndRegionUIAutomations.swift */,
+				9DD4F48D2517ACDE00ADCC25 /* MouseUIAutomations.swift */,
+				9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */,
 				31F9AEE224A7F7EA0026EBDA /* VoiceOverUIAutomations.swift */,
 				31F9AEE424A803B90026EBDA /* ZoomUIAutomations.swift */,
-				9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */,
 			);
 			path = Automations;
 			sourceTree = "<group>";
@@ -253,6 +268,9 @@
 				315EEC9624A56DF20039C61D /* AccessibilityPreferencesElement.swift */,
 				9DE45B9E251712EB00209421 /* DisplaysPreferencesElement.swift */,
 				9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */,
+				9DD4F4992517AF1600ADCC25 /* KeyboardPreferencesElement.swift */,
+				9DD4F4A32517B0F200ADCC25 /* LanguageAndRegionPreferencesElement.swift */,
+				9DD4F4832517ACCD00ADCC25 /* MousePreferencesElement.swift */,
 			);
 			path = SystemPrefs;
 			sourceTree = "<group>";
@@ -537,6 +555,7 @@
 				312973EF24A275D7000F5ED1 /* Setting.swift in Sources */,
 				31F9AEEC24AA54BF0026EBDA /* PopUpButtonElement.swift in Sources */,
 				31F9AEE524A803B90026EBDA /* ZoomUIAutomations.swift in Sources */,
+				9DD4F4A42517B0F200ADCC25 /* LanguageAndRegionPreferencesElement.swift in Sources */,
 				312DBFF024A27BCF002FB951 /* Solution.swift in Sources */,
 				31A16BCB2423E86C0081A72C /* MorphicLaunchDaemonsAndAgents.swift in Sources */,
 				314EB6E224A6B34300CF3D48 /* TabElement.swift in Sources */,
@@ -545,13 +564,16 @@
 				311336512427F33600686AF6 /* Display.swift in Sources */,
 				315EEC9B24A573A80039C61D /* TableElement.swift in Sources */,
 				315EEC8524A536290039C61D /* UIElement.swift in Sources */,
+				9DD4F49D2517AF2A00ADCC25 /* KeyboardUIAutomations.swift in Sources */,
 				312DBFF924A2B200002FB951 /* ClientSettingHandler.swift in Sources */,
 				9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */,
 				315EEC8F24A5477E0039C61D /* ApplicationElement.swift in Sources */,
 				312DBFF724A28AFD002FB951 /* SettingFinalizer.swift in Sources */,
+				9DD4F4A12517B06200ADCC25 /* LanguageAndRegionUIAutomations.swift in Sources */,
 				31A16BD02423E86C0081A72C /* MorphicDisplay.swift in Sources */,
 				315EEC8B24A546AE0039C61D /* ToolbarElement.swift in Sources */,
 				315EEC9524A554580039C61D /* ButtonElement.swift in Sources */,
+				9DD4F48E2517ACDE00ADCC25 /* MouseUIAutomations.swift in Sources */,
 				31F9AEDD24A7F2D90026EBDA /* AccessibilityUIAutomation.swift in Sources */,
 				3137AC4424B0FBC600CE3808 /* MenuItemElement.swift in Sources */,
 				315EEC8324A530970039C61D /* SystemPreferences.swift in Sources */,
@@ -559,7 +581,9 @@
 				31A16BCF2423E86C0081A72C /* MorphicDisk.swift in Sources */,
 				3113364D2427F01100686AF6 /* SettingsManager.swift in Sources */,
 				31A16BCD2423E86C0081A72C /* MorphicInput.swift in Sources */,
+				9DD4F4842517ACCD00ADCC25 /* MousePreferencesElement.swift in Sources */,
 				9D0AF73724A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift in Sources */,
+				9DD4F49A2517AF1600ADCC25 /* KeyboardPreferencesElement.swift in Sources */,
 				9D4B24BF25143D0000F0B2E2 /* GeneralUIAutomations.swift in Sources */,
 				31CE56E22448C8F700A52A7B /* SettingHandler.swift in Sources */,
 				315EEC8724A536A60039C61D /* TabGroupElement.swift in Sources */,

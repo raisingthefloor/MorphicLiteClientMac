@@ -40,6 +40,9 @@ public class SystemPreferencesElement: ApplicationElement {
         case accessibility
         case displays
         case general
+        case keyboard
+        case languageAndRegion
+        case mouse 
         
         public var buttonTitle: String {
             get {
@@ -50,6 +53,12 @@ public class SystemPreferencesElement: ApplicationElement {
                     return "Displays"
                 case .general:
                     return "General"
+                case .keyboard:
+                    return "Keyboard"
+                case .languageAndRegion:
+                    return "Language\n& Region"
+                case .mouse:
+                    return "Mouse"
                 }
             }
         }
@@ -74,6 +83,12 @@ public class SystemPreferencesElement: ApplicationElement {
                         })
                 case .general:
                     return .windowTitle("General")
+                case .keyboard:
+                    return .windowTitle("Keyboard")
+                case .languageAndRegion:
+                    return .windowTitle("Language & Region")
+                case .mouse:
+                    return .windowTitle("Mouse")
                 }
             }
         }
@@ -90,7 +105,19 @@ public class SystemPreferencesElement: ApplicationElement {
     public func showGeneral(completion: @escaping (_ success: Bool, _ pane: GeneralPreferencesElement?) -> Void) {
         return show(pane: .general, completion: completion)
     }
-    
+
+    public func showKeyboard(completion: @escaping (_ success: Bool, _ pane: KeyboardPreferencesElement?) -> Void) {
+        return show(pane: .keyboard, completion: completion)
+    }
+
+    public func showLanguageAndRegion(completion: @escaping (_ success: Bool, _ pane: LanguageAndRegionPreferencesElement?) -> Void) {
+        return show(pane: .languageAndRegion, completion: completion)
+    }
+
+    public func showMouse(completion: @escaping (_ success: Bool, _ pane: MousePreferencesElement?) -> Void) {
+        return show(pane: .mouse, completion: completion)
+    }
+
     public func show<ElementType: UIElement>(pane identifier: PaneIdentifier, completion: @escaping (_ success: Bool, _ pane: ElementType?) -> Void) {
         var window: WindowElement! = mainWindow
         if window == nil {
