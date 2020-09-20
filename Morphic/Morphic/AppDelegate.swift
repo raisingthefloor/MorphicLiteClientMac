@@ -652,6 +652,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     @IBAction
+    func launchBrightnessSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.displaysDisplay)
+    }
+    
+    @IBAction
     func launchColorVisionSettings(_ sender: Any?) {
         SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayColorFilters)
     }

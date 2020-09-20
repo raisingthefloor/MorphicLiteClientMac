@@ -120,7 +120,7 @@
                             <menuItem title="Brightness" id="JQV-M8-1cX">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="jsf-9e-K1o"/>
+                                    <action selector="launchBrightnessSettings:" target="-1" id="Yj1-V1-0rq"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Language" id="opf-Uy-dBe">

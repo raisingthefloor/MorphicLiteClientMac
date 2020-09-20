@@ -33,6 +33,7 @@ class SettingsLinkActions {
         case accessibilityDisplayDisplay
         case accessibilitySpeech
         case accessibilityZoom
+        case displaysDisplay
         case displaysNightShift
         case general
     }
@@ -54,6 +55,9 @@ class SettingsLinkActions {
         case .accessibilityZoom:
             let accessibilityUIAutomation = AccessibilityUIAutomation()
             accessibilityUIAutomation.showAccessibilityZoomPreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+        case .displaysDisplay:
+            let displaysUIAutomation = DisplaysUIAutomation()
+            displaysUIAutomation.showDisplaysPreferences(tabTitled: "Display", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
         case .displaysNightShift:
             let displaysUIAutomation = DisplaysUIAutomation()
             displaysUIAutomation.showDisplaysPreferences(tabTitled: "Night Shift", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
