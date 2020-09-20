@@ -667,6 +667,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     @IBAction
+    func launchMagnifierSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.accessibilityZoom)
+    }
+
+    @IBAction
     func launchNightModeSettings(_ sender: Any?) {
         SettingsLinkActions.openSystemPreferencesPane(.displaysNightShift)
     }

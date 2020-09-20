@@ -62,7 +62,7 @@
                             <menuItem title="Magnifier Settings" id="b1Z-FW-EwQ">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="v35-OR-FnQ"/>
+                                    <action selector="launchMagnifierSettings:" target="-1" id="Kz8-0l-X1Q"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Read Aloud Settings" id="yVb-9e-9TN">
