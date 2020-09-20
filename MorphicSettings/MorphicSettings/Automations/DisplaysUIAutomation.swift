@@ -55,20 +55,12 @@ public class DisplaysUIAutomation: UIAutomation {
                     completion(nil)
                     return
                 }
-                AsyncUtils.wait(atMost: 2.0, for: { displays.checkbox(titled: "Show mirroring options in the menu bar when available") != nil }) {
-                        success in
-                    guard success == true else {
-                        completion(nil)
-                        return
-                    }
-                    
-                    guard displays.select(tabTitled: tab) else {
-                        os_log(.error, log: logger, "Failed to select tab")
-                        completion(nil)
-                        return
-                    }
-                    completion(displays)
+                guard displays.select(tabTitled: tab) else {
+                    os_log(.error, log: logger, "Failed to select tab")
+                    completion(nil)
+                    return
                 }
+                completion(displays)
             }
         }
     }

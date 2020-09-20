@@ -54,17 +54,26 @@ public class SystemPreferencesElement: ApplicationElement {
             }
         }
         
-        // NOTE: if windowTitle is not static, then windowTitle will return nil
-        public var windowTitle: String? {
-            get{
+        public enum IdentificationMethod {
+            case uiElementMatchFunction(_ function: (_ uiElement: UIElement) -> Bool)
+            case windowTitle(_ title: String)
+        }
+        
+        public var paneIdentificationMethod: PaneIdentifier.IdentificationMethod {
+            get {
                 switch self {
                 case .accessibility:
-                    return "Accessibility"
+                    return .windowTitle("Accessibility")
                 case .displays:
-                    // NOTE: the title of the Displays system preferences pane is the human-readable name of the current display; we pass nil to indicate that our code should just wait for any title change
-                    return nil
+                    return .uiElementMatchFunction(
+                        { displaysAsUIElement in
+                            guard let displays = displaysAsUIElement as? DisplaysPreferencesElement else {
+                                return false
+                            }
+                            return displays.checkbox(titled: "Show mirroring options in the menu bar when available") != nil
+                        })
                 case .general:
-                    return "General"
+                    return .windowTitle("General")
                 }
             }
         }
@@ -106,7 +115,15 @@ public class SystemPreferencesElement: ApplicationElement {
             }
         }
         //
-        if let identifierWindowTitle = identifier.windowTitle {
+        let windowAsUIElement = ElementType(accessibilityElement: window.accessibilityElement)
+        //
+        switch identifier.paneIdentificationMethod {
+        case .uiElementMatchFunction(let matchFunction):
+            if matchFunction(windowAsUIElement) == true {
+                completion(true, ElementType(accessibilityElement: window.accessibilityElement))
+                return
+            }
+        case .windowTitle(let identifierWindowTitle):
             guard window.title != identifierWindowTitle else {
                 completion(true, ElementType(accessibilityElement: window.accessibilityElement))
                 return
@@ -130,17 +147,17 @@ public class SystemPreferencesElement: ApplicationElement {
                 completion(false, nil)
                 return
             }
-            let windowTitleBeforePaneNavigation = window.title
             guard paneButton.press() else {
                 completion(false, nil)
                 return
             }
             AsyncUtils.wait(atMost: 3.0,
                 for: {
-                    if let identifierWindowTitle = identifier.windowTitle {
+                    switch identifier.paneIdentificationMethod {
+                    case .uiElementMatchFunction(let matchFunction):
+                        return matchFunction(windowAsUIElement) == true
+                    case .windowTitle(let identifierWindowTitle):
                         return window.title == identifierWindowTitle
-                    } else {
-                        return window.title != nil && window.title != windowTitleBeforePaneNavigation
                     }
             }) {
                 success in
