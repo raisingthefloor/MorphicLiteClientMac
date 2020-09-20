@@ -386,8 +386,8 @@ class MorphicBarControlItem: MorphicBarItem {
             let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), settingsBlock: nil, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), settingsBlock: nil, style: style)
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay) }, style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay) }, style: style)
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
@@ -401,10 +401,10 @@ class MorphicBarControlItem: MorphicBarItem {
             let darkHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "dark.help.title"), message: localized.string(for: "dark.help.message")) }
             let nightHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "night.help.title"), message: localized.string(for: "night.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "contrast"), fillColor: buttonColor, helpProvider: contrastHelpProvider, accessibilityLabel: localized.string(for: "contrast.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), settingsBlock: nil, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "color"), fillColor: alternateButtonColor, helpProvider: colorHelpProvider, accessibilityLabel: localized.string(for: "color.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .colorvision), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .colorvision), settingsBlock: self.openColorFiltersPreferencesPane, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "dark"), fillColor: buttonColor, helpProvider: darkHelpProvider, accessibilityLabel: localized.string(for: "dark.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .darkmode), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .darkmode), settingsBlock: nil, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "night"), fillColor: alternateButtonColor, helpProvider: nightHelpProvider, accessibilityLabel: localized.string(for: "night.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), settingsBlock: nil, style: style)
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "contrast"), fillColor: buttonColor, helpProvider: contrastHelpProvider, accessibilityLabel: localized.string(for: "contrast.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay) }, style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "color"), fillColor: alternateButtonColor, helpProvider: colorHelpProvider, accessibilityLabel: localized.string(for: "color.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .colorvision), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .colorvision), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayColorFilters) }, style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "dark"), fillColor: buttonColor, helpProvider: darkHelpProvider, accessibilityLabel: localized.string(for: "dark.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .darkmode), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .darkmode), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.general) }, style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "night"), fillColor: alternateButtonColor, helpProvider: nightHelpProvider, accessibilityLabel: localized.string(for: "night.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.displaysNightShift) }, style: style)
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
@@ -838,29 +838,6 @@ class MorphicBarControlItem: MorphicBarItem {
             }
         }
     }
-    
-    // MARK: scripts to open preferences panes for the user
-    
-    func openColorFiltersPreferencesPane() {
-        let accessibilityUIAutomation = AccessibilityUIAutomation(hideSystemPreferences: true)
-        accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: "Color Filters") {
-            accessibilityPreferencesElement in
-         
-            guard let _ = accessibilityPreferencesElement else {
-                // if we could not successfully launch System Preferences and navigate to this pane, log the error
-                // NOTE for future enhancement: notify the user of any errors here (and retry or try different methods)
-                NSLog("Could not open settings panel")
-                return
-            }
-
-            // show System Preferences and raise it to the top of the application window stack
-            guard let systemPreferencesApplication = NSRunningApplication.runningApplications(withBundleIdentifier: SystemPreferencesElement.bundleIdentifier).first else {
-                return
-            }
-            systemPreferencesApplication.activate(options: .activateIgnoringOtherApps)
-        }
-    }
-    
     
 }
 

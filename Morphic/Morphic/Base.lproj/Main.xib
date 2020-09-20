@@ -74,25 +74,25 @@
                             <menuItem title="Color Vision Settings" id="KW2-Yc-fA8">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="2SL-Ci-hQC"/>
+                                    <action selector="launchColorVisionSettings:" target="-1" id="Wna-NA-wJ2"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Night Mode Settings" id="bNX-LY-aa2">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="qGz-ex-wnk"/>
+                                    <action selector="launchNightModeSettings:" target="-1" id="Hs6-vt-avi"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Dark Mode Settings" id="2mx-T9-CEQ">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="1Wy-q9-iEH"/>
+                                    <action selector="launchDarkModeSettings:" target="-1" id="qeC-Fe-vJc"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Contrast Settings" id="RHA-xv-t7n">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="Y7j-Am-hYE"/>
+                                    <action selector="launchContrastSettings:" target="-1" id="Djw-Z7-oFC"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="I2I-6m-2ua"/>
@@ -132,7 +132,7 @@
                             <menuItem title="All Accessibility Options" id="ZA3-bo-s5U">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="Fdw-Jt-Aff"/>
+                                    <action selector="launchAllAccessibilityOptionsSettings:" target="-1" id="5Ra-mE-7HJ"/>
                                 </connections>
                             </menuItem>
                         </items>

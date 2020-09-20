@@ -38,24 +38,31 @@ public class SystemPreferencesElement: ApplicationElement {
     
     public enum PaneIdentifier {
         case accessibility
+        case displays
         case general
         
         public var buttonTitle: String {
-            get{
+            get {
                 switch self {
                 case .accessibility:
                     return "Accessibility"
+                case .displays:
+                    return "Displays"
                 case .general:
                     return "General"
                 }
             }
         }
         
-        public var windowTitle: String {
+        // NOTE: if windowTitle is not static, then windowTitle will return nil
+        public var windowTitle: String? {
             get{
                 switch self {
                 case .accessibility:
                     return "Accessibility"
+                case .displays:
+                    // NOTE: the title of the Displays system preferences pane is the human-readable name of the current display; we pass nil to indicate that our code should just wait for any title change
+                    return nil
                 case .general:
                     return "General"
                 }
@@ -66,7 +73,11 @@ public class SystemPreferencesElement: ApplicationElement {
     public func showAccessibility(completion: @escaping (_ success: Bool, _ pane: AccessibilityPreferencesElement?) -> Void) {
         return show(pane: .accessibility, completion: completion)
     }
-    
+
+    public func showDisplays(completion: @escaping (_ success: Bool, _ pane: DisplaysPreferencesElement?) -> Void) {
+        return show(pane: .displays, completion: completion)
+    }
+
     public func showGeneral(completion: @escaping (_ success: Bool, _ pane: GeneralPreferencesElement?) -> Void) {
         return show(pane: .general, completion: completion)
     }
@@ -95,9 +106,11 @@ public class SystemPreferencesElement: ApplicationElement {
             }
         }
         //
-        guard window.title != identifier.windowTitle else {
-            completion(true, ElementType(accessibilityElement: window.accessibilityElement))
-            return
+        if let identifierWindowTitle = identifier.windowTitle {
+            guard window.title != identifierWindowTitle else {
+                completion(true, ElementType(accessibilityElement: window.accessibilityElement))
+                return
+            }
         }
         guard let showAllButton = window.toolbar?.button(titled: "Show All") else {
             completion(false, nil)
@@ -117,11 +130,19 @@ public class SystemPreferencesElement: ApplicationElement {
                 completion(false, nil)
                 return
             }
+            let windowTitleBeforePaneNavigation = window.title
             guard paneButton.press() else {
                 completion(false, nil)
                 return
             }
-            AsyncUtils.wait(atMost: 3.0, for: { window.title == identifier.windowTitle }) {
+            AsyncUtils.wait(atMost: 3.0,
+                for: {
+                    if let identifierWindowTitle = identifier.windowTitle {
+                        return window.title == identifierWindowTitle
+                    } else {
+                        return window.title != nil && window.title != windowTitleBeforePaneNavigation
+                    }
+            }) {
                 success in
                 completion(success, ElementType(accessibilityElement: window.accessibilityElement))
             }

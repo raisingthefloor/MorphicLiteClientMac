@@ -27,7 +27,7 @@ import OSLog
 
 private let logger = OSLog(subsystem: "MorphicSettings", category: "UIElement")
 
-public class UIElement{
+public class UIElement {
     
     var accessibilityElement: MorphicA11yUIElement!
     

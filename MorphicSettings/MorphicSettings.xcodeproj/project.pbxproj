@@ -65,6 +65,8 @@
 		9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */; };
 		9DCE209224CF1AAF00D3445B /* MorphicA11yAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */; };
 		9DD22FBA24DCB8B800C2FA52 /* SpeechUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */; };
+		9DE45B962517114100209421 /* DisplaysUIAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE45B952517114100209421 /* DisplaysUIAutomation.swift */; };
+		9DE45B9F251712EB00209421 /* DisplaysPreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE45B9E251712EB00209421 /* DisplaysPreferencesElement.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -153,6 +155,8 @@
 		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
 		9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yAuthorization.swift; sourceTree = "<group>"; };
 		9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechUIAutomations.swift; sourceTree = "<group>"; };
+		9DE45B952517114100209421 /* DisplaysUIAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaysUIAutomation.swift; sourceTree = "<group>"; };
+		9DE45B9E251712EB00209421 /* DisplaysPreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaysPreferencesElement.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +205,7 @@
 				31F9AEDC24A7F2D90026EBDA /* AccessibilityUIAutomation.swift */,
 				9D4B24BE25143D0000F0B2E2 /* GeneralUIAutomations.swift */,
 				314EB6DF24A6A69B00CF3D48 /* DisplayUIAutomations.swift */,
+				9DE45B952517114100209421 /* DisplaysUIAutomation.swift */,
 				31F9AEE224A7F7EA0026EBDA /* VoiceOverUIAutomations.swift */,
 				31F9AEE424A803B90026EBDA /* ZoomUIAutomations.swift */,
 				9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */,
@@ -246,6 +251,7 @@
 			children = (
 				315EEC9224A5520F0039C61D /* SystemPreferencesElement.swift */,
 				315EEC9624A56DF20039C61D /* AccessibilityPreferencesElement.swift */,
+				9DE45B9E251712EB00209421 /* DisplaysPreferencesElement.swift */,
 				9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */,
 			);
 			path = SystemPrefs;
@@ -558,6 +564,7 @@
 				31CE56E22448C8F700A52A7B /* SettingHandler.swift in Sources */,
 				315EEC8724A536A60039C61D /* TabGroupElement.swift in Sources */,
 				9DD22FBA24DCB8B800C2FA52 /* SpeechUIAutomations.swift in Sources */,
+				9DE45B962517114100209421 /* DisplaysUIAutomation.swift in Sources */,
 				3137AC4224B0FB9600CE3808 /* MenuElement.swift in Sources */,
 				315EEC9924A5714F0039C61D /* RowElement.swift in Sources */,
 				314EB6E024A6A69B00CF3D48 /* DisplayUIAutomations.swift in Sources */,
@@ -567,6 +574,7 @@
 				31A16BCE2423E86C0081A72C /* MorphicLanguage.swift in Sources */,
 				312DBFFB24A2C66A002FB951 /* ApplySession.swift in Sources */,
 				314EB6DE24A6A67700CF3D48 /* UIAutomation.swift in Sources */,
+				9DE45B9F251712EB00209421 /* DisplaysPreferencesElement.swift in Sources */,
 				312DBFF324A28556002FB951 /* DefaultsReadUIWriteSettingHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -29,6 +29,7 @@ public class AccessibilityPreferencesElement: UIElement {
     public enum CategoryIdentifier {
         
         case display
+        case overview
         case speech
         case voiceOver
         case zoom
@@ -38,6 +39,8 @@ public class AccessibilityPreferencesElement: UIElement {
                 switch self {
                 case .display:
                     return "Display"
+                case .overview:
+                    return "Overview"
                 case .speech:
                     if ProcessInfo().isOperatingSystemAtLeast(OperatingSystemVersion(majorVersion: 10, minorVersion: 16, patchVersion: 0)) {
                         // >= macOS 11.0
@@ -59,7 +62,21 @@ public class AccessibilityPreferencesElement: UIElement {
     public var categoriesTable: TableElement? {
         return table(titled: "Accessibility features")
     }
-    
+
+    public func selectOverview(completion: @escaping (_ success: Bool) -> Void) {
+        select(category: .overview) {
+            success in
+            guard success else {
+                completion(false)
+                return
+            }
+            AsyncUtils.wait(atMost: 1.0, for: { self.tabGroup?.tab(titled: "Overview") != nil}) {
+                success in
+                completion(success)
+            }
+        }
+    }
+
     public func selectDisplay(completion: @escaping (_ success: Bool) -> Void) {
         select(category: .display) {
             success in

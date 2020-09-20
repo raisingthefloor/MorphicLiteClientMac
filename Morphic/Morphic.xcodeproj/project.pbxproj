@@ -85,6 +85,7 @@
 		9D2593EB250A830100C38DA3 /* newspaper-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DC250A830100C38DA3 /* newspaper-solid.pdf */; };
 		9D2593EC250A830100C38DA3 /* shopping-cart-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DD250A830100C38DA3 /* shopping-cart-solid.pdf */; };
 		9D2593ED250A830100C38DA3 /* amazon-brands.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DE250A830100C38DA3 /* amazon-brands.pdf */; };
+		9D4B24E72517068200F0B2E2 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
 		9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */; };
 		9D82576F24D31C1E00F6E932 /* AboutBoxWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D82576D24D31C1E00F6E932 /* AboutBoxWindowController.xib */; };
 		9D82577124D353C800F6E932 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82577024D353C800F6E932 /* HyperlinkTextField.swift */; };
@@ -379,6 +380,7 @@
 		9D2593DE250A830100C38DA3 /* amazon-brands.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "amazon-brands.pdf"; sourceTree = "<group>"; };
 		9D2593F2250EA81000C38DA3 /* MorphicRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicRelease.entitlements; sourceTree = "<group>"; };
 		9D2593F3250EA87E00C38DA3 /* MorphicConfiguratorRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicConfiguratorRelease.entitlements; sourceTree = "<group>"; };
+		9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsLinkActions.swift; sourceTree = "<group>"; };
 		9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutBoxWindowController.swift; sourceTree = "<group>"; };
 		9D82576D24D31C1E00F6E932 /* AboutBoxWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutBoxWindowController.xib; sourceTree = "<group>"; };
 		9D82577024D353C800F6E932 /* HyperlinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperlinkTextField.swift; sourceTree = "<group>"; };
@@ -538,6 +540,7 @@
 				31751B3A2444DFAA00EEDF14 /* Main.xib */,
 				31751B0C2444DE8900EEDF14 /* AppDelegate.swift */,
 				31751B972444F21700EEDF14 /* Session.swift */,
+				9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */,
 				31E1E184244683DC009C4092 /* Theme.swift */,
 				31E1E186244792D9009C4092 /* DefaultPreferences.json */,
 				9D82576724D3160600F6E932 /* About Box */,
@@ -1135,6 +1138,7 @@
 				9D8CEB132507AECF001276E4 /* MorphicBarButtonItemIcon.swift in Sources */,
 				31E1E185244683DC009C4092 /* Theme.swift in Sources */,
 				31751B9F2444F22900EEDF14 /* MorphicBarWindow.swift in Sources */,
+				9D4B24E72517068200F0B2E2 /* SettingsLinkActions.swift in Sources */,
 				31E1E183244682C2009C4092 /* MorphicBarSegmentedButton.swift in Sources */,
 				31CE56F7244A408000A52A7B /* QuickHelpViewController.swift in Sources */,
 				31751B9E2444F22900EEDF14 /* MorphicBarViewController.swift in Sources */,

@@ -22,37 +22,13 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
 
-public class TabElement: UIElement {
+public class DisplaysPreferencesElement: UIElement {
     
-    public enum State {
-        case normal
-        case selected
-        case unknown
+    public func select(tabTitled title: String) -> Bool {
+        return tabGroup?.select(tabTitled: title) ?? false
     }
-    
-    public var state: State {
-        guard let selected: Bool = accessibilityElement.value(forAttribute: .value) else {
-            return .unknown
-        }
-        if selected{
-            return .selected
-        }
-        return .normal
-    }
-    
-    public func select() -> Bool {
-        switch state {
-        case .selected:
-            return true
-        case .normal:
-            if !accessibilityElement.perform(action: .press) {
-                return false
-            }
-            return state == .selected
-        case .unknown:
-            return false
-        }
-    }
-    
+
 }
+

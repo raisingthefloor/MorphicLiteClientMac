@@ -624,6 +624,33 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
     }
     
+    //
+
+    @IBAction
+    func launchAllAccessibilityOptionsSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.accessibilityOverview)
+    }
+    
+    @IBAction
+    func launchColorVisionSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayColorFilters)
+    }
+    
+    @IBAction
+    func launchContrastSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay)
+    }
+    
+    @IBAction
+    func launchDarkModeSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.general)
+    }
+
+    @IBAction
+    func launchNightModeSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.displaysNightShift)
+    }
+
     // TODO: this is a temporary function assigned to unimplemented menu buttons (so that they don't appear in gray); remove it once items are implemented
     @IBAction
     func handleUnimplementedMenuItem(_ sender: Any?) {
@@ -636,6 +663,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         // for now, just toggle the checkbox
         sender.state = (sender.state == .on) ? .off : .on
     }
+    
+    //
 
     func windowDidBecomeKey(_ notification: Notification) {
     }
