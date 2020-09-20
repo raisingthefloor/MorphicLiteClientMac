@@ -43,13 +43,13 @@
                 <menuItem title="Learn About Morphic" id="DeU-ED-RwS">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="rlv-X3-0Oa"/>
+                        <action selector="learnAboutMorphicClicked:" target="-1" id="y2W-iY-tAN"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Quick Demo Movies" id="d81-k0-YBn">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="HW0-Vl-q0r"/>
+                        <action selector="quickDemoMoviesClicked:" target="-1" id="1n5-2j-iRg"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Settings to Make Computer Easier" id="pDn-p9-kW7">
@@ -141,7 +141,7 @@
                 <menuItem title="Other Helpful Things" id="gkK-R4-V6Q">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="Vex-Di-pHQ"/>
+                        <action selector="otherHelpfulThingsClicked:" target="-1" id="gdw-jf-uaL"/>
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="o45-X2-Eg1"/>

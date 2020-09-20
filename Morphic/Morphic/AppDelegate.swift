@@ -625,6 +625,26 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     //
+    
+    @IBAction
+    func learnAboutMorphicClicked(_ sender: NSMenuItem?) {
+        let url = URL(string: "https://morphic.org")!
+        NSWorkspace.shared.open(url)
+    }
+
+    @IBAction
+    func quickDemoMoviesClicked(_ sender: NSMenuItem?) {
+        let url = URL(string: "https://morphic.org/movies/main")!
+        NSWorkspace.shared.open(url)
+    }
+
+    @IBAction
+    func otherHelpfulThingsClicked(_ sender: NSMenuItem?) {
+        let url = URL(string: "https://morphic.org/helpful")!
+        NSWorkspace.shared.open(url)
+    }
+
+    //
 
     @IBAction
     func launchAllAccessibilityOptionsSettings(_ sender: Any?) {
