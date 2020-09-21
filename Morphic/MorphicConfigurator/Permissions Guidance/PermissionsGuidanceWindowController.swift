@@ -29,6 +29,7 @@ import CoreGraphics
 
 class PermissionsGuidanceWindowController: NSWindowController {
     
+    @IBOutlet weak var guideView: NSView!
     @IBOutlet weak var guideBox: NSBox!
     @IBOutlet weak var remindBox: NSBox!
     @IBOutlet weak var remindText: NSTextFieldCell!
@@ -39,15 +40,31 @@ class PermissionsGuidanceWindowController: NSWindowController {
         window?.backgroundColor = NSColor.clear
         guideBox.fillColor = NSColor.windowBackgroundColor
         remindBox.fillColor = NSColor.windowBackgroundColor
-        guideBox.isHidden = false
+        guideView.isHidden = true
         remindBox.isHidden = true
         window?.level = .floating
         self.updateLoop()
     }
     
+    @IBAction
+    func openPrefs(_ sender: Any) {
+        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!)
+    }
+    
+    @IBAction
+    func closeWindow(_ sender: Any) {
+        NSApplication.shared.terminate(nil)
+    }
+    
     func updateLoop()
     {
-        //MorphicA11yAuthorization
+        if(MorphicA11yAuthorization.authorizationStatus())
+        {
+            NSApplication.shared.terminate(nil)
+            return
+        }
+        
+        
         guard var windows = CGWindowListCopyWindowInfo([.optionOnScreenOnly], kCGNullWindowID) as? [[String: AnyObject]] else {
             return
         }
@@ -96,19 +113,19 @@ class PermissionsGuidanceWindowController: NSWindowController {
         switch state {
         case .notOpen:
             remindBox.isHidden = false
-            guideBox.isHidden = true
-            remindText.title = "OPEN THE WINDOW"
+            guideView.isHidden = true
+            remindText.title = "Morphic requires accessibility permissions to change certain settings. Please open the Security menu in System Preferences."
         case .notFocused:
             remindBox.isHidden = false
-            guideBox.isHidden = true
-            remindText.title = "FOCUS THE WINDOW"
+            guideView.isHidden = true
+            remindText.title = "Morphic requires accessibility permissions to change certain settings. Please bring up the System Preferences window."
         case .wrongTab:
             remindBox.isHidden = false
-            guideBox.isHidden = true
-            remindText.title = "GO TO THE PERMISSIONS TAB"
+            guideView.isHidden = true
+            remindText.title = "Morphic requires accessibility permissions to change certain settings. Please change to the Security menu in System Preferences."
         case .correct:
             remindBox.isHidden = true
-            guideBox.isHidden = false
+            guideView.isHidden = false
             xval = bounds.minX
             yval = (window?.screen?.frame.maxY ?? 0.0) - bounds.minY
         }
