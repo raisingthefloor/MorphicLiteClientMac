@@ -77,10 +77,19 @@ public class MorphicInput {
         }
         let hotKeyEnabled = hotKeyEnabledAsInt != 0 ? true : false
         
-        // get the keycode and modifier keys used for this hot key
         guard let hotKeyValue = hotKey["value"] as? [String: Any] else {
             return nil
         }
+
+        // make sure the hot key is a "standard" hot key (i.e. not a mouse shortcut, etc.)
+        guard let hotKeyType = hotKeyValue["type"] as? String else {
+            return nil
+        }
+        guard hotKeyType.lowercased() == "standard" else {
+            return nil
+        }
+
+        // get the keycode and modifier keys used for this hot key
         guard let hotKeyParameters = hotKeyValue["parameters"] as? [Any] else {
             return nil
         }
