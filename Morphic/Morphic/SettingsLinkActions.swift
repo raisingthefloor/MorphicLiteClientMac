@@ -38,6 +38,7 @@ class SettingsLinkActions {
         case displaysNightShift
         case general
         case keyboardKeyboard
+        case keyboardShortcutsScreenshots
         case languageandregionGeneral
         case mouse
     }
@@ -74,6 +75,9 @@ class SettingsLinkActions {
         case .keyboardKeyboard:
             let keyboardUIAutomation = KeyboardUIAutomation()
             keyboardUIAutomation.showKeyboardPreferences(tabTitled: "Keyboard", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+        case .keyboardShortcutsScreenshots:
+            let keyboardUIAutomation = KeyboardUIAutomation()
+            keyboardUIAutomation.showKeyboardShortcutsPreferences(categoryTitled: "Screenshots", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
         case .languageandregionGeneral:
             let languageAndRegionUIAutomation = LanguageAndRegionUIAutomation()
             languageAndRegionUIAutomation.showLanguageAndRegionPreferences(tabTitled: "General", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)

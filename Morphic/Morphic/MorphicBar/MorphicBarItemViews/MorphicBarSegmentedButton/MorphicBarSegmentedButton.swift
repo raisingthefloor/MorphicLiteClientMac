@@ -96,6 +96,8 @@ class MorphicBarSegmentedButton: NSControl {
         var quickDemoVideoUrl: URL? = nil
         var settingsBlock: (() -> Void)? = nil
         
+        var settingsMenuItemTitle = "Settings"        
+
         var accessibilityLabel: String?
         
         /// Create a segment with a title
@@ -233,6 +235,8 @@ class MorphicBarSegmentedButton: NSControl {
         public var quickDemoVideoAction: Selector? = nil
         public var settingsAction: Selector? = nil
         //
+        public var settingsMenuItemTitle: String! = nil
+        //
         override func rightMouseDown(with event: NSEvent) {
             // create a pop-up menu for this button (segment)
             let popupMenu = NSMenu()
@@ -247,7 +251,7 @@ class MorphicBarSegmentedButton: NSControl {
                 popupMenu.addItem(quickDemoVideoMenuItem)
             }
             if let _ = settingsAction {
-                let settingsMenuItem = NSMenuItem(title: "Settings", action: #selector(self.settingsMenuItemClicked(_:)), keyEquivalent: "")
+                let settingsMenuItem = NSMenuItem(title: settingsMenuItemTitle, action: #selector(self.settingsMenuItemClicked(_:)), keyEquivalent: "")
                 settingsMenuItem.target = self
                 popupMenu.addItem(settingsMenuItem)
             }
@@ -348,6 +352,7 @@ class MorphicBarSegmentedButton: NSControl {
         case .fixedWidth(_):
             button.font = .morphicBold // .morphicRegular
         }
+        button.settingsMenuItemTitle = segment.settingsMenuItemTitle
         //
         return button
     }

@@ -21,13 +21,47 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Foundation
+import Cocoa
 import MorphicCore
 
 public class KeyboardPreferencesElement: UIElement {
     
     public func select(tabTitled title: String) -> Bool {
         return tabGroup?.select(tabTitled: title) ?? false
+    }
+    
+    public func select(tableRowTitled rowTitle: String, ofTableTitled tableTitle: String) -> Bool {
+        guard let table = table(titled: tableTitle) else {
+            return false
+        }
+        var targetRow: RowElement? = nil
+        for row in table.rows {
+            guard let rowChildren = row.accessibilityElement.children() else {
+                continue
+            }
+            for rowChild in rowChildren {
+                if let childRoleAsString: String = rowChild.value(forAttribute: .role) {
+                    let childRole = NSAccessibility.Role(rawValue: childRoleAsString)
+                    if childRole == .staticText {
+                        if let currentRowTitle: String = rowChild.value(forAttribute: .value) {
+                            if currentRowTitle == rowTitle {
+                                targetRow = row
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if targetRow != nil {
+                break 
+            }
+        }
+        guard let _ = targetRow else {
+            return false
+        }
+
+        return targetRow!.select()
     }
 
 }

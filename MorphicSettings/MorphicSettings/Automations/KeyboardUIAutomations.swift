@@ -64,4 +64,21 @@ public class KeyboardUIAutomation: UIAutomation {
             }
         }
     }
+    
+    public func showKeyboardShortcutsPreferences(categoryTitled: String, completion: @escaping (_ keyboard: KeyboardPreferencesElement?) -> Void) {
+        showKeyboardPreferences(tabTitled: "Shortcuts") {
+            keyboard in
+            guard let keyboard = keyboard else {
+                completion(nil)
+                return
+            }
+            guard keyboard.select(tableRowTitled: categoryTitled, ofTableTitled: "Shortcuts categories") else {
+                os_log(.error, log: logger, "Failed to select category (row)")
+                completion(nil)
+                return
+            }
+            completion(keyboard)
+        }
+    }
+
 }

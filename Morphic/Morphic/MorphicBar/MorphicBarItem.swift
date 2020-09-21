@@ -440,8 +440,10 @@ class MorphicBarControlItem: MorphicBarItem {
         case .screensnip:
             let localized = LocalizedStrings(prefix: "control.feature.screensnip")
             let copyHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
+            var snipSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "copy"), fillColor: buttonColor, helpProvider: copyHelpProvider, accessibilityLabel: localized.string(for: "copy.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .snip), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .snip), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.keyboardShortcutsScreenshots) }, style: style)
+            snipSegment.settingsMenuItemTitle = "Other Screenshot Shortcuts"
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "copy"), fillColor: buttonColor, helpProvider: copyHelpProvider, accessibilityLabel: localized.string(for: "copy.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .snip), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .snip), settingsBlock: nil, style: style)
+                snipSegment
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
@@ -578,11 +580,15 @@ class MorphicBarControlItem: MorphicBarItem {
 
     @objc
     func screensnip(_ sender: Any?) {
-        let keyCode: CGKeyCode = CGKeyCode(kVK_ANSI_4)
-        let keyOptions: MorphicInput.KeyOptions = [
-            .withCommandKey,
-            .withShiftKey
-        ]
+        guard let (keyCode, keyOptions, hotKeyEnabled) = MorphicInput.hotKeyForSystemKeyboardShortcut(.savePictureOfSelectedAreaAsAFile) else {
+            NSLog("Could not retrieve 'screen snip' hotkey from macOS's keyboard shortcuts list")
+            return
+        }
+        
+        guard hotKeyEnabled == true else {
+            NSLog("Screen snip feature is currently disabled")
+            return
+        }
         
         guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
             NSLog("Could not send 'screen snip' hotkey to the keyboard input stream")
