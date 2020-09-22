@@ -32,6 +32,7 @@ public class MorphicBarViewController: NSViewController {
     @IBOutlet weak var loginMenuItem: NSMenuItem!
     @IBOutlet weak var logoutMenuItem: NSMenuItem!
     @IBOutlet weak var selectCommunityMenuItem: NSMenuItem!
+    @IBOutlet weak var automaticallyStartMorphicAtLoginMenuItem: NSMenuItem!
     
     // MARK: - View Lifecycle
 

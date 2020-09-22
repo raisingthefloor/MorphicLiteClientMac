@@ -26,6 +26,7 @@ import OSLog
 import MorphicCore
 import MorphicService
 import MorphicSettings
+import ServiceManagement
 
 private let logger = OSLog(subsystem: "app", category: "delegate")
 
@@ -42,11 +43,20 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     @IBOutlet weak var logoutMenuItem: NSMenuItem?
     @IBOutlet weak var selectCommunityMenuItem: NSMenuItem!
     
+    @IBOutlet weak var automaticallyStartMorphicMenuItem: NSMenuItem!
+    
+    private let terminateMorphicLauncherNotificationName = NSNotification.Name(rawValue: "org.raisingthefloor.terminateMorphicLauncher")
+
     // MARK: - Application Lifecycle
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         os_log(.info, log: logger, "applicationDidFinishLaunching")
         AppDelegate.shared = self
+
+        // NOTE: if desired, we could call morphicLauncherIsRunning() to detect if we were auto-started by our launch item (and capture that on startup); this would (generally) confirm that "autostart Morphic on login" is enabled without having to use deprecated SMJob functions
+        //
+        // terminate Morphic Launcher if it is already running
+        terminateMorphicLauncherIfRunning()
         
         // before we open any storage or use UserDefaults, set up our ApplicationSupport path and UserDefaults suiteName
         #if EDITION_BASIC
@@ -93,6 +103,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                         self.showMorphicBar(nil)
                     }
                 #endif
+                
+                // capture the current state of our launch items (in the corresponding menu items)
+                // NOTE: we must not do this until after we have set up UserDefaults.morphic (if we use UserDefaults.morphic to store/capture this state); we may also consider using the running state of MorphicLauncher (when we first start up) as a heuristic to know that autostart is enabled for our application (or we may consider passing in an argument via the launcher which indicates that we were auto-started)
+                self.updateMorphicAutostartAtLoginMenuItems()
+
                 if Session.shared.user != nil {
                     #if EDITION_BASIC
                     #elseif EDITION_COMMUNITY
@@ -146,6 +161,33 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
     }
     
+    func morphicLauncherIsRunning() -> Bool {
+        // if we were launched by MorphicLauncher (i.e. at startup/login), terminate MorphicLauncher if it's still running
+        let morphicLauncherApplications = NSWorkspace.shared.runningApplications.filter({
+            application in
+            switch application.bundleIdentifier {
+            #if EDITION_BASIC
+            case "org.raisingthefloor.MorphicLauncher",
+                 "org.raisingthefloor.MorphicLauncher-Debug":
+                return true
+            #elseif EDITION_COMMUNITY
+            case "org.raisingthefloor.MorphicCommunityLauncher",
+                 "org.raisingthefloor.MorphicCommunityLauncher-Debug":
+                return true
+            #endif
+            default:
+                return false
+            }
+        })
+        return (morphicLauncherApplications.count > 0)
+    }
+    
+    func terminateMorphicLauncherIfRunning() {
+        if morphicLauncherIsRunning() == true {
+            DistributedNotificationCenter.default().postNotificationName(terminateMorphicLauncherNotificationName, object: nil, userInfo: nil, deliverImmediately: true)
+        }
+    }
+
     @objc
     func sessionUserDidChange(_ notification: NSNotification) {
         guard let session = notification.object as? Session else {
@@ -488,6 +530,74 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             // shut down immediately
             NSApplication.shared.terminate(self)
         }
+    }
+    
+    @IBAction func automaticallyStartMorphicAtLoginClicked(_ sender: NSMenuItem) {
+        switch sender.state {
+        case .on:
+            _ = setMorphicAutostartAtLogin(false)
+        case .off:
+            _ = setMorphicAutostartAtLogin(true)
+        default:
+            fatalError("invalid code path")
+        }
+    }
+    
+    func updateMorphicAutostartAtLoginMenuItems() {
+        let autostartAtLogin = self.morphicAutostartAtLogin()
+        automaticallyStartMorphicMenuItem?.state = (autostartAtLogin ? .on : .off)
+        morphicBarWindow?.morphicBarViewController.automaticallyStartMorphicAtLoginMenuItem.state = (autostartAtLogin ? .on : .off)
+    }
+    
+    func morphicAutostartAtLogin() -> Bool {
+        // NOTE: in the future, we may want to save the autostart state in UserDefaults (although perhaps not in "UserDefaults.morphic"); we'd need to store in the UserDefaults area which was specific to _this_ user and _this_ application (including differentiating between Morphic and Morphic Community if there are two apps for that
+        // If we do switch to UserDefaults in the future, we will effectively capture its "autostart enabled" state when we set it and then trust that the user hasn't used launchctl at the command-line to reverse our state; the worst-case scenario with this approach should be that our corresponding menu item checkbox is out of sync with system reality, and a poweruser who uses launchctl could simply uncheck and then recheck the menu item (or use launchctl) to reenable autostart-at-login for Morphic
+        
+        // NOTE: SMCopyAllJobDictionaries (the API typically used to get the list of login items) was deprecated in macOS 10.10 but has not been replaced.  It is technically still available as of macOS 10.15.
+        guard let userLaunchedApps = SMCopyAllJobDictionaries(kSMDomainUserLaunchd)?.takeRetainedValue() as? [[String: Any]] else {
+            return false
+        }
+        for userLaunchedApp in userLaunchedApps {
+            switch userLaunchedApp["Program"] as? String {
+            #if EDITION_BASIC
+            case "org.raisingthefloor.MorphicLauncher",
+                 "org.raisingthefloor.MorphicLauncher-Debug":
+                return true
+            #elseif EDITION_COMMUNITY
+            case "org.raisingthefloor.MorphicCommunityLauncher",
+                 "org.raisingthefloor.MorphicCommunityLauncher-Debug":
+                return true
+            #endif
+            default:
+                break
+            }
+        }
+
+        // if we did not find an entry for Morphic in the list (either because autostart was never enabled OR because autostart was disabled), return false
+        return false
+    }
+    
+    // NOTE: LSSharedFileList.h functions (LSRegisterURL, LSSharedFileListInsertItemURL, etc.) are not allowed in sandboxed apps; therefore we have used Apple's recommended "login items" approach in our implementation.  If we ever need our application to appear in "System Preferences > Users & Groups > [User] > Login Items" then we can evaluate a revision to our approach...but the current approach is more future-proof.
+    // see: https://developer.apple.com/library/archive/documentation/Security/Conceptual/AppSandboxDesignGuide/DesigningYourSandbox/DesigningYourSandbox.html
+    // see: https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLoginItems.html#//apple_ref/doc/uid/10000172i-SW5-SW1
+    func setMorphicAutostartAtLogin(_ autostartAtLogin: Bool) -> Bool {
+        let success: Bool
+        
+        #if EDITION_BASIC
+            success =  SMLoginItemSetEnabled("org.raisingthefloor.MorphicLauncher-Debug" as CFString, autostartAtLogin)
+        #elseif EDITION_COMMUNITY
+            success =  SMLoginItemSetEnabled("org.raisingthefloor.MorphicCommunityLauncher" as CFString, autostartAtLogin)
+        #endif
+        
+        // NOTE: in the future, we may want to save the autostart state in UserDefaults (although perhaps not in "UserDefaults.morphic"); we'd need to store in the UserDefaults area which was specific to _this_ user and _this_ application (including differentiating between Morphic and Morphic Community if there are two apps for that
+        
+        // update the appropriate menu items to match
+        if success == true {
+            automaticallyStartMorphicMenuItem?.state = (autostartAtLogin ? .on : .off)
+            morphicBarWindow?.morphicBarViewController.automaticallyStartMorphicAtLoginMenuItem.state = (autostartAtLogin ? .on : .off)
+        }
+        
+        return success
     }
 
     // MARK: - Default Preferences

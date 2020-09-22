@@ -8,6 +8,7 @@
         <customObject id="-2" userLabel="File's Owner"/>
         <customObject id="ZNk-5q-oDb" customClass="AppDelegate" customModule="Morphic" customModuleProvider="target">
             <connections>
+                <outlet property="automaticallyStartMorphicMenuItem" destination="Ir1-cH-h7Z" id="qjx-8X-a5H"/>
                 <outlet property="hideMorphicBarMenuItem" destination="gOm-Gw-nLp" id="f86-ih-DaC"/>
                 <outlet property="logoutMenuItem" destination="fdS-ef-rqr" id="2v2-vJ-y1T"/>
                 <outlet property="menu" destination="iDk-eb-5cB" id="OjZ-YL-Pes"/>
@@ -158,13 +159,13 @@
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="eWu-mW-zzY"/>
-                <menuItem title="Automatically Start Morphic" state="on" id="Ir1-cH-h7Z">
+                <menuItem title="Automatically Start Morphic" id="Ir1-cH-h7Z">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="handleUnimplementedCheckboxMenuItem:" target="ZNk-5q-oDb" id="To5-iq-OtC"/>
+                        <action selector="automaticallyStartMorphicAtLoginClicked:" target="ZNk-5q-oDb" id="7bT-mH-uZy"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Show MorphicBar at Start" state="on" id="cGf-Qp-TV9">
+                <menuItem title="Show MorphicBar at Start" id="cGf-Qp-TV9">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="handleUnimplementedCheckboxMenuItem:" target="ZNk-5q-oDb" id="05a-kC-5Hl"/>
