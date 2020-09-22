@@ -584,9 +584,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let success: Bool
         
         #if EDITION_BASIC
-            success =  SMLoginItemSetEnabled("org.raisingthefloor.MorphicLauncher-Debug" as CFString, autostartAtLogin)
+            #if DEBUG
+                success =  SMLoginItemSetEnabled("org.raisingthefloor.MorphicLauncher-Debug" as CFString, autostartAtLogin)
+            #else
+                success =  SMLoginItemSetEnabled("org.raisingthefloor.MorphicLauncher" as CFString, autostartAtLogin)
+            #endif
         #elseif EDITION_COMMUNITY
-            success =  SMLoginItemSetEnabled("org.raisingthefloor.MorphicCommunityLauncher" as CFString, autostartAtLogin)
+            #if DEBUG
+                success =  SMLoginItemSetEnabled("org.raisingthefloor.MorphicCommunityLauncher-Debug" as CFString, autostartAtLogin)
+            #else
+                success =  SMLoginItemSetEnabled("org.raisingthefloor.MorphicCommunityLauncher" as CFString, autostartAtLogin)
+            #endif
         #endif
         
         // NOTE: in the future, we may want to save the autostart state in UserDefaults (although perhaps not in "UserDefaults.morphic"); we'd need to store in the UserDefaults area which was specific to _this_ user and _this_ application (including differentiating between Morphic and Morphic Community if there are two apps for that

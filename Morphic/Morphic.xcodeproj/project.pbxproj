@@ -73,6 +73,7 @@
 		9D025477251A6407009EC865 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F4DA251A2FC400ADCC25 /* AppDelegate.swift */; };
 		9D02547A251A6407009EC865 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9DD4F4DC251A2FC500ADCC25 /* Assets.xcassets */; };
 		9D02547B251A6407009EC865 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DD4F4DE251A2FC500ADCC25 /* MainMenu.xib */; };
+		9D0FD4AC251A782900BE72B3 /* MorphicCommunityLauncher.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9D02547F251A6407009EC865 /* MorphicCommunityLauncher.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9D1FA1CD251A317F0008559D /* MorphicLauncher.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9DD4F4D8251A2FC400ADCC25 /* MorphicLauncher.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9D1FA1CF251A31990008559D /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D1FA1CE251A31990008559D /* ServiceManagement.framework */; };
 		9D2593DF250A830100C38DA3 /* envelope-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D0250A830100C38DA3 /* envelope-solid.pdf */; };
@@ -282,6 +283,7 @@
 			dstPath = Contents/Library/LoginItems;
 			dstSubfolderSpec = 1;
 			files = (
+				9D0FD4AC251A782900BE72B3 /* MorphicCommunityLauncher.app in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
