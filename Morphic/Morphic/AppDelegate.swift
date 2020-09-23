@@ -44,6 +44,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     @IBOutlet weak var selectCommunityMenuItem: NSMenuItem!
     
     @IBOutlet weak var automaticallyStartMorphicMenuItem: NSMenuItem!
+    @IBOutlet weak var showMorphicBarAtStartMenuItem: NSMenuItem!
     
     private let terminateMorphicLauncherNotificationName = NSNotification.Name(rawValue: "org.raisingthefloor.terminateMorphicLauncher")
 
@@ -94,16 +95,27 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                     self.loginMenuItem?.isHidden = (Session.shared.user != nil)
                 #endif
                 self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
+
+                // capture the user's preference as to whether or not to show the Morphic Bar at startup
+                // showMorphicBarAtStart: true if we should always try to show the MorphicBar at application startup
+                let showMorphicBarAtStart = Session.shared.bool(for: .showMorphicBarAtStart) ?? false
+                // morphicBarVisible: true if the MorphicBar was visible when we last exited the application
+                let morphicBarVisible = Session.shared.bool(for: .morphicBarVisible) ?? true
+                
+                // show the Morphic Bar (if we have a bar to show and it's (a) our first startup or (b) the user had the bar showing when the app was last exited or (c) the user has "show MorphicBar at start" set to true
                 #if EDITION_BASIC
-                    if Session.shared.bool(for: .morphicBarVisible) ?? true {
+                    if morphicBarVisible || showMorphicBarAtStart {
                         self.showMorphicBar(nil)
                     }
                 #elseif EDITION_COMMUNITY
-                    if Session.shared.user != nil && Session.shared.bool(for: .morphicBarVisible) ?? true {
+                    if Session.shared.user != nil && (morphicBarVisible || showMorphicBarAtStart) {
                         self.showMorphicBar(nil)
                     }
                 #endif
                 
+                // update the "show MorphicBar at start" menu items' states
+                self.updateShowMorphicBarAtStartMenuItems()
+
                 // capture the current state of our launch items (in the corresponding menu items)
                 // NOTE: we must not do this until after we have set up UserDefaults.morphic (if we use UserDefaults.morphic to store/capture this state); we may also consider using the running state of MorphicLauncher (when we first start up) as a heuristic to know that autostart is enabled for our application (or we may consider passing in an argument via the launcher which indicates that we were auto-started)
                 self.updateMorphicAutostartAtLoginMenuItems()
@@ -532,6 +544,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
     }
     
+    //
+    
     @IBAction func automaticallyStartMorphicAtLoginClicked(_ sender: NSMenuItem) {
         switch sender.state {
         case .on:
@@ -607,7 +621,33 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         
         return success
     }
-
+    
+    //
+    
+    @IBAction func showMorphicBarAtStartClicked(_ sender: NSMenuItem) {
+        let showMorphicBarAtStart: Bool
+        switch sender.state {
+        case .on:
+            showMorphicBarAtStart = false
+        case .off:
+            showMorphicBarAtStart = true
+        default:
+            fatalError("invalid code path")
+        }
+        
+        Session.shared.set(showMorphicBarAtStart, for: .showMorphicBarAtStart)
+        
+        updateShowMorphicBarAtStartMenuItems()
+    }
+    
+    func updateShowMorphicBarAtStartMenuItems() {
+        let showMorphicBarAtStart = Session.shared.bool(for: .showMorphicBarAtStart) ?? false
+        showMorphicBarAtStartMenuItem?.state = (showMorphicBarAtStart ? .on : .off)
+        morphicBarWindow?.morphicBarViewController.showMorphicBarAtStartMenuItem.state = (showMorphicBarAtStart ? .on : .off)
+    }
+    
+    //
+    
     // MARK: - Default Preferences
     
     func createEmptyDefaultPreferencesIfNotExist(completion: @escaping () -> Void) {
@@ -828,13 +868,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     @IBAction
     func handleUnimplementedMenuItem(_ sender: Any?) {
         // do nothing
-    }
-    
-    // TODO: this is a temporary function assigned to unimplemented checkbox menu buttons (so that they don't appear in gray); remove it once items are implemented
-    @IBAction
-    func handleUnimplementedCheckboxMenuItem(_ sender: NSMenuItem) {
-        // for now, just toggle the checkbox
-        sender.state = (sender.state == .on) ? .off : .on
     }
     
     //

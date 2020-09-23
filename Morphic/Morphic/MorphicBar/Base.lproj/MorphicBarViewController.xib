@@ -14,6 +14,7 @@
                 <outlet property="mainMenu" destination="Tdd-O7-ejt" id="2yx-wr-veu"/>
                 <outlet property="morphicBarView" destination="hJk-BO-TPf" id="6Yt-7q-x61"/>
                 <outlet property="selectCommunityMenuItem" destination="eJF-8G-qpw" id="jHG-0d-CSo"/>
+                <outlet property="showMorphicBarAtStartMenuItem" destination="oKM-JA-5Lr" id="xkj-A7-www"/>
                 <outlet property="view" destination="c22-O7-iKe" id="gRp-Cf-8sn"/>
             </connections>
         </customObject>
@@ -194,7 +195,7 @@
                 <menuItem title="Show MorphicBar at Start" id="oKM-JA-5Lr">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="handleUnimplementedCheckboxMenuItem:" target="-1" id="gxl-Yb-SZd"/>
+                        <action selector="showMorphicBarAtStartClicked:" target="-1" id="E3Z-rO-xSj"/>
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="XwC-a4-IE3"/>

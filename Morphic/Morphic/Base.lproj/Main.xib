@@ -13,6 +13,7 @@
                 <outlet property="logoutMenuItem" destination="fdS-ef-rqr" id="2v2-vJ-y1T"/>
                 <outlet property="menu" destination="iDk-eb-5cB" id="OjZ-YL-Pes"/>
                 <outlet property="selectCommunityMenuItem" destination="qcc-Q2-sYr" id="Gm9-io-FQH"/>
+                <outlet property="showMorphicBarAtStartMenuItem" destination="cGf-Qp-TV9" id="oUQ-4Y-1Ym"/>
                 <outlet property="showMorphicBarMenuItem" destination="4BS-cA-IvL" id="elS-Jc-raC"/>
             </connections>
         </customObject>
@@ -168,7 +169,7 @@
                 <menuItem title="Show MorphicBar at Start" id="cGf-Qp-TV9">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="handleUnimplementedCheckboxMenuItem:" target="ZNk-5q-oDb" id="05a-kC-5Hl"/>
+                        <action selector="showMorphicBarAtStartClicked:" target="ZNk-5q-oDb" id="4yA-wH-Fap"/>
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="yYL-r6-1AR"/>

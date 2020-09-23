@@ -223,7 +223,14 @@ public extension Preferences.Key {
     #elseif EDITION_COMMUNITY
         static var morphicBarPosition = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "position.mac")
     #endif
-    
+
+    /// The preference key that stores whether the MorphicBar should always appear at startup
+    #if EDITION_BASIC
+        static var showMorphicBarAtStart = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "showMorphicBarAtStart")
+    #elseif EDITION_COMMUNITY
+        static var showMorphicBarAtStart = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "showMorphicBarAtStart")
+    #endif
+
     /// The preference key that stores whether the MorphicBar should appear by default
     #if EDITION_BASIC
         static var morphicBarVisible = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "visible")
