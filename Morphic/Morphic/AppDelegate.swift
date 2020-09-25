@@ -705,14 +705,62 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func createStatusItem() {
         os_log(.info, log: logger, "Creating status item")
         statusItem = NSStatusBar.system.statusItem(withLength: -1)
-        statusItem.menu = menu
+        // NOTE: if we want to just use the button as a right-click dropdown (which would also work with ^F8 a11y keyboard navigation) then we can simply set the statusItem's menu to self.menu.
+//        statusItem.menu = menu
         
         // update the menu to match the proper edition of Morphic
         updateMenu()
-        
+
+        guard let statusItemButton = statusItem.button else {
+            fatalError("Could not get reference to statusItemButton")
+        }
+
         let buttonImage = NSImage(named: "MenuIconBlack")
         buttonImage?.isTemplate = true
-        statusItem.button?.image = buttonImage
+        statusItemButton.image = buttonImage
+
+        // connect the "left-click" action to toggle show/hide of the MorphicBar (and right-click to show the menu)
+        // NOTE: custom buttons do _not_ light up under ^F8 a11y keyboard navigation; if the user is a keyboard navigation user, we may want to consider keeping the icon as a standard "menu" button; this same issue can be seen in apps like Parallels (which has custom left- and right-click operations) and Spotlight (which has no menu).
+        statusItemButton.target = self
+        statusItemButton.action = #selector(AppDelegate.statusItemClicked)
+        statusItemButton.sendAction(on: [.leftMouseDown, .rightMouseDown])
+    }
+
+    @objc
+    func statusItemClicked(sender: NSStatusBarButton?) {
+        guard let currentEvent = NSApp.currentEvent else {
+            return
+        }
+        
+        if currentEvent.type == .leftMouseDown {
+            // when the left mouse button is pressed, toggle the MorphicBar's visibility (i.e. show/hide the MorphicBar)
+
+            toggleMorphicBar(sender)
+        } else if currentEvent.type == .rightMouseDown {
+            // when the right mouse button is pressed, show the main menu
+
+            guard let statusItem = self.statusItem else {
+                assertionFailure("Could not obtain reference to MenuBar extra's StatusItem.")
+                return
+            }
+            guard let statusItemButton = statusItem.button else {
+                assertionFailure("Could not obtain reference to MenuBar extra's StatusItem's button.")
+                return
+            }
+
+            // show the menu (by assigning it to the menubar extra and re-clicking the extra; then disconnect the menu again so that our custom actions (custom left- and right-mouseDown) work properly.
+            statusItem.menu = self.menu
+            statusItemButton.performClick(sender)
+            statusItem.menu = nil
+
+            // NOTE: due to a glitch in macOS, our StatusItem's Button's view doesn't get the "rightMouseUp" event so it gets into an odd state where it doesn't respond to the _next_ button down event.  So we manually send ourselves a "rightMouseUp" event, centered over the status item, to clear the state issue.
+            let statusItemButtonBoundsInWindow = statusItemButton.convert(statusItemButton.bounds, to: nil)
+            if let statusItemBoundsOnScreen = statusItemButton.window?.convertToScreen(statusItemButtonBoundsInWindow) {
+                let cursorPosition = CGPoint(x: statusItemBoundsOnScreen.midX, y: statusItemBoundsOnScreen.midY)
+                let eventMouseUp = CGEvent(mouseEventSource: nil, mouseType: .rightMouseUp, mouseCursorPosition: cursorPosition, mouseButton: .right)
+                eventMouseUp!.postToPid(NSRunningApplication.current.processIdentifier)
+            }
+        }
     }
     
     private func updateMenu() {
