@@ -227,7 +227,7 @@ class MorphicBarSegmentedButton: NSControl {
         var helpProvider: QuickHelpContentProvider?
         
         override func becomeFirstResponder() -> Bool {
-            updateHelpWindow()
+            updateHelpWindow(wasSelectedByKeyboard: true)
             return super.becomeFirstResponder()
         }
 
@@ -293,12 +293,17 @@ class MorphicBarSegmentedButton: NSControl {
             return true
         }
         
-        func updateHelpWindow() {
+        func updateHelpWindow(wasSelectedByKeyboard: Bool = false) {
             if showsHelp == true {
                 guard let viewController = helpProvider?.quickHelpViewController() else {
                     return
                 }
-                (NSApplication.shared.delegate as? AppDelegate)?.currentQuickHelpViewController = viewController
+                //
+                let appDelegate = (NSApplication.shared.delegate as? AppDelegate)
+                if wasSelectedByKeyboard == true || appDelegate?.currentKeyboardSelectedQuickHelpViewController != nil {
+                    appDelegate?.currentKeyboardSelectedQuickHelpViewController = viewController
+                }
+                //
                 QuickHelpWindow.show(viewController: viewController)
             }
         }

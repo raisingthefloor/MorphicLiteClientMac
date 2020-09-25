@@ -244,7 +244,7 @@ class LogoButton: NSButton {
     @IBInspectable var helpMessage: String?
     
     override func becomeFirstResponder() -> Bool {
-        updateHelpWindow()
+        updateHelpWindow(wasSelectedByKeyboard: true)
         return super.becomeFirstResponder()
     }
 
@@ -276,7 +276,7 @@ class LogoButton: NSButton {
         }
     }
     
-    func updateHelpWindow() {
+    func updateHelpWindow(wasSelectedByKeyboard: Bool = false) {
         guard let title = helpTitle, let message = helpMessage else {
             return
         }
@@ -284,7 +284,12 @@ class LogoButton: NSButton {
             let viewController = QuickHelpViewController(nibName: "QuickHelpViewController", bundle: nil)
             viewController.titleText = title
             viewController.messageText = message
-            (NSApplication.shared.delegate as? AppDelegate)?.currentQuickHelpViewController = viewController
+            //
+            let appDelegate = (NSApplication.shared.delegate as? AppDelegate)
+            if wasSelectedByKeyboard == true || appDelegate?.currentKeyboardSelectedQuickHelpViewController != nil {
+                appDelegate?.currentKeyboardSelectedQuickHelpViewController = viewController
+            }
+            //
             QuickHelpWindow.show(viewController: viewController)
         }
     }
