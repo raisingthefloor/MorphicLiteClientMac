@@ -242,14 +242,18 @@ class LogoButton: NSButton {
     @IBInspectable var helpTitle: String?
     @IBInspectable var helpMessage: String?
     
+    override func becomeFirstResponder() -> Bool {
+        updateHelpWindow()
+        return super.becomeFirstResponder()
+    }
+
+    override func resignFirstResponder() -> Bool {
+        QuickHelpWindow.hide()
+        return super.resignFirstResponder()
+    }
+
     override func mouseEntered(with event: NSEvent) {
-        guard let title = helpTitle, let message = helpMessage else{
-            return
-        }
-        let viewController = QuickHelpViewController(nibName: "QuickHelpViewController", bundle: nil)
-        viewController.titleText = title
-        viewController.messageText = message
-        QuickHelpWindow.show(viewController: viewController)
+        updateHelpWindow()
     }
     
     override func mouseExited(with event: NSEvent) {
@@ -268,6 +272,18 @@ class LogoButton: NSButton {
         if showsHelp {
             boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
             addTrackingArea(boundsTrackingArea)
+        }
+    }
+    
+    func updateHelpWindow() {
+        guard let title = helpTitle, let message = helpMessage else {
+            return
+        }
+        if showsHelp == true {
+            let viewController = QuickHelpViewController(nibName: "QuickHelpViewController", bundle: nil)
+            viewController.titleText = title
+            viewController.messageText = message
+            QuickHelpWindow.show(viewController: viewController)
         }
     }
     

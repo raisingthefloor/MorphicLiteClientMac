@@ -70,9 +70,9 @@ class QuickHelpWindow: NSWindow {
     /// `show()`, the window doesn't close until a short delay has passed without a `show()` call.
     public static func hide() {
         shared?.hideQueued = true
-        Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false){
+        Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {
             timer in
-            if shared?.hideQueued ?? false{
+            if shared?.hideQueued ?? false {
                 shared?.close()
                 shared = nil
             }

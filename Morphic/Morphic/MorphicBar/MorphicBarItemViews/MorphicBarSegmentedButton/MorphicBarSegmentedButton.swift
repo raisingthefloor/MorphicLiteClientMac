@@ -223,6 +223,16 @@ class MorphicBarSegmentedButton: NSControl {
         
         var helpProvider: QuickHelpContentProvider?
         
+        override func becomeFirstResponder() -> Bool {
+            updateHelpWindow()
+            return super.becomeFirstResponder()
+        }
+
+        override func resignFirstResponder() -> Bool {
+            QuickHelpWindow.hide()
+            return super.resignFirstResponder()
+        }
+        
         override func mouseEntered(with event: NSEvent) {
             updateHelpWindow()
         }
