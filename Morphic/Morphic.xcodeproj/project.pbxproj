@@ -418,12 +418,13 @@
 		9D82577024D353C800F6E932 /* HyperlinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperlinkTextField.swift; sourceTree = "<group>"; };
 		9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemIcon.swift; sourceTree = "<group>"; };
 		9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemView.swift; sourceTree = "<group>"; };
+		9D9DF072251DAE460073F8FB /* MorphicLauncherRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = MorphicLauncherRelease.entitlements; sourceTree = "<group>"; };
 		9DD4F4D8251A2FC400ADCC25 /* MorphicLauncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorphicLauncher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DD4F4DA251A2FC400ADCC25 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9DD4F4DC251A2FC500ADCC25 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9DD4F4DF251A2FC500ADCC25 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		9DD4F4E1251A2FC500ADCC25 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9DD4F4E2251A2FC500ADCC25 /* MorphicLauncher.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicLauncher.entitlements; sourceTree = "<group>"; };
+		9DD4F4E2251A2FC500ADCC25 /* MorphicLauncherDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicLauncherDebug.entitlements; sourceTree = "<group>"; };
 		9DDAE60F25094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarSegmentedButtonItemView.swift; sourceTree = "<group>"; };
 		9DE0734F251289C20030A978 /* Morphic Community.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Morphic Community.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DE0737125128A180030A978 /* MorphicCommunityConfigurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorphicCommunityConfigurator.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -749,7 +750,8 @@
 				9DD4F4DC251A2FC500ADCC25 /* Assets.xcassets */,
 				9DD4F4DE251A2FC500ADCC25 /* MainMenu.xib */,
 				9DD4F4E1251A2FC500ADCC25 /* Info.plist */,
-				9DD4F4E2251A2FC500ADCC25 /* MorphicLauncher.entitlements */,
+				9DD4F4E2251A2FC500ADCC25 /* MorphicLauncherDebug.entitlements */,
+				9D9DF072251DAE460073F8FB /* MorphicLauncherRelease.entitlements */,
 			);
 			path = MorphicLauncher;
 			sourceTree = "<group>";
@@ -1856,7 +1858,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CODE_SIGN_ENTITLEMENTS = MorphicLauncher/MorphicLauncher.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MorphicLauncher/MorphicLauncherDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -1882,7 +1884,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CODE_SIGN_ENTITLEMENTS = MorphicLauncher/MorphicLauncher.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MorphicLauncher/MorphicLauncherRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -1909,7 +1911,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CODE_SIGN_ENTITLEMENTS = MorphicLauncher/MorphicLauncher.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MorphicLauncher/MorphicLauncherDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -1935,7 +1937,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CODE_SIGN_ENTITLEMENTS = MorphicLauncher/MorphicLauncher.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MorphicLauncher/MorphicLauncherRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
