@@ -113,10 +113,10 @@
                                     <action selector="launchPointerSizeSettings:" target="-1" id="4iA-ga-FkM"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Stop Key-repeat " id="PEe-T1-bhd">
+                            <menuItem title="Keyboard Settings" id="PEe-T1-bhd">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="launchStopKeyRepeatSettings:" target="-1" id="IoK-81-XwZ"/>
+                                    <action selector="launchKeyboardSettings:" target="-1" id="IoK-81-XwZ"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Brightness" id="JQV-M8-1cX">

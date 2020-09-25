@@ -908,7 +908,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     @IBAction
-    func launchStopKeyRepeatSettings(_ sender: Any?) {
+    func launchKeyboardSettings(_ sender: Any?) {
         SettingsLinkActions.openSystemPreferencesPane(.keyboardKeyboard)
     }
 
