@@ -166,7 +166,7 @@
                         <action selector="automaticallyStartMorphicAtLoginClicked:" target="ZNk-5q-oDb" id="7bT-mH-uZy"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Show MorphicBar at Start" id="cGf-Qp-TV9">
+                <menuItem title="Always Show MorphicBar at Start" id="cGf-Qp-TV9">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="showMorphicBarAtStartClicked:" target="ZNk-5q-oDb" id="4yA-wH-Fap"/>
