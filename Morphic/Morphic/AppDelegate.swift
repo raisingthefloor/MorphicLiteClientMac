@@ -813,6 +813,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     @IBAction
     func hideMorphicBar(_ sender: Any?) {
+        currentQuickHelpViewController = nil
+
         morphicBarWindow?.close()
         #if EDITION_BASIC
             showMorphicBarMenuItem?.isHidden = false
@@ -920,10 +922,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     //
 
+    var currentQuickHelpViewController: NSViewController? = nil
+    
     func windowDidBecomeKey(_ notification: Notification) {
+        if let currentQuickHelpViewController = currentQuickHelpViewController {
+            QuickHelpWindow.show(viewController: currentQuickHelpViewController)
+        }
     }
      
     func windowDidResignKey(_ notification: Notification) {
+        QuickHelpWindow.hide()
     }
      
     func windowWillClose(_ notification: Notification) {

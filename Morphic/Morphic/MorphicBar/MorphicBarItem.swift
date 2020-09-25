@@ -862,7 +862,7 @@ fileprivate struct LocalizedStrings {
     }
 }
 
-fileprivate class QuickHelpDynamicTextProvider: QuickHelpContentProvider{
+fileprivate class QuickHelpDynamicTextProvider: QuickHelpContentProvider {
     
     var textProvider: () -> (String, String)?
     

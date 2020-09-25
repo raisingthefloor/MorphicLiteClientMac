@@ -49,7 +49,7 @@ class QuickHelpWindow: NSWindow {
     ///   - title: The text to show in the view controller's `titleLabel`
     ///   - message: The text to show in the view controller's `messageLabel`
     public static func show(viewController: NSViewController) {
-        if shared == nil{
+        if shared == nil {
             shared = QuickHelpWindow()
             shared?.delegate = delegate
         }

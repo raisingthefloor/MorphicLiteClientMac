@@ -284,6 +284,7 @@ class LogoButton: NSButton {
             let viewController = QuickHelpViewController(nibName: "QuickHelpViewController", bundle: nil)
             viewController.titleText = title
             viewController.messageText = message
+            (NSApplication.shared.delegate as? AppDelegate)?.currentQuickHelpViewController = viewController
             QuickHelpWindow.show(viewController: viewController)
         }
     }

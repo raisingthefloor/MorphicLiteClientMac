@@ -54,6 +54,9 @@ class MorphicBarSegmentedButton: NSControl {
         layer?.rasterizationScale = 2
         self.segments = segments
         updateButtons()
+        
+        // refuse first responder status (so that our child controls get selected in tab/shift-tab order instead)
+        self.refusesFirstResponder = true
     }
     
     required init?(coder: NSCoder) {
@@ -178,7 +181,7 @@ class MorphicBarSegmentedButton: NSControl {
             frame.origin.x += frame.size.width + horizontalMarginBetweenSegments
         }
     }
-    
+
     // MARK: - Segment Buttons
     
     /// NSButton subclass that provides a custom intrinsic size with content insets
@@ -295,6 +298,7 @@ class MorphicBarSegmentedButton: NSControl {
                 guard let viewController = helpProvider?.quickHelpViewController() else {
                     return
                 }
+                (NSApplication.shared.delegate as? AppDelegate)?.currentQuickHelpViewController = viewController
                 QuickHelpWindow.show(viewController: viewController)
             }
         }
