@@ -71,8 +71,7 @@ public class MorphicBarView: NSView {
         let itemViewsWithFrames = calculateFramesOfItemViews(itemViews, orientation: self.orientation)
         for itemViewWithFrame in itemViewsWithFrames {
             itemViewWithFrame.itemView.frame = itemViewWithFrame.frame
-        }
-        
+        }        
     }
     
     func calculateFramesOfItemViews(_ itemViews: [MorphicBarItemViewProtocol], orientation: MorphicBarOrientation) -> [(itemView: MorphicBarItemViewProtocol, frame: CGRect)] {
@@ -208,14 +207,25 @@ public class MorphicBarView: NSView {
     
     public override var intrinsicContentSize: NSSize {
         let itemViewsWithFrames = calculateFramesOfItemViews(itemViews, orientation: self.orientation)
-        
-        var size = NSSize.zero
-        for itemViewWithFrame in itemViewsWithFrames {
-            let itemViewFrame = itemViewWithFrame.frame
-            size.width = max(size.width, itemViewFrame.maxX)
-            size.height = max(size.height, itemViewFrame.maxY)
+
+        var size: NSSize
+        switch orientation {
+        case .horizontal:
+            size = .zero
+            for itemViewWithFrame in itemViewsWithFrames {
+                let itemViewFrame = itemViewWithFrame.frame
+                size.width = max(size.width, itemViewFrame.maxX)
+                size.height = max(size.height, itemViewFrame.height)
+            }
+        case .vertical:
+            size = NSSize(width: minimumWidthInVerticalOrientation, height: itemSpacing * CGFloat(max(itemViews.count - 1, 0)))
+            for itemViewWithFrame in itemViewsWithFrames {
+                let itemViewFrame = itemViewWithFrame.frame
+                size.width = max(size.width, itemViewFrame.width)
+                size.height += itemViewFrame.height
+            }
         }
-        return size 
+        return size
     }
     
     public override func acceptsFirstMouse(for event: NSEvent?) -> Bool {
