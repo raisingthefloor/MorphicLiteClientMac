@@ -9,6 +9,8 @@
         <customObject id="-2" userLabel="File's Owner" customClass="MorphicBarViewController" customModule="Morphic" customModuleProvider="target">
             <connections>
                 <outlet property="automaticallyStartMorphicAtLoginMenuItem" destination="iaW-3x-w8F" id="Wl6-iz-auk"/>
+                <outlet property="copySettingsBetweenComputersMenuItem" destination="nEi-ie-PQT" id="zTb-az-bTI"/>
+                <outlet property="loginMenuItem" destination="iGo-my-5Ga" id="7tj-Ss-QYR"/>
                 <outlet property="logoButton" destination="ead-JY-BhL" id="cLt-cn-cEr"/>
                 <outlet property="logoutMenuItem" destination="O7a-6a-ADF" id="0Vq-o3-uOm"/>
                 <outlet property="mainMenu" destination="Tdd-O7-ejt" id="2yx-wr-veu"/>
@@ -179,7 +181,13 @@
                         <action selector="handleUnimplementedMenuItem:" target="-1" id="xGA-oJ-jY1"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Logout" hidden="YES" id="O7a-6a-ADF">
+                <menuItem title="Sign In..." hidden="YES" id="iGo-my-5Ga">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="launchLogin:" target="-1" id="iDp-T7-VY1"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Sign Out" hidden="YES" id="O7a-6a-ADF">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="logout:" target="-1" id="x5Y-bD-SlU"/>

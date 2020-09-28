@@ -38,7 +38,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     @IBOutlet var menu: NSMenu!
     @IBOutlet weak var showMorphicBarMenuItem: NSMenuItem?
     @IBOutlet weak var hideMorphicBarMenuItem: NSMenuItem?
-    @IBOutlet weak var captureMenuItem: NSMenuItem!
+    @IBOutlet weak var copySettingsBetweenComputersMenuItem: NSMenuItem!
     @IBOutlet weak var loginMenuItem: NSMenuItem!
     @IBOutlet weak var logoutMenuItem: NSMenuItem?
     @IBOutlet weak var selectCommunityMenuItem: NSMenuItem!
@@ -735,7 +735,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         if currentEvent.type == .leftMouseDown {
             // when the left mouse button is pressed, toggle the MorphicBar's visibility (i.e. show/hide the MorphicBar)
 
-            toggleMorphicBar(sender)
+            #if EDITION_BASIC
+                toggleMorphicBar(sender)
+            #elseif EDITION_COMMUNITY
+                if (Session.shared.user == nil) {
+                    // NOTE: if we're running MorphicCommunity and there is no actively logged-in user, then show the login instead of toggling the MorphicBar
+                    self.launchConfigurator(argument: "login")
+                } else {
+                    toggleMorphicBar(sender)
+                }
+            #endif
         } else if currentEvent.type == .rightMouseDown {
             // when the right mouse button is pressed, show the main menu
 
@@ -768,9 +777,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             // NOTE: the default menu items are already configured for Morphic Basic
         #elseif EDITION_COMMUNITY
             // configure menu items to match the Morphic Community scheme
-            captureMenuItem?.isHidden = true
-            loginMenuItem?.title = "Sign In..."
-            logoutMenuItem?.title = "Sign Out"
+            copySettingsBetweenComputersMenuItem?.isHidden = true
         #endif
     }
      

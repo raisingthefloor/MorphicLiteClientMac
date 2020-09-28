@@ -9,7 +9,9 @@
         <customObject id="ZNk-5q-oDb" customClass="AppDelegate" customModule="Morphic" customModuleProvider="target">
             <connections>
                 <outlet property="automaticallyStartMorphicMenuItem" destination="Ir1-cH-h7Z" id="qjx-8X-a5H"/>
+                <outlet property="copySettingsBetweenComputersMenuItem" destination="WUC-ZR-CdM" id="vlM-8I-iQP"/>
                 <outlet property="hideMorphicBarMenuItem" destination="gOm-Gw-nLp" id="f86-ih-DaC"/>
+                <outlet property="loginMenuItem" destination="S6R-h6-1Yz" id="zO2-OE-N39"/>
                 <outlet property="logoutMenuItem" destination="fdS-ef-rqr" id="2v2-vJ-y1T"/>
                 <outlet property="menu" destination="iDk-eb-5cB" id="OjZ-YL-Pes"/>
                 <outlet property="selectCommunityMenuItem" destination="qcc-Q2-sYr" id="Gm9-io-FQH"/>
@@ -153,7 +155,13 @@
                         <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="w8B-hC-vDg"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Logout" hidden="YES" id="fdS-ef-rqr">
+                <menuItem title="Sign In..." hidden="YES" id="S6R-h6-1Yz">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="launchLogin:" target="ZNk-5q-oDb" id="mYB-Jp-6w7"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Sign Out" hidden="YES" id="fdS-ef-rqr">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="logout:" target="ZNk-5q-oDb" id="VNp-5s-w1f"/>

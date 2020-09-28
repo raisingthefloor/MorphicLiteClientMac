@@ -28,7 +28,7 @@ import MorphicSettings
 /// The View Controller for a MorphicBar showing a collection of actions the user can take
 public class MorphicBarViewController: NSViewController {
     
-    @IBOutlet weak var captureMenuItem: NSMenuItem!
+    @IBOutlet weak var copySettingsBetweenComputersMenuItem: NSMenuItem!
     @IBOutlet weak var loginMenuItem: NSMenuItem!
     @IBOutlet weak var logoutMenuItem: NSMenuItem!
     @IBOutlet weak var selectCommunityMenuItem: NSMenuItem!
@@ -101,9 +101,7 @@ public class MorphicBarViewController: NSViewController {
             // NOTE: the default menu items are already configured for Morphic Basic
         #elseif EDITION_COMMUNITY
             // configure menu items to match the Morphic Community scheme
-            captureMenuItem?.isHidden = true
-            loginMenuItem?.title = "Sign In..."
-            logoutMenuItem?.title = "Sign Out"
+            copySettingsBetweenComputersMenuItem?.isHidden = true
         #endif
     }
 
