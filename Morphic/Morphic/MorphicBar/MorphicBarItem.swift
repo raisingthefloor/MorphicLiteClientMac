@@ -580,7 +580,7 @@ class MorphicBarControlItem: MorphicBarItem {
 
     @objc
     func screensnip(_ sender: Any?) {
-        guard let (keyCode, keyOptions, hotKeyEnabled) = MorphicInput.hotKeyForSystemKeyboardShortcut(.savePictureOfSelectedAreaAsAFile) else {
+        guard let (keyCode, keyOptions, hotKeyEnabled) = MorphicInput.hotKeyForSystemKeyboardShortcut(.copyPictureOfSelectedAreaToTheClipboard) else {
             NSLog("Could not retrieve 'screen snip' hotkey from macOS's keyboard shortcuts list")
             return
         }
@@ -590,9 +590,14 @@ class MorphicBarControlItem: MorphicBarItem {
             return
         }
         
-        guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
-            NSLog("Could not send 'screen snip' hotkey to the keyboard input stream")
-            return
+        // hide the QuickHelp window
+        QuickHelpWindow.hide(withoutDelay: true) {
+            // after we hide the QuickHelp window, send our key
+            
+            guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
+                NSLog("Could not send 'screen snip' hotkey to the keyboard input stream")
+                return
+            }
         }
     }
     
