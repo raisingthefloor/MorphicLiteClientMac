@@ -895,7 +895,7 @@ fileprivate class QuickHelpTextSizeBiggerProvider: QuickHelpContentProvider {
         let viewController = QuickHelpStepViewController(nibName: "QuickHelpStepViewController", bundle: nil)
         let total = display?.numberOfSteps ?? 1
         var step = display?.currentStep ?? -1
-        if step >= 0{
+        if step >= 0 {
             step = total - 1 - step
         }
         viewController.numberOfSteps = total
