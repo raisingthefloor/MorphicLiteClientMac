@@ -117,15 +117,15 @@ public class Display {
         //
         // remove all retina "native" resolution options where a pixel-doubled retina option exists
         let pixelDoublePreferredDisplayModes = filterOutRetinaNativeScaleDisplayModes(retinaPreferredDisplayModes)
-        //
-        // suggested by Owen: filter out all display modes which do not use the current aspect ratio
-        let equalAspectDisplayModes = pixelDoublePreferredDisplayModes.filter({ $0.aspectRatio == currentMode.aspectRatio })
-        //
-        // suggested by Owen: filter out all display modes which do not use the same scale (i.e. Retina vs. non-Retina)
-        let equalScaleModes = equalAspectDisplayModes.filter({ $0.scale == currentMode.scale })
-        //
+//        //
+//        // suggested by Owen: filter out all display modes which do not use the current aspect ratio
+//        let equalAspectDisplayModes = pixelDoublePreferredDisplayModes.filter({ $0.aspectRatio == currentMode.aspectRatio })
+//        //
+//        // suggested by Owen: filter out all display modes which do not use the same scale (i.e. Retina vs. non-Retina)
+//        let equalScaleModes = equalAspectDisplayModes.filter({ $0.scale == currentMode.scale })
+//        //
         // suggested by Owen: re-sort resolutions by custom "<" algorithm
-        let sortedModes = equalScaleModes.sorted(by: <)
+        let sortedModes = pixelDoublePreferredDisplayModes.sorted(by: <)
 
         return sortedModes
     }
