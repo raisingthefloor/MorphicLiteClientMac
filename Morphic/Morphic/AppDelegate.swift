@@ -487,6 +487,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
     }
     
+    var copySettingsWindowController: NSWindowController?
+    
+    @IBAction
+    func showCopySettingsWindow(_ sender: Any?) {
+        if copySettingsWindowController == nil {
+            copySettingsWindowController = CopySettingsWindowController(windowNibName: "CopySettingsWindow")
+        }
+        copySettingsWindowController?.window?.makeKeyAndOrderFront(sender)
+        copySettingsWindowController?.window?.delegate = self
+    }
+    
     @IBAction
     func reapplyAllSettings(_ sender: Any) {
         Session.shared.open {
@@ -920,12 +931,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func launchKeyboardSettings(_ sender: Any?) {
         SettingsLinkActions.openSystemPreferencesPane(.keyboardKeyboard)
     }
-
-    // TODO: this is a temporary function assigned to unimplemented menu buttons (so that they don't appear in gray); remove it once items are implemented
-    @IBAction
-    func handleUnimplementedMenuItem(_ sender: Any?) {
-        // do nothing
-    }
     
     //
 
@@ -952,8 +957,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     // MARK: - Configurator App
     
     @IBAction
-    func launchCapture(_ sender: Any?) {
+    func launchCaptureToCloudVault(_ sender: Any?) {
+        copySettingsWindowController?.close()
+        copySettingsWindowController = nil
+
         launchConfigurator(argument: "capture")
+    }
+
+    @IBAction
+    func launchApplyFromCloudVault(_ sender: Any?) {
+        copySettingsWindowController?.close()
+        copySettingsWindowController = nil
+
+        launchLogin(sender)
     }
     
     @IBAction

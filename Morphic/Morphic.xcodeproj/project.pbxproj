@@ -182,6 +182,10 @@
 		9DE0736B25128A180030A978 /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B472444E04300EEDF14 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9DE0736C25128A180030A978 /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B492444E04300EEDF14 /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9DE0736D25128A180030A978 /* MorphicService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B482444E04300EEDF14 /* MorphicService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9DE112E72522243200591E08 /* CopySettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE112E52522243100591E08 /* CopySettingsWindowController.swift */; };
+		9DE112E82522243200591E08 /* CopySettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DE112E62522243200591E08 /* CopySettingsWindow.xib */; };
+		9DE112F52522243800591E08 /* CopySettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DE112E62522243200591E08 /* CopySettingsWindow.xib */; };
+		9DE112FC2522243E00591E08 /* CopySettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE112E52522243100591E08 /* CopySettingsWindowController.swift */; };
 		9DE45BAA25171C6000209421 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
 /* End PBXBuildFile section */
 
@@ -428,6 +432,8 @@
 		9DDAE60F25094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarSegmentedButtonItemView.swift; sourceTree = "<group>"; };
 		9DE0734F251289C20030A978 /* Morphic Community.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Morphic Community.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DE0737125128A180030A978 /* MorphicCommunityConfigurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorphicCommunityConfigurator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9DE112E52522243100591E08 /* CopySettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopySettingsWindowController.swift; sourceTree = "<group>"; };
+		9DE112E62522243200591E08 /* CopySettingsWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CopySettingsWindow.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -602,6 +608,7 @@
 				31E1E186244792D9009C4092 /* DefaultPreferences.json */,
 				9D82576724D3160600F6E932 /* About Box */,
 				31751B3F2444E01B00EEDF14 /* MorphicBar */,
+				9DE112E42522240700591E08 /* CopySettingsWindow */,
 				31CE56EC244A3C9800A52A7B /* Help Window */,
 				314EB6D924A6978200CF3D48 /* Solutions */,
 				318744F32481A2DA00AE3954 /* CreateDiskImage.sh */,
@@ -782,6 +789,15 @@
 				9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */,
 			);
 			path = MorphicBarButtonItem;
+			sourceTree = "<group>";
+		};
+		9DE112E42522240700591E08 /* CopySettingsWindow */ = {
+			isa = PBXGroup;
+			children = (
+				9DE112E52522243100591E08 /* CopySettingsWindowController.swift */,
+				9DE112E62522243200591E08 /* CopySettingsWindow.xib */,
+			);
+			path = CopySettingsWindow;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1058,6 +1074,7 @@
 				9D2593ED250A830100C38DA3 /* amazon-brands.pdf in Resources */,
 				9D2593E1250A830100C38DA3 /* google-brands.pdf in Resources */,
 				9D2593E7250A830100C38DA3 /* video-solid.pdf in Resources */,
+				9DE112E82522243200591E08 /* CopySettingsWindow.xib in Resources */,
 				31E1E188244794EF009C4092 /* MorphicBarViewController.xib in Resources */,
 				9D2593E3250A830100C38DA3 /* calendar-solid.pdf in Resources */,
 				31751B842444E11600EEDF14 /* Debug.xcconfig in Resources */,
@@ -1154,6 +1171,7 @@
 				9DE07334251289C20030A978 /* amazon-brands.pdf in Resources */,
 				9DE07335251289C20030A978 /* google-brands.pdf in Resources */,
 				9DE07336251289C20030A978 /* video-solid.pdf in Resources */,
+				9DE112F52522243800591E08 /* CopySettingsWindow.xib in Resources */,
 				9DE07337251289C20030A978 /* MorphicBarViewController.xib in Resources */,
 				9DE07338251289C20030A978 /* calendar-solid.pdf in Resources */,
 				9DE07339251289C20030A978 /* Debug.xcconfig in Resources */,
@@ -1282,6 +1300,7 @@
 				31CE56F3244A3CDB00A52A7B /* QuickHelpWindow.swift in Sources */,
 				31E1E17D24466E7C009C4092 /* MorphicBarView.swift in Sources */,
 				9D8CEB152507AED7001276E4 /* MorphicBarButtonItemView.swift in Sources */,
+				9DE112E72522243200591E08 /* CopySettingsWindowController.swift in Sources */,
 				31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */,
 				31C12CBE24B138D000B617A8 /* ProgressIndicator.swift in Sources */,
 				31C12CC424B1441E00B617A8 /* PageControl.swift in Sources */,
@@ -1376,6 +1395,7 @@
 				9DE0731B251289C20030A978 /* QuickHelpWindow.swift in Sources */,
 				9DE0731C251289C20030A978 /* MorphicBarView.swift in Sources */,
 				9DE0731D251289C20030A978 /* MorphicBarButtonItemView.swift in Sources */,
+				9DE112FC2522243E00591E08 /* CopySettingsWindowController.swift in Sources */,
 				9DE0731E251289C20030A978 /* AppDelegate.swift in Sources */,
 				9DE0731F251289C20030A978 /* ProgressIndicator.swift in Sources */,
 				9DE07320251289C20030A978 /* PageControl.swift in Sources */,

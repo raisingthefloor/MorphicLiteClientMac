@@ -152,7 +152,7 @@
                 <menuItem title="Copy Settings Between Computers" id="WUC-ZR-CdM">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="handleUnimplementedMenuItem:" target="ZNk-5q-oDb" id="w8B-hC-vDg"/>
+                        <action selector="showCopySettingsWindow:" target="-1" id="61Q-i7-Rtt"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Sign In..." hidden="YES" id="S6R-h6-1Yz">

@@ -178,7 +178,7 @@
                 <menuItem title="Copy Settings Between Computers" id="nEi-ie-PQT">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="handleUnimplementedMenuItem:" target="-1" id="xGA-oJ-jY1"/>
+                        <action selector="showCopySettingsWindow:" target="-1" id="Z1i-5A-3wb"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Sign In..." hidden="YES" id="iGo-my-5Ga">
