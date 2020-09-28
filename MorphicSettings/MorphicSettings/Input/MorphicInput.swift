@@ -55,6 +55,7 @@ public class MorphicInput {
     
     public enum SystemHotKeyId: Int {
         case savePictureOfSelectedAreaAsAFile = 30 // kSHKSavePictureOfSelectedAreaAsAFile
+        case copyPictureOfSelectedAreaToTheClipboard = 31 // kSHKCopyPictureOfSelectedAreaToTheClipboard
     }
     
     public static func hotKeyForSystemKeyboardShortcut(_ systemHotKeyId: SystemHotKeyId) -> (keyCode: CGKeyCode, keyOptions: MorphicInput.KeyOptions, enabled: Bool)? {
