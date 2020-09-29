@@ -709,15 +709,27 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     /// The item that shows in the macOS menu bar
     var statusItem: NSStatusItem!
-     
+    //
+    // NOTE: this helper class functions purely to watch the StatusItem's mouse enter/exit events (without needing to subclass its button)
+    var statusBarMouseActionOwner: StatusBarMouseActionOwner? = nil
+    class StatusBarMouseActionOwner: NSResponder {
+        override func mouseEntered(with event: NSEvent) {
+            AppDelegate.shared.changeStatusItemMode(enableCustomMouseDownActions: true)
+        }
+        
+        override func mouseExited(with event: NSEvent) {
+            AppDelegate.shared.changeStatusItemMode(enableCustomMouseDownActions: false)
+        }
+    }
+    
     /// Create our `statusItem` for the macOS menu bar
     ///
     /// Should be called during application launch
     func createStatusItem() {
         os_log(.info, log: logger, "Creating status item")
         statusItem = NSStatusBar.system.statusItem(withLength: -1)
-        // NOTE: if we want to just use the button as a right-click dropdown (which would also work with ^F8 a11y keyboard navigation) then we can simply set the statusItem's menu to self.menu.
-//        statusItem.menu = menu
+        // NOTE: here we use a default menu for the statusicon (which works with VoiceOver and with ^F8 a11y keyboard navigation); separately we will capture mouse enter/exit events to make the statusitem something more custom
+        statusItem.menu = menu
         
         // update the menu to match the proper edition of Morphic
         updateMenu()
@@ -730,19 +742,38 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         buttonImage?.isTemplate = true
         statusItemButton.image = buttonImage
 
+        // capture statusItem (menubar extra) mouse enter/exit events; we'll use these events to switch the statusItem between "normal macOS StatusItem" mode (which is compatible with a11y keyboard navigation and VoiceOver) and "custom macOS StatusItem" mode (where we can separate left- and right-click into two separate actions)
+        self.statusBarMouseActionOwner = StatusBarMouseActionOwner()
+        let boundsTrackingArea = NSTrackingArea(rect: .zero, options: [.mouseEnteredAndExited, .inVisibleRect, .activeAlways], owner: statusBarMouseActionOwner, userInfo: nil)
+        statusItemButton.addTrackingArea(boundsTrackingArea)
+
         // connect the "left-click" action to toggle show/hide of the MorphicBar (and right-click to show the menu)
-        // NOTE: custom buttons do _not_ light up under ^F8 a11y keyboard navigation; if the user is a keyboard navigation user, we may want to consider keeping the icon as a standard "menu" button; this same issue can be seen in apps like Parallels (which has custom left- and right-click operations) and Spotlight (which has no menu).
         statusItemButton.target = self
-        statusItemButton.action = #selector(AppDelegate.statusItemClicked)
+        statusItemButton.action = #selector(AppDelegate.statusItemMousePressed)
         statusItemButton.sendAction(on: [.leftMouseDown, .rightMouseDown])
     }
 
+    func changeStatusItemMode(enableCustomMouseDownActions: Bool) {
+        guard let _ = statusItem.button else {
+            fatalError("Could not get reference to statusItemButton")
+        }
+
+        switch enableCustomMouseDownActions {
+        case true:
+            // disable menu so that our left- and right-click action handlers will be called
+            statusItem.menu = nil
+        case false:
+            // re-enable menu by default (for macos keyboard accessibility and voiceover compatibility
+            statusItem.menu = menu
+        }
+    }
+    
     @objc
-    func statusItemClicked(sender: NSStatusBarButton?) {
+    func statusItemMousePressed(sender: NSStatusBarButton?) {
         guard let currentEvent = NSApp.currentEvent else {
             return
         }
-        
+
         if currentEvent.type == .leftMouseDown {
             // when the left mouse button is pressed, toggle the MorphicBar's visibility (i.e. show/hide the MorphicBar)
 
