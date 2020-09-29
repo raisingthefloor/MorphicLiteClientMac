@@ -27,13 +27,29 @@ import Foundation
 class PermissionsGuidanceWindowController: NSWindowController, PermissionsWindowController {
     
     @IBOutlet weak var guideBox: NSBox!
+    @IBOutlet weak var firstLine: NSTextFieldCell!
+    @IBOutlet weak var secondLine: NSTextFieldCell!
+    @IBOutlet weak var thirdLine: NSTextFieldCell!
+    @IBOutlet weak var iconImg: NSImageCell!
+    @IBOutlet weak var arrow1: NSImageCell!
+    @IBOutlet weak var arrow2: NSImageCell!
+    @IBOutlet weak var arrow3: NSImageCell!
     
     override func windowDidLoad() {
         super.windowDidLoad()
         window?.isOpaque = false
         window?.backgroundColor = NSColor.clear
         guideBox.fillColor = NSColor.windowBackgroundColor
+        guideBox.setAccessibilityElement(false)
         window?.level = .floating
+        window?.setAccessibilityElement(false)
+        firstLine.setAccessibilityElement(false)
+        secondLine.setAccessibilityElement(false)
+        thirdLine.setAccessibilityElement(false)
+        iconImg.setAccessibilityElement(false)
+        arrow1.setAccessibilityElement(false)
+        arrow2.setAccessibilityElement(false)
+        arrow3.setAccessibilityElement(false)
     }
     
     func update(state: PermissionsGuidanceSystem.windowState, bounds: CGRect) {
