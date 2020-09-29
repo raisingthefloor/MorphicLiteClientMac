@@ -32,7 +32,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         Session.shared.open {
             for arg in ProcessInfo.processInfo.arguments[1...] {
                 if arg == "login" {
-                    self.showPermissionsGuidanceWindow(nil)
+                    self.showLoginWindow(nil)
                     break
                 }
                 if arg == "capture" {
@@ -90,16 +90,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         captureWindowController?.window?.delegate = self
     }
     
-    var permissionsGuidanceWindowController: NSWindowController?
-    
-    public func showPermissionsGuidanceWindow(_ sender: Any?) {
-        if permissionsGuidanceWindowController == nil {
-            permissionsGuidanceWindowController = PermissionsGuidanceWindowController(windowNibName: "PermissionsGuidanceWindow")
-        }
-        permissionsGuidanceWindowController?.window?.makeKeyAndOrderFront(sender)
-        permissionsGuidanceWindowController?.window?.delegate = self
-    }
-    
     func windowWillClose(_ notification: Notification) {
         guard let window = notification.object as? NSWindow else {
             return
@@ -109,9 +99,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
         if window == loginWindowController?.window {
             loginWindowController = nil
-        }
-        if window == permissionsGuidanceWindowController?.window {
-            permissionsGuidanceWindowController = nil
         }
     }
 }
