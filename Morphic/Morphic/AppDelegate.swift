@@ -531,7 +531,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         NSApp.activate(ignoringOtherApps: true)
     }
     
-    @IBAction func quitApplication(_ sender: Any) {
+    @IBAction func quitApplication(_ sender: Any?) {
         // immediately hide our MorphicBar window
         morphicBarWindow?.setIsVisible(false)
         

@@ -21,6 +21,7 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
+import Carbon.HIToolbox
 import Cocoa
 import MorphicCore
 import MorphicService
@@ -58,6 +59,18 @@ public class MorphicBarWindow: NSWindow {
     @objc
     func userDidChange(_ notification: NSNotification) {
         updateMorphicBar()
+    }
+    
+    public override func keyDown(with event: NSEvent) {
+        if event.modifierFlags.contains(.command) && event.keyCode == kVK_ANSI_W {
+            // close the window
+            AppDelegate.shared.hideMorphicBar(nil)
+        } else if event.modifierFlags.contains(.command) && event.keyCode == kVK_ANSI_Q {
+            // quit Morphic
+            AppDelegate.shared.quitApplication(nil)
+        } else {
+            super.keyDown(with: event)
+        }
     }
     
     func updateMorphicBar() {
