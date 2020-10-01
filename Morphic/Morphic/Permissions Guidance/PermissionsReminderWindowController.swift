@@ -31,6 +31,8 @@ class PermissionsReminderWindowController: NSWindowController, PermissionsWindow
     @IBOutlet var prefsButton: NSButton!
     @IBOutlet var cancelButton: NSButton!
     
+    let DisplayInCenter = true
+    
     override func windowDidLoad() {
         super.windowDidLoad()
         window?.level = .floating
@@ -54,6 +56,7 @@ class PermissionsReminderWindowController: NSWindowController, PermissionsWindow
         else {
             prefsButton.isHidden = false
             cancelButton.isHidden = false
+            window?.alphaValue = 1.0
             switch state {
             case .inactive:
                 break
@@ -64,6 +67,9 @@ class PermissionsReminderWindowController: NSWindowController, PermissionsWindow
             case .wrongTab:
                 label.title = "Please click on the \"Security and Privacy\" icon.\n\nMorphic requires Accessibility permissions in Security in order to be able to change settings when you ask."
             case .systemPrompt:
+                if DisplayInCenter {
+                    window?.alphaValue = 0.0
+                }
                 prefsButton.isHidden = true
                 cancelButton.isHidden = true
                 label.title = "Please open the Security menu in System Preferences.\n\nMorphic requires Accessibility permissions in Security in order to be able to change settings when you ask."
@@ -72,8 +78,12 @@ class PermissionsReminderWindowController: NSWindowController, PermissionsWindow
             case .success:
                 break
             }
-            let xval: CGFloat = (window?.screen?.frame.maxX ?? 0.0) - (window?.frame.width ?? 0)
-            let yval: CGFloat = (window?.screen?.frame.maxY ?? 0.0)
+            var xval: CGFloat = (window?.screen?.frame.maxX ?? 0.0) - (window?.frame.width ?? 0.0)
+            var yval: CGFloat = (window?.screen?.frame.maxY ?? 0.0)
+            if DisplayInCenter {
+                xval = ((window?.screen?.frame.maxX ?? 0.0) - (window?.frame.width ?? 0.0)) / 2.0
+                yval = (window?.screen?.frame.maxY ?? 0.0) / 2.0 + (window?.frame.height ?? 0.0)
+            }
             window?.setFrameTopLeftPoint(NSPoint(x: xval, y: yval))
         }
     }
