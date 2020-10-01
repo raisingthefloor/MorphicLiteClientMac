@@ -25,6 +25,7 @@ import Carbon.HIToolbox
 import Cocoa
 import MorphicCore
 import MorphicService
+import MorphicSettings
 
 /// A window that displays the MorphicBar
 ///
@@ -71,15 +72,34 @@ public class MorphicBarWindow: NSWindow {
         } else if event.modifierFlags.contains(.command) && event.keyCode == kVK_ANSI_Q {
             // quit Morphic
             AppDelegate.shared.quitApplication(nil)
-        } else if (windowIsKey == true && currentFirstResponderChildView != nil) && (event.keyCode == kVK_Escape) {
-            // close the window
-            // NOTE: this condition requires that the window is the key window AND that one of its button controls has focus (as evidenced by currentFirstResponderChildView being true); the latter will happen when keyboard accessibility is enabled in the operating system (which draws focus rings around the controls and enables space as a mouse click replacement)
-            AppDelegate.shared.hideMorphicBar(nil)
+        } else if event.keyCode == kVK_Escape {
+            // activate the topmost window
+            activateTopmostWindow()
         } else {
             super.keyDown(with: event)
         }
     }
     
+    func activateTopmostWindow() {
+        // get window ID of the topmost window
+        guard let (_ /* topmostWindowOwnerName */, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
+            NSLog("Could not get ID of topmost window")
+            return
+        }
+
+        // capture a reference to the topmost application
+        guard let topmostApplication = NSRunningApplication(processIdentifier: pid_t(topmostProcessId)) else {
+            NSLog("Could not get reference to application owning the topmost window")
+            return
+        }
+
+        // activate the topmost application
+        guard topmostApplication.activate(options: .activateIgnoringOtherApps) == true else {
+            NSLog("Could not activate the topmost window")
+            return
+        }
+    }
+        
     func updateMorphicBar() {
         #if EDITION_BASIC
             let showsHelpByDefault = true
