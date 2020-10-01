@@ -28,10 +28,12 @@ import MorphicSettings
 /// The View Controller for a MorphicBar showing a collection of actions the user can take
 public class MorphicBarViewController: NSViewController {
     
-    @IBOutlet weak var captureMenuItem: NSMenuItem!
+    @IBOutlet weak var copySettingsBetweenComputersMenuItem: NSMenuItem!
     @IBOutlet weak var loginMenuItem: NSMenuItem!
     @IBOutlet weak var logoutMenuItem: NSMenuItem!
     @IBOutlet weak var selectCommunityMenuItem: NSMenuItem!
+    @IBOutlet weak var automaticallyStartMorphicAtLoginMenuItem: NSMenuItem!
+    @IBOutlet weak var showMorphicBarAtStartMenuItem: NSMenuItem!
     
     // MARK: - View Lifecycle
 
@@ -42,8 +44,7 @@ public class MorphicBarViewController: NSViewController {
         view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
         view.layer?.cornerRadius = 6
         #if EDITION_BASIC
-        #else
-//        #elseif EDITION_COMMUNITY
+        #elseif EDITION_COMMUNITY
             self.loginMenuItem?.isHidden = (Session.shared.user != nil)
         #endif
         self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
@@ -51,6 +52,7 @@ public class MorphicBarViewController: NSViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
         DistributedNotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.appleInterfaceThemeDidChange(_:)), name: .appleInterfaceThemeChanged, object: nil)
 
+        logoButton.setAccessibilityRole(.menuButton)
         logoButton.setAccessibilityLabel(logoButton.helpTitle)
     }
     
@@ -74,8 +76,7 @@ public class MorphicBarViewController: NSViewController {
             return
         }
         #if EDITION_BASIC
-        #else
-//        #elseif EDITION_COMMUNITY
+        #elseif EDITION_COMMUNITY
             self.loginMenuItem?.isHidden = (session.user != nil)
         #endif
         self.logoutMenuItem?.isHidden = (session.user == nil)
@@ -98,12 +99,9 @@ public class MorphicBarViewController: NSViewController {
     private func updateMainMenu() {
         #if EDITION_BASIC
             // NOTE: the default menu items are already configured for Morphic Basic
-        #else
-//        #elseif EDITION_COMMUNITY
+        #elseif EDITION_COMMUNITY
             // configure menu items to match the Morphic Community scheme
-            captureMenuItem?.isHidden = true
-            loginMenuItem?.title = "Sign In..."
-            logoutMenuItem?.title = "Sign Out"
+            copySettingsBetweenComputersMenuItem?.isHidden = true
         #endif
     }
 
@@ -207,6 +205,22 @@ public class MorphicBarViewController: NSViewController {
         }
     }
 
+    // NOTE: we are mirroring the NSView's accessibilityChildren function here to combine and proxy the list to our owner
+    public func accessibilityChildren() -> [Any]? {
+        var result = [Any]()
+        for itemView in morphicBarView.itemViews {
+            if let children = itemView.accessibilityChildren() {
+                for child in children {
+                    result.append(child)
+                }
+            }
+        }
+        if let logoButton = self.logoButton {
+            result.append(logoButton)
+        }
+        return result
+    }
+
 }
 
 class LogoButton: NSButton {
@@ -227,14 +241,28 @@ class LogoButton: NSButton {
     @IBInspectable var helpTitle: String?
     @IBInspectable var helpMessage: String?
     
-    override func mouseEntered(with event: NSEvent) {
-        guard let title = helpTitle, let message = helpMessage else{
-            return
+    override func becomeFirstResponder() -> Bool {
+    	// alert the MorphicBarWindow that one of our controls has gained focus
+        if let window = window as? MorphicBarWindow {
+            window.currentFirstResponderChildView = self
         }
-        let viewController = QuickHelpViewController(nibName: "QuickHelpViewController", bundle: nil)
-        viewController.titleText = title
-        viewController.messageText = message
-        QuickHelpWindow.show(viewController: viewController)
+
+        updateHelpWindow(wasSelectedByKeyboard: true)
+        return super.becomeFirstResponder()
+    }
+
+    override func resignFirstResponder() -> Bool {
+    	// alert the MorphicBarWindow that one of our controls has lost focus
+        if let window = window as? MorphicBarWindow {
+            window.currentFirstResponderChildView = nil 
+        }
+
+        QuickHelpWindow.hide()
+        return super.resignFirstResponder()
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        updateHelpWindow()
     }
     
     override func mouseExited(with event: NSEvent) {
@@ -253,6 +281,24 @@ class LogoButton: NSButton {
         if showsHelp {
             boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
             addTrackingArea(boundsTrackingArea)
+        }
+    }
+    
+    func updateHelpWindow(wasSelectedByKeyboard: Bool = false) {
+        guard let title = helpTitle, let message = helpMessage else {
+            return
+        }
+        if showsHelp == true {
+            let viewController = QuickHelpViewController(nibName: "QuickHelpViewController", bundle: nil)
+            viewController.titleText = title
+            viewController.messageText = message
+            //
+            let appDelegate = (NSApplication.shared.delegate as? AppDelegate)
+            if wasSelectedByKeyboard == true || appDelegate?.currentKeyboardSelectedQuickHelpViewController != nil {
+                appDelegate?.currentKeyboardSelectedQuickHelpViewController = viewController
+            }
+            //
+            QuickHelpWindow.show(viewController: viewController)
         }
     }
     

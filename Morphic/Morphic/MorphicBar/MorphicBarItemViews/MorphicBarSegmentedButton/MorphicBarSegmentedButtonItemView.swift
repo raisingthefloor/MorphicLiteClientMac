@@ -38,7 +38,14 @@ class MorphicBarSegmentedButtonItemView: NSView, MorphicBarItemViewProtocol {
     }
     //
     public weak var morphicBarView: MorphicBarView?
-
+    //
+    public var contentFrames: [CGRect] {
+        var result: [CGRect] = []
+        result.append(titleLabel.frame)
+        result.append(segmentedButton.frame)
+        return result
+    }
+    
     //
     
     var titleLabel: NSTextField
@@ -62,6 +69,13 @@ class MorphicBarSegmentedButtonItemView: NSView, MorphicBarItemViewProtocol {
         addSubview(titleLabel)
         addSubview(segmentedButton)
         self.needsLayout = true
+
+        // set our accessibility children so that VoiceOver navigates our control properly
+        var accessibilityChildren: [Any]! = []
+        for button in segmentedButton.segmentButtons {
+            accessibilityChildren.append(button.cell as Any)
+        }
+        setAccessibilityChildren(accessibilityChildren)
     }
     
     private var titleYAdjustment: CGFloat {

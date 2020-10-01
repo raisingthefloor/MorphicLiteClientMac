@@ -391,11 +391,14 @@ public class Session {
         }
     }
     
+    public var isCaptureAndApplyEnabled: Bool = true
+    public var isServerPreferencesSyncEnabled: Bool = true
+    
     private func signin(user: User, preFetchedPreferences: Preferences?, completion: @escaping () -> Void) {
         let saveDefaultPreferencesIfNeeded: (@escaping () -> Void) -> Void = {
             completion in
             if self.user == nil {
-                #if EDITION_BASIC
+                if self.isCaptureAndApplyEnabled == true {
                     // If we're going from no user to a logged in user, capture the
                     // computer's current settings as the default preference that will
                     // be applied back when the user logs out.
@@ -411,10 +414,9 @@ public class Session {
                             }
                         }
                     }
-                #else
-//                #elseif EDITION_COMMUNITY
+                } else {
                     completion()
-                #endif
+                }
             } else {
                 // If we are going from one user to another, we don't want to do
                 // anything because the computer's current settings are the first
@@ -426,18 +428,18 @@ public class Session {
         
         let fetchPreferencesIfNeeded: (@escaping (_ preferences: Preferences?) -> Void) -> Void = {
             completion in
-            #if EDITION_BASIC
+            if self.isServerPreferencesSyncEnabled == true {
                 if let preferences = preFetchedPreferences {
                     completion(preferences)
                 } else {
                     _ = self.service.fetch(userPreferences: user, completion: completion)
                 }
-            #else
-//            #elseif EDITION_COMMUNITY
+            } else {
+                // create empty preference set
                 var preferences = Preferences(identifier: user.identifier)
                 preferences.userId = user.preferencesId
                 completion(preferences)
-            #endif
+            }
         }
         
         saveDefaultPreferencesIfNeeded {
@@ -464,21 +466,21 @@ public class Session {
     
     public func signout(completion: @escaping () -> Void) {
         user = nil
+        authToken = nil
         storage.load(identifier: "__default__") {
             (_, defaultPreferences: Preferences?) in
-            #if EDITION_BASIC
+            if self.isCaptureAndApplyEnabled == true {
                 self.preferences = defaultPreferences
                 let apply = ApplySession(settingsManager: self.settings, preferences: defaultPreferences!)
                 apply.run {
                     completion()
                     NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: self)
                 }
-            #else
-//            #elseif EDITION_COMMUNITY
+            } else {
                 completion()
                 NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: self)
-            #endif
             }
+        }
     }
     
     public func register(user: User, credentials: UsernameCredentials, preferences: Preferences, completion: @escaping (_ result: RegistrationResult) -> Void) {
@@ -582,7 +584,7 @@ public class Session {
                     }
 
                     self.set(communityBarsItems, for: .morphicBarCommunityBarsAsJson)
-                    self.savePreferencesToDisk() {
+                    self.savePreferences(waitFiveSecondsBeforeSave: false) {
                         success in
                         
                         completion(success)
@@ -671,7 +673,7 @@ public class Session {
                 os_log(.info, log: logger, "Saving preferences to disk")
                 self.savePreferencesToDisk {
                     success in
-                    #if EDITION_BASIC
+                    if self.isServerPreferencesSyncEnabled == true {
                         if self.user != nil {
                             os_log(.info, log: logger, "Saving preferences to server")
                             if preferences.userId != nil {
@@ -692,13 +694,15 @@ public class Session {
                                 completion(false)
                                 return
                             }
+                        } else {
+                            completion(true)
+                            return
                         }
-                    #else
-//                    #elseif EDITION_COMMUNITY
+                    } else {
                         // in Morphic Community, we do not save preferences to the server
-                    completion(success)
-                    return
-                    #endif
+                        completion(success)
+                        return
+                    }
                 }
             } else {
                 os_log(.error, log: logger, "Save preferences timer fired with nil preferences")
@@ -914,5 +918,5 @@ public extension NSNotification.Name {
 
 public extension Preferences.Key {
     /// The preference key that stores which items appear in each community on the MorphicBar (Morphic Community managed community bar)
-    static var morphicBarCommunityBarsAsJson = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbar", preference: "communityBarsAsJson")
+    static var morphicBarCommunityBarsAsJson = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "communityBarsAsJson")
 }

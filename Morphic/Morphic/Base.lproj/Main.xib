@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17156" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.3"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17156"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner"/>
         <customObject id="ZNk-5q-oDb" customClass="AppDelegate" customModule="Morphic" customModuleProvider="target">
             <connections>
-                <outlet property="captureMenuItem" destination="pzh-qC-88t" id="WSG-Dv-VRa"/>
+                <outlet property="automaticallyStartMorphicMenuItem" destination="Ir1-cH-h7Z" id="qjx-8X-a5H"/>
+                <outlet property="copySettingsBetweenComputersMenuItem" destination="WUC-ZR-CdM" id="vlM-8I-iQP"/>
                 <outlet property="hideMorphicBarMenuItem" destination="gOm-Gw-nLp" id="f86-ih-DaC"/>
                 <outlet property="loginMenuItem" destination="S6R-h6-1Yz" id="zO2-OE-N39"/>
                 <outlet property="logoutMenuItem" destination="fdS-ef-rqr" id="2v2-vJ-y1T"/>
                 <outlet property="menu" destination="iDk-eb-5cB" id="OjZ-YL-Pes"/>
                 <outlet property="selectCommunityMenuItem" destination="qcc-Q2-sYr" id="Gm9-io-FQH"/>
+                <outlet property="showMorphicBarAtStartMenuItem" destination="cGf-Qp-TV9" id="oUQ-4Y-1Ym"/>
                 <outlet property="showMorphicBarMenuItem" destination="4BS-cA-IvL" id="elS-Jc-raC"/>
             </connections>
         </customObject>
@@ -37,27 +39,145 @@
                         <action selector="hideMorphicBar:" target="-1" id="YMq-QB-Pag"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Select Community" id="qcc-Q2-sYr">
+                <menuItem title="Select Community" hidden="YES" id="qcc-Q2-sYr">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Select Community" id="l0C-IM-POV"/>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="vgQ-je-MGT"/>
-                <menuItem title="Take Settings With Me..." id="pzh-qC-88t">
+                <menuItem title="Learn About Morphic" id="DeU-ED-RwS">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="launchCapture:" target="ZNk-5q-oDb" id="c6m-rl-T73"/>
+                        <action selector="learnAboutMorphicClicked:" target="-1" id="y2W-iY-tAN"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Apply My Settings..." id="S6R-h6-1Yz">
+                <menuItem title="Quick Demo Movies" id="d81-k0-YBn">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="quickDemoMoviesClicked:" target="-1" id="1n5-2j-iRg"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Settings to Make Computer Easier" id="pDn-p9-kW7">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Settings to Make Computer Easier" id="cly-1W-5Qg">
+                        <items>
+                            <menuItem title="macOS Settings for MorphicBar Controls " id="eF3-hP-q65">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Magnifier Settings" id="b1Z-FW-EwQ">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="launchMagnifierSettings:" target="-1" id="Kz8-0l-X1Q"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Read Aloud Settings" id="yVb-9e-9TN">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="launchReadAloudSettings:" target="-1" id="5tE-Or-AmI"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Color Vision Settings" id="KW2-Yc-fA8">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="launchColorVisionSettings:" target="-1" id="Wna-NA-wJ2"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Night Mode Settings" id="bNX-LY-aa2">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="launchNightModeSettings:" target="-1" id="Hs6-vt-avi"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Dark Mode Settings" id="2mx-T9-CEQ">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="launchDarkModeSettings:" target="-1" id="qeC-Fe-vJc"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Contrast Settings" id="RHA-xv-t7n">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="launchContrastSettings:" target="-1" id="Djw-Z7-oFC"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="I2I-6m-2ua"/>
+                            <menuItem title="Other Key macOS Settings" id="vMO-xL-Bfp">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Mouse Settings" id="WgB-hi-dss">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="launchMouseSettings:" target="-1" id="uQh-NC-XG5"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Pointer Size" id="KpP-nc-KDu">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="launchPointerSizeSettings:" target="-1" id="4iA-ga-FkM"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Keyboard Settings" id="PEe-T1-bhd">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="launchKeyboardSettings:" target="-1" id="IoK-81-XwZ"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Brightness" id="JQV-M8-1cX">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="launchBrightnessSettings:" target="-1" id="Yj1-V1-0rq"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Language" id="opf-Uy-dBe">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="launchLanguageSettings:" target="-1" id="0xr-gg-dD1"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="All Accessibility Options" id="ZA3-bo-s5U">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="launchAllAccessibilityOptionsSettings:" target="-1" id="5Ra-mE-7HJ"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Other Helpful Things" id="gkK-R4-V6Q">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="otherHelpfulThingsClicked:" target="-1" id="gdw-jf-uaL"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="o45-X2-Eg1"/>
+                <menuItem title="Copy Settings Between Computers" id="WUC-ZR-CdM">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showCopySettingsWindow:" target="-1" id="61Q-i7-Rtt"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Sign In..." hidden="YES" id="S6R-h6-1Yz">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="launchLogin:" target="ZNk-5q-oDb" id="mYB-Jp-6w7"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Logout" hidden="YES" id="fdS-ef-rqr">
+                <menuItem title="Sign Out" hidden="YES" id="fdS-ef-rqr">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="logout:" target="ZNk-5q-oDb" id="VNp-5s-w1f"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="eWu-mW-zzY"/>
+                <menuItem title="Automatically Start Morphic" id="Ir1-cH-h7Z">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="automaticallyStartMorphicAtLoginClicked:" target="ZNk-5q-oDb" id="7bT-mH-uZy"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Always Show MorphicBar at Start" id="cGf-Qp-TV9">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showMorphicBarAtStartClicked:" target="ZNk-5q-oDb" id="4yA-wH-Fap"/>
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="yYL-r6-1AR"/>

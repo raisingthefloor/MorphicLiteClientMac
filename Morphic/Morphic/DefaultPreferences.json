@@ -1,5 +1,5 @@
 {
-    "org.raisingthefloor.morphic.morphicbar": {
+    "org.raisingthefloor.morphic.morphicbarbasic": {
         "visible": true,
         "position.mac": "topRight",
         "showsHelp": true,
@@ -14,16 +14,21 @@
             },
             {
                 "type": "control",
+                "feature": "screensnip"
+            },
+            {
+                "type": "control",
                 "feature": "readselected"
             },
             {
                 "type": "control",
-                "feature": "volume"
-            },
-            {
-                "type": "control",
-                "feature": "nightshift"
+                "feature": "contrastcolordarknight"
             }
         ]
+    },
+    "org.raisingthefloor.morphic.morphicbarcommunity": {
+        "visible": true,
+        "position.mac": "topRight",
+        "showsHelp": false
     }
 }

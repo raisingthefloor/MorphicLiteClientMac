@@ -138,7 +138,7 @@ public class SettingsManager {
         let session = CaptureSession(settingsManager: self, preferences: prefs)
         session.captureDefaultValues = true
         session.keys = keys
-        session.run{
+        session.run {
             let keyValueTuples = session.preferences.keyValueTuples()
             completion([Preferences.Key: Interoperable?].init(uniqueKeysWithValues: keyValueTuples))
         }

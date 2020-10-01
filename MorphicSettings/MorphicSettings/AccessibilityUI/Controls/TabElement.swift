@@ -42,7 +42,7 @@ public class TabElement: UIElement {
     }
     
     public func select() -> Bool {
-        switch state{
+        switch state {
         case .selected:
             return true
         case .normal:

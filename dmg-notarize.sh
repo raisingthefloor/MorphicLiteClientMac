@@ -17,8 +17,8 @@ fi
 USERNAME="${USERNAME}"
 APP_PASSWORD="${APP_PASSWORD}"
 SIGNING_IDENTITY="${SIGNING_IDENTITY}"
-BUNDLE_ID="com.raisingthefloor.Morphic.dmg"
-DMG_PATH="./Morphic/Morphic.dmg"
+BUNDLE_ID="${BUNDLE_ID}"
+DMG_PATH="${DMG_PATH}"
 
 exitWithErr()
 {

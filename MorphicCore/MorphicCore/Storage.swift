@@ -32,9 +32,19 @@ public class Storage {
     /// The singleton `Storage` instance
     public private(set) static var shared = Storage()
     
+    private static var applicationSupportDirectoryName: String? = nil
+    
+    public static func setApplicationSupportDirectoryName(_ applicationSupportDirectoryName: String) {
+        Storage.applicationSupportDirectoryName = applicationSupportDirectoryName
+    }
+    
     private init() {
+        guard let applicationSupportDirectoryName = Storage.applicationSupportDirectoryName else {
+            preconditionFailure("Storage.setApplicationSupportDirectoryName(:) must be called before using this class.")
+        }
+        
         fileManager = .default
-        root = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent("org.raisingthefloor.Morphic", isDirectory: true).appendingPathComponent("Data", isDirectory: true)
+        root = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent(applicationSupportDirectoryName, isDirectory: true).appendingPathComponent("Data", isDirectory: true)
         queue = DispatchQueue(label: "org.raisingthefloor.Morphic.Storage", qos: .background, attributes: [], autoreleaseFrequency: .inherit, target: nil)
     }
     

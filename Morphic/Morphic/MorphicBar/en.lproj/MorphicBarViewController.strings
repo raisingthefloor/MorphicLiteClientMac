@@ -18,28 +18,34 @@
 "ead-JY-BhL.ibExternalUserDefinedRuntimeAttributesLocalizableStrings[1]" = "Customize buttons and take your settings with you anywhere";
 
 /* Label for the buttons that control text/icon size */
-"control.feature.resolution.title" = "Screen Zoom";
+"control.feature.resolution.title" = "Text Size";
+
+/* Text for VoiceOver for the larger text/icon size button */
+"control.feature.resolution.bigger.tts" = "Increase Text Size";
 
 /* Title for the help window for the larger text/icon size button */
-"control.feature.resolution.bigger.help.title" = "Increase Screen Zoom";
+"control.feature.resolution.bigger.help.title" = "Increase Text Size everywhere";
 
 /* Message for the help window for the larger text/icon size button */
-"control.feature.resolution.bigger.help.message" = "Make everything bigger";
+"control.feature.resolution.bigger.help.message" = "Makes everything on the screen larger.";
 
 /* Title for the help window for the larger text/icon size button when at its limit */
-"control.feature.resolution.bigger.limit.help.title" = "Screen Zoom Cannot Go Bigger";
+"control.feature.resolution.bigger.limit.help.title" = "Text Size Cannot Go Bigger";
 
 /* Message for the help window for the larger text/icon size button when at its limit */
 "control.feature.resolution.bigger.limit.help.message" = "";
 
+/* Text for VoiceOver for the smaller text/icon size button */
+"control.feature.resolution.smaller.tts" = "Decrease Text Size";
+
 /* Title for the help window for the smaller text/icon size button */
-"control.feature.resolution.smaller.help.title" = "Decrease Screen Zoom";
+"control.feature.resolution.smaller.help.title" = "Decrease Text Size everywhere";
 
 /* Message for the help window for the smaller text/icon size button */
-"control.feature.resolution.smaller.help.message" = "Make everything smaller";
+"control.feature.resolution.smaller.help.message" = "Makes everything on the screen smaller.";
 
 /* Title for the help window for the smaller text/icon size button when at its limit */
-"control.feature.resolution.smaller.limit.help.title" = "Screen Zoom Cannot Go Smaller";
+"control.feature.resolution.smaller.limit.help.title" = "Text Size Cannot Go Smaller";
 
 /* Message for the help window for the smaller text/icon size button when at its limit */
 "control.feature.resolution.smaller.limit.help.message" = "";
@@ -50,20 +56,26 @@
 /* Label for the button that shows the magnifier */
 "control.feature.magnifier.show" = "Show";
 
+/* Text for VoiceOver for the show magnifier button */
+"control.feature.magnifier.show.tts" = "Show Magnifier";
+
 /* Title for the help window for the show magnifier button */
-"control.feature.magnifier.show.help.title" = "Show the Magnifying Glass";
+"control.feature.magnifier.show.help.title" = "Turn on Magnifier that follows mouse";
 
 /* Message for the help window for the show magnifier button */
-"control.feature.magnifier.show.help.message" = "Magnify the area around your mouse";
+"control.feature.magnifier.show.help.message" = "Turns on a Magnifying Lens. (Right-click to change settings.)";
 
 /* Label for the button that hides the magnifier */
 "control.feature.magnifier.hide" = "Hide";
 
+/* Text for VoiceOver for the hide magnifier button */
+"control.feature.magnifier.hide.tts" = "Hide Magnifier";
+
 /* Title for the help window for the hide magnifier button */
-"control.feature.magnifier.hide.help.title" = "Hide the Magnifying Glass";
+"control.feature.magnifier.hide.help.title" = "Turn off Magnifier";
 
 /* Message for the help window for the hide magnifier button */
-"control.feature.magnifier.hide.help.message" = "";
+"control.feature.magnifier.hide.help.message" = "(Right click to change magnifier settings.)";
 
 /* Label for the button that shows the magnifier */
 "control.feature.magnifier.on" = "On";
@@ -185,11 +197,14 @@
 /* Label for the button that plays/stops 'read selected text' */
 "control.feature.readselected.playstop" = "\U25B6 / \U25A0";
 
+/* Text for VoiceOver for the play/stop 'read selected text' button */
+"control.feature.readselected.playstop.tts" = "Read Selected Text - Start and Stop";
+
 /* Title for the help window for the play/stop 'read selected text' button */
-"control.feature.readselected.playstop.help.title" = "Read/Stop Reading Selected Text";
+"control.feature.readselected.playstop.help.title" = "Read or stop reading text that is selected.";
 
 /* Message for the help window for the play/stop 'read selected text' button */
-"control.feature.readselected.playstop.help.message" = "How to use: Select text and then click this button to have it read to you. Click again to stop.";
+"control.feature.readselected.playstop.help.message" = "Select any text, and then click to have it read. Click again to stop.";
 
 /* Label for the buttons that control night mode */
 "control.feature.nightshift.title" = "Night Mode";
@@ -232,3 +247,69 @@
 
 /* Message for the help window for the paste button */
 "control.feature.copypaste.paste.help.message" = "";
+
+/* Label for the buttons that activate screen snip */
+"control.feature.screensnip.title" = "Snip";
+
+/* Label for the button that activates screen snip */
+"control.feature.screensnip.copy" = "Copy";
+
+/* Text for VoiceOver for the screen snip button */
+"control.feature.screensnip.copy.tts" = "Snip copy of part of the screen";
+
+/* Title for the help window for the screen snip button */
+"control.feature.screensnip.copy.help.title" = "Copy a selected part of the screen";
+
+/* Message for the help window for the screen snip button */
+"control.feature.screensnip.copy.help.message" = "Drag with your mouse to copy part of screen.  Then paste into any document.";
+
+/* Label for the buttons that toggle contrast, color, dark and night */
+"control.feature.contrastcolordarknight.title" = "Contrast & Color";
+
+/* Label for the button that toggles high contrast */
+"control.feature.contrastcolordarknight.contrast" = "Contrast";
+
+/* Text for VoiceOver for the contrast button */
+"control.feature.contrastcolordarknight.contrast.tts" = "Contrast on, off";
+
+/* Title for the help window for the contrast button */
+"control.feature.contrastcolordarknight.contrast.help.title" = "Turn Contrast on and off";
+
+/* Message for the help window for the contrast button */
+"control.feature.contrastcolordarknight.contrast.help.message" = "Makes screen easier to read for some. (Right-click to adjust contrast.)";
+
+/* Label for the button that toggles color filters */
+"control.feature.contrastcolordarknight.color" = "Color";
+
+/* Text for VoiceOver for the color filters button */
+"control.feature.contrastcolordarknight.color.tts" = "Color Vision on, off";
+
+/* Title for the help window for the color filters button */
+"control.feature.contrastcolordarknight.color.help.title" = "Turn Color Vision filters on and off";
+
+/* Message for the help window for the color filters button */
+"control.feature.contrastcolordarknight.color.help.message" = "Changes colors to adapt for color blindness. (Right click to choose type.)";
+
+/* Label for the button that toggles dark appearance */
+"control.feature.contrastcolordarknight.dark" = "Dark";
+
+/* Text for VoiceOver for the dark appearance button */
+"control.feature.contrastcolordarknight.dark.tts" = "Dark Mode on, off";
+
+/* Title for the help window for the dark appearance button */
+"control.feature.contrastcolordarknight.dark.help.title" = "Turn Dark Mode on and off";
+
+/* Message for the help window for the dark appearance button */
+"control.feature.contrastcolordarknight.dark.help.message" = "Toggles Dark mode on and off. (Right click to adjust.)";
+
+/* Label for the button that toggles night shift */
+"control.feature.contrastcolordarknight.night" = "Night";
+
+/* Text for VoiceOver for the night shift button */
+"control.feature.contrastcolordarknight.night.tts" = "Night Shift on, off";
+
+/* Title for the help window for the night shift button */
+"control.feature.contrastcolordarknight.night.help.title" = "Turn 'Night Shift' feature on and off";
+
+/* Message for the help window for the night shift button */
+"control.feature.contrastcolordarknight.night.help.message" = "Reduces eye strain and makes it easier to fall asleep at night.";

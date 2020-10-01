@@ -28,7 +28,7 @@ public class Display {
     
     init(id: UInt32) {
         self.id = id
-        possibleModes = findPossibleModes()
+        possibleModes = findPossibleModes() ?? []
         normalMode = possibleModes.first(where: { $0.isDefault })
     }
     
@@ -77,7 +77,7 @@ public class Display {
     }
     
     public var numberOfSteps: Int {
-        possibleModes.count
+        return possibleModes.count
     }
     
     public var currentStep: Int {
@@ -95,20 +95,39 @@ public class Display {
         return MorphicDisplay.getCurrentDisplayMode(for: id)
     }
     
-    private func findPossibleModes() -> [MorphicDisplay.DisplayMode] {
-        guard let modes = MorphicDisplay.getAllDisplayModes(for: id) else {
+    private func findPossibleModes() -> [MorphicDisplay.DisplayMode]? {
+        guard let allDisplayModes = MorphicDisplay.getAllDisplayModes(for: id) else {
             return []
+        }
+        if allDisplayModes.count == 0 {
+            return nil
         }
         guard let currentMode = currentMode else {
-            return []
+            return nil
         }
-        var possibleModes = modes.filter({ $0.isUsableForDesktopGui && $0.aspectRatio == currentMode.aspectRatio && $0.integerRefresh == currentMode.integerRefresh && $0.scale == currentMode.scale }).sorted(by: <)
-        for i in (1..<possibleModes.count).reversed() {
-            if possibleModes[i] == possibleModes[i - 1] {
-                possibleModes.remove(at: i)
-            }
-        }
-        return possibleModes
+        
+        // sort list of display modes (by width primarily, then height secondarily) in order of increasing size
+        let sortedDisplayModes = sortDisplayModesByResolutionAscending(allDisplayModes)
+        //
+        // remove duplicate display mode entries
+        let deduplicatedDisplayModes = filterOutDuplicateDisplayModes(sortedDisplayModes)
+        //
+        // remove all non-retina display mode options which have a corresponding retina display mode option
+        let retinaPreferredDisplayModes = filterOutNonRetinaScaleAlternativeDisplayModes(deduplicatedDisplayModes)
+        //
+        // remove all retina "native" resolution options where a pixel-doubled retina option exists
+        let pixelDoublePreferredDisplayModes = filterOutRetinaNativeScaleDisplayModes(retinaPreferredDisplayModes)
+//        //
+//        // suggested by Owen: filter out all display modes which do not use the current aspect ratio
+//        let equalAspectDisplayModes = pixelDoublePreferredDisplayModes.filter({ $0.aspectRatio == currentMode.aspectRatio })
+//        //
+//        // suggested by Owen: filter out all display modes which do not use the same scale (i.e. Retina vs. non-Retina)
+//        let equalScaleModes = equalAspectDisplayModes.filter({ $0.scale == currentMode.scale })
+//        //
+        // suggested by Owen: re-sort resolutions by custom "<" algorithm
+        let sortedModes = pixelDoublePreferredDisplayModes.sorted(by: <)
+
+        return sortedModes
     }
     
     private func mode(for percentage: Double) -> MorphicDisplay.DisplayMode? {
@@ -118,6 +137,175 @@ public class Display {
         let targetWidth = Int(round(Double(normalMode.widthInVirtualPixels) / percentage))
         let modes = possibleModes.map({ (abs($0.widthInVirtualPixels - targetWidth), $0) }).sorted(by: { $0.0 < $1.0 })
         return modes.first?.1
+    }
+    
+    // MARK: display mode filter functions
+    
+    private func sortDisplayModesByResolutionAscending(_ displayModes: [MorphicDisplay.DisplayMode]) -> [MorphicDisplay.DisplayMode] {
+        return displayModes.sorted(by: {
+            // NOTE: the following sort indexes sort the data in a specific order (primary index first, secondary index second, etc.)
+            
+            // sort index: widthInVirtualPixels
+            if $0.widthInVirtualPixels < $1.widthInVirtualPixels {
+                return true
+            } else if $0.widthInVirtualPixels > $1.widthInVirtualPixels {
+                return false
+            }
+            
+            // sort index: heightInVirtualPixels
+            if $0.heightInVirtualPixels < $1.heightInVirtualPixels {
+                return true
+            } else if $0.heightInVirtualPixels > $1.heightInVirtualPixels {
+                return false
+            }
+            
+            // sort index: widthInPixels
+            if $0.widthInPixels < $1.widthInPixels {
+                return true
+            } else if $0.widthInPixels > $1.widthInPixels {
+                return false
+            }
+            
+            // sort index: heightInPixels
+            if $0.heightInPixels < $1.heightInPixels {
+                return true
+            } else if $0.heightInPixels > $1.heightInPixels {
+                return false
+            }
+
+            // finally: if all indexes matched, return false
+            return false
+        })
+    }
+    
+    private func filterOutDuplicateDisplayModes(_ displayModes: [MorphicDisplay.DisplayMode]) -> [MorphicDisplay.DisplayMode] {
+        // copy the whole displayModes array into a working set
+        var workingSet: [MorphicDisplay.DisplayMode] = displayModes
+        
+        // NOTE: this filter routine would be much faster if we pre-sorted the array; for simplicity we do not do so here
+        
+        var iFirstElement = 0
+        while iFirstElement < workingSet.count {
+            var iSecondElement = iFirstElement + 1
+            while iSecondElement < workingSet.count {
+                if workingSet[iFirstElement] == workingSet[iSecondElement] {
+                    workingSet.remove(at: iSecondElement)
+                } else {
+                    iSecondElement += 1
+                }
+            }
+            
+            iFirstElement += 1
+        }
+        
+        // return the remaining (non-duplicate) working set entries
+        return workingSet
+    }
+
+    private func filterOutNonRetinaScaleAlternativeDisplayModes(_ displayModes: [MorphicDisplay.DisplayMode]) -> [MorphicDisplay.DisplayMode] {
+        // remove all non-retina display mode options which have a corresponding retina display mode option
+        
+        // copy the whole displayModes array into a working set
+        var workingSet: [MorphicDisplay.DisplayMode] = displayModes
+
+        var iFirstElement = 0
+        while iFirstElement < workingSet.count {
+            var firstElementWasRemoved = false
+            
+            var iSecondElement = iFirstElement + 1
+            while iSecondElement < workingSet.count {
+                var secondElementWasRemoved = false
+                
+                if workingSet[iFirstElement].widthInVirtualPixels == workingSet[iSecondElement].widthInVirtualPixels &&
+                    workingSet[iFirstElement].heightInVirtualPixels == workingSet[iSecondElement].heightInVirtualPixels {
+                    // the two entries are the same virtual resolution (i.e. what the user sees in the resolution options)
+                    
+                    // remove the option which is non-retina
+                    if workingSet[iFirstElement].widthInPixels > workingSet[iSecondElement].widthInPixels &&
+                        workingSet[iFirstElement].heightInPixels > workingSet[iSecondElement].heightInPixels {
+                        // the first entry is the higher-resolution entry; remove the second element
+                        workingSet.remove(at: iSecondElement)
+
+                        // mark "secondElementWasRemoved" as true so it won't be incremented at the end of the current loop iteration
+                        secondElementWasRemoved = true
+                    } else {
+                        // otherwise, remove the first element
+                        workingSet.remove(at: iFirstElement)
+                        
+                        // mark "firstElementWasRemoved" as true so that it won't be incremented at the end fo the current (outer) loop iteration
+                        firstElementWasRemoved = true
+                        // break out the of the loop so that we start re-seeking at the next "first element" position
+                        break
+                    }
+                }
+
+                if secondElementWasRemoved == false {
+                    // NOTE: we only increment iSecondElement if the second element was NOT removed; otherwise we need to continue processing at the same position
+                    iSecondElement += 1
+                }
+            }
+            
+            if firstElementWasRemoved == false {
+                // NOTE: we only increment iFirstElement if the first element was NOT removed; otherwise we need to continue processing at the same position
+                iFirstElement += 1
+            }
+        }
+        
+        // return the remaining ("non-retina mode option removed where matching retina mode was present") working set entries
+        return workingSet
+    }
+
+    private func filterOutRetinaNativeScaleDisplayModes(_ displayModes: [MorphicDisplay.DisplayMode]) -> [MorphicDisplay.DisplayMode] {
+        // remove all retina display mode options that are "native resolution" (instead of using pixel doubling)
+        
+        // copy the whole displayModes array into a working set
+        var workingSet: [MorphicDisplay.DisplayMode] = displayModes
+        
+        var iFirstElement = 0
+        while iFirstElement < workingSet.count {
+            var firstElementWasRemoved = false
+            
+            var iSecondElement = iFirstElement + 1
+            while iSecondElement < workingSet.count {
+                var secondElementWasRemoved = false
+                
+                if workingSet[iFirstElement].widthInPixels == workingSet[iSecondElement].widthInPixels &&
+                    workingSet[iFirstElement].heightInPixels == workingSet[iSecondElement].heightInPixels {
+                    // the two entries are the same physical resolution
+                    
+                    // remove the option which is retina's "native" resolution (because the dots would be TOO small)
+                    if workingSet[iFirstElement].widthInVirtualPixels < workingSet[iSecondElement].widthInVirtualPixels &&
+                        workingSet[iFirstElement].heightInVirtualPixels < workingSet[iSecondElement].heightInVirtualPixels {
+                        // the first entry is the non-native (pixel doubled) entry; remove the second element
+                        workingSet.remove(at: iSecondElement)
+                        
+                        // mark "secondElementWasRemoved" as true so it won't be incremented at the end of the current loop iteration
+                        secondElementWasRemoved = true
+                    } else {
+                        // otherwise, remove the first element
+                        workingSet.remove(at: iFirstElement)
+                        
+                        // mark "firstElementWasRemoved" as true so that it won't be incremented at the end fo the current (outer) loop iteration
+                        firstElementWasRemoved = true
+                        // break out the of the loop so that we start re-seeking at the next "first element" position
+                        break
+                    }
+                }
+                
+                if secondElementWasRemoved == false {
+                    // NOTE: we only increment iSecondElement if the second element was NOT removed; otherwise we need to continue processing at the same position
+                    iSecondElement += 1
+                }
+            }
+            
+            if firstElementWasRemoved == false {
+                // NOTE: we only increment iFirstElement if the first element was NOT removed; otherwise we need to continue processing at the same position
+                iFirstElement += 1
+            }
+        }
+        
+        // return the remaining ("non-retina mode option removed where matching retina mode was present") working set entries
+        return workingSet
     }
     
 }
@@ -166,7 +354,7 @@ private extension MorphicDisplay.DisplayMode {
             diff = a.widthInPixels - b.widthInPixels
             if diff == 0{
                 diff = Int(a.refreshRateInHertz ?? 0) - Int(b.refreshRateInHertz ?? 0)
-                if diff == 0{
+                if diff == 0 {
                     diff = Int(a.ioDisplayModeId) - Int(b.ioDisplayModeId)
                 }
             }
@@ -181,8 +369,7 @@ private extension MorphicDisplay.DisplayMode {
         return Int(refresh)
     }
     
-    struct AspectRatio{
-        
+    struct AspectRatio {
         public var width: Int
         public var height: Int
         

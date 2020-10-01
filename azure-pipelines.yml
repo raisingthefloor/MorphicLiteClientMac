@@ -25,7 +25,7 @@ variables:
 - name: workspacePath
   value: '**/MorphicLite.xcworkspace'
 - name: finalVersion
-  value: '0.$(Build.BuildNumber)'
+  value: '1.$(Build.BuildNumber)'
 # This means the pipeline will configure all signing options
 - name: signingOption
   value: 'default' # this setting uses the builtin project configuration options for signing
@@ -40,6 +40,12 @@ steps:
   inputs:
     certSecureFile: 'raising_the_floor_5AAXYGZ428.p12'
     certPwd: '$(P12_PASSWORD)'
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provProfileSecureFile: 'Morphic_Launcher_for_macOS.provisionprofile'
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provProfileSecureFile: 'Morphic_Community_Launcher_for_macOS.provisionprofile'
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provProfileSecureFile: 'Morphic_Configurator_for_macOS.provisionprofile'
@@ -96,6 +102,42 @@ steps:
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
 - task: Xcode@5
+  displayName: Build MorphicCommunityConfigurator
+  inputs:
+    actions: 'build'
+    sdk: $(sdk)
+    scheme: 'MorphicCommunityConfigurator'
+    configuration: '$(configuration)'
+    xcWorkspacePath: '$(workspacePath)'
+    xcodeVersion: $(xcodeVersionNum)
+    useXcpretty: false
+    signingOption: '$(signingOption)'
+    args: '$(extraArgs)'
+- task: Xcode@5
+  displayName: Build MorphicLauncher
+  inputs:
+    actions: 'build'
+    sdk: $(sdk)
+    scheme: 'MorphicLauncher'
+    configuration: '$(configuration)'
+    xcWorkspacePath: '$(workspacePath)'
+    xcodeVersion: $(xcodeVersionNum)
+    useXcpretty: false
+    signingOption: '$(signingOption)'
+    args: '$(extraArgs)'
+- task: Xcode@5
+  displayName: Build MorphicCommunityLauncher
+  inputs:
+    actions: 'build'
+    sdk: $(sdk)
+    scheme: 'MorphicCommunityLauncher'
+    configuration: '$(configuration)'
+    xcWorkspacePath: '$(workspacePath)'
+    xcodeVersion: $(xcodeVersionNum)
+    useXcpretty: false
+    signingOption: '$(signingOption)'
+    args: '$(extraArgs)'
+- task: Xcode@5
   displayName: Build Morphic
   inputs:
     actions: 'build'
@@ -107,11 +149,25 @@ steps:
     useXcpretty: false
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
+- task: Xcode@5
+  displayName: Build Morphic Community
+  inputs:
+    actions: 'build'
+    sdk: $(sdk)
+    scheme: 'Morphic Community'
+    configuration: '$(configuration)'
+    xcWorkspacePath: '$(workspacePath)'
+    xcodeVersion: $(xcodeVersionNum)
+    useXcpretty: false
+    signingOption: '$(signingOption)'
+    args: '$(extraArgs)'
 - task: Bash@3
-  displayName: notarize dmg
+  displayName: Notarize 'Morphic.dmg'
   env:
     BRANCH: $(Build.SourceBranch)
     BRANCH_NAME: $(Build.SourceBranchName)
+    DMG_PATH: './Morphic/Morphic.dmg'
+    BUNDLE_ID: 'org.raisingthefloor.Morphic.dmg'
     USERNAME: '$(ALTOOL_USERNAME)'
     APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
     SIGNING_IDENTITY: '$(SIGNING_IDENTITY)'
@@ -119,7 +175,20 @@ steps:
     targetType: 'filePath'
     filePath: dmg-notarize.sh
 - task: Bash@3
-  displayName: publish to s3
+  displayName: Notarize 'Morphic Community.dmg'
+  env:
+    BRANCH: $(Build.SourceBranch)
+    BRANCH_NAME: $(Build.SourceBranchName)
+    DMG_PATH: './Morphic/Morphic Community.dmg'
+    BUNDLE_ID: 'org.raisingthefloor.MorphicCommunity.dmg'
+    USERNAME: '$(ALTOOL_USERNAME)'
+    APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
+    SIGNING_IDENTITY: '$(SIGNING_IDENTITY)'
+  inputs:
+    targetType: 'filePath'
+    filePath: dmg-notarize.sh
+- task: Bash@3
+  displayName: Publish Morphic to AWS S3
   env:
     AWS_ACCESS_KEY_ID: $(accessKey)
     AWS_SECRET_ACCESS_KEY: $(secretKey)
@@ -127,6 +196,23 @@ steps:
     AWS_DEFAULT_REGION: $(region)
     BRANCH: $(Build.SourceBranch)
     BRANCH_NAME: $(Build.SourceBranchName)
+    LOCAL_DMG: './Morphic/Morphic.dmg'
+    AWS_FILE_PREFIX: 'Morphic'
+    VERSION: '$(finalVersion)'
+  inputs:
+    targetType: 'filePath'
+    filePath: push-to-s3.sh
+- task: Bash@3
+  displayName: Publish Morphic Community to AWS S3
+  env:
+    AWS_ACCESS_KEY_ID: $(accessKey)
+    AWS_SECRET_ACCESS_KEY: $(secretKey)
+    BUCKET: $(bucket)
+    AWS_DEFAULT_REGION: $(region)
+    BRANCH: $(Build.SourceBranch)
+    BRANCH_NAME: $(Build.SourceBranchName)
+    LOCAL_DMG: './Morphic/Morphic Community.dmg'
+    AWS_FILE_PREFIX: 'MorphicCommunity'
     VERSION: '$(finalVersion)'
   inputs:
     targetType: 'filePath'

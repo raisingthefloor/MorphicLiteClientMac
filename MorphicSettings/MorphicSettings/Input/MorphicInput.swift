@@ -53,6 +53,82 @@ public class MorphicInput {
         ]
     }
     
+    // NOTE: a list of probably constants was found at: https://stackoverflow.com/questions/866056/how-do-i-programmatically-get-the-shortcut-keys-reserved-by-mac-os-x
+    public enum SystemHotKeyId: Int {
+        case savePictureOfSelectedAreaAsAFile = 30 // kSHKSavePictureOfSelectedAreaAsAFile
+        case copyPictureOfSelectedAreaToTheClipboard = 31 // kSHKCopyPictureOfSelectedAreaToTheClipboard
+    }
+    
+    public static func hotKeyForSystemKeyboardShortcut(_ systemHotKeyId: SystemHotKeyId) -> (keyCode: CGKeyCode, keyOptions: MorphicInput.KeyOptions, enabled: Bool)? {
+        guard let symbolicHotKeyDefaults = UserDefaults(suiteName: "com.apple.symbolichotkeys") else {
+            NSLog("Could not access defaults domain: \"com.apple.symbolichotkeys\"")
+            return nil
+        }
+        
+        // locate the target hot key by id
+        guard let appleSymbolicHotKeys = symbolicHotKeyDefaults.value(forKey: "AppleSymbolicHotKeys") as? [String: Any] else {
+            return nil
+        }
+        guard let hotKey = appleSymbolicHotKeys[String(systemHotKeyId.rawValue)] as? [String: Any] else {
+            return nil
+        }
+
+        // get whether or not the hot key is currently enabled
+        guard let hotKeyEnabledAsInt = hotKey["enabled"] as? Int else {
+            return nil
+        }
+        let hotKeyEnabled = hotKeyEnabledAsInt != 0 ? true : false
+        
+        guard let hotKeyValue = hotKey["value"] as? [String: Any] else {
+            return nil
+        }
+
+        // make sure the hot key is a "standard" hot key (i.e. not a mouse shortcut, etc.)
+        guard let hotKeyType = hotKeyValue["type"] as? String else {
+            return nil
+        }
+        guard hotKeyType.lowercased() == "standard" else {
+            return nil
+        }
+
+        // get the keycode and modifier keys used for this hot key
+        guard let hotKeyParameters = hotKeyValue["parameters"] as? [Any] else {
+            return nil
+        }
+        guard hotKeyParameters.count >= 3 else {
+            return nil
+        }
+//        // NOTE: hotKeyAsciiCode may be Int16.max (if the character isn't an ASCII character)
+//        guard let hotKeyAsciiCode: Int = hotKeyParameters[0] as? Int else {
+//            return nil
+//        }
+        guard let hotKeyKeyCode: Int = hotKeyParameters[1] as? Int else {
+            return nil
+        }
+        guard let hotKeyModifiers: Int = hotKeyParameters[2] as? Int else {
+            return nil
+        }
+
+        // NOTE: this modifier key mapping is specific to the (legacy, from the macOS 'Carbon' days) key mappings
+        // NOTE: these should be the same values we could get via CopySymbolicHotKeys (but of course here we can retrieve which key combo goes with which system feature)
+        var keyOptionsAsUInt32: UInt32 = 0
+        if (hotKeyModifiers & (1 << 17)) != 0 {
+            keyOptionsAsUInt32 |= MorphicInput.KeyOptions.withShiftKey.rawValue
+        }
+        if (hotKeyModifiers & (1 << 18)) != 0 {
+            keyOptionsAsUInt32 |= MorphicInput.KeyOptions.withControlKey.rawValue
+        }
+        if (hotKeyModifiers & (1 << 19)) != 0 {
+            keyOptionsAsUInt32 |= MorphicInput.KeyOptions.withAlternateKey.rawValue
+        }
+        if (hotKeyModifiers & (1 << 20)) != 0 {
+            keyOptionsAsUInt32 |= MorphicInput.KeyOptions.withCommandKey.rawValue
+        }
+        let keyOptions = MorphicInput.KeyOptions(rawValue: keyOptionsAsUInt32)
+
+        return (keyCode: CGKeyCode(hotKeyKeyCode), keyOptions: keyOptions, enabled: hotKeyEnabled)
+    }
+    
     public static func parseDefaultsKeyCombo(_ value: Int) -> (keyCode: CGKeyCode, keyOptions: KeyOptions)? {
         guard var valueAsUInt32 = UInt32(exactly: value) else {
             return nil
@@ -151,6 +227,7 @@ public class MorphicInput {
         } else {
             // send the key to the system itself
             
+	    // NOTE: CGEventTapLocation.cghidEventTap might be a reasonable alternative CGEventTapLocation (for some or all keyboard events)
             // press the key
             keyDownEvent.post(tap: CGEventTapLocation.cgSessionEventTap)
             // then release the key

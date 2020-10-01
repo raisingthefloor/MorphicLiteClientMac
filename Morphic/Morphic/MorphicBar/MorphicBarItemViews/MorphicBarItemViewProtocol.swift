@@ -34,5 +34,13 @@ public protocol MorphicBarItemViewProtocol: NSView {
 
     // NOTE: the protocol field must be implemented as WEAK:
     // public weak var morphicBarView: MorphicBarView?
-    var morphicBarView: MorphicBarView? { get set }    
+    var morphicBarView: MorphicBarView? { get set }
+    
+    var contentFrames: [CGRect] { get }
+}
+
+// NOTE: this delegate is used to bubble up "child focus/lostfocus" style of events to the window/view (so it can handle logic around keyboard accessibility focus)
+public protocol MorphicBarWindowChildViewDelegate {
+    func childViewBecomeFirstResponder(sender: NSView)
+    func childViewResignFirstResponder()
 }

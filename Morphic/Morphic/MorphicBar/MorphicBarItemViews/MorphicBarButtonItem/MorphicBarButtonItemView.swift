@@ -34,6 +34,12 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
     }
     //
     public weak var morphicBarView: MorphicBarView?
+    //
+    public var contentFrames: [CGRect] {
+        var result: [CGRect] = []
+        result.append(CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height))
+        return result
+    }
 
     //
     
@@ -651,5 +657,17 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
             configureTitleTextLayer()
             self.needsLayout = true
         }
+    }
+    
+    override func becomeFirstResponder() -> Bool {
+    	// alert the MorphicBarWindow that we have gained focus
+        morphicBarView?.childViewBecomeFirstResponder(sender: self)
+        return super.becomeFirstResponder()
+    }
+    
+    override func resignFirstResponder() -> Bool {
+    	// alert the MorphicBarWindow that we have lost focus
+        morphicBarView?.childViewResignFirstResponder()
+        return super.resignFirstResponder()
     }
 }

@@ -27,7 +27,7 @@ import OSLog
 
 private let logger = OSLog(subsystem: "MorphicSettings", category: "UIElement")
 
-public class UIElement{
+public class UIElement {
     
     var accessibilityElement: MorphicA11yUIElement!
     
@@ -76,7 +76,7 @@ public class UIElement{
     }
     
     private func descendant<ElementType: UIElement>(role: NSAccessibility.Role, title: String) -> ElementType? {
-        guard let accessibilityElement = accessibilityDescendant(role: role, title: title) else{
+        guard let accessibilityElement = accessibilityDescendant(role: role, title: title) else {
             return nil
         }
         return ElementType(accessibilityElement: accessibilityElement)
@@ -97,7 +97,7 @@ public class UIElement{
         var i = 0
         while i < stack.count {
             let candidate = stack[i]
-            if candidate.role == role{
+            if candidate.role == role {
                 if candidate.value(forAttribute: .title) == title || candidate.value(forAttribute: .description) == title {
                     return candidate
                 }
