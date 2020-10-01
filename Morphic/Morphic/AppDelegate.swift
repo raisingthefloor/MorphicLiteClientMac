@@ -26,6 +26,7 @@ import OSLog
 import MorphicCore
 import MorphicService
 import MorphicSettings
+import ServiceManagement
 
 private let logger = OSLog(subsystem: "app", category: "delegate")
 
@@ -37,16 +38,26 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     @IBOutlet var menu: NSMenu!
     @IBOutlet weak var showMorphicBarMenuItem: NSMenuItem?
     @IBOutlet weak var hideMorphicBarMenuItem: NSMenuItem?
-    @IBOutlet weak var captureMenuItem: NSMenuItem!
+    @IBOutlet weak var copySettingsBetweenComputersMenuItem: NSMenuItem!
     @IBOutlet weak var loginMenuItem: NSMenuItem!
     @IBOutlet weak var logoutMenuItem: NSMenuItem?
     @IBOutlet weak var selectCommunityMenuItem: NSMenuItem!
     
+    @IBOutlet weak var automaticallyStartMorphicMenuItem: NSMenuItem!
+    @IBOutlet weak var showMorphicBarAtStartMenuItem: NSMenuItem!
+    
+    private let terminateMorphicLauncherNotificationName = NSNotification.Name(rawValue: "org.raisingthefloor.terminateMorphicLauncher")
+
     // MARK: - Application Lifecycle
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         os_log(.info, log: logger, "applicationDidFinishLaunching")
         AppDelegate.shared = self
+
+        // NOTE: if desired, we could call morphicLauncherIsRunning() to detect if we were auto-started by our launch item (and capture that on startup); this would (generally) confirm that "autostart Morphic on login" is enabled without having to use deprecated SMJob functions
+        //
+        // terminate Morphic Launcher if it is already running
+        terminateMorphicLauncherIfRunning()
         
         // before we open any storage or use UserDefaults, set up our ApplicationSupport path and UserDefaults suiteName
         #if EDITION_BASIC
@@ -84,15 +95,31 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                     self.loginMenuItem?.isHidden = (Session.shared.user != nil)
                 #endif
                 self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
+
+                // capture the user's preference as to whether or not to show the Morphic Bar at startup
+                // showMorphicBarAtStart: true if we should always try to show the MorphicBar at application startup
+                let showMorphicBarAtStart = Session.shared.bool(for: .showMorphicBarAtStart) ?? false
+                // morphicBarVisible: true if the MorphicBar was visible when we last exited the application
+                let morphicBarVisible = Session.shared.bool(for: .morphicBarVisible) ?? true
+                
+                // show the Morphic Bar (if we have a bar to show and it's (a) our first startup or (b) the user had the bar showing when the app was last exited or (c) the user has "show MorphicBar at start" set to true
                 #if EDITION_BASIC
-                    if Session.shared.bool(for: .morphicBarVisible) ?? true {
+                    if morphicBarVisible || showMorphicBarAtStart {
                         self.showMorphicBar(nil)
                     }
                 #elseif EDITION_COMMUNITY
-                    if Session.shared.user != nil && Session.shared.bool(for: .morphicBarVisible) ?? true {
+                    if Session.shared.user != nil && (morphicBarVisible || showMorphicBarAtStart) {
                         self.showMorphicBar(nil)
                     }
                 #endif
+                
+                // update the "show MorphicBar at start" menu items' states
+                self.updateShowMorphicBarAtStartMenuItems()
+
+                // capture the current state of our launch items (in the corresponding menu items)
+                // NOTE: we must not do this until after we have set up UserDefaults.morphic (if we use UserDefaults.morphic to store/capture this state); we may also consider using the running state of MorphicLauncher (when we first start up) as a heuristic to know that autostart is enabled for our application (or we may consider passing in an argument via the launcher which indicates that we were auto-started)
+                self.updateMorphicAutostartAtLoginMenuItems()
+
                 if Session.shared.user != nil {
                     #if EDITION_BASIC
                     #elseif EDITION_COMMUNITY
@@ -146,6 +173,33 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
     }
     
+    func morphicLauncherIsRunning() -> Bool {
+        // if we were launched by MorphicLauncher (i.e. at startup/login), terminate MorphicLauncher if it's still running
+        let morphicLauncherApplications = NSWorkspace.shared.runningApplications.filter({
+            application in
+            switch application.bundleIdentifier {
+            #if EDITION_BASIC
+            case "org.raisingthefloor.MorphicLauncher",
+                 "org.raisingthefloor.MorphicLauncher-Debug":
+                return true
+            #elseif EDITION_COMMUNITY
+            case "org.raisingthefloor.MorphicCommunityLauncher",
+                 "org.raisingthefloor.MorphicCommunityLauncher-Debug":
+                return true
+            #endif
+            default:
+                return false
+            }
+        })
+        return (morphicLauncherApplications.count > 0)
+    }
+    
+    func terminateMorphicLauncherIfRunning() {
+        if morphicLauncherIsRunning() == true {
+            DistributedNotificationCenter.default().postNotificationName(terminateMorphicLauncherNotificationName, object: nil, userInfo: nil, deliverImmediately: true)
+        }
+    }
+
     @objc
     func sessionUserDidChange(_ notification: NSNotification) {
         guard let session = notification.object as? Session else {
@@ -433,6 +487,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
     }
     
+    var copySettingsWindowController: NSWindowController?
+    
+    @IBAction
+    func showCopySettingsWindow(_ sender: Any?) {
+        if copySettingsWindowController == nil {
+            copySettingsWindowController = CopySettingsWindowController(windowNibName: "CopySettingsWindow")
+        }
+        copySettingsWindowController?.window?.makeKeyAndOrderFront(sender)
+        copySettingsWindowController?.window?.delegate = self
+    }
+    
     @IBAction
     func reapplyAllSettings(_ sender: Any) {
         Session.shared.open {
@@ -466,7 +531,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         NSApp.activate(ignoringOtherApps: true)
     }
     
-    @IBAction func quitApplication(_ sender: Any) {
+    @IBAction func quitApplication(_ sender: Any?) {
         // immediately hide our MorphicBar window
         morphicBarWindow?.setIsVisible(false)
         
@@ -489,7 +554,111 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             NSApplication.shared.terminate(self)
         }
     }
+    
+    //
+    
+    @IBAction func automaticallyStartMorphicAtLoginClicked(_ sender: NSMenuItem) {
+        switch sender.state {
+        case .on:
+            _ = setMorphicAutostartAtLogin(false)
+        case .off:
+            _ = setMorphicAutostartAtLogin(true)
+        default:
+            fatalError("invalid code path")
+        }
+    }
+    
+    func updateMorphicAutostartAtLoginMenuItems() {
+        let autostartAtLogin = self.morphicAutostartAtLogin()
+        automaticallyStartMorphicMenuItem?.state = (autostartAtLogin ? .on : .off)
+        morphicBarWindow?.morphicBarViewController.automaticallyStartMorphicAtLoginMenuItem.state = (autostartAtLogin ? .on : .off)
+    }
+    
+    func morphicAutostartAtLogin() -> Bool {
+        // NOTE: in the future, we may want to save the autostart state in UserDefaults (although perhaps not in "UserDefaults.morphic"); we'd need to store in the UserDefaults area which was specific to _this_ user and _this_ application (including differentiating between Morphic and Morphic Community if there are two apps for that
+        // If we do switch to UserDefaults in the future, we will effectively capture its "autostart enabled" state when we set it and then trust that the user hasn't used launchctl at the command-line to reverse our state; the worst-case scenario with this approach should be that our corresponding menu item checkbox is out of sync with system reality, and a poweruser who uses launchctl could simply uncheck and then recheck the menu item (or use launchctl) to reenable autostart-at-login for Morphic
+        
+        // NOTE: SMCopyAllJobDictionaries (the API typically used to get the list of login items) was deprecated in macOS 10.10 but has not been replaced.  It is technically still available as of macOS 10.15.
+        guard let userLaunchedApps = SMCopyAllJobDictionaries(kSMDomainUserLaunchd)?.takeRetainedValue() as? [[String: Any]] else {
+            return false
+        }
+        for userLaunchedApp in userLaunchedApps {
+            switch userLaunchedApp["Program"] as? String {
+            #if EDITION_BASIC
+            case "org.raisingthefloor.MorphicLauncher",
+                 "org.raisingthefloor.MorphicLauncher-Debug":
+                return true
+            #elseif EDITION_COMMUNITY
+            case "org.raisingthefloor.MorphicCommunityLauncher",
+                 "org.raisingthefloor.MorphicCommunityLauncher-Debug":
+                return true
+            #endif
+            default:
+                break
+            }
+        }
 
+        // if we did not find an entry for Morphic in the list (either because autostart was never enabled OR because autostart was disabled), return false
+        return false
+    }
+    
+    // NOTE: LSSharedFileList.h functions (LSRegisterURL, LSSharedFileListInsertItemURL, etc.) are not allowed in sandboxed apps; therefore we have used Apple's recommended "login items" approach in our implementation.  If we ever need our application to appear in "System Preferences > Users & Groups > [User] > Login Items" then we can evaluate a revision to our approach...but the current approach is more future-proof.
+    // see: https://developer.apple.com/library/archive/documentation/Security/Conceptual/AppSandboxDesignGuide/DesigningYourSandbox/DesigningYourSandbox.html
+    // see: https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLoginItems.html#//apple_ref/doc/uid/10000172i-SW5-SW1
+    func setMorphicAutostartAtLogin(_ autostartAtLogin: Bool) -> Bool {
+        let success: Bool
+        
+        #if EDITION_BASIC
+            #if DEBUG
+                success =  SMLoginItemSetEnabled("org.raisingthefloor.MorphicLauncher-Debug" as CFString, autostartAtLogin)
+            #else
+                success =  SMLoginItemSetEnabled("org.raisingthefloor.MorphicLauncher" as CFString, autostartAtLogin)
+            #endif
+        #elseif EDITION_COMMUNITY
+            #if DEBUG
+                success =  SMLoginItemSetEnabled("org.raisingthefloor.MorphicCommunityLauncher-Debug" as CFString, autostartAtLogin)
+            #else
+                success =  SMLoginItemSetEnabled("org.raisingthefloor.MorphicCommunityLauncher" as CFString, autostartAtLogin)
+            #endif
+        #endif
+        
+        // NOTE: in the future, we may want to save the autostart state in UserDefaults (although perhaps not in "UserDefaults.morphic"); we'd need to store in the UserDefaults area which was specific to _this_ user and _this_ application (including differentiating between Morphic and Morphic Community if there are two apps for that
+        
+        // update the appropriate menu items to match
+        if success == true {
+            automaticallyStartMorphicMenuItem?.state = (autostartAtLogin ? .on : .off)
+            morphicBarWindow?.morphicBarViewController.automaticallyStartMorphicAtLoginMenuItem.state = (autostartAtLogin ? .on : .off)
+        }
+        
+        return success
+    }
+    
+    //
+    
+    @IBAction func showMorphicBarAtStartClicked(_ sender: NSMenuItem) {
+        let showMorphicBarAtStart: Bool
+        switch sender.state {
+        case .on:
+            showMorphicBarAtStart = false
+        case .off:
+            showMorphicBarAtStart = true
+        default:
+            fatalError("invalid code path")
+        }
+        
+        Session.shared.set(showMorphicBarAtStart, for: .showMorphicBarAtStart)
+        
+        updateShowMorphicBarAtStartMenuItems()
+    }
+    
+    func updateShowMorphicBarAtStartMenuItems() {
+        let showMorphicBarAtStart = Session.shared.bool(for: .showMorphicBarAtStart) ?? false
+        showMorphicBarAtStartMenuItem?.state = (showMorphicBarAtStart ? .on : .off)
+        morphicBarWindow?.morphicBarViewController.showMorphicBarAtStartMenuItem.state = (showMorphicBarAtStart ? .on : .off)
+    }
+    
+    //
+    
     // MARK: - Default Preferences
     
     func createEmptyDefaultPreferencesIfNotExist(completion: @escaping () -> Void) {
@@ -540,21 +709,109 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     /// The item that shows in the macOS menu bar
     var statusItem: NSStatusItem!
-     
+    //
+    // NOTE: this helper class functions purely to watch the StatusItem's mouse enter/exit events (without needing to subclass its button)
+    var statusBarMouseActionOwner: StatusBarMouseActionOwner? = nil
+    class StatusBarMouseActionOwner: NSResponder {
+        override func mouseEntered(with event: NSEvent) {
+            AppDelegate.shared.changeStatusItemMode(enableCustomMouseDownActions: true)
+        }
+        
+        override func mouseExited(with event: NSEvent) {
+            AppDelegate.shared.changeStatusItemMode(enableCustomMouseDownActions: false)
+        }
+    }
+    
     /// Create our `statusItem` for the macOS menu bar
     ///
     /// Should be called during application launch
     func createStatusItem() {
         os_log(.info, log: logger, "Creating status item")
         statusItem = NSStatusBar.system.statusItem(withLength: -1)
+        // NOTE: here we use a default menu for the statusicon (which works with VoiceOver and with ^F8 a11y keyboard navigation); separately we will capture mouse enter/exit events to make the statusitem something more custom
         statusItem.menu = menu
         
         // update the menu to match the proper edition of Morphic
         updateMenu()
-        
+
+        guard let statusItemButton = statusItem.button else {
+            fatalError("Could not get reference to statusItemButton")
+        }
+
         let buttonImage = NSImage(named: "MenuIconBlack")
         buttonImage?.isTemplate = true
-        statusItem.button?.image = buttonImage
+        statusItemButton.image = buttonImage
+
+        // capture statusItem (menubar extra) mouse enter/exit events; we'll use these events to switch the statusItem between "normal macOS StatusItem" mode (which is compatible with a11y keyboard navigation and VoiceOver) and "custom macOS StatusItem" mode (where we can separate left- and right-click into two separate actions)
+        self.statusBarMouseActionOwner = StatusBarMouseActionOwner()
+        let boundsTrackingArea = NSTrackingArea(rect: .zero, options: [.mouseEnteredAndExited, .inVisibleRect, .activeAlways], owner: statusBarMouseActionOwner, userInfo: nil)
+        statusItemButton.addTrackingArea(boundsTrackingArea)
+
+        // connect the "left-click" action to toggle show/hide of the MorphicBar (and right-click to show the menu)
+        statusItemButton.target = self
+        statusItemButton.action = #selector(AppDelegate.statusItemMousePressed)
+        statusItemButton.sendAction(on: [.leftMouseDown, .rightMouseDown])
+    }
+
+    func changeStatusItemMode(enableCustomMouseDownActions: Bool) {
+        guard let _ = statusItem.button else {
+            fatalError("Could not get reference to statusItemButton")
+        }
+
+        switch enableCustomMouseDownActions {
+        case true:
+            // disable menu so that our left- and right-click action handlers will be called
+            statusItem.menu = nil
+        case false:
+            // re-enable menu by default (for macos keyboard accessibility and voiceover compatibility
+            statusItem.menu = menu
+        }
+    }
+    
+    @objc
+    func statusItemMousePressed(sender: NSStatusBarButton?) {
+        guard let currentEvent = NSApp.currentEvent else {
+            return
+        }
+
+        if currentEvent.type == .leftMouseDown {
+            // when the left mouse button is pressed, toggle the MorphicBar's visibility (i.e. show/hide the MorphicBar)
+
+            #if EDITION_BASIC
+                toggleMorphicBar(sender)
+            #elseif EDITION_COMMUNITY
+                if (Session.shared.user == nil) {
+                    // NOTE: if we're running MorphicCommunity and there is no actively logged-in user, then show the login instead of toggling the MorphicBar
+                    self.launchConfigurator(argument: "login")
+                } else {
+                    toggleMorphicBar(sender)
+                }
+            #endif
+        } else if currentEvent.type == .rightMouseDown {
+            // when the right mouse button is pressed, show the main menu
+
+            guard let statusItem = self.statusItem else {
+                assertionFailure("Could not obtain reference to MenuBar extra's StatusItem.")
+                return
+            }
+            guard let statusItemButton = statusItem.button else {
+                assertionFailure("Could not obtain reference to MenuBar extra's StatusItem's button.")
+                return
+            }
+
+            // show the menu (by assigning it to the menubar extra and re-clicking the extra; then disconnect the menu again so that our custom actions (custom left- and right-mouseDown) work properly.
+            statusItem.menu = self.menu
+            statusItemButton.performClick(sender)
+            statusItem.menu = nil
+
+            // NOTE: due to a glitch in macOS, our StatusItem's Button's view doesn't get the "rightMouseUp" event so it gets into an odd state where it doesn't respond to the _next_ button down event.  So we manually send ourselves a "rightMouseUp" event, centered over the status item, to clear the state issue.
+            let statusItemButtonBoundsInWindow = statusItemButton.convert(statusItemButton.bounds, to: nil)
+            if let statusItemBoundsOnScreen = statusItemButton.window?.convertToScreen(statusItemButtonBoundsInWindow) {
+                let cursorPosition = CGPoint(x: statusItemBoundsOnScreen.midX, y: statusItemBoundsOnScreen.midY)
+                let eventMouseUp = CGEvent(mouseEventSource: nil, mouseType: .rightMouseUp, mouseCursorPosition: cursorPosition, mouseButton: .right)
+                eventMouseUp!.postToPid(NSRunningApplication.current.processIdentifier)
+            }
+        }
     }
     
     private func updateMenu() {
@@ -562,9 +819,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             // NOTE: the default menu items are already configured for Morphic Basic
         #elseif EDITION_COMMUNITY
             // configure menu items to match the Morphic Community scheme
-            captureMenuItem?.isHidden = true
-            loginMenuItem?.title = "Sign In..."
-            logoutMenuItem?.title = "Sign Out"
+            copySettingsBetweenComputersMenuItem?.isHidden = true
         #endif
     }
      
@@ -607,6 +862,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     @IBAction
     func hideMorphicBar(_ sender: Any?) {
+        currentKeyboardSelectedQuickHelpViewController = nil
+
         morphicBarWindow?.close()
         #if EDITION_BASIC
             showMorphicBarMenuItem?.isHidden = false
@@ -623,11 +880,103 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             Session.shared.set(false, for: .morphicBarVisible)
         }
     }
-     
+    
+    //
+    
+    @IBAction
+    func learnAboutMorphicClicked(_ sender: NSMenuItem?) {
+        let url = URL(string: "https://morphic.org")!
+        NSWorkspace.shared.open(url)
+    }
+
+    @IBAction
+    func quickDemoMoviesClicked(_ sender: NSMenuItem?) {
+        let url = URL(string: "https://morphic.org/movies/main")!
+        NSWorkspace.shared.open(url)
+    }
+
+    @IBAction
+    func otherHelpfulThingsClicked(_ sender: NSMenuItem?) {
+        let url = URL(string: "https://morphic.org/helpful")!
+        NSWorkspace.shared.open(url)
+    }
+
+    //
+
+    @IBAction
+    func launchAllAccessibilityOptionsSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.accessibilityOverview)
+    }
+    
+    @IBAction
+    func launchBrightnessSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.displaysDisplay)
+    }
+    
+    @IBAction
+    func launchColorVisionSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayColorFilters)
+    }
+    
+    @IBAction
+    func launchContrastSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay)
+    }
+    
+    @IBAction
+    func launchDarkModeSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.general)
+    }
+
+    @IBAction
+    func launchLanguageSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.languageandregionGeneral)
+    }
+
+    @IBAction
+    func launchMagnifierSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.accessibilityZoom)
+    }
+
+    @IBAction
+    func launchMouseSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.mouse)
+    }
+
+    @IBAction
+    func launchNightModeSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.displaysNightShift)
+    }
+    
+    @IBAction
+    func launchPointerSizeSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayCursor)
+    }
+    
+    @IBAction
+    func launchReadAloudSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.accessibilitySpeech)
+    }
+
+    @IBAction
+    func launchKeyboardSettings(_ sender: Any?) {
+        SettingsLinkActions.openSystemPreferencesPane(.keyboardKeyboard)
+    }
+    
+    //
+
+    var currentKeyboardSelectedQuickHelpViewController: NSViewController? = nil
+    
     func windowDidBecomeKey(_ notification: Notification) {
+        morphicBarWindow?.windowIsKey = true
+        if let currentKeyboardSelectedQuickHelpViewController = currentKeyboardSelectedQuickHelpViewController {
+            QuickHelpWindow.show(viewController: currentKeyboardSelectedQuickHelpViewController)
+        }
     }
      
     func windowDidResignKey(_ notification: Notification) {
+        morphicBarWindow?.windowIsKey = false
+        QuickHelpWindow.hide()
     }
      
     func windowWillClose(_ notification: Notification) {
@@ -641,8 +990,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     // MARK: - Configurator App
     
     @IBAction
-    func launchCapture(_ sender: Any?) {
+    func launchCaptureToCloudVault(_ sender: Any?) {
+        copySettingsWindowController?.close()
+        copySettingsWindowController = nil
+
         launchConfigurator(argument: "capture")
+    }
+
+    @IBAction
+    func launchApplyFromCloudVault(_ sender: Any?) {
+        copySettingsWindowController?.close()
+        copySettingsWindowController = nil
+
+        launchLogin(sender)
     }
     
     @IBAction

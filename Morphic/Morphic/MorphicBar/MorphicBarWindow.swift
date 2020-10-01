@@ -21,6 +21,7 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
+import Carbon.HIToolbox
 import Cocoa
 import MorphicCore
 import MorphicService
@@ -58,6 +59,25 @@ public class MorphicBarWindow: NSWindow {
     @objc
     func userDidChange(_ notification: NSNotification) {
         updateMorphicBar()
+    }
+    
+    var windowIsKey: Bool = false
+    var currentFirstResponderChildView: NSView? = nil
+    
+    public override func keyDown(with event: NSEvent) {
+        if event.modifierFlags.contains(.command) && event.keyCode == kVK_ANSI_W {
+            // close the window
+            AppDelegate.shared.hideMorphicBar(nil)
+        } else if event.modifierFlags.contains(.command) && event.keyCode == kVK_ANSI_Q {
+            // quit Morphic
+            AppDelegate.shared.quitApplication(nil)
+        } else if (windowIsKey == true && currentFirstResponderChildView != nil) && (event.keyCode == kVK_Escape) {
+            // close the window
+            // NOTE: this condition requires that the window is the key window AND that one of its button controls has focus (as evidenced by currentFirstResponderChildView being true); the latter will happen when keyboard accessibility is enabled in the operating system (which draws focus rings around the controls and enables space as a mouse click replacement)
+            AppDelegate.shared.hideMorphicBar(nil)
+        } else {
+            super.keyDown(with: event)
+        }
     }
     
     func updateMorphicBar() {
@@ -223,7 +243,14 @@ public extension Preferences.Key {
     #elseif EDITION_COMMUNITY
         static var morphicBarPosition = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "position.mac")
     #endif
-    
+
+    /// The preference key that stores whether the MorphicBar should always appear at startup
+    #if EDITION_BASIC
+        static var showMorphicBarAtStart = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "showMorphicBarAtStart")
+    #elseif EDITION_COMMUNITY
+        static var showMorphicBarAtStart = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "showMorphicBarAtStart")
+    #endif
+
     /// The preference key that stores whether the MorphicBar should appear by default
     #if EDITION_BASIC
         static var morphicBarVisible = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "visible")

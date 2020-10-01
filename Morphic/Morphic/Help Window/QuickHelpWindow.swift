@@ -49,7 +49,7 @@ class QuickHelpWindow: NSWindow {
     ///   - title: The text to show in the view controller's `titleLabel`
     ///   - message: The text to show in the view controller's `messageLabel`
     public static func show(viewController: NSViewController) {
-        if shared == nil{
+        if shared == nil {
             shared = QuickHelpWindow()
             shared?.delegate = delegate
         }
@@ -68,13 +68,22 @@ class QuickHelpWindow: NSWindow {
     ///
     /// Since the user is likely to be moving from the button calling `hide()` to another that will call
     /// `show()`, the window doesn't close until a short delay has passed without a `show()` call.
-    public static func hide() {
+    public static func hide(withoutDelay: Bool = false, completion: (() -> Void)? = nil) {
         shared?.hideQueued = true
-        Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false){
-            timer in
-            if shared?.hideQueued ?? false{
+        if withoutDelay == false {
+            Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {
+                timer in
+                if shared?.hideQueued ?? false {
+                    shared?.close()
+                    shared = nil
+                }
+                completion?()
+            }
+        } else {
+            DispatchQueue.main.async {
                 shared?.close()
                 shared = nil
+                completion?()
             }
         }
     }

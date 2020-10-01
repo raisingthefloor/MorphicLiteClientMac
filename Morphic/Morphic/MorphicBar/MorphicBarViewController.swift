@@ -28,10 +28,12 @@ import MorphicSettings
 /// The View Controller for a MorphicBar showing a collection of actions the user can take
 public class MorphicBarViewController: NSViewController {
     
-    @IBOutlet weak var captureMenuItem: NSMenuItem!
+    @IBOutlet weak var copySettingsBetweenComputersMenuItem: NSMenuItem!
     @IBOutlet weak var loginMenuItem: NSMenuItem!
     @IBOutlet weak var logoutMenuItem: NSMenuItem!
     @IBOutlet weak var selectCommunityMenuItem: NSMenuItem!
+    @IBOutlet weak var automaticallyStartMorphicAtLoginMenuItem: NSMenuItem!
+    @IBOutlet weak var showMorphicBarAtStartMenuItem: NSMenuItem!
     
     // MARK: - View Lifecycle
 
@@ -50,6 +52,7 @@ public class MorphicBarViewController: NSViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
         DistributedNotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.appleInterfaceThemeDidChange(_:)), name: .appleInterfaceThemeChanged, object: nil)
 
+        logoButton.setAccessibilityRole(.menuButton)
         logoButton.setAccessibilityLabel(logoButton.helpTitle)
     }
     
@@ -98,9 +101,7 @@ public class MorphicBarViewController: NSViewController {
             // NOTE: the default menu items are already configured for Morphic Basic
         #elseif EDITION_COMMUNITY
             // configure menu items to match the Morphic Community scheme
-            captureMenuItem?.isHidden = true
-            loginMenuItem?.title = "Sign In..."
-            logoutMenuItem?.title = "Sign Out"
+            copySettingsBetweenComputersMenuItem?.isHidden = true
         #endif
     }
 
@@ -240,14 +241,28 @@ class LogoButton: NSButton {
     @IBInspectable var helpTitle: String?
     @IBInspectable var helpMessage: String?
     
-    override func mouseEntered(with event: NSEvent) {
-        guard let title = helpTitle, let message = helpMessage else{
-            return
+    override func becomeFirstResponder() -> Bool {
+    	// alert the MorphicBarWindow that one of our controls has gained focus
+        if let window = window as? MorphicBarWindow {
+            window.currentFirstResponderChildView = self
         }
-        let viewController = QuickHelpViewController(nibName: "QuickHelpViewController", bundle: nil)
-        viewController.titleText = title
-        viewController.messageText = message
-        QuickHelpWindow.show(viewController: viewController)
+
+        updateHelpWindow(wasSelectedByKeyboard: true)
+        return super.becomeFirstResponder()
+    }
+
+    override func resignFirstResponder() -> Bool {
+    	// alert the MorphicBarWindow that one of our controls has lost focus
+        if let window = window as? MorphicBarWindow {
+            window.currentFirstResponderChildView = nil 
+        }
+
+        QuickHelpWindow.hide()
+        return super.resignFirstResponder()
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        updateHelpWindow()
     }
     
     override func mouseExited(with event: NSEvent) {
@@ -266,6 +281,24 @@ class LogoButton: NSButton {
         if showsHelp {
             boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
             addTrackingArea(boundsTrackingArea)
+        }
+    }
+    
+    func updateHelpWindow(wasSelectedByKeyboard: Bool = false) {
+        guard let title = helpTitle, let message = helpMessage else {
+            return
+        }
+        if showsHelp == true {
+            let viewController = QuickHelpViewController(nibName: "QuickHelpViewController", bundle: nil)
+            viewController.titleText = title
+            viewController.messageText = message
+            //
+            let appDelegate = (NSApplication.shared.delegate as? AppDelegate)
+            if wasSelectedByKeyboard == true || appDelegate?.currentKeyboardSelectedQuickHelpViewController != nil {
+                appDelegate?.currentKeyboardSelectedQuickHelpViewController = viewController
+            }
+            //
+            QuickHelpWindow.show(viewController: viewController)
         }
     }
     

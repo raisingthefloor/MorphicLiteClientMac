@@ -29,11 +29,11 @@ extension NSNumber: FoundationA11yUIAttributeValueCompatible {
 }
 
 public protocol MorphicA11yUIAttributeValueCompatible: FoundationA11yUIAttributeValueCompatible {
-    static func fromCFTypeRef(_ value: AnyObject) -> FoundationA11yUIAttributeValueCompatible
+    static func fromCFTypeRef(_ value: AnyObject) -> FoundationA11yUIAttributeValueCompatible?
     func toCFTypeRef() -> CFTypeRef
 }
 extension MorphicA11yUIAttributeValueCompatible {
-    public static func fromCFTypeRef(_ axValue: CFTypeRef) -> FoundationA11yUIAttributeValueCompatible {
+    public static func fromCFTypeRef(_ axValue: CFTypeRef) -> FoundationA11yUIAttributeValueCompatible? {
         // determine Core Foundation type (so we can handle UIElements separately from Core Foundation data types
         let coreFoundationTypeId = CFGetTypeID(axValue)
 
@@ -46,7 +46,11 @@ extension MorphicA11yUIAttributeValueCompatible {
         
         if coreFoundationTypeId == AXUIElementGetTypeID() {
             let valueAsAxValue = axValue as! AXUIElement
-            return MorphicA11yUIElement(axUiElement: valueAsAxValue)!
+            
+            guard let result = MorphicA11yUIElement(axUiElement: valueAsAxValue) else {
+                return nil
+            }
+            return result
         } else if coreFoundationTypeId == AXValueGetTypeID() {
             // get type of AXValue
             let valueAsAxValue: AXValue = axValue as! AXValue

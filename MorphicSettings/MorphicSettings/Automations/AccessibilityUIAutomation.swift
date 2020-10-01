@@ -29,7 +29,6 @@ private let logger = OSLog(subsystem: "MorphicSettings", category: "Accessibilit
 
 
 public class AccessibilityUIAutomation: UIAutomation {
-    
     public required init() {
     }
     
@@ -58,6 +57,25 @@ public class AccessibilityUIAutomation: UIAutomation {
         }
     }
     
+    public func showAccessibilityOverviewPreferences(completion: @escaping (_ accessibility: AccessibilityPreferencesElement?) -> Void) {
+        showAccessibilityPreferences {
+            accessibility in
+            guard let accessibility = accessibility else {
+                completion(nil)
+                return
+            }
+            accessibility.selectOverview {
+                success in
+                guard success else {
+                    os_log(.error, log: logger, "Failed to select Overview category")
+                    completion(nil)
+                    return
+                }
+                completion(accessibility)
+            }
+        }
+    }
+
     public func showAccessibilityDisplayPreferences(tab: String, completion: @escaping (_ accessibility: AccessibilityPreferencesElement?) -> Void) {
         showAccessibilityPreferences {
             accessibility in

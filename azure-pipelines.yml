@@ -25,7 +25,7 @@ variables:
 - name: workspacePath
   value: '**/MorphicLite.xcworkspace'
 - name: finalVersion
-  value: '0.$(Build.BuildNumber)'
+  value: '1.$(Build.BuildNumber)'
 # This means the pipeline will configure all signing options
 - name: signingOption
   value: 'default' # this setting uses the builtin project configuration options for signing
@@ -40,6 +40,12 @@ steps:
   inputs:
     certSecureFile: 'raising_the_floor_5AAXYGZ428.p12'
     certPwd: '$(P12_PASSWORD)'
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provProfileSecureFile: 'Morphic_Launcher_for_macOS.provisionprofile'
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provProfileSecureFile: 'Morphic_Community_Launcher_for_macOS.provisionprofile'
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provProfileSecureFile: 'Morphic_Configurator_for_macOS.provisionprofile'
@@ -101,6 +107,30 @@ steps:
     actions: 'build'
     sdk: $(sdk)
     scheme: 'MorphicCommunityConfigurator'
+    configuration: '$(configuration)'
+    xcWorkspacePath: '$(workspacePath)'
+    xcodeVersion: $(xcodeVersionNum)
+    useXcpretty: false
+    signingOption: '$(signingOption)'
+    args: '$(extraArgs)'
+- task: Xcode@5
+  displayName: Build MorphicLauncher
+  inputs:
+    actions: 'build'
+    sdk: $(sdk)
+    scheme: 'MorphicLauncher'
+    configuration: '$(configuration)'
+    xcWorkspacePath: '$(workspacePath)'
+    xcodeVersion: $(xcodeVersionNum)
+    useXcpretty: false
+    signingOption: '$(signingOption)'
+    args: '$(extraArgs)'
+- task: Xcode@5
+  displayName: Build MorphicCommunityLauncher
+  inputs:
+    actions: 'build'
+    sdk: $(sdk)
+    scheme: 'MorphicCommunityLauncher'
     configuration: '$(configuration)'
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)

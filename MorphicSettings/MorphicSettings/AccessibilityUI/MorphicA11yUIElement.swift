@@ -55,7 +55,9 @@ public struct MorphicA11yUIElement {
         //
         // role
         if self.supportedAttributes.contains(.role) == true {
-            let roleAsString: String = MorphicA11yUIElement.value(forAttribute: .role, forAXUIElement: self.axUiElement)!
+            guard let roleAsString: String = MorphicA11yUIElement.value(forAttribute: .role, forAXUIElement: self.axUiElement) else {
+                return nil 
+            }
             self.role = NSAccessibility.Role(rawValue: roleAsString)
         } else {
             self.role = .unknown
@@ -123,7 +125,9 @@ public struct MorphicA11yUIElement {
         //
         var values: [T] = []
         for valueAsCFTypeRef in valuesAsCFArray! as [CFTypeRef] {
-            let value = MorphicA11yAttributeValueCompatibleSampleImpl.fromCFTypeRef(valueAsCFTypeRef)
+            guard let value = MorphicA11yAttributeValueCompatibleSampleImpl.fromCFTypeRef(valueAsCFTypeRef) else {
+                return nil
+            }
             values.append(value as! T)
         }
         //
