@@ -53,6 +53,7 @@ public class MorphicInput {
         ]
     }
     
+    // NOTE: a list of probably constants was found at: https://stackoverflow.com/questions/866056/how-do-i-programmatically-get-the-shortcut-keys-reserved-by-mac-os-x
     public enum SystemHotKeyId: Int {
         case savePictureOfSelectedAreaAsAFile = 30 // kSHKSavePictureOfSelectedAreaAsAFile
         case copyPictureOfSelectedAreaToTheClipboard = 31 // kSHKCopyPictureOfSelectedAreaToTheClipboard
@@ -226,6 +227,7 @@ public class MorphicInput {
         } else {
             // send the key to the system itself
             
+	    // NOTE: CGEventTapLocation.cghidEventTap might be a reasonable alternative CGEventTapLocation (for some or all keyboard events)
             // press the key
             keyDownEvent.post(tap: CGEventTapLocation.cgSessionEventTap)
             // then release the key
