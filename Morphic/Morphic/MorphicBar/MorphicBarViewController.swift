@@ -242,11 +242,21 @@ class LogoButton: NSButton {
     @IBInspectable var helpMessage: String?
     
     override func becomeFirstResponder() -> Bool {
+    	// alert the MorphicBarWindow that one of our controls has gained focus
+        if let window = window as? MorphicBarWindow {
+            window.currentFirstResponderChildView = self
+        }
+
         updateHelpWindow(wasSelectedByKeyboard: true)
         return super.becomeFirstResponder()
     }
 
     override func resignFirstResponder() -> Bool {
+    	// alert the MorphicBarWindow that one of our controls has lost focus
+        if let window = window as? MorphicBarWindow {
+            window.currentFirstResponderChildView = nil 
+        }
+
         QuickHelpWindow.hide()
         return super.resignFirstResponder()
     }

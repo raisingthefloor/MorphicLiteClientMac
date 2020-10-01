@@ -61,6 +61,9 @@ public class MorphicBarWindow: NSWindow {
         updateMorphicBar()
     }
     
+    var windowIsKey: Bool = false
+    var currentFirstResponderChildView: NSView? = nil
+    
     public override func keyDown(with event: NSEvent) {
         if event.modifierFlags.contains(.command) && event.keyCode == kVK_ANSI_W {
             // close the window
@@ -68,6 +71,10 @@ public class MorphicBarWindow: NSWindow {
         } else if event.modifierFlags.contains(.command) && event.keyCode == kVK_ANSI_Q {
             // quit Morphic
             AppDelegate.shared.quitApplication(nil)
+        } else if (windowIsKey == true && currentFirstResponderChildView != nil) && (event.keyCode == kVK_Escape) {
+            // close the window
+            // NOTE: this condition requires that the window is the key window AND that one of its button controls has focus (as evidenced by currentFirstResponderChildView being true); the latter will happen when keyboard accessibility is enabled in the operating system (which draws focus rings around the controls and enables space as a mouse click replacement)
+            AppDelegate.shared.hideMorphicBar(nil)
         } else {
             super.keyDown(with: event)
         }

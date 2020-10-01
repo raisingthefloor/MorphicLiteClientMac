@@ -658,4 +658,16 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
             self.needsLayout = true
         }
     }
+    
+    override func becomeFirstResponder() -> Bool {
+    	// alert the MorphicBarWindow that we have gained focus
+        morphicBarView?.childViewBecomeFirstResponder(sender: self)
+        return super.becomeFirstResponder()
+    }
+    
+    override func resignFirstResponder() -> Bool {
+    	// alert the MorphicBarWindow that we have lost focus
+        morphicBarView?.childViewResignFirstResponder()
+        return super.resignFirstResponder()
+    }
 }

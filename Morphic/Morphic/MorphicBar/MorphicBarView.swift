@@ -24,7 +24,7 @@
 import Cocoa
 
 /// The view that shows a collection of MorphicBar items
-public class MorphicBarView: NSView {
+public class MorphicBarView: NSView, MorphicBarWindowChildViewDelegate {
     
     // MARK: - Item Views
     
@@ -234,6 +234,21 @@ public class MorphicBarView: NSView {
         return true
     }
     
+    public func childViewBecomeFirstResponder(sender: NSView) {
+        guard let window = window as? MorphicBarWindow else {
+            assertionFailure("This view controller must be hosted in a MorphicBarWindow")
+            return
+        }
+        window.currentFirstResponderChildView = sender
+    }
+    
+    public func childViewResignFirstResponder() {
+        guard let window = window as? MorphicBarWindow else {
+            assertionFailure("This view controller must be hosted in a MorphicBarWindow")
+            return
+        }
+        window.currentFirstResponderChildView = nil
+    }
 }
 
 extension NSSize {

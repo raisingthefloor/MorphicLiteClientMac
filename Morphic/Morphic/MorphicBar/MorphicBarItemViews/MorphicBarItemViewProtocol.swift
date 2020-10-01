@@ -38,3 +38,9 @@ public protocol MorphicBarItemViewProtocol: NSView {
     
     var contentFrames: [CGRect] { get }
 }
+
+// NOTE: this delegate is used to bubble up "child focus/lostfocus" style of events to the window/view (so it can handle logic around keyboard accessibility focus)
+public protocol MorphicBarWindowChildViewDelegate {
+    func childViewBecomeFirstResponder(sender: NSView)
+    func childViewResignFirstResponder()
+}

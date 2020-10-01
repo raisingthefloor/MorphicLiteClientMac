@@ -968,12 +968,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     var currentKeyboardSelectedQuickHelpViewController: NSViewController? = nil
     
     func windowDidBecomeKey(_ notification: Notification) {
+        morphicBarWindow?.windowIsKey = true
         if let currentKeyboardSelectedQuickHelpViewController = currentKeyboardSelectedQuickHelpViewController {
             QuickHelpWindow.show(viewController: currentKeyboardSelectedQuickHelpViewController)
         }
     }
      
     func windowDidResignKey(_ notification: Notification) {
+        morphicBarWindow?.windowIsKey = false
         QuickHelpWindow.hide()
     }
      
