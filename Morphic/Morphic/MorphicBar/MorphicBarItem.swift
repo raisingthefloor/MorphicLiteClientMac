@@ -530,7 +530,6 @@ class MorphicBarControlItem: MorphicBarItem {
         // NOTE: this function call will prompt the user for authorization if they have not already granted it
         guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
             NSLog("User had not granted 'accessibility' authorization; user now prompted")
-            PermissionsGuidanceSystem.shared.beginLoop()
             return
         }
 
@@ -730,7 +729,6 @@ class MorphicBarControlItem: MorphicBarItem {
         // NOTE: this function call will prompt the user for authorization if they have not already granted it
         guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
             NSLog("User had not granted 'accessibility' authorization; user now prompted")
-            PermissionsGuidanceSystem.shared.beginLoop()
             return
         }
         

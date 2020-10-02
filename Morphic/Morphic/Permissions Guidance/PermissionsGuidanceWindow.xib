@@ -9,14 +9,12 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PermissionsGuidanceWindowController" customModule="Morphic" customModuleProvider="target">
             <connections>
-                <outlet property="arrow1" destination="4x3-qa-rZ3" id="6fc-Q5-zcg"/>
-                <outlet property="arrow2" destination="UKZ-bv-8dx" id="Ox9-Ks-om8"/>
-                <outlet property="arrow3" destination="ezU-VC-wUu" id="wY8-KA-ivY"/>
+                <outlet property="arrow1" destination="Xog-hc-GIe" id="aRd-jc-f2l"/>
+                <outlet property="arrow2" destination="4Z6-yq-JHm" id="zAw-5G-6cC"/>
                 <outlet property="firstLine" destination="wwv-Ku-Ud7" id="uP9-00-YXi"/>
                 <outlet property="guideBox" destination="TlS-Ml-8x5" id="R1Z-2k-D7k"/>
                 <outlet property="iconImg" destination="csq-Tz-qJR" id="7VE-2e-GKn"/>
-                <outlet property="secondLine" destination="dmN-Xc-KNL" id="acD-ZU-qp8"/>
-                <outlet property="thirdLine" destination="NmD-CK-6nL" id="ya1-L9-CjE"/>
+                <outlet property="secondLine" destination="NmD-CK-6nL" id="WKL-hm-w74"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="2bV-my-T6R"/>
             </connections>
         </customObject>
@@ -25,25 +23,25 @@
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g" userLabel="Permissions Guidance">
             <windowStyleMask key="styleMask" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="240" width="668" height="733"/>
+            <rect key="contentRect" x="196" y="240" width="668" height="704"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ" userLabel="MainView">
-                <rect key="frame" x="0.0" y="0.0" width="668" height="733"/>
+                <rect key="frame" x="0.0" y="0.0" width="668" height="704"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n6s-9A-Qkf" userLabel="GuideView">
-                        <rect key="frame" x="0.0" y="-41" width="668" height="774"/>
+                        <rect key="frame" x="0.0" y="-30" width="668" height="724"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <subviews>
                             <box fixedFrame="YES" boxType="custom" borderWidth="2" cornerRadius="4" title="Box" translatesAutoresizingMaskIntoConstraints="NO" id="TlS-Ml-8x5" userLabel="GuideBox">
-                                <rect key="frame" x="0.0" y="41" width="668" height="150"/>
+                                <rect key="frame" x="0.0" y="29" width="668" height="120"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <view key="contentView" id="5WA-EC-MBI">
-                                    <rect key="frame" x="2" y="2" width="664" height="146"/>
+                                    <rect key="frame" x="2" y="2" width="664" height="116"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="D9a-aP-hih">
-                                            <rect key="frame" x="18" y="105" width="269" height="21"/>
+                                            <rect key="frame" x="18" y="40" width="269" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" lineBreakMode="clipping" title="1. Make sure the lock is unlocked" id="wwv-Ku-Ud7">
                                                 <font key="font" metaFont="system" size="18"/>
@@ -51,26 +49,17 @@
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aLg-5u-GmQ">
-                                            <rect key="frame" x="18" y="62" width="383" height="21"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" lineBreakMode="clipping" title="2. Ensure the Accessibility category is selected" id="dmN-Xc-KNL">
-                                                <font key="font" metaFont="system" size="18"/>
-                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                        </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="m9x-8r-A9T">
-                                            <rect key="frame" x="18" y="20" width="208" height="21"/>
+                                            <rect key="frame" x="329" y="40" width="208" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" lineBreakMode="clipping" title="3. Check box for Morphic" id="NmD-CK-6nL">
+                                            <textFieldCell key="cell" lineBreakMode="clipping" title="2. Check box for Morphic" id="NmD-CK-6nL">
                                                 <font key="font" metaFont="system" size="18"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
                                         <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="Jcb-UH-tm6">
-                                            <rect key="frame" x="540" y="20" width="104" height="106"/>
+                                            <rect key="frame" x="589" y="20" width="55" height="56"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                             <imageCell key="cell" controlSize="small" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Icon" id="csq-Tz-qJR"/>
                                         </imageView>
@@ -78,20 +67,15 @@
                                 </view>
                                 <color key="borderColor" name="separatorColor" catalog="System" colorSpace="catalog"/>
                             </box>
-                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zwg-pg-5FL">
-                                <rect key="frame" x="12" y="177" width="48" height="48"/>
+                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="54V-jC-HZ9">
+                                <rect key="frame" x="-14" y="83" width="100" height="116"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="GuidanceArrow_Lock" id="4x3-qa-rZ3"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" image="GuidanceArrow1" id="Xog-hc-GIe"/>
                             </imageView>
-                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vIX-Lb-cro">
-                                <rect key="frame" x="226" y="102" width="142" height="273"/>
+                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="y31-v1-hwv">
+                                <rect key="frame" x="337" y="76" width="204" height="337"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="GuidanceArrow_Panel" id="UKZ-bv-8dx"/>
-                            </imageView>
-                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="k5j-N7-DJw">
-                                <rect key="frame" x="213" y="70" width="265" height="364"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="GuidanceArrow_Check" id="ezU-VC-wUu"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" image="GuidanceArrow2" id="4Z6-yq-JHm"/>
                             </imageView>
                         </subviews>
                     </customView>
@@ -101,9 +85,8 @@
         </window>
     </objects>
     <resources>
-        <image name="GuidanceArrow_Check" width="213" height="365"/>
-        <image name="GuidanceArrow_Lock" width="23" height="50"/>
-        <image name="GuidanceArrow_Panel" width="83" height="213"/>
+        <image name="GuidanceArrow1" width="23" height="86"/>
+        <image name="GuidanceArrow2" width="23" height="295"/>
         <image name="Icon" width="512" height="512"/>
     </resources>
 </document>

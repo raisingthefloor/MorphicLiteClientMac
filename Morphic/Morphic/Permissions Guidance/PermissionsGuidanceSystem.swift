@@ -136,7 +136,7 @@ public class PermissionsGuidanceSystem {
                         }
                     }
                 }
-                else if focused && window["kCGWindowOwnerName"] != nil && window["kCGWindowOwnerName"] as! String == "universalAccessAuthWarn" {
+                else if window["kCGWindowOwnerName"] != nil && window["kCGWindowOwnerName"] as! String == "universalAccessAuthWarn" {
                     state = .systemPrompt
                     break
                 }

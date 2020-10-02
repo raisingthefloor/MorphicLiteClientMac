@@ -138,6 +138,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 }
                 DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.userDidSignin), name: .morphicSignin, object: nil)
                 NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
+                NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.permissionsPopupFired(_:)), name: .morphicPermissionsPopup, object: nil)
 
                 #if EDITION_BASIC
                 #elseif EDITION_COMMUNITY
@@ -230,6 +231,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 }
             }
         #endif
+    }
+    
+    @objc
+    func permissionsPopupFired(_ notification: NSNotification) {
+        PermissionsGuidanceSystem.shared.beginLoop()
     }
     
     // NOTE: we maintain a reference to the timer so that we can cancel (invalidate) it, reschedule it, etc.

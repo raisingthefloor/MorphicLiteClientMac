@@ -31,7 +31,9 @@ class PermissionsReminderWindowController: NSWindowController, PermissionsWindow
     @IBOutlet var prefsButton: NSButton!
     @IBOutlet var cancelButton: NSButton!
     
-    let DisplayInCenter = true
+    let DisplayInCenter = false
+    
+    var countdown = 300
     
     override func windowDidLoad() {
         super.windowDidLoad()
@@ -53,10 +55,17 @@ class PermissionsReminderWindowController: NSWindowController, PermissionsWindow
         if state != .notOpen && state != .systemPrompt && state != .unfocused && state != .wrongTab {
             PermissionsGuidanceSystem.shared.swapWindow()
         }
+        if state != .systemPrompt {
+            countdown -= 1
+        }
+        if countdown <= 0 {
+            PermissionsGuidanceSystem.shared.state = .inactive
+            PermissionsGuidanceSystem.shared.swapWindow()
+        }
         else {
             prefsButton.isHidden = false
             cancelButton.isHidden = false
-            window?.alphaValue = 1.0
+            window?.alphaValue = 0.0    //THIS WINDOW IS CURRENTLY HIDDEN, change this to 1.0 to reveal it
             switch state {
             case .inactive:
                 break

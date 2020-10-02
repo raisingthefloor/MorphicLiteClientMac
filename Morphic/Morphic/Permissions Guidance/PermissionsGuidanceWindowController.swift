@@ -29,11 +29,9 @@ class PermissionsGuidanceWindowController: NSWindowController, PermissionsWindow
     @IBOutlet weak var guideBox: NSBox!
     @IBOutlet weak var firstLine: NSTextFieldCell!
     @IBOutlet weak var secondLine: NSTextFieldCell!
-    @IBOutlet weak var thirdLine: NSTextFieldCell!
     @IBOutlet weak var iconImg: NSImageCell!
     @IBOutlet weak var arrow1: NSImageCell!
     @IBOutlet weak var arrow2: NSImageCell!
-    @IBOutlet weak var arrow3: NSImageCell!
     
     override func windowDidLoad() {
         super.windowDidLoad()
@@ -45,15 +43,16 @@ class PermissionsGuidanceWindowController: NSWindowController, PermissionsWindow
         window?.setAccessibilityElement(false)
         firstLine.setAccessibilityElement(false)
         secondLine.setAccessibilityElement(false)
-        thirdLine.setAccessibilityElement(false)
         iconImg.setAccessibilityElement(false)
         arrow1.setAccessibilityElement(false)
         arrow2.setAccessibilityElement(false)
-        arrow3.setAccessibilityElement(false)
     }
     
     func update(state: PermissionsGuidanceSystem.windowState, bounds: CGRect) {
-        if state != PermissionsGuidanceSystem.windowState.guidanceUp {
+        if state != .guidanceUp {
+            if state == .notOpen || state == .wrongTab {
+                PermissionsGuidanceSystem.shared.state = .inactive
+            }
             PermissionsGuidanceSystem.shared.swapWindow()
         }
         else {
