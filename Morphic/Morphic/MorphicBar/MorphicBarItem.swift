@@ -662,29 +662,38 @@ class MorphicBarControlItem: MorphicBarItem {
         case 2:
             // dark
             
-            switch NSApp.effectiveAppearance.name {
-            case .darkAqua,
-                 .vibrantDark,
-                 .accessibilityHighContrastDarkAqua,
-                 .accessibilityHighContrastVibrantDark:
-                let lightAppearanceCheckboxUIAutomation = LightAppearanceUIAutomation()
-                lightAppearanceCheckboxUIAutomation.apply(true) {
-                    success in
-                    // we do not currently have a mechanism to report success/failure
-                }
-            case .aqua,
-                 .vibrantLight,
-                 .accessibilityHighContrastAqua,
-                 .accessibilityHighContrastVibrantLight:
-                let darkAppearanceCheckboxUIAutomation = DarkAppearanceUIAutomation()
-                darkAppearanceCheckboxUIAutomation.apply(true) {
-                    success in
-                    // we do not currently have a mechanism to report success/failure
-                }
-            default:
-                // unknown appearance
-                break
+            // NOTE: unlike System Preferences, we do not copy the current screen and then "fade" it into the new theme once the theme has switched; if we need that kind of behavior then we'll need screen capture permissions or we'll need to use the alternate (UI automation) code below.  There may also be other alternatives.
+            switch MorphicDisplayAppearance.currentAppearanceTheme {
+            case .dark:
+                MorphicDisplayAppearance.setCurrentAppearanceTheme(.light)
+            case .light:
+                MorphicDisplayAppearance.setCurrentAppearanceTheme(.dark)
             }
+  
+//            // NOTE: if we ever have problems with our reverse-engineered implementation (above), the below UI automation code also works (albeit very slowly)
+//            switch NSApp.effectiveAppearance.name {
+//            case .darkAqua,
+//                 .vibrantDark,
+//                 .accessibilityHighContrastDarkAqua,
+//                 .accessibilityHighContrastVibrantDark:
+//                let lightAppearanceCheckboxUIAutomation = LightAppearanceUIAutomation()
+//                lightAppearanceCheckboxUIAutomation.apply(true) {
+//                    success in
+//                    // we do not currently have a mechanism to report success/failure
+//                }
+//            case .aqua,
+//                 .vibrantLight,
+//                 .accessibilityHighContrastAqua,
+//                 .accessibilityHighContrastVibrantLight:
+//                let darkAppearanceCheckboxUIAutomation = DarkAppearanceUIAutomation()
+//                darkAppearanceCheckboxUIAutomation.apply(true) {
+//                    success in
+//                    // we do not currently have a mechanism to report success/failure
+//                }
+//            default:
+//                // unknown appearance
+//                break
+//            }
         case 3:
             // night
             
