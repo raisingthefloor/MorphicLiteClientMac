@@ -330,8 +330,8 @@ class MorphicBarControlItem: MorphicBarItem {
             let isOnOff = (feature == .magnifieronoff)
             //
             let localized = LocalizedStrings(prefix: "control.feature.magnifier")
-            let showHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: isOnOff ? "on.help.title" : "show.help.title"), message: localized.string(for: isOnOff ? "on.help.message" : "show.help.message")) }
-            let hideHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: isOnOff ? "off.help.title" : "hide.help.title"), message: localized.string(for: isOnOff ? "off.help.message" : "hide.help.message")) }
+            let showHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: isOnOff ? "on.help.title" : "show.help.title"), message: localized.string(for: isOnOff ? "on.help.message" : "show.help.message")) }
+            let hideHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: isOnOff ? "off.help.title" : "hide.help.title"), message: localized.string(for: isOnOff ? "off.help.message" : "hide.help.message")) }
             let segments = [
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: isOnOff ? "on" : "show"), fillColor: buttonColor, helpProvider: showHelpProvider, accessibilityLabel: localized.string(for: isOnOff ? "on.help.title" : "show.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .magnifier), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .magnifier), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityZoom) }, style: style),
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: isOnOff ? "off" : "hide"), fillColor: alternateButtonColor, helpProvider: hideHelpProvider, accessibilityLabel: localized.string(for: isOnOff ? "off.help.title" : "hide.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .magnifier), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .magnifier), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityZoom) }, style: style)
@@ -343,8 +343,8 @@ class MorphicBarControlItem: MorphicBarItem {
             return view
         case .reader:
             let localized = LocalizedStrings(prefix: "control.feature.reader")
-            let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
-            let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
+            let onHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
+            let offHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.tts"), learnMoreUrl: nil, quickDemoVideoUrl: nil, settingsBlock: nil, style: style),
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.tts"), learnMoreUrl: nil, quickDemoVideoUrl: nil, settingsBlock: nil, style: style)
@@ -356,7 +356,7 @@ class MorphicBarControlItem: MorphicBarItem {
             return view
         case .readselected:
             let localized = LocalizedStrings(prefix: "control.feature.readselected")
-            let playStopHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "playstop.help.title"), message: localized.string(for: "playstop.help.message")) }
+            let playStopHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "playstop.help.title"), message: localized.string(for: "playstop.help.message")) }
             let segments = [
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "playstop"), fillColor: buttonColor, helpProvider: playStopHelpProvider, accessibilityLabel: localized.string(for: "playstop.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .readselMac), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .readselMac), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilitySpeech) }, style: style)
             ]
@@ -383,8 +383,8 @@ class MorphicBarControlItem: MorphicBarItem {
             return view
         case .contrast:
             let localized = LocalizedStrings(prefix: "control.feature.contrast")
-            let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
-            let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
+            let onHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
+            let offHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay) }, style: style),
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay) }, style: style)
@@ -396,10 +396,10 @@ class MorphicBarControlItem: MorphicBarItem {
             return view
         case .contrastcolordarknight:
             let localized = LocalizedStrings(prefix: "control.feature.contrastcolordarknight")
-            let contrastHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "contrast.help.title"), message: localized.string(for: "contrast.help.message")) }
-            let colorHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "color.help.title"), message: localized.string(for: "color.help.message")) }
-            let darkHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "dark.help.title"), message: localized.string(for: "dark.help.message")) }
-            let nightHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "night.help.title"), message: localized.string(for: "night.help.message")) }
+            let contrastHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "contrast.help.title"), message: localized.string(for: "contrast.help.message")) }
+            let colorHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "color.help.title"), message: localized.string(for: "color.help.message")) }
+            let darkHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "dark.help.title"), message: localized.string(for: "dark.help.message")) }
+            let nightHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "night.help.title"), message: localized.string(for: "night.help.message")) }
             let segments = [
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "contrast"), fillColor: buttonColor, helpProvider: contrastHelpProvider, accessibilityLabel: localized.string(for: "contrast.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay) }, style: style),
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "color"), fillColor: alternateButtonColor, helpProvider: colorHelpProvider, accessibilityLabel: localized.string(for: "color.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .colorvision), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .colorvision), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayColorFilters) }, style: style),
@@ -413,8 +413,8 @@ class MorphicBarControlItem: MorphicBarItem {
             return view
         case .nightshift:
             let localized = LocalizedStrings(prefix: "control.feature.nightshift")
-            let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
-            let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
+            let onHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
+            let offHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), settingsBlock: nil, style: style),
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), settingsBlock: nil, style: style)
@@ -426,8 +426,8 @@ class MorphicBarControlItem: MorphicBarItem {
             return view
         case .copypaste:
             let localized = LocalizedStrings(prefix: "control.feature.copypaste")
-            let copyHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
-            let pasteHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "paste.help.title"), message: localized.string(for: "paste.help.message")) }
+            let copyHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
+            let pasteHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "paste.help.title"), message: localized.string(for: "paste.help.message")) }
             let segments = [
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "copy"), fillColor: buttonColor, helpProvider: copyHelpProvider, accessibilityLabel: localized.string(for: "copy.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .copypaste), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .copypaste), settingsBlock: nil, style: style),
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "paste"), fillColor: alternateButtonColor, helpProvider: pasteHelpProvider, accessibilityLabel: localized.string(for: "paste.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .copypaste), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .copypaste), settingsBlock: nil, style: style)
@@ -439,7 +439,7 @@ class MorphicBarControlItem: MorphicBarItem {
             return view
         case .screensnip:
             let localized = LocalizedStrings(prefix: "control.feature.screensnip")
-            let copyHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
+            let copyHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
             var snipSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "copy"), fillColor: buttonColor, helpProvider: copyHelpProvider, accessibilityLabel: localized.string(for: "copy.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .snip), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .snip), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.keyboardShortcutsScreenshots) }, style: style)
             snipSegment.settingsMenuItemTitle = "Other Screenshot Shortcuts"
             let segments = [
