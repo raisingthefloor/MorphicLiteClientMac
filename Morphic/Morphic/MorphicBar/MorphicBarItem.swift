@@ -653,10 +653,18 @@ class MorphicBarControlItem: MorphicBarItem {
                 }
                 // calculate the inverse state
                 let newValue = !valueAsBoolean
+                //
                 // apply the inverse state
-                Session.shared.apply(newValue, for: .macosColorFilterEnabled) {
-                    success in
-                    // we do not currently have a mechanism to report success/failure
+                //
+                // NOTE: due to current limitations in our implementation, we are unable to disable "invert colors" (which is the desired effect when enabling color filters); this is unlikely to be a common scenario, but if we run into it then we need to use the backup UI automation mechanism
+                // NOTE: in the future, we should rework the settings handlers so that they can call native code which can launch a UI automation (instead of being either/or)...and then move this logic to the settings handler code
+                if newValue == true && MorphicDisplayAccessibilitySettings.invertColorsEnabled == true {
+                    Session.shared.apply(newValue, for: .macosColorFilterEnabled) {
+                        success in
+                        // we do not currently have a mechanism to report success/failure
+                    }
+                } else {
+                    MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(newValue)
                 }
             }
         case 2:

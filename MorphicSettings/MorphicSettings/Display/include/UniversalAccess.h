@@ -21,13 +21,16 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-framework module MorphicSettings {
-    umbrella header "MorphicSettings.h"
+// NOTE: this header is reverse-engineered
+// Tools: Ghidra; Hopper Disassembler v4; manual analysis
+// Path: /System/Library/PrivateFrameworks/UniversalAccess.framework/UniversalAccess
+// OS: macOS 10.15.7
 
-    header "CBBlueLightClient.h"
-    header "MediaAccessibility.h"
-    header "SkyLight.h"
-    header "UniversalAccess.h"
+// NOTE: to date, we have been unable to set the "invert colors" setting due to insufficient permissions (or bundle ID missing/mismatch, etc.)
+void UAInvertColorsUserInitiatedSetEnabled(int arg0);
+int UAWhiteOnBlackIsEnabled();
 
-    export *
-}
+/* ./Frameworks/UniversalAccessCore */
+int UAGrayscaleSynchronizeLegacyPref();
+int UAIncreaseContrastIsEnabled();
+void UAIncreaseContrastSetEnabled(int arg0);

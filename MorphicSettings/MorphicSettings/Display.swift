@@ -102,7 +102,7 @@ public class Display {
         if allDisplayModes.count == 0 {
             return nil
         }
-        guard let currentMode = currentMode else {
+        guard let _ = currentMode else {
             return nil
         }
         
