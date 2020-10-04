@@ -120,6 +120,28 @@ public class MorphicAudio {
         }
     }
     
+    public static func enableVolumeChangeNotifications(for audioDeviceId: UInt32) throws {
+        var volumePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMaster)
+
+        // verify that the output device has a volume property to watch
+        if AudioObjectHasProperty(AudioObjectID(audioDeviceId), &volumePropertyAddress) == false {
+            // if there is no volume property, throw an error
+            throw MorphicAudioError.propertyUnavailable
+        }
+
+        let addPropertyListenerError = AudioObjectAddPropertyListener(AudioObjectID(audioDeviceId), &volumePropertyAddress, {
+            (audioDeviceId: AudioObjectID, arg1: UInt32, _: UnsafePointer<AudioObjectPropertyAddress>, _: UnsafeMutableRawPointer?) -> OSStatus in
+            if let volume = MorphicAudio.getVolume(for: audioDeviceId) {
+                NotificationCenter.default.post(name: .morphicAudioVolumeChanged, object: nil, userInfo: ["volume" : volume])
+            }
+            return noErr
+        }, nil)
+        if addPropertyListenerError != noErr {
+            // if we cannot subscribe to volume property changes, throw an error
+            throw MorphicAudioError.coreAudioError(error: addPropertyListenerError)
+        }
+    }
+    
     public static func getMuteState(for audioDeviceId: UInt32) -> Bool? {
         var muteState: UInt32 = 0
         var sizeOfUInt32 = UInt32(MemoryLayout<UInt32>.size)
@@ -174,4 +196,31 @@ public class MorphicAudio {
             throw MorphicAudioError.coreAudioError(error: setPropertyError)
         }
     }
+
+    public static func enableMuteStateChangeNotifications(for audioDeviceId: UInt32) throws {
+        var mutePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioDevicePropertyMute, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMaster)
+
+        // verify that the output device has a mute state to watch
+        if AudioObjectHasProperty(AudioObjectID(audioDeviceId), &mutePropertyAddress) == false {
+            // if there is no mute state property, throw an error
+            throw MorphicAudioError.propertyUnavailable
+        }
+
+        let addPropertyListenerError = AudioObjectAddPropertyListener(AudioObjectID(audioDeviceId), &mutePropertyAddress, {
+            (audioDeviceId: AudioObjectID, arg1: UInt32, _: UnsafePointer<AudioObjectPropertyAddress>, _: UnsafeMutableRawPointer?) -> OSStatus in
+            if let muteState = MorphicAudio.getMuteState(for: audioDeviceId) {
+                NotificationCenter.default.post(name: .morphicAudioMuteStateChanged, object: nil, userInfo: ["muteState" : muteState])
+            }
+            return noErr
+        }, nil)
+        if addPropertyListenerError != noErr {
+            // if we cannot subscribe to mute state changes, throw an error
+            throw MorphicAudioError.coreAudioError(error: addPropertyListenerError)
+        }
+    }
+}
+
+public extension NSNotification.Name {
+    static let morphicAudioVolumeChanged = NSNotification.Name("org.raisingthefloor.morphicAudioVolumeChanged")
+    static let morphicAudioMuteStateChanged = NSNotification.Name("org.raisingthefloor.morphicAudioMuteStateChanged")
 }
