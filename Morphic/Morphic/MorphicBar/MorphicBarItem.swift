@@ -373,8 +373,24 @@ class MorphicBarControlItem: MorphicBarItem {
                 MorphicBarSegmentedButton.Segment(icon: .minus(), fillColor: alternateButtonColor, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "down.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), settingsBlock: nil, style: style)
             ]
             if feature == .volume {
+                var muteSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "mute"), fillColor: buttonColor, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "mute.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), settingsBlock: nil, style: style)
+                muteSegment.getStateBlock = {
+                    guard let defaultAudioDeviceId = MorphicAudio.getDefaultAudioDeviceId() else {
+                        // default: return false
+                        return false
+                    }
+                    guard let muteState = MorphicAudio.getMuteState(for: defaultAudioDeviceId) else {
+                        // default: return false
+                        return false
+                    }
+                    return muteState
+                }
+                muteSegment.accessibilityLabelByState = [
+                    .on: localized.string(for: "mute.tts.muted"),
+                    .off: localized.string(for: "mute.tts.unmuted")
+                ]
                 segments.append(
-                    MorphicBarSegmentedButton.Segment(title: localized.string(for: "mute"), fillColor: buttonColor, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "mute.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), settingsBlock: nil, style: style)
+                    muteSegment
                 )
             }
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
@@ -515,9 +531,10 @@ class MorphicBarControlItem: MorphicBarItem {
     
     @objc
     func volume(_ sender: Any?) {
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
+        guard let senderAsSegmentedButton = sender as? MorphicBarSegmentedButton else {
             return
         }
+        let segment = senderAsSegmentedButton.selectedSegmentIndex
         guard let output = AudioOutput.main else {
             return
         }
@@ -534,8 +551,13 @@ class MorphicBarControlItem: MorphicBarItem {
                 _ = output.setVolume(output.volume - 0.05)
             }
         } else if segment == 2 {
-            _ = output.setMuted(true)
+            let currentMuteState = output.isMuted
+            let newMuteState = !currentMuteState
+            _ = output.setMuted(newMuteState)
         }
+
+        // update the state of the mute button
+        senderAsSegmentedButton.setButtonState(index: 2, stateAsBool: output.isMuted)
     }
 
     @objc
