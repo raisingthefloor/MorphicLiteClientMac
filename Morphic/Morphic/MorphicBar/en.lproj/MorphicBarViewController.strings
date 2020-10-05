@@ -272,6 +272,12 @@
 /* Text for VoiceOver for the contrast button */
 "control.feature.contrastcolordarknight.contrast.tts" = "Contrast on, off";
 
+/* Text for VoiceOver for the contrast button when the feature is enabled */
+"control.feature.contrastcolordarknight.contrast.tts.enabled" = "Turn Off Contrast";
+
+/* Text for VoiceOver for the contrast button when the feature is disabled */
+"control.feature.contrastcolordarknight.contrast.tts.disabled" = "Turn On Contrast";
+
 /* Title for the help window for the contrast button */
 "control.feature.contrastcolordarknight.contrast.help.title" = "Turn Contrast on and off";
 
@@ -283,6 +289,12 @@
 
 /* Text for VoiceOver for the color filters button */
 "control.feature.contrastcolordarknight.color.tts" = "Color Vision on, off";
+
+/* Text for VoiceOver for the color filters button when the feature is enabled */
+"control.feature.contrastcolordarknight.color.tts.enabled" = "Turn Off Color Vision";
+
+/* Text for VoiceOver for the color filters button when the feature is disabled */
+"control.feature.contrastcolordarknight.color.tts.disabled" = "Turn On Color Vision";
 
 /* Title for the help window for the color filters button */
 "control.feature.contrastcolordarknight.color.help.title" = "Turn Color Vision filters on and off";
@@ -296,17 +308,29 @@
 /* Text for VoiceOver for the dark appearance button */
 "control.feature.contrastcolordarknight.dark.tts" = "Dark Mode on, off";
 
+/* Text for VoiceOver for the dark appearance button when the feature is enabled */
+"control.feature.contrastcolordarknight.dark.tts.enabled" = "Turn Off Dark Mode";
+
+/* Text for VoiceOver for the dark appearance button when the feature is disabled */
+"control.feature.contrastcolordarknight.dark.tts.disabled" = "Turn On Dark Mode";
+
 /* Title for the help window for the dark appearance button */
 "control.feature.contrastcolordarknight.dark.help.title" = "Turn Dark Mode on and off";
 
 /* Message for the help window for the dark appearance button */
-"control.feature.contrastcolordarknight.dark.help.message" = "Toggles Dark mode on and off. (Right click to adjust.)";
+"control.feature.contrastcolordarknight.dark.help.message" = "Toggles Dark Mode on and off. (Right click to adjust.)";
 
 /* Label for the button that toggles night shift */
 "control.feature.contrastcolordarknight.night" = "Night";
 
 /* Text for VoiceOver for the night shift button */
-"control.feature.contrastcolordarknight.night.tts" = "Night Shift on, off";
+"control.feature.contrastcolordarknight.night.tts" = "Night Mode on, off";
+
+/* Text for VoiceOver for the night shift button when the feature is enabled */
+"control.feature.contrastcolordarknight.night.tts.enabled" = "Turn Off Night Mode";
+
+/* Text for VoiceOver for the night shift button when the feature is disabled */
+"control.feature.contrastcolordarknight.night.tts.disabled" = "Turn On Night Mode";
 
 /* Title for the help window for the night shift button */
 "control.feature.contrastcolordarknight.night.help.title" = "Turn 'Night Shift' feature on and off";

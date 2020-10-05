@@ -99,9 +99,12 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         var quickDemoVideoUrl: URL? = nil
         var settingsBlock: (() -> Void)? = nil
         
+        var getStateBlock: (() -> Bool)? = nil
+         
         var settingsMenuItemTitle = "Settings"        
 
         var accessibilityLabel: String?
+        var accessibilityLabelByState: [NSControl.StateValue : String]? = [:]
         
         /// Create a segment with a title
         init(title: String, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, quickDemoVideoUrl: URL?, settingsBlock: (() -> Void)?, style: MorphicBarControlItemStyle) {
@@ -130,7 +133,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
     
     /// The segments on the control
     var segments = [Segment]() {
-        didSet{
+        didSet {
             updateButtons()
         }
     }
@@ -206,6 +209,45 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         private var boundsTrackingArea: NSTrackingArea!
         
         public var style: MorphicBarControlItemStyle = .autoWidth
+        
+        var getStateBlock: (() -> Bool)? = nil {
+            didSet {
+                // if we haven't loaded the initial state yet, and we now have a "get state block", load our initial button state now
+                if let getStateBlock = self.getStateBlock {
+                    if self.initialStateLoaded == false {
+                        let initialState: Bool = getStateBlock()
+                        self.state = initialState ? .on : .off
+                        self.initialStateLoaded = true
+                    }
+                }
+            }
+        }
+        var initialStateLoaded: Bool = false
+        
+        override var state: NSControl.StateValue {
+            set {
+                super.state = newValue
+                self.updateAccessibilityLabel()
+            }
+            get {
+                return super.state
+            }
+        }
+        
+        private func updateAccessibilityLabel() {
+            if let newAccessibilityLabel = accessibilityLabelByState?[self.state] {
+                self.setAccessibilityLabel(newAccessibilityLabel)
+            } else {
+                self.setAccessibilityLabel(defaultAccessibilityLabel)
+            }
+        }
+        
+        var defaultAccessibilityLabel: String? {
+            didSet {
+                updateAccessibilityLabel()
+            }
+        }
+        var accessibilityLabelByState: [NSControl.StateValue : String]? = [:]
         
         public override init(frame frameRect: NSRect) {
             super.init(frame: frameRect)
@@ -369,6 +411,9 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         removeAllButtons()
         for segment in segments {
             let button = self.createButton(for: segment)
+            if let getStateBlock = segment.getStateBlock {
+                button.getStateBlock = getStateBlock
+            }
             add(button: button, showLearnMoreMenuItem: segment.learnMoreUrl != nil, showQuickDemoVideoMenuItem: segment.quickDemoVideoUrl != nil, showSettingsMenuItem: segment.settingsBlock != nil)
         }
         needsLayout = true
@@ -386,7 +431,8 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         } else if let icon = segment.icon {
             button.image = icon
         }
-        button.setAccessibilityLabel(segment.accessibilityLabel)
+        button.defaultAccessibilityLabel = segment.accessibilityLabel
+        button.accessibilityLabelByState = segment.accessibilityLabelByState
         button.helpProvider = segment.helpProvider
         (button.cell as? NSButtonCell)?.backgroundColor = segment.fillColor
         //
@@ -444,6 +490,12 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         }
         segmentButtons.append(button)
         addSubview(button)
+    }
+    
+    public func setButtonState(index: Int, stateAsBool: Bool) {
+        if let buttonAtIndex = self.subviews[index] as? NSButton {
+            buttonAtIndex.state = stateAsBool ? .on : .off
+        }
     }
     
     // MARK: - Actions
