@@ -373,6 +373,7 @@ class MorphicBarControlItem: MorphicBarItem {
                 MorphicBarSegmentedButton.Segment(icon: .minus(), fillColor: alternateButtonColor, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "down.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), settingsBlock: nil, style: style)
             ]
             if feature == .volume {
+                // create and add mute segment
                 var muteSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "mute"), fillColor: buttonColor, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "mute.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), settingsBlock: nil, style: style)
                 muteSegment.getStateBlock = {
                     guard let defaultAudioDeviceId = MorphicAudio.getDefaultAudioDeviceId() else {
@@ -389,6 +390,12 @@ class MorphicBarControlItem: MorphicBarItem {
                     notificationName: NSNotification.Name.morphicAudioMuteStateChanged,
                     stateKey: "muteState"
                 )
+                muteSegment.accessibilityLabelByState = [
+                    .on: localized.string(for: "mute.tts.muted"),
+                    .off: localized.string(for: "mute.tts.unmuted")
+                ]
+                //
+                // enable muteState change notifications
                 if let defaultAudioDeviceId = MorphicAudio.getDefaultAudioDeviceId() {
                     do {
                         try MorphicAudio.enableMuteStateChangeNotifications(for: defaultAudioDeviceId)
@@ -396,10 +403,7 @@ class MorphicBarControlItem: MorphicBarItem {
                         NSLog("Could not subscribe to mute state change notifications")
                     }
                 }
-                muteSegment.accessibilityLabelByState = [
-                    .on: localized.string(for: "mute.tts.muted"),
-                    .off: localized.string(for: "mute.tts.unmuted")
-                ]
+                //
                 segments.append(
                     muteSegment
                 )
@@ -423,6 +427,7 @@ class MorphicBarControlItem: MorphicBarItem {
             return view
         case .contrastcolordarknight:
             let localized = LocalizedStrings(prefix: "control.feature.contrastcolordarknight")
+            
             let contrastHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "contrast.help.title"), message: localized.string(for: "contrast.help.message")) }
             var contrastSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "contrast"), fillColor: buttonColor, helpProvider: contrastHelpProvider, accessibilityLabel: localized.string(for: "contrast.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay) }, style: style)
             contrastSegment.getStateBlock = {
@@ -433,6 +438,13 @@ class MorphicBarControlItem: MorphicBarItem {
                 .off: localized.string(for: "contrast.tts.disabled")
             ]
             //
+            // enable contrast state change notifications
+            AppDelegate.shared.enableContrastChangeNotifications()
+            contrastSegment.stateUpdatedNotification = MorphicBarSegmentedButton.Segment.StateUpdateNotificationInfo(
+                notificationName: NSNotification.Name.morphicFeatureContrastEnabledChanged,
+                stateKey: "enabled"
+            )
+            //
             let colorHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "color.help.title"), message: localized.string(for: "color.help.message")) }
             var colorSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "color"), fillColor: alternateButtonColor, helpProvider: colorHelpProvider, accessibilityLabel: localized.string(for: "color.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .colorvision), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .colorvision), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayColorFilters) }, style: style)
             colorSegment.getStateBlock = {
@@ -442,6 +454,13 @@ class MorphicBarControlItem: MorphicBarItem {
                 .on: localized.string(for: "color.tts.enabled"),
                 .off: localized.string(for: "color.tts.disabled")
             ]
+            //
+            // enable color filters enabled change notifications
+            AppDelegate.shared.enableColorFiltersEnabledChangeNotifications()
+            colorSegment.stateUpdatedNotification = MorphicBarSegmentedButton.Segment.StateUpdateNotificationInfo(
+                notificationName: NSNotification.Name.morphicFeatureColorFiltersEnabledChanged,
+                stateKey: "enabled"
+            )
             //
             let darkHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "dark.help.title"), message: localized.string(for: "dark.help.message")) }
             var darkSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "dark"), fillColor: buttonColor, helpProvider: darkHelpProvider, accessibilityLabel: localized.string(for: "dark.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .darkmode), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .darkmode), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.general) }, style: style)
@@ -459,6 +478,13 @@ class MorphicBarControlItem: MorphicBarItem {
                 .off: localized.string(for: "dark.tts.disabled")
             ]
             //
+            // enable dark mode (appearance) change notifications
+            AppDelegate.shared.enableDarkAppearanceEnabledChangeNotifications()
+            darkSegment.stateUpdatedNotification = MorphicBarSegmentedButton.Segment.StateUpdateNotificationInfo(
+                notificationName: NSNotification.Name.morphicFeatureInterfaceThemeChanged,
+                stateKey: nil // NOTE: the button will query for the theme in real-time
+            )
+            //
             let nightHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "night.help.title"), message: localized.string(for: "night.help.message")) }
             var nightSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "night"), fillColor: alternateButtonColor, helpProvider: nightHelpProvider, accessibilityLabel: localized.string(for: "night.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.displaysNightShift) }, style: style)
             nightSegment.getStateBlock = {
@@ -468,6 +494,14 @@ class MorphicBarControlItem: MorphicBarItem {
                 .on: localized.string(for: "night.tts.enabled"),
                 .off: localized.string(for: "night.tts.disabled")
             ]
+            //
+            // enable night shift enabled change notifications
+            MorphicNightShift.enableStatusChangeNotifications()
+            nightSegment.stateUpdatedNotification = MorphicBarSegmentedButton.Segment.StateUpdateNotificationInfo(
+                notificationName: NSNotification.Name.morphicFeatureNightShiftEnabledChanged,
+                stateKey: "enabled"
+            )
+            //
             let segments = [
                 contrastSegment,
                 colorSegment,
