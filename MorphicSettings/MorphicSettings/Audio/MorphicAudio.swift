@@ -199,7 +199,7 @@ public class MorphicAudio {
 
     private static var enableMuteStateChangeNotifications_Enabled: Bool = false
     public static func enableMuteStateChangeNotifications(for audioDeviceId: UInt32) throws {
-        if enableMuteStateChangeNotifications_Enabled == true {
+        if MorphicAudio.enableMuteStateChangeNotifications_Enabled == true {
             return
         }
         
@@ -222,6 +222,8 @@ public class MorphicAudio {
             // if we cannot subscribe to mute state changes, throw an error
             throw MorphicAudioError.coreAudioError(error: addPropertyListenerError)
         }
+        
+        MorphicAudio.enableMuteStateChangeNotifications_Enabled = true
     }
 }
 

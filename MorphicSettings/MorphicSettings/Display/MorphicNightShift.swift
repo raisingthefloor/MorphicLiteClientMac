@@ -159,12 +159,12 @@ public struct MorphicNightShift {
             // if the enabled state has changed, notify our client of the change now
             if status.enabled.boolValue != MorphicNightShift.notificationCache_Enabled {
                 MorphicNightShift.notificationCache_Enabled = status.enabled.boolValue
-                NotificationCenter.default.post(name: .morphicFeatureNightShiftEnabledChanged, object: status.enabled.boolValue)
+                NotificationCenter.default.post(name: .morphicFeatureNightShiftEnabledChanged, object: nil, userInfo: ["enabled" : status.enabled.boolValue])
             }
         }
     }
 }
 
-extension NSNotification.Name {
+public extension NSNotification.Name {
     static let morphicFeatureNightShiftEnabledChanged = NSNotification.Name("org.raisingthefloor.morphicFeatureNightShiftEnabledChanged")
 }
