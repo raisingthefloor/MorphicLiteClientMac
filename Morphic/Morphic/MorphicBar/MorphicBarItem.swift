@@ -385,6 +385,17 @@ class MorphicBarControlItem: MorphicBarItem {
                     }
                     return muteState
                 }
+                muteSegment.stateUpdatedNotification = MorphicBarSegmentedButton.Segment.StateUpdateNotificationInfo(
+                    notificationName: NSNotification.Name.morphicAudioMuteStateChanged,
+                    stateKey: "muteState"
+                )
+                if let defaultAudioDeviceId = MorphicAudio.getDefaultAudioDeviceId() {
+                    do {
+                        try MorphicAudio.enableMuteStateChangeNotifications(for: defaultAudioDeviceId)
+                    } catch {
+                        NSLog("Could not subscribe to mute state change notifications")
+                    }
+                }
                 muteSegment.accessibilityLabelByState = [
                     .on: localized.string(for: "mute.tts.muted"),
                     .off: localized.string(for: "mute.tts.unmuted")

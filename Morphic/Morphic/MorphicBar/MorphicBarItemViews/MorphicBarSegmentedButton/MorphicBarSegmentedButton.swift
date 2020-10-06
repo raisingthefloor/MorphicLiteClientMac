@@ -100,7 +100,13 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         var settingsBlock: (() -> Void)? = nil
         
         var getStateBlock: (() -> Bool)? = nil
-         
+        //
+        struct StateUpdateNotificationInfo {
+            var notificationName: NSNotification.Name
+            var stateKey: String?
+        }
+        var stateUpdatedNotification: StateUpdateNotificationInfo? = nil
+        
         var settingsMenuItemTitle = "Settings"        
 
         var accessibilityLabel: String?
@@ -233,6 +239,50 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             }
         }
         var initialStateLoaded: Bool = false
+        //
+        var stateUpdatedNotification: Segment.StateUpdateNotificationInfo? = nil {
+            didSet {
+                if self.stateUpdatedNotification != nil {
+                    // subscribe to notification
+                    NotificationCenter.default.addObserver(self, selector: #selector(Button.stateChanged(_:)), name: stateUpdatedNotification!.notificationName, object: nil)
+                }
+            }
+            willSet {
+                if newValue == nil && stateUpdatedNotification != nil {
+                   // unsubscribe from notifications
+                   // NOTE: in macOS 10.12+ this is technically not necessary (as the system will clean up for us when we are deallocated)
+                   NotificationCenter.default.removeObserver(self, name: stateUpdatedNotification!.notificationName, object: nil)
+                }
+            }
+        }
+        
+        @objc
+        func stateChanged(_ aNotification: Notification) {
+            let stateKey = self.stateUpdatedNotification?.stateKey
+            
+            var toggleStateAsBool: Bool? = nil 
+	    if stateKey != nil {
+            	if let state = aNotification.userInfo?[stateKey] as? Bool {
+                    // we captured the new state directly from the notification (if present)
+                    toggleStateAsBool = state
+		}
+            }
+	    
+	    if toggleStateAsBool == nil {
+	        if let state = self.getStateBlock?() {
+                    // if the notification does not contain the state data, we capture via our "getState" function
+                    toggleStateAsBool = state
+                } else {
+                    // could not get state; log this error and return
+                    NSLog("Failed to capture event-based settings state change")
+                    return
+                }
+	    }
+            
+            DispatchQueue.main.async {
+                self.toggleState = toggleStateAsBool! == true ? .on : .off
+            }
+        }
         
         var toggleState: NSControl.StateValue = .off {
             didSet {
@@ -530,6 +580,8 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         //
         button.normalContentColor = .white
         button.stateOnContentColor = .black
+        //
+        button.stateUpdatedNotification = segment.stateUpdatedNotification
         //
         button.style = segment.style
         switch segment.style {

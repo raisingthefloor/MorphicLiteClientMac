@@ -197,7 +197,12 @@ public class MorphicAudio {
         }
     }
 
+    private static var enableMuteStateChangeNotifications_Enabled: Bool = false
     public static func enableMuteStateChangeNotifications(for audioDeviceId: UInt32) throws {
+        if enableMuteStateChangeNotifications_Enabled == true {
+            return
+        }
+        
         var mutePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioDevicePropertyMute, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMaster)
 
         // verify that the output device has a mute state to watch
