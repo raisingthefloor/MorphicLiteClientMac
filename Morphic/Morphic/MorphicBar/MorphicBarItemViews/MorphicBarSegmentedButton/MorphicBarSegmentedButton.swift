@@ -210,13 +210,23 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         
         public var style: MorphicBarControlItemStyle = .autoWidth
         
+        var normalFillColor = NSColor.black
+        var pressedFillColor = NSColor.gray
+        var stateOnFillColor = NSColor.white
+        //
+        var normalBorderColor = NSColor.black
+        var stateOnBorderColor = NSColor.black
+
+        var normalContentColor = NSColor.white
+        var stateOnContentColor = NSColor.black
+
         var getStateBlock: (() -> Bool)? = nil {
             didSet {
                 // if we haven't loaded the initial state yet, and we now have a "get state block", load our initial button state now
                 if let getStateBlock = self.getStateBlock {
                     if self.initialStateLoaded == false {
                         let initialState: Bool = getStateBlock()
-                        self.state = initialState ? .on : .off
+                        self.toggleState = initialState ? .on : .off
                         self.initialStateLoaded = true
                     }
                 }
@@ -224,18 +234,94 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         }
         var initialStateLoaded: Bool = false
         
-        override var state: NSControl.StateValue {
-            set {
-                super.state = newValue
+        var toggleState: NSControl.StateValue = .off {
+            didSet {
                 self.updateAccessibilityLabel()
-            }
-            get {
-                return super.state
+                self.needsDisplay = true
             }
         }
         
+        override func draw(_ dirtyRect: NSRect) {
+            super.draw(dirtyRect)
+
+            // setup our color scheme
+            let fillColor: NSColor
+            if self.isHighlighted == true {
+                // if our button is pressed, fill with the "pressedFillColor"
+                fillColor = pressedFillColor
+            } else {
+                if self.toggleState == .on {
+                    fillColor = stateOnFillColor
+                } else {
+                    fillColor = normalFillColor
+                }
+            }
+            let borderColor: NSColor
+            let contentColor: NSColor
+            if self.toggleState == .on {
+                borderColor = stateOnBorderColor
+                contentColor = stateOnContentColor
+            } else {
+                borderColor = normalBorderColor
+                contentColor = normalContentColor
+            }
+            let borderWidth: CGFloat = 3.0
+            
+            // fill the background of our button (and draw an appropriate border)
+            let fillPath = NSBezierPath(rect: NSRect(origin: .zero, size: self.frame.size))
+            //
+            fillColor.setFill()
+            fillPath.fill()
+
+            // draw the text/image content
+            let contentRect = NSRect(x: borderWidth, y: borderWidth, width: self.frame.width - (borderWidth * 2), height: self.frame.height - (borderWidth * 2))
+            
+            if let imageContent = image {
+                // draw image content (self.image)
+                
+                let imageContentBoundingRect = NSRect(origin: .zero, size: CGSize(width: min(imageContent.size.width, contentRect.size.width), height: min(imageContent.size.height, contentRect.size.height)))
+                let imageContentXPos: CGFloat = borderWidth + ((contentRect.width - imageContentBoundingRect.width) / 2)
+                let imageContentYPos: CGFloat = borderWidth + ((contentRect.height - imageContentBoundingRect.height) / 2)
+                let imageContentRect = NSRect(origin: CGPoint(x: imageContentXPos, y: imageContentYPos), size: imageContent.size)
+
+                let recoloredImageContent = MorphicImageUtils.colorImage(imageContent, withColor: contentColor)
+                
+                recoloredImageContent.draw(in: imageContentRect)
+            } else {
+                // draw text content (self.title)
+                
+                let textParagraphStyle = NSMutableParagraphStyle()
+                textParagraphStyle.alignment = .center
+                //
+                let textContent = self.title
+                let defaultTextFont = NSFont.systemFont(ofSize: 11)
+                let textFont = self.font ?? defaultTextFont
+                //
+                let textAttributes: [NSAttributedString.Key: Any] = [
+                    NSAttributedString.Key.font: textFont,
+                    NSAttributedString.Key.foregroundColor: contentColor,
+                    NSAttributedString.Key.paragraphStyle: textParagraphStyle
+                ]
+                
+                // NOTE: textContentBoundingRect will be offset by the borderWidth
+                // NOTE: we allow full-width text (and variable height); we do NOT resize the height to match
+                let textContentBoundingRect = textContent.boundingRect(with: NSSize(width: contentRect.width, height: .infinity), options: [.usesLineFragmentOrigin], attributes: textAttributes)
+                let textContentXPos: CGFloat = borderWidth + ((contentRect.width - textContentBoundingRect.width) / 2)
+                let textContentYPos: CGFloat = borderWidth + ((contentRect.height - textContentBoundingRect.height) / 2)
+                let textContentRect = NSRect(origin: CGPoint(x: textContentXPos, y: textContentYPos), size: textContentBoundingRect.size)
+                
+                // draw our text
+                textContent.draw(with: textContentRect, options: [.usesLineFragmentOrigin], attributes: textAttributes, context: nil)
+            }
+
+            // stroke the outside of the button with our border color; we do this after drawing the content to ensure that the border is drawn on top of any content (i.e. so that overflowing content doesn't overflow the button)
+            borderColor.setStroke()
+            fillPath.lineWidth = borderWidth
+            fillPath.stroke()
+        }
+        
         private func updateAccessibilityLabel() {
-            if let newAccessibilityLabel = accessibilityLabelByState?[self.state] {
+            if let newAccessibilityLabel = accessibilityLabelByState?[self.toggleState] {
                 self.setAccessibilityLabel(newAccessibilityLabel)
             } else {
                 self.setAccessibilityLabel(defaultAccessibilityLabel)
@@ -423,8 +509,8 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
     private func createButton(for segment: Segment) -> Button {
         let button = Button()
         button.bezelStyle = .regularSquare
+//        bezelStyle = .shadowlessSquare // an alternate bezelStyle to consider
         button.isBordered = false
-        button.contentTintColor = titleColor
         button.contentInsets = contentInsets
         if let title = segment.title {
             button.title = title
@@ -434,7 +520,16 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         button.defaultAccessibilityLabel = segment.accessibilityLabel
         button.accessibilityLabelByState = segment.accessibilityLabelByState
         button.helpProvider = segment.helpProvider
-        (button.cell as? NSButtonCell)?.backgroundColor = segment.fillColor
+        //
+        button.normalFillColor = segment.fillColor
+        button.pressedFillColor = NSColor(srgbRed: 102.0/255.0, green: 181.0/255.0, blue: 90.0/255.0, alpha: 1.0) // light green
+        button.stateOnFillColor = .white
+        //
+        button.normalBorderColor = button.normalFillColor
+        button.stateOnBorderColor = button.normalFillColor
+        //
+        button.normalContentColor = .white
+        button.stateOnContentColor = .black
         //
         button.style = segment.style
         switch segment.style {
@@ -493,8 +588,8 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
     }
     
     public func setButtonState(index: Int, stateAsBool: Bool) {
-        if let buttonAtIndex = self.subviews[index] as? NSButton {
-            buttonAtIndex.state = stateAsBool ? .on : .off
+        if let buttonAtIndex = self.subviews[index] as? Button {
+            buttonAtIndex.toggleState = stateAsBool ? .on : .off
         }
     }
     
