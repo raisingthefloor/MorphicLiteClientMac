@@ -1032,5 +1032,71 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             }
         }
     }
+    
+    // MARK: - Native code observers
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        guard let keyPath = keyPath else {
+            return
+        }
+        
+        switch keyPath {
+        case "increaseContrast":
+            guard let enabledAsBool = change?[NSKeyValueChangeKey.newKey] as? Bool else {
+                return
+            }
+            NotificationCenter.default.post(name: .morphicFeatureContrastEnabledChanged, object: nil, userInfo: ["enabled" : enabledAsBool])
+        case "__Color__-MADisplayFilterCategoryEnabled":
+            guard let enabledAsBool = change?[NSKeyValueChangeKey.newKey] as? Bool else {
+                return
+            }
+            NotificationCenter.default.post(name: .morphicFeatureColorFiltersEnabledChanged, object: nil, userInfo: ["enabled" : enabledAsBool])
+        default:
+            return
+        }
+    }
+    
+    @objc
+    func appleInterfaceThemeChanged(_ aNotification: Notification) {
+        NotificationCenter.default.post(name: .morphicFeatureInterfaceThemeChanged, object: nil, userInfo: nil)
+    }
 
+    //
+
+    var contrastChangeNotificationsEnabled = false
+    var contrastChangeNotificationsDefaults: UserDefaults? = nil
+    func enableContrastChangeNotifications() {
+        if self.contrastChangeNotificationsEnabled == false {
+            self.contrastChangeNotificationsDefaults = UserDefaults(suiteName: "com.apple.universalaccess")
+            self.contrastChangeNotificationsDefaults?.addObserver(AppDelegate.shared, forKeyPath: "increaseContrast", options: .new, context: nil)
+            
+            self.contrastChangeNotificationsEnabled = true
+        }
+    }
+    
+    var colorFiltersEnabledChangeNotificationsEnabled = false
+    var colorFiltersEnabledChangeNotificationsDefaults: UserDefaults? = nil
+    func enableColorFiltersEnabledChangeNotifications() {
+        if self.colorFiltersEnabledChangeNotificationsEnabled == false {
+            self.colorFiltersEnabledChangeNotificationsDefaults = UserDefaults(suiteName: "com.apple.mediaaccessibility")
+            self.colorFiltersEnabledChangeNotificationsDefaults?.addObserver(AppDelegate.shared, forKeyPath: "__Color__-MADisplayFilterCategoryEnabled", options: .new, context: nil)
+            
+            self.colorFiltersEnabledChangeNotificationsEnabled = true
+        }
+    }
+    
+    var darkAppearanceEnabledChangeNotificationsEnabled = false
+    func enableDarkAppearanceEnabledChangeNotifications() {
+        if self.darkAppearanceEnabledChangeNotificationsEnabled == false {
+            DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.appleInterfaceThemeChanged(_:)), name: .appleInterfaceThemeChanged, object: nil)
+
+            self.darkAppearanceEnabledChangeNotificationsEnabled = true
+        }
+    }
+}
+
+public extension NSNotification.Name {
+    static let morphicFeatureColorFiltersEnabledChanged = NSNotification.Name("org.raisingthefloor.morphicFeatureColorFiltersEnabledChanged")
+    static let morphicFeatureContrastEnabledChanged = NSNotification.Name("org.raisingthefloor.morphicFeatureContrastEnabledChanged")
+    static let morphicFeatureInterfaceThemeChanged = NSNotification.Name("org.raisingthefloor.morphicFeatureInterfaceThemeChanged")
 }

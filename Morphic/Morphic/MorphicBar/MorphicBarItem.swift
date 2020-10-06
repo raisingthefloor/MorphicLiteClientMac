@@ -330,8 +330,8 @@ class MorphicBarControlItem: MorphicBarItem {
             let isOnOff = (feature == .magnifieronoff)
             //
             let localized = LocalizedStrings(prefix: "control.feature.magnifier")
-            let showHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: isOnOff ? "on.help.title" : "show.help.title"), message: localized.string(for: isOnOff ? "on.help.message" : "show.help.message")) }
-            let hideHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: isOnOff ? "off.help.title" : "hide.help.title"), message: localized.string(for: isOnOff ? "off.help.message" : "hide.help.message")) }
+            let showHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: isOnOff ? "on.help.title" : "show.help.title"), message: localized.string(for: isOnOff ? "on.help.message" : "show.help.message")) }
+            let hideHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: isOnOff ? "off.help.title" : "hide.help.title"), message: localized.string(for: isOnOff ? "off.help.message" : "hide.help.message")) }
             let segments = [
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: isOnOff ? "on" : "show"), fillColor: buttonColor, helpProvider: showHelpProvider, accessibilityLabel: localized.string(for: isOnOff ? "on.help.title" : "show.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .magnifier), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .magnifier), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityZoom) }, style: style),
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: isOnOff ? "off" : "hide"), fillColor: alternateButtonColor, helpProvider: hideHelpProvider, accessibilityLabel: localized.string(for: isOnOff ? "off.help.title" : "hide.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .magnifier), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .magnifier), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityZoom) }, style: style)
@@ -343,8 +343,8 @@ class MorphicBarControlItem: MorphicBarItem {
             return view
         case .reader:
             let localized = LocalizedStrings(prefix: "control.feature.reader")
-            let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
-            let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
+            let onHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
+            let offHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.tts"), learnMoreUrl: nil, quickDemoVideoUrl: nil, settingsBlock: nil, style: style),
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.tts"), learnMoreUrl: nil, quickDemoVideoUrl: nil, settingsBlock: nil, style: style)
@@ -356,7 +356,7 @@ class MorphicBarControlItem: MorphicBarItem {
             return view
         case .readselected:
             let localized = LocalizedStrings(prefix: "control.feature.readselected")
-            let playStopHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "playstop.help.title"), message: localized.string(for: "playstop.help.message")) }
+            let playStopHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "playstop.help.title"), message: localized.string(for: "playstop.help.message")) }
             let segments = [
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "playstop"), fillColor: buttonColor, helpProvider: playStopHelpProvider, accessibilityLabel: localized.string(for: "playstop.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .readselMac), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .readselMac), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilitySpeech) }, style: style)
             ]
@@ -373,8 +373,39 @@ class MorphicBarControlItem: MorphicBarItem {
                 MorphicBarSegmentedButton.Segment(icon: .minus(), fillColor: alternateButtonColor, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "down.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), settingsBlock: nil, style: style)
             ]
             if feature == .volume {
+                // create and add mute segment
+                var muteSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "mute"), fillColor: buttonColor, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "mute.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), settingsBlock: nil, style: style)
+                muteSegment.getStateBlock = {
+                    guard let defaultAudioDeviceId = MorphicAudio.getDefaultAudioDeviceId() else {
+                        // default: return false
+                        return false
+                    }
+                    guard let muteState = MorphicAudio.getMuteState(for: defaultAudioDeviceId) else {
+                        // default: return false
+                        return false
+                    }
+                    return muteState
+                }
+                muteSegment.stateUpdatedNotification = MorphicBarSegmentedButton.Segment.StateUpdateNotificationInfo(
+                    notificationName: NSNotification.Name.morphicAudioMuteStateChanged,
+                    stateKey: "muteState"
+                )
+                muteSegment.accessibilityLabelByState = [
+                    .on: localized.string(for: "mute.tts.muted"),
+                    .off: localized.string(for: "mute.tts.unmuted")
+                ]
+                //
+                // enable muteState change notifications
+                if let defaultAudioDeviceId = MorphicAudio.getDefaultAudioDeviceId() {
+                    do {
+                        try MorphicAudio.enableMuteStateChangeNotifications(for: defaultAudioDeviceId)
+                    } catch {
+                        NSLog("Could not subscribe to mute state change notifications")
+                    }
+                }
+                //
                 segments.append(
-                    MorphicBarSegmentedButton.Segment(title: localized.string(for: "mute"), fillColor: buttonColor, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "mute.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), settingsBlock: nil, style: style)
+                    muteSegment
                 )
             }
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
@@ -383,8 +414,8 @@ class MorphicBarControlItem: MorphicBarItem {
             return view
         case .contrast:
             let localized = LocalizedStrings(prefix: "control.feature.contrast")
-            let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
-            let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
+            let onHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
+            let offHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay) }, style: style),
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay) }, style: style)
@@ -396,15 +427,86 @@ class MorphicBarControlItem: MorphicBarItem {
             return view
         case .contrastcolordarknight:
             let localized = LocalizedStrings(prefix: "control.feature.contrastcolordarknight")
-            let contrastHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "contrast.help.title"), message: localized.string(for: "contrast.help.message")) }
-            let colorHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "color.help.title"), message: localized.string(for: "color.help.message")) }
-            let darkHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "dark.help.title"), message: localized.string(for: "dark.help.message")) }
-            let nightHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "night.help.title"), message: localized.string(for: "night.help.message")) }
+            
+            let contrastHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "contrast.help.title"), message: localized.string(for: "contrast.help.message")) }
+            var contrastSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "contrast"), fillColor: buttonColor, helpProvider: contrastHelpProvider, accessibilityLabel: localized.string(for: "contrast.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay) }, style: style)
+            contrastSegment.getStateBlock = {
+                return MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+            }
+            contrastSegment.accessibilityLabelByState = [
+                .on: localized.string(for: "contrast.tts.enabled"),
+                .off: localized.string(for: "contrast.tts.disabled")
+            ]
+            //
+            // enable contrast state change notifications
+            AppDelegate.shared.enableContrastChangeNotifications()
+            contrastSegment.stateUpdatedNotification = MorphicBarSegmentedButton.Segment.StateUpdateNotificationInfo(
+                notificationName: NSNotification.Name.morphicFeatureContrastEnabledChanged,
+                stateKey: "enabled"
+            )
+            //
+            let colorHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "color.help.title"), message: localized.string(for: "color.help.message")) }
+            var colorSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "color"), fillColor: alternateButtonColor, helpProvider: colorHelpProvider, accessibilityLabel: localized.string(for: "color.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .colorvision), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .colorvision), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayColorFilters) }, style: style)
+            colorSegment.getStateBlock = {
+                return MorphicDisplayAccessibilitySettings.colorFiltersEnabled
+            }
+            colorSegment.accessibilityLabelByState = [
+                .on: localized.string(for: "color.tts.enabled"),
+                .off: localized.string(for: "color.tts.disabled")
+            ]
+            //
+            // enable color filters enabled change notifications
+            AppDelegate.shared.enableColorFiltersEnabledChangeNotifications()
+            colorSegment.stateUpdatedNotification = MorphicBarSegmentedButton.Segment.StateUpdateNotificationInfo(
+                notificationName: NSNotification.Name.morphicFeatureColorFiltersEnabledChanged,
+                stateKey: "enabled"
+            )
+            //
+            let darkHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "dark.help.title"), message: localized.string(for: "dark.help.message")) }
+            var darkSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "dark"), fillColor: buttonColor, helpProvider: darkHelpProvider, accessibilityLabel: localized.string(for: "dark.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .darkmode), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .darkmode), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.general) }, style: style)
+            darkSegment.getStateBlock = {
+                let currentAppearanceTheme = MorphicDisplayAppearance.currentAppearanceTheme
+                switch currentAppearanceTheme {
+                case .dark:
+                    return true
+                case .light:
+                    return false
+                }
+            }
+            darkSegment.accessibilityLabelByState = [
+                .on: localized.string(for: "dark.tts.enabled"),
+                .off: localized.string(for: "dark.tts.disabled")
+            ]
+            //
+            // enable dark mode (appearance) change notifications
+            AppDelegate.shared.enableDarkAppearanceEnabledChangeNotifications()
+            darkSegment.stateUpdatedNotification = MorphicBarSegmentedButton.Segment.StateUpdateNotificationInfo(
+                notificationName: NSNotification.Name.morphicFeatureInterfaceThemeChanged,
+                stateKey: nil // NOTE: the button will query for the theme in real-time
+            )
+            //
+            let nightHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "night.help.title"), message: localized.string(for: "night.help.message")) }
+            var nightSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "night"), fillColor: alternateButtonColor, helpProvider: nightHelpProvider, accessibilityLabel: localized.string(for: "night.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.displaysNightShift) }, style: style)
+            nightSegment.getStateBlock = {
+                return MorphicNightShift.getEnabled()
+            }
+            nightSegment.accessibilityLabelByState = [
+                .on: localized.string(for: "night.tts.enabled"),
+                .off: localized.string(for: "night.tts.disabled")
+            ]
+            //
+            // enable night shift enabled change notifications
+            MorphicNightShift.enableStatusChangeNotifications()
+            nightSegment.stateUpdatedNotification = MorphicBarSegmentedButton.Segment.StateUpdateNotificationInfo(
+                notificationName: NSNotification.Name.morphicFeatureNightShiftEnabledChanged,
+                stateKey: "enabled"
+            )
+            //
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "contrast"), fillColor: buttonColor, helpProvider: contrastHelpProvider, accessibilityLabel: localized.string(for: "contrast.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay) }, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "color"), fillColor: alternateButtonColor, helpProvider: colorHelpProvider, accessibilityLabel: localized.string(for: "color.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .colorvision), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .colorvision), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayColorFilters) }, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "dark"), fillColor: buttonColor, helpProvider: darkHelpProvider, accessibilityLabel: localized.string(for: "dark.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .darkmode), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .darkmode), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.general) }, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "night"), fillColor: alternateButtonColor, helpProvider: nightHelpProvider, accessibilityLabel: localized.string(for: "night.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.displaysNightShift) }, style: style)
+                contrastSegment,
+                colorSegment,
+                darkSegment,
+                nightSegment
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
@@ -413,8 +515,8 @@ class MorphicBarControlItem: MorphicBarItem {
             return view
         case .nightshift:
             let localized = LocalizedStrings(prefix: "control.feature.nightshift")
-            let onHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
-            let offHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
+            let onHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
+            let offHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), settingsBlock: nil, style: style),
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), settingsBlock: nil, style: style)
@@ -426,8 +528,8 @@ class MorphicBarControlItem: MorphicBarItem {
             return view
         case .copypaste:
             let localized = LocalizedStrings(prefix: "control.feature.copypaste")
-            let copyHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
-            let pasteHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "paste.help.title"), message: localized.string(for: "paste.help.message")) }
+            let copyHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
+            let pasteHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "paste.help.title"), message: localized.string(for: "paste.help.message")) }
             let segments = [
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "copy"), fillColor: buttonColor, helpProvider: copyHelpProvider, accessibilityLabel: localized.string(for: "copy.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .copypaste), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .copypaste), settingsBlock: nil, style: style),
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "paste"), fillColor: alternateButtonColor, helpProvider: pasteHelpProvider, accessibilityLabel: localized.string(for: "paste.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .copypaste), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .copypaste), settingsBlock: nil, style: style)
@@ -439,7 +541,7 @@ class MorphicBarControlItem: MorphicBarItem {
             return view
         case .screensnip:
             let localized = LocalizedStrings(prefix: "control.feature.screensnip")
-            let copyHelpProvider = QuickHelpDynamicTextProvider{ (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
+            let copyHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
             var snipSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "copy"), fillColor: buttonColor, helpProvider: copyHelpProvider, accessibilityLabel: localized.string(for: "copy.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .snip), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .snip), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.keyboardShortcutsScreenshots) }, style: style)
             snipSegment.settingsMenuItemTitle = "Other Screenshot Shortcuts"
             let segments = [
@@ -474,9 +576,10 @@ class MorphicBarControlItem: MorphicBarItem {
     
     @objc
     func volume(_ sender: Any?) {
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
+        guard let senderAsSegmentedButton = sender as? MorphicBarSegmentedButton else {
             return
         }
+        let segment = senderAsSegmentedButton.selectedSegmentIndex
         guard let output = AudioOutput.main else {
             return
         }
@@ -493,8 +596,13 @@ class MorphicBarControlItem: MorphicBarItem {
                 _ = output.setVolume(output.volume - 0.05)
             }
         } else if segment == 2 {
-            _ = output.setMuted(true)
+            let currentMuteState = output.isMuted
+            let newMuteState = !currentMuteState
+            _ = output.setMuted(newMuteState)
         }
+
+        // update the state of the mute button
+        senderAsSegmentedButton.setButtonState(index: 2, stateAsBool: output.isMuted)
     }
 
     @objc
@@ -619,9 +727,10 @@ class MorphicBarControlItem: MorphicBarItem {
     
     @objc
     func contrastcolordarknight(_ sender: Any?) {
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
+        guard let senderAsSegmentedButton = sender as? MorphicBarSegmentedButton else {
             return
         }
+        let segment = senderAsSegmentedButton.selectedSegmentIndex
         switch segment {
         case 0:
             // contrast (increase contrast enabled)
@@ -639,6 +748,8 @@ class MorphicBarControlItem: MorphicBarItem {
                 Session.shared.apply(newValue, for: .macosDisplayContrastEnabled) {
                     success in
                     // we do not currently have a mechanism to report success/failure
+                    
+                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newValue)
                 }
             }
         case 1:
@@ -653,43 +764,70 @@ class MorphicBarControlItem: MorphicBarItem {
                 }
                 // calculate the inverse state
                 let newValue = !valueAsBoolean
+                //
                 // apply the inverse state
-                Session.shared.apply(newValue, for: .macosColorFilterEnabled) {
-                    success in
-                    // we do not currently have a mechanism to report success/failure
+                //
+                // NOTE: due to current limitations in our implementation, we are unable to disable "invert colors" (which is the desired effect when enabling color filters); this is unlikely to be a common scenario, but if we run into it then we need to use the backup UI automation mechanism
+                // NOTE: in the future, we should rework the settings handlers so that they can call native code which can launch a UI automation (instead of being either/or)...and then move this logic to the settings handler code
+                if newValue == true && MorphicDisplayAccessibilitySettings.invertColorsEnabled == true {
+                    Session.shared.apply(newValue, for: .macosColorFilterEnabled) {
+                        success in
+                        // we do not currently have a mechanism to report success/failure
+                        senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newValue)
+                    }
+                } else {
+                    MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(newValue)
+                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newValue)
                 }
             }
         case 2:
             // dark
             
-            switch NSApp.effectiveAppearance.name {
-            case .darkAqua,
-                 .vibrantDark,
-                 .accessibilityHighContrastDarkAqua,
-                 .accessibilityHighContrastVibrantDark:
-                let lightAppearanceCheckboxUIAutomation = LightAppearanceUIAutomation()
-                lightAppearanceCheckboxUIAutomation.apply(true) {
-                    success in
-                    // we do not currently have a mechanism to report success/failure
-                }
-            case .aqua,
-                 .vibrantLight,
-                 .accessibilityHighContrastAqua,
-                 .accessibilityHighContrastVibrantLight:
-                let darkAppearanceCheckboxUIAutomation = DarkAppearanceUIAutomation()
-                darkAppearanceCheckboxUIAutomation.apply(true) {
-                    success in
-                    // we do not currently have a mechanism to report success/failure
-                }
-            default:
-                // unknown appearance
-                break
+            // NOTE: unlike System Preferences, we do not copy the current screen and then "fade" it into the new theme once the theme has switched; if we need that kind of behavior then we'll need screen capture permissions or we'll need to use the alternate (UI automation) code below.  There may also be other alternatives.
+            let newButtonState: Bool
+            switch MorphicDisplayAppearance.currentAppearanceTheme {
+            case .dark:
+                MorphicDisplayAppearance.setCurrentAppearanceTheme(.light)
+                newButtonState = false
+            case .light:
+                MorphicDisplayAppearance.setCurrentAppearanceTheme(.dark)
+                newButtonState = true
             }
+            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newButtonState)
+
+//            // NOTE: if we ever have problems with our reverse-engineered implementation (above), the below UI automation code also works (albeit very slowly)
+//            switch NSApp.effectiveAppearance.name {
+//            case .darkAqua,
+//                 .vibrantDark,
+//                 .accessibilityHighContrastDarkAqua,
+//                 .accessibilityHighContrastVibrantDark:
+//                let lightAppearanceCheckboxUIAutomation = LightAppearanceUIAutomation()
+//                lightAppearanceCheckboxUIAutomation.apply(true) {
+//                    success in
+//                    // we do not currently have a mechanism to report success/failure
+//                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newValue)
+//                }
+//            case .aqua,
+//                 .vibrantLight,
+//                 .accessibilityHighContrastAqua,
+//                 .accessibilityHighContrastVibrantLight:
+//                let darkAppearanceCheckboxUIAutomation = DarkAppearanceUIAutomation()
+//                darkAppearanceCheckboxUIAutomation.apply(true) {
+//                    success in
+//                    // we do not currently have a mechanism to report success/failure
+//                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newValue)
+//                }
+//            default:
+//                // unknown appearance
+//                break
+//            }
         case 3:
             // night
             
             let nightShiftEnabled = MorphicNightShift.getEnabled()
-            MorphicNightShift.setEnabled(!nightShiftEnabled)
+            let newNightShiftEnabled = !nightShiftEnabled
+            MorphicNightShift.setEnabled(newNightShiftEnabled)
+            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newNightShiftEnabled)
         default:
             fatalError("impossible code branch")
         }

@@ -195,7 +195,7 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
             pdfImageRep.draw(in: imageRect)
             return true
         }
-        let recoloredNsImage = colorImage(nsImage, withColor: self.iconColor ?? self.fillColor)
+        let recoloredNsImage = MorphicImageUtils.colorImage(nsImage, withColor: self.iconColor ?? self.fillColor)
         newIconLayer.contents = recoloredNsImage
         
         self.layer?.replaceSublayer(self.iconImageLayer, with: newIconLayer)
@@ -260,39 +260,6 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
         
         self.layer?.replaceSublayer(self.titleTextLayer, with: newTitleTextLayer)
         self.titleTextLayer = newTitleTextLayer
-    }
-    
-    // MARK: B&W image recoloring
-    
-    private func colorImage(_ image: NSImage, withColor tintColor: NSColor) -> NSImage? {
-        // calculate the bounds of our image
-        let imageBounds = NSRect(origin: .zero, size: image.size)
-
-        // create an opaque copy of the provided tint color; we will lower the opacity of our image to preserve the color opacity
-        let opaqueTintColor = tintColor.withAlphaComponent(1)
-
-        // create a copy of the original image (but at the alpha level specified by our color)
-        // NOTE: we create the image copy at the alpha level of our tint color so that we can then flood it with a color with 100% opacity
-        //
-        // first create the empty image
-        let copyOfImage = NSImage(size: image.size)
-        let copyOfImageBounds = NSRect(origin: .zero, size: copyOfImage.size)
-        //
-        // prepare our new image to receive drawing commands
-        copyOfImage.lockFocus()
-        //
-        // draw a copy of our image (at the alpha level of our tintColor) into the new image
-        image.draw(in: copyOfImageBounds, from: imageBounds, operation: .sourceOver, fraction: tintColor.alphaComponent)
-
-        // choose the provided tintColor (but using 100% opacity) to tint our image
-        opaqueTintColor.set()
-        // tint (recolor) our image
-        copyOfImageBounds.fill(using: .sourceAtop)
-
-        // remove the focus from our image (as we are done drawing)
-        copyOfImage.unlockFocus()
-
-        return copyOfImage
     }
     
     // MARK: size/position calculations

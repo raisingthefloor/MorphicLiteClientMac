@@ -50,9 +50,6 @@
 		31A16BD22423E86C0081A72C /* MorphicWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A16BCA2423E86C0081A72C /* MorphicWindow.swift */; };
 		31CE56E22448C8F700A52A7B /* SettingHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE56E12448C8F700A52A7B /* SettingHandler.swift */; };
 		31CE56EB244A149B00A52A7B /* Audio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE56EA244A149B00A52A7B /* Audio.swift */; };
-		9D0AF77324A460A9007E177E /* CoreBrightness.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0AF77224A460A9007E177E /* CoreBrightness.framework */; };
-		9D0AF77724A4616E007E177E /* MorphicNightShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF77624A4616E007E177E /* MorphicNightShift.swift */; };
-		9D59F47E24A6B3040004C35B /* CBBlueLightClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D0AF77524A4613D007E177E /* CBBlueLightClient.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		31F9AEDD24A7F2D90026EBDA /* AccessibilityUIAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F9AEDC24A7F2D90026EBDA /* AccessibilityUIAutomation.swift */; };
 		31F9AEE324A7F7EA0026EBDA /* VoiceOverUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F9AEE224A7F7EA0026EBDA /* VoiceOverUIAutomations.swift */; };
 		31F9AEE524A803B90026EBDA /* ZoomUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F9AEE424A803B90026EBDA /* ZoomUIAutomations.swift */; };
@@ -60,8 +57,19 @@
 		31F9AEEE24AA575B0026EBDA /* SliderElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F9AEED24AA575B0026EBDA /* SliderElement.swift */; };
 		9D0AF73724A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF73624A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift */; };
 		9D0AF73924A0FB78007E177E /* MorphicA11yUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */; };
+		9D0AF77324A460A9007E177E /* CoreBrightness.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0AF77224A460A9007E177E /* CoreBrightness.framework */; };
+		9D0AF77724A4616E007E177E /* MorphicNightShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF77624A4616E007E177E /* MorphicNightShift.swift */; };
+		9D38C4C52528F09B0064FB74 /* SkyLight.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D38C4C42528F0810064FB74 /* SkyLight.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		9D38C4C92528F0D70064FB74 /* SkyLight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D38C4C82528F0D70064FB74 /* SkyLight.framework */; };
+		9D38C4CF2528F11A0064FB74 /* MorphicDisplayAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D38C4CE2528F11A0064FB74 /* MorphicDisplayAppearance.swift */; };
+		9D38C4E4252A2D270064FB74 /* MorphicDisplayAccessibilitySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D38C4E3252A2D270064FB74 /* MorphicDisplayAccessibilitySettings.swift */; };
+		9D38C4E7252A2D810064FB74 /* MediaAccessibility.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D38C4E6252A2D810064FB74 /* MediaAccessibility.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		9D38C4EC252A33AD0064FB74 /* MediaAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D38C4EB252A33AD0064FB74 /* MediaAccessibility.framework */; };
+		9D38C4F0252A386B0064FB74 /* UniversalAccess.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D38C4EE252A37AB0064FB74 /* UniversalAccess.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		9D38C4F4252A38870064FB74 /* UniversalAccess.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D38C4F3252A38870064FB74 /* UniversalAccess.framework */; };
 		9D4B24BF25143D0000F0B2E2 /* GeneralUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24BE25143D0000F0B2E2 /* GeneralUIAutomations.swift */; };
 		9D4B24C225143F8700F0B2E2 /* GeneralPreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */; };
+		9D59F47E24A6B3040004C35B /* CBBlueLightClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D0AF77524A4613D007E177E /* CBBlueLightClient.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */; };
 		9DCE209224CF1AAF00D3445B /* MorphicA11yAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */; };
 		9DD22FBA24DCB8B800C2FA52 /* SpeechUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */; };
@@ -145,10 +153,6 @@
 		31A16BCA2423E86C0081A72C /* MorphicWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorphicWindow.swift; sourceTree = "<group>"; };
 		31CE56E12448C8F700A52A7B /* SettingHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingHandler.swift; sourceTree = "<group>"; };
 		31CE56EA244A149B00A52A7B /* Audio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Audio.swift; sourceTree = "<group>"; };
-		9D0AF77224A460A9007E177E /* CoreBrightness.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBrightness.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/PrivateFrameworks/CoreBrightness.framework; sourceTree = DEVELOPER_DIR; };
-		9D0AF77524A4613D007E177E /* CBBlueLightClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBBlueLightClient.h; sourceTree = "<group>"; };
-		9D0AF77624A4616E007E177E /* MorphicNightShift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicNightShift.swift; sourceTree = "<group>"; };
-		9D0AF78924A4F471007E177E /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		31F9AEDC24A7F2D90026EBDA /* AccessibilityUIAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityUIAutomation.swift; sourceTree = "<group>"; };
 		31F9AEE224A7F7EA0026EBDA /* VoiceOverUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceOverUIAutomations.swift; sourceTree = "<group>"; };
 		31F9AEE424A803B90026EBDA /* ZoomUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomUIAutomations.swift; sourceTree = "<group>"; };
@@ -156,6 +160,18 @@
 		31F9AEED24AA575B0026EBDA /* SliderElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderElement.swift; sourceTree = "<group>"; };
 		9D0AF73624A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yUIAttributeValueCompatible.swift; sourceTree = "<group>"; };
 		9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yUIElement.swift; sourceTree = "<group>"; };
+		9D0AF77224A460A9007E177E /* CoreBrightness.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBrightness.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/PrivateFrameworks/CoreBrightness.framework; sourceTree = DEVELOPER_DIR; };
+		9D0AF77524A4613D007E177E /* CBBlueLightClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBBlueLightClient.h; sourceTree = "<group>"; };
+		9D0AF77624A4616E007E177E /* MorphicNightShift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicNightShift.swift; sourceTree = "<group>"; };
+		9D0AF78924A4F471007E177E /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		9D38C4C42528F0810064FB74 /* SkyLight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SkyLight.h; sourceTree = "<group>"; };
+		9D38C4C82528F0D70064FB74 /* SkyLight.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SkyLight.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/PrivateFrameworks/SkyLight.framework; sourceTree = DEVELOPER_DIR; };
+		9D38C4CE2528F11A0064FB74 /* MorphicDisplayAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicDisplayAppearance.swift; sourceTree = "<group>"; };
+		9D38C4E3252A2D270064FB74 /* MorphicDisplayAccessibilitySettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicDisplayAccessibilitySettings.swift; sourceTree = "<group>"; };
+		9D38C4E6252A2D810064FB74 /* MediaAccessibility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaAccessibility.h; sourceTree = "<group>"; };
+		9D38C4EB252A33AD0064FB74 /* MediaAccessibility.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaAccessibility.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/MediaAccessibility.framework; sourceTree = DEVELOPER_DIR; };
+		9D38C4EE252A37AB0064FB74 /* UniversalAccess.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UniversalAccess.h; sourceTree = "<group>"; };
+		9D38C4F3252A38870064FB74 /* UniversalAccess.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniversalAccess.framework; path = ../../../../../../System/Library/PrivateFrameworks/UniversalAccess.framework; sourceTree = "<group>"; };
 		9D4B24BE25143D0000F0B2E2 /* GeneralUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralUIAutomations.swift; sourceTree = "<group>"; };
 		9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralPreferencesElement.swift; sourceTree = "<group>"; };
 		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
@@ -176,8 +192,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D38C4EC252A33AD0064FB74 /* MediaAccessibility.framework in Frameworks */,
 				9D0AF77324A460A9007E177E /* CoreBrightness.framework in Frameworks */,
 				311336542427FB3400686AF6 /* MorphicCore.framework in Frameworks */,
+				9D38C4F4252A38870064FB74 /* UniversalAccess.framework in Frameworks */,
+				9D38C4C92528F0D70064FB74 /* SkyLight.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -195,6 +214,9 @@
 		311336522427FB3400686AF6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9D38C4F3252A38870064FB74 /* UniversalAccess.framework */,
+				9D38C4EB252A33AD0064FB74 /* MediaAccessibility.framework */,
+				9D38C4C82528F0D70064FB74 /* SkyLight.framework */,
 				9D0AF77224A460A9007E177E /* CoreBrightness.framework */,
 				311336532427FB3400686AF6 /* MorphicCore.framework */,
 			);
@@ -372,7 +394,9 @@
 			isa = PBXGroup;
 			children = (
 				9D0AF77424A46131007E177E /* include */,
+				9D38C4E3252A2D270064FB74 /* MorphicDisplayAccessibilitySettings.swift */,
 				31A16BC62423E86C0081A72C /* MorphicDisplay.swift */,
+				9D38C4CE2528F11A0064FB74 /* MorphicDisplayAppearance.swift */,
 				9D0AF77624A4616E007E177E /* MorphicNightShift.swift */,
 			);
 			path = Display;
@@ -394,14 +418,6 @@
 			path = Window;
 			sourceTree = "<group>";
 		};
-		9D0AF77424A46131007E177E /* include */ = {
-			isa = PBXGroup;
-			children = (
-				9D0AF77524A4613D007E177E /* CBBlueLightClient.h */,
-			);
-			path = include;
-			sourceTree = "<group>";
-		};
 		9D0AF73524A0FB49007E177E /* AccessibilityUI */ = {
 			isa = PBXGroup;
 			children = (
@@ -420,6 +436,17 @@
 			path = AccessibilityUI;
 			sourceTree = "<group>";
 		};
+		9D0AF77424A46131007E177E /* include */ = {
+			isa = PBXGroup;
+			children = (
+				9D0AF77524A4613D007E177E /* CBBlueLightClient.h */,
+				9D38C4E6252A2D810064FB74 /* MediaAccessibility.h */,
+				9D38C4C42528F0810064FB74 /* SkyLight.h */,
+				9D38C4EE252A37AB0064FB74 /* UniversalAccess.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
 		9D5EC22A24927EE200AC77B5 /* PropertyList */ = {
 			isa = PBXGroup;
 			children = (
@@ -435,8 +462,11 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D38C4E7252A2D810064FB74 /* MediaAccessibility.h in Headers */,
+				9D38C4F0252A386B0064FB74 /* UniversalAccess.h in Headers */,
 				31A0A5882405967600166668 /* MorphicSettings.h in Headers */,
 				9D59F47E24A6B3040004C35B /* CBBlueLightClient.h in Headers */,
+				9D38C4C52528F09B0064FB74 /* SkyLight.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -544,6 +574,7 @@
 				9D0AF73924A0FB78007E177E /* MorphicA11yUIElement.swift in Sources */,
 				31F9AEEE24AA575B0026EBDA /* SliderElement.swift in Sources */,
 				31CE56EB244A149B00A52A7B /* Audio.swift in Sources */,
+				9D38C4E4252A2D270064FB74 /* MorphicDisplayAccessibilitySettings.swift in Sources */,
 				315EEC9F24A576A50039C61D /* CellElement.swift in Sources */,
 				31A16BD22423E86C0081A72C /* MorphicWindow.swift in Sources */,
 				31A16BD12423E86C0081A72C /* MorphicAudio.swift in Sources */,
@@ -575,6 +606,7 @@
 				315EEC9524A554580039C61D /* ButtonElement.swift in Sources */,
 				9DD4F48E2517ACDE00ADCC25 /* MouseUIAutomations.swift in Sources */,
 				31F9AEDD24A7F2D90026EBDA /* AccessibilityUIAutomation.swift in Sources */,
+				9D38C4CF2528F11A0064FB74 /* MorphicDisplayAppearance.swift in Sources */,
 				3137AC4424B0FBC600CE3808 /* MenuItemElement.swift in Sources */,
 				315EEC8324A530970039C61D /* SystemPreferences.swift in Sources */,
 				9DCE209224CF1AAF00D3445B /* MorphicA11yAuthorization.swift in Sources */,
