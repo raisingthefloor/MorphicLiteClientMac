@@ -431,7 +431,19 @@ class MorphicBarControlItem: MorphicBarItem {
             let contrastHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "contrast.help.title"), message: localized.string(for: "contrast.help.message")) }
             var contrastSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "contrast"), fillColor: buttonColor, helpProvider: contrastHelpProvider, accessibilityLabel: localized.string(for: "contrast.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay) }, style: style)
             contrastSegment.getStateBlock = {
-                return MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+                if #available(macOS 10.15, *) {
+                    return MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+                } else {
+                    guard let displayDefaults = UserDefaults(suiteName: "com.apple.universalaccess") else {
+                        NSLog("Could not access defaults domain: \"com.apple.universalaccess\"")
+                        return false // NOTE: ideally we'd return nil
+                    }
+                    guard let contrastEnabled = displayDefaults.value(forKey: "increaseContrast") as? Bool else {
+                        return false // NOTE: ideally we'd return nil
+                    }
+
+                    return contrastEnabled
+                }
             }
             contrastSegment.accessibilityLabelByState = [
                 .on: localized.string(for: "contrast.tts.enabled"),

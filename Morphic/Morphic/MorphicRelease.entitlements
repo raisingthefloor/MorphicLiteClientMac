@@ -6,6 +6,8 @@
 	<string>5AAXYGZ428.org.raisingthefloor.Morphic</string>
 	<key>com.apple.developer.team-identifier</key>
 	<string>5AAXYGZ428</string>
+	<key>com.apple.security.automation.apple-events</key>
+	<true/>
 	<key>keychain-access-groups</key>
 	<array>
 		<string>5AAXYGZ428.org.raisingthefloor.MorphicClient</string>
