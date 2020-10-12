@@ -64,7 +64,7 @@ fi
 set -e
 set -x
 
-if [[ "$SIGNING_IDENTITY" == "" ]]; then
+if [[ "$SIGNING_IDENTITY" != "" ]]; then
   codesign --timestamp \
     --sign "${SIGNING_IDENTITY}" \
      "${FILE_PATH}"
