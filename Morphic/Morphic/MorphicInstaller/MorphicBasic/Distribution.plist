@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="2">
+    <title>Morphic Basic</title>
+    <pkg-ref id="org.raisingthefloor.MorphicBasic.pkg"/>
+    <options customize="never" require-scripts="false" hostArchitectures="x86_64"/>
+    <volume-check>
+        <allowed-os-versions>
+            <os-version min="10.14"/>
+        </allowed-os-versions>
+    </volume-check>
+    <choices-outline>
+        <line choice="default">
+            <line choice="org.raisingthefloor.MorphicBasic.pkg"/>
+        </line>
+    </choices-outline>
+    <choice id="default" title="Morphic Basic"/>
+    <choice id="org.raisingthefloor.MorphicBasic.pkg" title="Morphic Basic" visible="false">
+        <pkg-ref id="org.raisingthefloor.MorphicBasic.pkg"/>
+    </choice>
+    <pkg-ref id="org.raisingthefloor.MorphicBasic.pkg" onConclusion="none">org.raisingthefloor.MorphicBasic.pkg</pkg-ref>
+</installer-gui-script>
