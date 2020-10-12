@@ -4,6 +4,7 @@ BRANCH_NAME="${BRANCH_NAME}"
 BRANCH="${BRANCH}"
 BUCKET="${BUCKET}"
 LOCAL_DMG="${LOCAL_DMG}"
+LOCAL_PKG="${LOCAL_PKG}"
 AWS_FILE_PREFIX="${AWS_FILE_PREFIX}"
 if [[ "$VERSION" == "" ]]; then
   echo "VERSION env var must be provided"

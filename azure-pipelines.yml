@@ -40,6 +40,10 @@ steps:
   inputs:
     certSecureFile: 'raising_the_floor_5AAXYGZ428.p12'
     certPwd: '$(P12_PASSWORD)'
+- task: InstallAppleCertificate@2
+  inputs:
+    certSecureFile: 'raising_the_floor_installer_5AAXYGZ428.p12'
+    certPwd: '$(INSTALLER_P12_PASSWORD)'  
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provProfileSecureFile: 'Morphic_Launcher_for_macOS.provisionprofile'
