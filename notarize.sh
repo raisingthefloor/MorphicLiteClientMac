@@ -22,9 +22,9 @@ DMG_PATH="${DMG_PATH}"
 PKG_PATH="${PKG_PATH}"
 
 if [[ "$DMG_PATH" != "" ]]; then
-  FILE_PATH=DMG_PATH
+  FILE_PATH=${DMG_PATH}
 else 
-  FILE_PATH=PKG_PATH
+  FILE_PATH=${PKG_PATH}
 fi
 
 exitWithErr()
