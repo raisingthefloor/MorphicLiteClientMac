@@ -175,12 +175,38 @@ steps:
     targetType: 'filePath'
     filePath: dmg-notarize.sh
 - task: Bash@3
+  displayName: Notarize 'MorphicBasic.pkg'
+  env:
+    BRANCH: $(Build.SourceBranch)
+    BRANCH_NAME: $(Build.SourceBranchName)
+    DMG_PATH: './Morphic/MorphicBasic.pkg'
+    BUNDLE_ID: 'org.raisingthefloor.MorphicBasicInstaller.pkg'
+    USERNAME: '$(ALTOOL_USERNAME)'
+    APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
+    SIGNING_IDENTITY: '$(SIGNING_IDENTITY)'
+  inputs:
+    targetType: 'filePath'
+    filePath: dmg-notarize.sh  
+- task: Bash@3
   displayName: Notarize 'Morphic Community.dmg'
   env:
     BRANCH: $(Build.SourceBranch)
     BRANCH_NAME: $(Build.SourceBranchName)
     DMG_PATH: './Morphic/Morphic Community.dmg'
     BUNDLE_ID: 'org.raisingthefloor.MorphicCommunity.dmg'
+    USERNAME: '$(ALTOOL_USERNAME)'
+    APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
+    SIGNING_IDENTITY: '$(SIGNING_IDENTITY)'
+  inputs:
+    targetType: 'filePath'
+    filePath: dmg-notarize.sh
+- task: Bash@3
+  displayName: Notarize 'MorphicCommunity.pkg'
+  env:
+    BRANCH: $(Build.SourceBranch)
+    BRANCH_NAME: $(Build.SourceBranchName)
+    DMG_PATH: './Morphic/MorphicCommunity.pkg'
+    BUNDLE_ID: 'org.raisingthefloor.MorphicCommunityInstaller.pkg'
     USERNAME: '$(ALTOOL_USERNAME)'
     APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
     SIGNING_IDENTITY: '$(SIGNING_IDENTITY)'
