@@ -30,12 +30,12 @@ PACKAGE_NAME="${PACKAGE_PRODUCT_NAME}.pkg"
 PACKAGE_IDENTIFIER="org.raisingthefloor.${PACKAGE_PRODUCT_NAME}Installer.pkg"
 INNER_PACKAGE_IDENTIFIER="org.raisingthefloor.${PACKAGE_PRODUCT_NAME}.pkg"
 
-if [ -z "$CURRENT_PRODUCT_VERSION" ]; then
+if [[ -z "$CURRENT_PROJECT_VERSION" ]]; then
     # default from Xcode (to use if no specific build # was included)
     VERSION="${MARKETING_VERSION}";
 else
     # passed in by build pipeline
-    VERSION="1.${CURRENT_PRODUCT_VERSION}";
+    VERSION="1.${CURRENT_PROJECT_VERSION}";
 fi
 
 echo "[pkg] build inner Morphic package component (with scripts)"
