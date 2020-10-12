@@ -197,6 +197,7 @@ steps:
     BRANCH: $(Build.SourceBranch)
     BRANCH_NAME: $(Build.SourceBranchName)
     LOCAL_DMG: './Morphic/Morphic.dmg'
+    LOCAL_PKG: './Morphic/MorphicBasic.pkg'
     AWS_FILE_PREFIX: 'Morphic'
     VERSION: '$(finalVersion)'
   inputs:
@@ -212,6 +213,7 @@ steps:
     BRANCH: $(Build.SourceBranch)
     BRANCH_NAME: $(Build.SourceBranchName)
     LOCAL_DMG: './Morphic/Morphic Community.dmg'
+    LOCAL_PKG: './Morphic/MorphicCommunity.pkg'
     AWS_FILE_PREFIX: 'MorphicCommunity'
     VERSION: '$(finalVersion)'
   inputs:

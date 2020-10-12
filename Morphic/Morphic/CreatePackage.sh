@@ -42,6 +42,6 @@ echo "[pkg] build inner Morphic package component (with scripts)"
 pkgbuild --component "${CONFIGURATION_BUILD_DIR}/${APP_NAME}" --identifier "${INNER_PACKAGE_IDENTIFIER}" --version "${VERSION}" --scripts "${SRCROOT}/Morphic/MorphicInstaller/${PACKAGE_PRODUCT_NAME}/Scripts" --install-location /Applications "${SRCROOT}/${INNER_PACKAGE_IDENTIFIER}"
 
 echo "[pkg] build Morphic installer package"
-productbuild  --distribution "${SRCROOT}/Morphic/MorphicInstaller/${PACKAGE_PRODUCT_NAME}/Distribution.plist" --package-path "${SRCROOT}" --identifier "${PACKAGE_IDENTIFIER}" --version "${VERSION}" --timestamp --sign "Developer ID Installer: Raising the Floor - US Inc. (5AAXYGZ428)" "${SRCROOT}/${PACKAGE_NAME}"
+productbuild  --distribution "${SRCROOT}/Morphic/MorphicInstaller/${PACKAGE_PRODUCT_NAME}/Distribution.plist" --package-path "${SRCROOT}" --identifier "${PACKAGE_IDENTIFIER}" --version "${VERSION}" --timestamp --sign "${INSTALLER_SIGNING_IDENTITY}" "${SRCROOT}/${PACKAGE_NAME}"
 
 echo "[pkg] done"
