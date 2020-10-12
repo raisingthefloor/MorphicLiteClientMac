@@ -179,7 +179,7 @@ steps:
   env:
     BRANCH: $(Build.SourceBranch)
     BRANCH_NAME: $(Build.SourceBranchName)
-    DMG_PATH: './Morphic/MorphicBasic.pkg'
+    PKG_PATH: './Morphic/MorphicBasic.pkg'
     BUNDLE_ID: 'org.raisingthefloor.MorphicBasicInstaller.pkg'
     USERNAME: '$(ALTOOL_USERNAME)'
     APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
@@ -204,7 +204,7 @@ steps:
   env:
     BRANCH: $(Build.SourceBranch)
     BRANCH_NAME: $(Build.SourceBranchName)
-    DMG_PATH: './Morphic/MorphicCommunity.pkg'
+    PKG_PATH: './Morphic/MorphicCommunity.pkg'
     BUNDLE_ID: 'org.raisingthefloor.MorphicCommunityInstaller.pkg'
     USERNAME: '$(ALTOOL_USERNAME)'
     APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
