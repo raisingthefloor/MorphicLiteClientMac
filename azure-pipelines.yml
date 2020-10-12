@@ -14,7 +14,7 @@ trigger:
 variables:
 # must be created in the azure UI under Pipelines > Library and specify accessKey, secretKey, region, and bucket
 - group: 's3-public-bucket-upload'
-# Provides: P12_PASSWORD, SIGNING_IDENTITY, SIGNING_IDENTITY_FILENAME, ALTOOL_USERNAME, ALTOOL_APP_PASSWORD
+# Provides: P12_PASSWORD, APPLICATION_SIGNING_IDENTITY, INSTALLER_SIGNING_IDENTITY, ALTOOL_USERNAME, ALTOOL_APP_PASSWORD
 - group: 'osx-signing'
 - name: sdk
   value: macosx
@@ -38,8 +38,8 @@ pool:
 steps:
 - task: InstallAppleCertificate@2
   inputs:
-    certSecureFile: 'raising_the_floor_application_and_installer_5AAXYGZ428.p12'
-    certPwd: '$(APPLICATION_AND_INSTALLER_P12_PASSWORD)'  
+    certSecureFile: 'raising_the_floor_5AAXYGZ428.p12'
+    certPwd: '$(P12_PASSWORD)'  
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provProfileSecureFile: 'Morphic_Launcher_for_macOS.provisionprofile'
@@ -170,7 +170,7 @@ steps:
     BUNDLE_ID: 'org.raisingthefloor.Morphic.dmg'
     USERNAME: '$(ALTOOL_USERNAME)'
     APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
-    SIGNING_IDENTITY: '$(SIGNING_IDENTITY)'
+    SIGNING_IDENTITY: '$(APPLICATION_SIGNING_IDENTITY)'
   inputs:
     targetType: 'filePath'
     filePath: dmg-notarize.sh
@@ -183,7 +183,7 @@ steps:
     BUNDLE_ID: 'org.raisingthefloor.MorphicBasicInstaller.pkg'
     USERNAME: '$(ALTOOL_USERNAME)'
     APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
-    SIGNING_IDENTITY: '$(SIGNING_IDENTITY)'
+    SIGNING_IDENTITY: '$(INSTALLER_SIGNING_IDENTITY)'
   inputs:
     targetType: 'filePath'
     filePath: dmg-notarize.sh  
@@ -196,7 +196,7 @@ steps:
     BUNDLE_ID: 'org.raisingthefloor.MorphicCommunity.dmg'
     USERNAME: '$(ALTOOL_USERNAME)'
     APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
-    SIGNING_IDENTITY: '$(SIGNING_IDENTITY)'
+    SIGNING_IDENTITY: '$(APPLICATION_SIGNING_IDENTITY)'
   inputs:
     targetType: 'filePath'
     filePath: dmg-notarize.sh
@@ -209,7 +209,7 @@ steps:
     BUNDLE_ID: 'org.raisingthefloor.MorphicCommunityInstaller.pkg'
     USERNAME: '$(ALTOOL_USERNAME)'
     APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
-    SIGNING_IDENTITY: '$(SIGNING_IDENTITY)'
+    SIGNING_IDENTITY: '$(INSTALLER_SIGNING_IDENTITY)'
   inputs:
     targetType: 'filePath'
     filePath: dmg-notarize.sh
