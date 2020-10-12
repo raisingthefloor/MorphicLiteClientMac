@@ -57,7 +57,7 @@ if [[ "$APP_PASSWORD" == "" ]]; then
   exitWithErr "APP_PASSWORD env var must be provided"
 fi
 
-if [[ "$DMG_PATH" != ""]] && [[ "$SIGNING_IDENTITY" == "" ]]; then
+if [[ "$DMG_PATH" != "" && "$SIGNING_IDENTITY" == "" ]]; then
   exitWithErr "SIGNING_IDENTITY env var must be provided for DMG files"
 fi
 
