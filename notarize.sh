@@ -57,14 +57,14 @@ if [[ "$APP_PASSWORD" == "" ]]; then
   exitWithErr "APP_PASSWORD env var must be provided"
 fi
 
-if [[ "$DMG_PATH" != ""] && ["$SIGNING_IDENTITY" == "" ]]; then
+if [[ "$DMG_PATH" != ""] && [ "$SIGNING_IDENTITY" == "" ]]; then
   exitWithErr "SIGNING_IDENTITY env var must be provided for DMG files"
 fi
 
 set -e
 set -x
 
-if [["$SIGNING_IDENTITY" == "" ]]; then
+if [[ "$SIGNING_IDENTITY" == "" ]]; then
   codesign --timestamp \
     --sign "${SIGNING_IDENTITY}" \
      "${FILE_PATH}"
