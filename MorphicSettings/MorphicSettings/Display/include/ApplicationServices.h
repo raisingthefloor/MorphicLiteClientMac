@@ -21,14 +21,11 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-framework module MorphicSettings {
-    umbrella header "MorphicSettings.h"
+// NOTE: this header is reverse-engineered
+// Tools: Hopper Disassembler v4; manual analysis
+// Path: /System/Library/Frameworks/ApplicationServices.framework/...
+// OS: macOS 10.14.6
 
-    header "ApplicationServices.h"
-    header "CBBlueLightClient.h"
-    header "MediaAccessibility.h"
-    header "SkyLight.h"
-    header "UniversalAccess.h"
-
-    export *
-}
+/* ./Frameworks/HIServices */
+int _AXInterfaceGetIncreaseContrastEnabled();
+int _AXInterfaceSetIncreaseContrastEnabled(int arg0);

@@ -747,21 +747,27 @@ class MorphicBarControlItem: MorphicBarItem {
         case 0:
             // contrast (increase contrast enabled)
             
-            // capture the current "contrast enabled" setting
-            SettingsManager.shared.capture(valueFor: .macosDisplayContrastEnabled) {
-                value in
-                guard let valueAsBoolean = value as? Bool else {
-                    // could not get current setting
-                    return
-                }
+            if #available(macOS 10.15, *) {
+                let increaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+                let newIncreaseContrastEnabled = !increaseContrastEnabled
+                MorphicDisplayAccessibilitySettings.setIncreaseContrastEnabled(newIncreaseContrastEnabled)
+                //
+                let verifyIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+                senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyIncreaseContrastEnabled)
+            } else {
+                // macOS 10.14
+             
+                // capture the current "contrast enabled" setting
+                let increaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
                 // calculate the inverse state
-                let newValue = !valueAsBoolean
+                let newIncreaseContrastEnabled = !increaseContrastEnabled
                 // apply the inverse state
-                Session.shared.apply(newValue, for: .macosDisplayContrastEnabled) {
+                Session.shared.apply(newIncreaseContrastEnabled, for: .macosDisplayContrastEnabled) {
                     success in
                     // we do not currently have a mechanism to report success/failure
-                    
-                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newValue)
+
+                    let verifyIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyIncreaseContrastEnabled)
                 }
             }
         case 1:
@@ -784,12 +790,22 @@ class MorphicBarControlItem: MorphicBarItem {
                 if newValue == true && MorphicDisplayAccessibilitySettings.invertColorsEnabled == true {
                     Session.shared.apply(newValue, for: .macosColorFilterEnabled) {
                         success in
+                        
                         // we do not currently have a mechanism to report success/failure
-                        senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newValue)
+                        SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+                            verifyValue in
+                            guard let verifyValueAsBoolean = verifyValue as? Bool else {
+                                // could not get current setting
+                                return
+                            }
+                            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyValueAsBoolean)
+                        }
                     }
                 } else {
                     MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(newValue)
-                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newValue)
+                    //
+                    let verifyColorFiltersEnabled = MorphicDisplayAccessibilitySettings.colorFiltersEnabled
+                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyColorFiltersEnabled)
                 }
             }
         case 2:
@@ -805,7 +821,16 @@ class MorphicBarControlItem: MorphicBarItem {
                 MorphicDisplayAppearance.setCurrentAppearanceTheme(.dark)
                 newButtonState = true
             }
-            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newButtonState)
+            //
+            let verifyCurrentAppearanceTheme = MorphicDisplayAppearance.currentAppearanceTheme
+            let verifiedButtonState: Bool
+            switch verifyCurrentAppearanceTheme {
+            case .dark:
+                verifiedButtonState = false
+            case .light:
+                verifiedButtonState = true
+            }
+            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifiedButtonState)
 
 //            // NOTE: if we ever have problems with our reverse-engineered implementation (above), the below UI automation code also works (albeit very slowly)
 //            switch NSApp.effectiveAppearance.name {
@@ -839,7 +864,9 @@ class MorphicBarControlItem: MorphicBarItem {
             let nightShiftEnabled = MorphicNightShift.getEnabled()
             let newNightShiftEnabled = !nightShiftEnabled
             MorphicNightShift.setEnabled(newNightShiftEnabled)
-            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newNightShiftEnabled)
+            //
+            let verifyNightShiftEnabled = MorphicNightShift.getEnabled()
+            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyNightShiftEnabled)
         default:
             fatalError("impossible code branch")
         }

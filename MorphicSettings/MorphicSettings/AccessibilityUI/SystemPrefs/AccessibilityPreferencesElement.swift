@@ -83,8 +83,18 @@ public class AccessibilityPreferencesElement: UIElement {
             guard success else {
                 completion(false)
                 return
-            }
-            AsyncUtils.wait(atMost: 1.0, for: { self.tabGroup?.tab(titled: "Display") != nil}) {
+            }            
+            AsyncUtils.wait(atMost: 1.0, for: {
+                if #available(macOS 10.15, *) {
+                    // macOS 10.15+
+		    // look for the "display" subtab
+                    return self.tabGroup?.tab(titled: "Display") != nil
+                } else {
+                    // macOS 10.14
+		    // look for a checkbox in the single non-tabbed pane
+                    return self.checkbox(titled: "Invert colors") != nil
+                }
+            }) {
                 success in
                 completion(success)
             }

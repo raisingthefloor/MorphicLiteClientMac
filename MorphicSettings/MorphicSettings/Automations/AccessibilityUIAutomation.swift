@@ -90,10 +90,13 @@ public class AccessibilityUIAutomation: UIAutomation {
                     completion(nil)
                     return
                 }
-                guard accessibility.select(tabTitled: tab) else {
-                    os_log(.error, log: logger, "Failed to select Display tab")
-                    completion(nil)
-                    return
+                if #available(macOS 10.15, *) {
+		    // NOTE: macOS doesn't have multiple subtabs
+                    guard accessibility.select(tabTitled: tab) else {
+                        os_log(.error, log: logger, "Failed to select Display tab")
+                        completion(nil)
+                        return
+                    }
                 }
                 completion(accessibility)
             }
