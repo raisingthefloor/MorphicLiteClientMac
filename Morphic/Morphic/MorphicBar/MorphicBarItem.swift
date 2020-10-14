@@ -812,25 +812,25 @@ class MorphicBarControlItem: MorphicBarItem {
             // dark
             
             // NOTE: unlike System Preferences, we do not copy the current screen and then "fade" it into the new theme once the theme has switched; if we need that kind of behavior then we'll need screen capture permissions or we'll need to use the alternate (UI automation) code below.  There may also be other alternatives.
-            let newButtonState: Bool
+//            let newButtonState: Bool
             switch MorphicDisplayAppearance.currentAppearanceTheme {
             case .dark:
                 MorphicDisplayAppearance.setCurrentAppearanceTheme(.light)
-                newButtonState = false
+//                newButtonState = false
             case .light:
                 MorphicDisplayAppearance.setCurrentAppearanceTheme(.dark)
-                newButtonState = true
+//                newButtonState = true
             }
             //
             let verifyCurrentAppearanceTheme = MorphicDisplayAppearance.currentAppearanceTheme
-            let verifiedButtonState: Bool
+            let verifyButtonState: Bool
             switch verifyCurrentAppearanceTheme {
             case .dark:
-                verifiedButtonState = false
+                verifyButtonState = false
             case .light:
-                verifiedButtonState = true
+                verifyButtonState = true
             }
-            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifiedButtonState)
+            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyButtonState)
 
 //            // NOTE: if we ever have problems with our reverse-engineered implementation (above), the below UI automation code also works (albeit very slowly)
 //            switch NSApp.effectiveAppearance.name {
