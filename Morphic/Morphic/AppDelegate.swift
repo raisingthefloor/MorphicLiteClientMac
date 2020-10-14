@@ -48,11 +48,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     private let terminateMorphicLauncherNotificationName = NSNotification.Name(rawValue: "org.raisingthefloor.terminateMorphicLauncher")
 
+    private let showMorphicBarDueToUserRelaunchNotificationName = NSNotification.Name(rawValue: "org.raisingthefloor.showMorphicBarDueToUserRelaunch")
+
     // MARK: - Application Lifecycle
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         os_log(.info, log: logger, "applicationDidFinishLaunching")
         AppDelegate.shared = self
+
+        // watch for notifications that the user attempted to relaunch Morphic
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.showMorphicBarDueToApplicationRelaunch(_:)), name: showMorphicBarDueToUserRelaunchNotificationName, object: nil)
 
         // NOTE: if desired, we could call morphicLauncherIsRunning() to detect if we were auto-started by our launch item (and capture that on startup); this would (generally) confirm that "autostart Morphic on login" is enabled without having to use deprecated SMJob functions
         //
@@ -154,6 +159,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func applicationWillTerminate(_ aNotification: Notification) {
     }
     
+    // NOTE: this function will send our primary instance a notification request to show the Morphic Bar if the user tried to relaunch Morphic (by double-clicking the application in Finder or clicking on our icon in the dock)
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        NotificationCenter.default.post(name: showMorphicBarDueToUserRelaunchNotificationName, object: nil)
+        return false
+    }
+    //
+    // NOTE: this function will show the Morphic Bar if we receive a notification that the user tried to relaunch Morphic (by double-clicking the application in Finder or clicking on our icon in the dock)
+    @objc
+    func showMorphicBarDueToApplicationRelaunch(_ sender: Any?) {
+        AppDelegate.shared.showMorphicBar(sender)
+    }    
+
     // MARK: - Notifications
     
     @objc
