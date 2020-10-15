@@ -100,15 +100,32 @@ public class MorphicBarWindow: NSWindow {
         }
     }
         
-    func updateMorphicBar() {
+    static var showsHelpByDefault: Bool {
         #if EDITION_BASIC
-            let showsHelpByDefault = true
-            morphicBarViewController.showsHelp = Session.shared.bool(for: .morphicBarShowsHelp) ?? showsHelpByDefault
+            return true
         #elseif EDITION_COMMUNITY
-            // NOTE: for now, permanently surpress the help pop-up in Morphic Community
-            let showsHelpByDefault = false
-            morphicBarViewController.showsHelp = showsHelpByDefault
+            return false
         #endif
+    }
+    
+    var showsHelp: Bool {
+        get {
+            let showsHelpByDefault = MorphicBarWindow.showsHelpByDefault
+            #if EDITION_BASIC
+                return Session.shared.bool(for: .morphicBarShowsHelp) ?? showsHelpByDefault
+            #elseif EDITION_COMMUNITY
+                // NOTE: for now, permanently surpress the help pop-up in Morphic Community
+                return showsHelpByDefault
+            #endif
+        }
+    }
+    
+    func setShowsHelp(_ state: Bool) {
+        Session.shared.set(state, for: .morphicBarShowsHelp)
+    }
+    
+    func updateMorphicBar() {
+        morphicBarViewController.showsHelp = self.showsHelp
         
         #if EDITION_BASIC
             if let preferredItems = Session.shared.array(for: .morphicBarItems) {
@@ -133,6 +150,18 @@ public class MorphicBarWindow: NSWindow {
         // now that we have updated the items in our bar, update the accessibility children list as well (so that left/right voiceover nav works properly)
         setAccessibilityChildren(morphicBarViewController.accessibilityChildren())
         reposition(animated: false)
+    }
+    
+    func updateShowsHelp() {
+        let showsHelp = self.showsHelp
+        
+        morphicBarViewController.showsHelp = showsHelp
+        
+        for subview in morphicBarViewController.morphicBarView.subviews {
+            if let barItem = subview as? MorphicBarItemViewProtocol {
+                barItem.showsHelp = showsHelp
+            }
+        }
     }
     
     public override var canBecomeKey: Bool {

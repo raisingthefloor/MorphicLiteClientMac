@@ -11,6 +11,7 @@
                 <outlet property="automaticallyStartMorphicMenuItem" destination="Ir1-cH-h7Z" id="qjx-8X-a5H"/>
                 <outlet property="copySettingsBetweenComputersMenuItem" destination="WUC-ZR-CdM" id="vlM-8I-iQP"/>
                 <outlet property="hideMorphicBarMenuItem" destination="gOm-Gw-nLp" id="f86-ih-DaC"/>
+                <outlet property="hideQuickHelpMenuItem" destination="v0X-Ch-Q5h" id="Xc2-0F-awk"/>
                 <outlet property="loginMenuItem" destination="S6R-h6-1Yz" id="zO2-OE-N39"/>
                 <outlet property="logoutMenuItem" destination="fdS-ef-rqr" id="2v2-vJ-y1T"/>
                 <outlet property="menu" destination="iDk-eb-5cB" id="OjZ-YL-Pes"/>
@@ -178,6 +179,12 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="showMorphicBarAtStartClicked:" target="ZNk-5q-oDb" id="4yA-wH-Fap"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Hide QuickHelp" hidden="YES" id="v0X-Ch-Q5h">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="hideQuickHelpClicked:" target="-1" id="3F9-Lb-DQV"/>
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="yYL-r6-1AR"/>

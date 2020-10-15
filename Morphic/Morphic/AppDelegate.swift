@@ -31,7 +31,7 @@ import ServiceManagement
 private let logger = OSLog(subsystem: "app", category: "delegate")
 
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDelegate {
     
     static var shared: AppDelegate!
     
@@ -45,7 +45,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     @IBOutlet weak var automaticallyStartMorphicMenuItem: NSMenuItem!
     @IBOutlet weak var showMorphicBarAtStartMenuItem: NSMenuItem!
-    
+    @IBOutlet weak var hideQuickHelpMenuItem: NSMenuItem!
+
     private let terminateMorphicLauncherNotificationName = NSNotification.Name(rawValue: "org.raisingthefloor.terminateMorphicLauncher")
 
     private let showMorphicBarDueToUserRelaunchNotificationName = NSNotification.Name(rawValue: "org.raisingthefloor.showMorphicBarDueToUserRelaunch")
@@ -101,6 +102,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 #endif
                 self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
 
+                self.menu?.delegate = self
+                
                 // capture the user's preference as to whether or not to show the Morphic Bar at startup
                 // showMorphicBarAtStart: true if we should always try to show the MorphicBar at application startup
                 let showMorphicBarAtStart = Session.shared.bool(for: .showMorphicBarAtStart) ?? false
@@ -117,6 +120,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                         self.showMorphicBar(nil)
                     }
                 #endif
+                
+                // update the "hide quickhelp menu" menu item's state
+                self.updateHideQuickHelpMenuItems()
                 
                 // update the "show MorphicBar at start" menu items' states
                 self.updateShowMorphicBarAtStartMenuItems()
@@ -652,6 +658,90 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     //
     
+    private var menuModifierKeyObserver: CFRunLoopObserver? = nil
+    
+    private func createMenuKeyMonitorRunLoopObserver() -> CFRunLoopObserver? {
+        let observer = CFRunLoopObserverCreateWithHandler(nil /* kCFAllocatorDefault */, CFRunLoopActivity.beforeWaiting.rawValue, true /* repeats */, 0 /* order */) { (
+            observer, activity) in
+            //
+            self.updateMenuItemsBasedOnModifierKeys()
+        }
+        
+        return observer
+    }
+    
+    public func menuWillOpen(_ menu: NSMenu) {
+        // wire up a modifier key observer (so we can show/hide the "Hide QuickHelp" item when the Option key is pressed/released)
+        
+        // setup the menu using the initial modifier key state
+        self.updateMenuItemsBasedOnModifierKeys()
+
+        // wire up the observer (to watch for all common mode events including keystrokes)
+        guard let menuModifierKeyObserver = createMenuKeyMonitorRunLoopObserver() else {
+            assertionFailure("Could not create keyboard modifier observer")
+            return
+        }
+        CFRunLoopAddObserver(RunLoop.current.getCFRunLoop(), menuModifierKeyObserver, CFRunLoopMode.commonModes)
+        self.menuModifierKeyObserver = menuModifierKeyObserver
+    }
+
+    public func menuDidClose(_ menu: NSMenu) {
+        // disconnect our modifier key observer
+        if let menuModifierKeyObserver = self.menuModifierKeyObserver {
+            CFRunLoopRemoveObserver(RunLoop.current.getCFRunLoop(), menuModifierKeyObserver, CFRunLoopMode.commonModes)
+            CFRunLoopObserverInvalidate(menuModifierKeyObserver)
+            self.menuModifierKeyObserver = nil
+        }
+    }
+    
+    private func updateMenuItemsBasedOnModifierKeys() {
+        // get the currently-pressed modifier keys
+        let currentModifierKeys = NSEvent.modifierFlags
+
+        #if EDITION_BASIC
+            if currentModifierKeys.rawValue & NSEvent.ModifierFlags.option.rawValue != 0 {
+                self.hideQuickHelpMenuItem.isHidden = false
+                self.morphicBarWindow?.morphicBarViewController.hideQuickHelpMenuItem.isHidden = false
+            } else {
+                self.hideQuickHelpMenuItem.isHidden = true
+                self.morphicBarWindow?.morphicBarViewController.hideQuickHelpMenuItem.isHidden = true
+            }
+        #elseif EDITION_COMMUNITY
+        #endif
+    }
+    
+    @IBAction func hideQuickHelpClicked(_ sender: NSMenuItem) {
+        switch sender.state {
+        case .on:
+            setHideQuickHelpState(false)
+        case .off:
+            setHideQuickHelpState(true)
+        default:
+            fatalError("invalid code path")
+        }
+        updateHideQuickHelpMenuItems()
+    }
+    
+    func updateHideQuickHelpMenuItems() {
+        let hideQuickHelpAtLogin = self.hideQuickHelpState()
+        hideQuickHelpMenuItem?.state = (hideQuickHelpAtLogin ? .on : .off)
+        morphicBarWindow?.morphicBarViewController.hideQuickHelpMenuItem.state = (hideQuickHelpAtLogin ? .on : .off)
+    }
+
+    func hideQuickHelpState() -> Bool {
+        let morphicBarShowsHelp = Session.shared.bool(for: .morphicBarShowsHelp) ?? MorphicBarWindow.showsHelpByDefault
+        return !morphicBarShowsHelp
+    }
+    
+    func setHideQuickHelpState(_ state: Bool) {
+        let newShowsHelpState = !state
+        Session.shared.set(newShowsHelpState, for: .morphicBarShowsHelp)
+                
+        morphicBarWindow?.updateShowsHelp()
+    }
+
+    //
+    
     @IBAction func showMorphicBarAtStartClicked(_ sender: NSMenuItem) {
         let showMorphicBarAtStart: Bool
         switch sender.state {
@@ -861,6 +951,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func showMorphicBar(_ sender: Any?) {
         if morphicBarWindow == nil {
             morphicBarWindow = MorphicBarWindow()
+            self.updateMorphicAutostartAtLoginMenuItems()
+            self.updateShowMorphicBarAtStartMenuItems()
+            self.updateHideQuickHelpMenuItems()
         #if EDITION_BASIC
             morphicBarWindow?.orientation = .horizontal
         #elseif EDITION_COMMUNITY
