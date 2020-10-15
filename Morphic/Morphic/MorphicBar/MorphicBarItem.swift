@@ -700,9 +700,32 @@ class MorphicBarControlItem: MorphicBarItem {
 
     @objc
     func screensnip(_ sender: Any?) {
-        guard let (keyCode, keyOptions, hotKeyEnabled) = MorphicInput.hotKeyForSystemKeyboardShortcut(.copyPictureOfSelectedAreaToTheClipboard) else {
-            NSLog("Could not retrieve 'screen snip' hotkey from macOS's keyboard shortcuts list")
-            return
+        var keyCode: CGKeyCode
+        var keyOptions: MorphicInput.KeyOptions
+        var hotKeyEnabled: Bool
+        //
+        if let hotKeyInfo = MorphicInput.hotKeyForSystemKeyboardShortcut(.copyPictureOfSelectedAreaToTheClipboard) {
+            keyCode = hotKeyInfo.keyCode
+            keyOptions = hotKeyInfo.keyOptions
+            hotKeyEnabled = hotKeyInfo.enabled
+        } else {
+            if #available(macOS 10.15, *) {
+                NSLog("Could not retrieve 'screen snip' hotkey from macOS's keyboard shortcuts list")
+                return
+            } else {
+                // macOS 10.14
+                
+                // NOTE: in macOS 10.14, the hotkeys are not written out to the appropriate .plist file until one of them is changed (including disabling the enabled-by-default feature); the current strategy is to assume the default key combo in this scenario, but in the future we may want to consider reverse engineering the HI libraries or Keyboard system preferences pane to find another way to get this data
+                
+                // default values
+                keyCode = CGKeyCode(kVK_ANSI_4)
+                keyOptions = [
+                    .withShiftKey,
+                    .withControlKey,
+                    .withCommandKey
+                ]
+                hotKeyEnabled = true
+            }
         }
         
         guard hotKeyEnabled == true else {
