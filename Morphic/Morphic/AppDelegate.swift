@@ -738,6 +738,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         Session.shared.set(newShowsHelpState, for: .morphicBarShowsHelp)
                 
         morphicBarWindow?.updateShowsHelp()
+        
+        if newShowsHelpState == false {
+            QuickHelpWindow.hide()
+        }
     }
 
     //
