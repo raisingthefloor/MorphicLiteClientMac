@@ -763,14 +763,15 @@ class MorphicBarControlItem: MorphicBarItem {
         case 0:
             // contrast (increase contrast enabled)
             
-            if #available(macOS 10.15, *) {
-                let increaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
-                let newIncreaseContrastEnabled = !increaseContrastEnabled
-                MorphicDisplayAccessibilitySettings.setIncreaseContrastEnabled(newIncreaseContrastEnabled)
-                //
-                let verifyIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
-                senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyIncreaseContrastEnabled)
-            } else {
+            // NOTE: this alternate implementation (compatible with macOS 10.15+) is failing to change the system-wide contrast in macOS 10.15.7, so we've reverted to the original (macOS 10.14+) ui automation approach
+//            if #available(macOS 10.15, *) {
+//                let increaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+//                let newIncreaseContrastEnabled = !increaseContrastEnabled
+//                MorphicDisplayAccessibilitySettings.setIncreaseContrastEnabled(newIncreaseContrastEnabled)
+//                //
+//                let verifyIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+//                senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyIncreaseContrastEnabled)
+//            } else {
                 // macOS 10.14
              
                 // capture the current "contrast enabled" setting
@@ -785,7 +786,7 @@ class MorphicBarControlItem: MorphicBarItem {
                     let verifyIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
                     senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyIncreaseContrastEnabled)
                 }
-            }
+//            }
         case 1:
             // color (color filter)
             
