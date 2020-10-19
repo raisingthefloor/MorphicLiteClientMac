@@ -790,40 +790,51 @@ class MorphicBarControlItem: MorphicBarItem {
         case 1:
             // color (color filter)
             
-            // capture the current "color filter enabled" setting
-            SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
-                value in
-                guard let valueAsBoolean = value as? Bool else {
-                    // could not get current setting
-                    return
-                }
-                // calculate the inverse state
-                let newValue = !valueAsBoolean
-                //
-                // apply the inverse state
-                //
-                // NOTE: due to current limitations in our implementation, we are unable to disable "invert colors" (which is the desired effect when enabling color filters); this is unlikely to be a common scenario, but if we run into it then we need to use the backup UI automation mechanism
-                // NOTE: in the future, we should rework the settings handlers so that they can call native code which can launch a UI automation (instead of being either/or)...and then move this logic to the settings handler code
-                if newValue == true && MorphicDisplayAccessibilitySettings.invertColorsEnabled == true {
-                    Session.shared.apply(newValue, for: .macosColorFilterEnabled) {
-                        success in
-                        
-                        // we do not currently have a mechanism to report success/failure
-                        SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
-                            verifyValue in
-                            guard let verifyValueAsBoolean = verifyValue as? Bool else {
-                                // could not get current setting
-                                return
-                            }
-                            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyValueAsBoolean)
-                        }
+            if #available(macOS 10.15, *) {
+                // capture the current "color filter enabled" setting
+                SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+                    value in
+                    guard let valueAsBoolean = value as? Bool else {
+                        // could not get current setting
+                        return
                     }
-                } else {
-                    MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(newValue)
+                    // calculate the inverse state
+                    let newValue = !valueAsBoolean
                     //
-                    let verifyColorFiltersEnabled = MorphicDisplayAccessibilitySettings.colorFiltersEnabled
-                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyColorFiltersEnabled)
+                    // apply the inverse state
+                    //
+                    // NOTE: due to current limitations in our implementation, we are unable to disable "invert colors" (which is the desired effect when enabling color filters); this is unlikely to be a common scenario, but if we run into it then we need to use the backup UI automation mechanism
+                    // NOTE: in the future, we should rework the settings handlers so that they can call native code which can launch a UI automation (instead of being either/or)...and then move this logic to the settings handler code
+                    if newValue == true && MorphicDisplayAccessibilitySettings.invertColorsEnabled == true {
+                        Session.shared.apply(newValue, for: .macosColorFilterEnabled) {
+                            success in
+                            
+                            // we do not currently have a mechanism to report success/failure
+                            SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+                                verifyValue in
+                                guard let verifyValueAsBoolean = verifyValue as? Bool else {
+                                    // could not get current setting
+                                    return
+                                }
+                                senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyValueAsBoolean)
+                            }
+                        }
+                    } else {
+                        MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(newValue)
+                        //
+                        let verifyColorFiltersEnabled = MorphicDisplayAccessibilitySettings.colorFiltersEnabled
+                        senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyColorFiltersEnabled)
+                    }
                 }
+            } else {
+                // macOS 10.14
+                
+                let alert = NSAlert()
+                alert.messageText = "Color Vision filters not available."
+                alert.informativeText = "Color Vision filters (including color blindness filters) are not available in this older version of macOS.\n\nPlease upgrade to macOS 10.15 (Catalina) or newer to use this feature."
+                alert.alertStyle = .informational
+                alert.addButton(withTitle: "OK")
+                _ = alert.runModal()
             }
         case 2:
             // dark
