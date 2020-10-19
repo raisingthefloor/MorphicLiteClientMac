@@ -280,13 +280,13 @@ class MorphicBarControlItem: MorphicBarItem {
     }
     
     static func learnMoreUrl(for buttonCategory: ButtonCategory) -> URL? {
-        let learnMoreUrlPrefix = "https://morphic.org/lm/"
+        let learnMoreUrlPrefix = "https://morphic.org/rd/"
         let buttonCategoryTag = buttonCategory.rawValue
         return URL(string: learnMoreUrlPrefix + buttonCategoryTag)
     }
     
     static func quickDemoVideoUrl(for buttonCategory: ButtonCategory) -> URL? {
-        let buttonCategoryUrlPrefix = "https://morphic.org/lm/"
+        let buttonCategoryUrlPrefix = "https://morphic.org/rd/"
         let buttonCategoryUrlSuffix = "-vid"
         let buttonCategoryTag = buttonCategory.rawValue
         return URL(string: buttonCategoryUrlPrefix + buttonCategoryTag + buttonCategoryUrlSuffix)
