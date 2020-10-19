@@ -71,6 +71,7 @@
 		9D4B24C225143F8700F0B2E2 /* GeneralPreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */; };
 		9D59F47E24A6B3040004C35B /* CBBlueLightClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D0AF77524A4613D007E177E /* CBBlueLightClient.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */; };
+		9DC4FDE5253603AD0051BB23 /* ApplicationServices.h in Headers */ = {isa = PBXBuildFile; fileRef = 9DC4FDE42536030F0051BB23 /* ApplicationServices.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		9DCE209224CF1AAF00D3445B /* MorphicA11yAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */; };
 		9DD22FBA24DCB8B800C2FA52 /* SpeechUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */; };
 		9DD4F4842517ACCD00ADCC25 /* MousePreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F4832517ACCD00ADCC25 /* MousePreferencesElement.swift */; };
@@ -175,6 +176,7 @@
 		9D4B24BE25143D0000F0B2E2 /* GeneralUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralUIAutomations.swift; sourceTree = "<group>"; };
 		9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralPreferencesElement.swift; sourceTree = "<group>"; };
 		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
+		9DC4FDE42536030F0051BB23 /* ApplicationServices.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApplicationServices.h; sourceTree = "<group>"; };
 		9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yAuthorization.swift; sourceTree = "<group>"; };
 		9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechUIAutomations.swift; sourceTree = "<group>"; };
 		9DD4F4832517ACCD00ADCC25 /* MousePreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MousePreferencesElement.swift; sourceTree = "<group>"; };
@@ -439,6 +441,7 @@
 		9D0AF77424A46131007E177E /* include */ = {
 			isa = PBXGroup;
 			children = (
+				9DC4FDE42536030F0051BB23 /* ApplicationServices.h */,
 				9D0AF77524A4613D007E177E /* CBBlueLightClient.h */,
 				9D38C4E6252A2D810064FB74 /* MediaAccessibility.h */,
 				9D38C4C42528F0810064FB74 /* SkyLight.h */,
@@ -465,6 +468,7 @@
 				9D38C4E7252A2D810064FB74 /* MediaAccessibility.h in Headers */,
 				9D38C4F0252A386B0064FB74 /* UniversalAccess.h in Headers */,
 				31A0A5882405967600166668 /* MorphicSettings.h in Headers */,
+				9DC4FDE5253603AD0051BB23 /* ApplicationServices.h in Headers */,
 				9D59F47E24A6B3040004C35B /* CBBlueLightClient.h in Headers */,
 				9D38C4C52528F09B0064FB74 /* SkyLight.h in Headers */,
 			);

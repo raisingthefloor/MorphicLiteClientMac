@@ -30,6 +30,11 @@ PACKAGE_NAME="${PACKAGE_PRODUCT_NAME}.pkg"
 PACKAGE_IDENTIFIER="org.raisingthefloor.${PACKAGE_PRODUCT_NAME}Installer.pkg"
 INNER_PACKAGE_IDENTIFIER="org.raisingthefloor.${PACKAGE_PRODUCT_NAME}.pkg"
 
+if [[ -z "$INSTALLER_SIGNING_IDENTITY" ]]; then
+    # add default installer signing identity if none was provided
+    INSTALLER_SIGNING_IDENTITY="Developer ID Installer: Raising the Floor - US Inc. (5AAXYGZ428)"
+fi
+
 if [[ -z "$CURRENT_PROJECT_VERSION" ]]; then
     # default from Xcode (to use if no specific build # was included)
     VERSION="${MARKETING_VERSION}";

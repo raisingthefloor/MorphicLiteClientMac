@@ -63,7 +63,11 @@ public struct MorphicDisplayAccessibilitySettings {
                 let result: Bool = resultAsInt32 != 0
                 return result
             } else {
-                fatalError("UAIncreaseContrastIsEnabled is not supported in this version of macOS")
+                // macOS 10.14
+                
+                let resultAsInt32: Int32 = _AXInterfaceGetIncreaseContrastEnabled()
+                let result: Bool = resultAsInt32 != 0
+                return result
             }
         }
     }
@@ -80,6 +84,18 @@ public struct MorphicDisplayAccessibilitySettings {
             }
         } else {
             fatalError("UAIncreaseContrastSetEnabled is not supported in this version of macOS")
+
+//            // macOS 10.14
+//
+//            // get the current state of "increase contrast enabled"
+//            let currentIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+//
+//            if currentIncreaseContrastEnabled != value {
+//                // NOTE: we would need "user-preference-write" or "file-write-data" sandbox access to write preferences outside of our application's container
+//                // NOTE: the signature on this function apperas to have changed as of macOS 10.15
+//                _ = _AXInterfaceSetIncreaseContrastEnabled(value == true ? 1 : 0)
+//                print("setIncreaseContrastEnabled success: \(success)")
+//            }
         }
     }
 }

@@ -700,9 +700,32 @@ class MorphicBarControlItem: MorphicBarItem {
 
     @objc
     func screensnip(_ sender: Any?) {
-        guard let (keyCode, keyOptions, hotKeyEnabled) = MorphicInput.hotKeyForSystemKeyboardShortcut(.copyPictureOfSelectedAreaToTheClipboard) else {
-            NSLog("Could not retrieve 'screen snip' hotkey from macOS's keyboard shortcuts list")
-            return
+        var keyCode: CGKeyCode
+        var keyOptions: MorphicInput.KeyOptions
+        var hotKeyEnabled: Bool
+        //
+        if let hotKeyInfo = MorphicInput.hotKeyForSystemKeyboardShortcut(.copyPictureOfSelectedAreaToTheClipboard) {
+            keyCode = hotKeyInfo.keyCode
+            keyOptions = hotKeyInfo.keyOptions
+            hotKeyEnabled = hotKeyInfo.enabled
+        } else {
+            if #available(macOS 10.15, *) {
+                NSLog("Could not retrieve 'screen snip' hotkey from macOS's keyboard shortcuts list")
+                return
+            } else {
+                // macOS 10.14
+                
+                // NOTE: in macOS 10.14, the hotkeys are not written out to the appropriate .plist file until one of them is changed (including disabling the enabled-by-default feature); the current strategy is to assume the default key combo in this scenario, but in the future we may want to consider reverse engineering the HI libraries or Keyboard system preferences pane to find another way to get this data
+                
+                // default values
+                keyCode = CGKeyCode(kVK_ANSI_4)
+                keyOptions = [
+                    .withShiftKey,
+                    .withControlKey,
+                    .withCommandKey
+                ]
+                hotKeyEnabled = true
+            }
         }
         
         guard hotKeyEnabled == true else {
@@ -747,21 +770,27 @@ class MorphicBarControlItem: MorphicBarItem {
         case 0:
             // contrast (increase contrast enabled)
             
-            // capture the current "contrast enabled" setting
-            SettingsManager.shared.capture(valueFor: .macosDisplayContrastEnabled) {
-                value in
-                guard let valueAsBoolean = value as? Bool else {
-                    // could not get current setting
-                    return
-                }
+            if #available(macOS 10.15, *) {
+                let increaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+                let newIncreaseContrastEnabled = !increaseContrastEnabled
+                MorphicDisplayAccessibilitySettings.setIncreaseContrastEnabled(newIncreaseContrastEnabled)
+                //
+                let verifyIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+                senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyIncreaseContrastEnabled)
+            } else {
+                // macOS 10.14
+             
+                // capture the current "contrast enabled" setting
+                let increaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
                 // calculate the inverse state
-                let newValue = !valueAsBoolean
+                let newIncreaseContrastEnabled = !increaseContrastEnabled
                 // apply the inverse state
-                Session.shared.apply(newValue, for: .macosDisplayContrastEnabled) {
+                Session.shared.apply(newIncreaseContrastEnabled, for: .macosDisplayContrastEnabled) {
                     success in
                     // we do not currently have a mechanism to report success/failure
-                    
-                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newValue)
+
+                    let verifyIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyIncreaseContrastEnabled)
                 }
             }
         case 1:
@@ -784,28 +813,47 @@ class MorphicBarControlItem: MorphicBarItem {
                 if newValue == true && MorphicDisplayAccessibilitySettings.invertColorsEnabled == true {
                     Session.shared.apply(newValue, for: .macosColorFilterEnabled) {
                         success in
+                        
                         // we do not currently have a mechanism to report success/failure
-                        senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newValue)
+                        SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+                            verifyValue in
+                            guard let verifyValueAsBoolean = verifyValue as? Bool else {
+                                // could not get current setting
+                                return
+                            }
+                            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyValueAsBoolean)
+                        }
                     }
                 } else {
                     MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(newValue)
-                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newValue)
+                    //
+                    let verifyColorFiltersEnabled = MorphicDisplayAccessibilitySettings.colorFiltersEnabled
+                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyColorFiltersEnabled)
                 }
             }
         case 2:
             // dark
             
             // NOTE: unlike System Preferences, we do not copy the current screen and then "fade" it into the new theme once the theme has switched; if we need that kind of behavior then we'll need screen capture permissions or we'll need to use the alternate (UI automation) code below.  There may also be other alternatives.
-            let newButtonState: Bool
+//            let newButtonState: Bool
             switch MorphicDisplayAppearance.currentAppearanceTheme {
             case .dark:
                 MorphicDisplayAppearance.setCurrentAppearanceTheme(.light)
-                newButtonState = false
+//                newButtonState = false
             case .light:
                 MorphicDisplayAppearance.setCurrentAppearanceTheme(.dark)
-                newButtonState = true
+//                newButtonState = true
             }
-            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newButtonState)
+            //
+            let verifyCurrentAppearanceTheme = MorphicDisplayAppearance.currentAppearanceTheme
+            let verifyButtonState: Bool
+            switch verifyCurrentAppearanceTheme {
+            case .dark:
+                verifyButtonState = false
+            case .light:
+                verifyButtonState = true
+            }
+            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyButtonState)
 
 //            // NOTE: if we ever have problems with our reverse-engineered implementation (above), the below UI automation code also works (albeit very slowly)
 //            switch NSApp.effectiveAppearance.name {
@@ -839,7 +887,9 @@ class MorphicBarControlItem: MorphicBarItem {
             let nightShiftEnabled = MorphicNightShift.getEnabled()
             let newNightShiftEnabled = !nightShiftEnabled
             MorphicNightShift.setEnabled(newNightShiftEnabled)
-            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newNightShiftEnabled)
+            //
+            let verifyNightShiftEnabled = MorphicNightShift.getEnabled()
+            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyNightShiftEnabled)
         default:
             fatalError("impossible code branch")
         }

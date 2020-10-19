@@ -34,6 +34,7 @@ public class MorphicBarViewController: NSViewController {
     @IBOutlet weak var selectCommunityMenuItem: NSMenuItem!
     @IBOutlet weak var automaticallyStartMorphicAtLoginMenuItem: NSMenuItem!
     @IBOutlet weak var showMorphicBarAtStartMenuItem: NSMenuItem!
+    @IBOutlet weak var hideQuickHelpMenuItem: NSMenuItem!
     
     // MARK: - View Lifecycle
 
@@ -48,6 +49,7 @@ public class MorphicBarViewController: NSViewController {
             self.loginMenuItem?.isHidden = (Session.shared.user != nil)
         #endif
         self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
+        self.mainMenu?.delegate = AppDelegate.shared
         updateMainMenu()
         NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
         DistributedNotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.appleInterfaceThemeDidChange(_:)), name: .appleInterfaceThemeChanged, object: nil)
