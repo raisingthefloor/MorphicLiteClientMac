@@ -1,5 +1,3 @@
-[![Build Status](https://dev.azure.com/raisingthefloor/Morphic/_apis/build/status/morphic-macos?branchName=master)](https://dev.azure.com/raisingthefloor/Morphic/_build/latest?definitionId=9&branchName=master)
-
 Getting Started
 ======
 
