@@ -15,7 +15,7 @@ variables:
 # must be created in the azure UI under Pipelines > Library and specify accessKey, secretKey, region, and bucket
 - group: 's3-public-bucket-upload'
 # Provides: P12_PASSWORD, APPLICATION_SIGNING_IDENTITY, INSTALLER_SIGNING_IDENTITY, ALTOOL_USERNAME, ALTOOL_APP_PASSWORD
-- group: 'osx-signing'
+- group: 'macos-signing'
 - name: sdk
   value: macosx
 - name: xcodeVersionNum
@@ -23,7 +23,7 @@ variables:
 - name: configuration
   value: 'Release'
 - name: workspacePath
-  value: '**/MorphicLite.xcworkspace'
+  value: '**/Morphic.xcworkspace'
 - name: finalVersion
   value: '1.$(Build.BuildNumber)'
 # This means the pipeline will configure all signing options

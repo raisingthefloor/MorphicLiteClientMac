@@ -1,16 +1,16 @@
-[![Build Status](https://dev.azure.com/raisingthefloor/MorphicLite/_apis/build/status/MorphicLiteClientMac?branchName=master)](https://dev.azure.com/raisingthefloor/MorphicLite/_build/latest?definitionId=2&branchName=master)
+[![Build Status](https://dev.azure.com/raisingthefloor/Morphic/_apis/build/status/morphic-macos?branchName=master)](https://dev.azure.com/raisingthefloor/Morphic/_build/latest?definitionId=9&branchName=master)
 
 Getting Started
 ======
 
-Open up `MorphicLite.xcworkspace` to see all of the related macOS projects.
+Open up `Morphic.xcworkspace` to see all of the related macOS projects.
 
 For debugging, you'll want to run the `MorphicMenuBar` scheme in XCode.
 
 Project Organization
 ==========
 
-The MorphicLite macOS client consists of a native mac application,
+The Morphic macOS client consists of a native mac application,
 [MorphicMenuBar](MorphicMenuBar):
 
 * Runs as an icon the system menu bar without a Dock presence
