@@ -8,14 +8,17 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="MorphicBarViewController" customModule="Morphic" customModuleProvider="target">
             <connections>
+                <outlet property="BarBox" destination="qta-8h-N5p" id="lk4-cj-9p8"/>
+                <outlet property="TrayBox" destination="yXR-go-Phb" id="yZo-Eu-USF"/>
                 <outlet property="automaticallyStartMorphicAtLoginMenuItem" destination="iaW-3x-w8F" id="Wl6-iz-auk"/>
                 <outlet property="copySettingsBetweenComputersMenuItem" destination="nEi-ie-PQT" id="zTb-az-bTI"/>
-                <outlet property="hideQuickHelpMenuItem" destination="8gL-06-y2U" id="QqQ-nz-Q52"/>
+                <outlet property="hideQuickHelpMenuItem" destination="8gL-06-y2U" id="wzq-RY-ypv"/>
                 <outlet property="loginMenuItem" destination="iGo-my-5Ga" id="7tj-Ss-QYR"/>
                 <outlet property="logoButton" destination="ead-JY-BhL" id="cLt-cn-cEr"/>
                 <outlet property="logoutMenuItem" destination="O7a-6a-ADF" id="0Vq-o3-uOm"/>
                 <outlet property="mainMenu" destination="Tdd-O7-ejt" id="2yx-wr-veu"/>
                 <outlet property="morphicBarView" destination="hJk-BO-TPf" id="6Yt-7q-x61"/>
+                <outlet property="morphicTrayView" destination="sJl-gw-Hc4" id="JjW-cp-geC"/>
                 <outlet property="selectCommunityMenuItem" destination="eJF-8G-qpw" id="jHG-0d-CSo"/>
                 <outlet property="showMorphicBarAtStartMenuItem" destination="oKM-JA-5Lr" id="xkj-A7-www"/>
                 <outlet property="view" destination="c22-O7-iKe" id="gRp-Cf-8sn"/>
@@ -24,39 +27,74 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c22-O7-iKe" customClass="MorphicBarWindowContentView" customModule="Morphic" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="440" height="58"/>
+            <rect key="frame" x="0.0" y="0.0" width="1298" height="115"/>
             <subviews>
-                <button translatesAutoresizingMaskIntoConstraints="NO" id="ead-JY-BhL" customClass="LogoButton" customModule="Morphic" customModuleProvider="target">
-                    <rect key="frame" x="389" y="7" width="44" height="44"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="44" id="Zbh-CS-oIG"/>
-                        <constraint firstAttribute="height" constant="44" id="nDa-bv-gGW"/>
-                    </constraints>
-                    <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="Icon" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="EUh-y7-yAB">
-                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="helpTitle" value="Advanced Features" localized="YES"/>
-                        <userDefinedRuntimeAttribute type="string" keyPath="helpMessage" value="Customize buttons and take your settings with you anywhere" localized="YES"/>
-                    </userDefinedRuntimeAttributes>
-                    <connections>
-                        <action selector="showMainMenu:" target="-2" id="ZqU-v5-d0Q"/>
-                    </connections>
-                </button>
-                <customView horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hJk-BO-TPf" customClass="MorphicBarView" customModule="Morphic" customModuleProvider="target">
-                    <rect key="frame" x="7" y="7" width="364" height="44"/>
-                </customView>
+                <box ambiguous="YES" boxType="custom" borderType="none" borderWidth="0.0" cornerRadius="2" title="Box" translatesAutoresizingMaskIntoConstraints="NO" id="qta-8h-N5p" userLabel="BarBox">
+                    <rect key="frame" x="64" y="0.0" width="1234" height="115"/>
+                    <view key="contentView" ambiguous="YES" id="z16-NM-tBI">
+                        <rect key="frame" x="0.0" y="0.0" width="1234" height="115"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ead-JY-BhL" customClass="LogoButton" customModule="Morphic" customModuleProvider="target">
+                                <rect key="frame" x="1183" y="64" width="44" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="44" id="Zbh-CS-oIG"/>
+                                    <constraint firstAttribute="height" constant="44" id="nDa-bv-gGW"/>
+                                </constraints>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="Icon" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="EUh-y7-yAB">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="helpTitle" value="Advanced Features" localized="YES"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="helpMessage" value="Customize buttons and take your settings with you anywhere" localized="YES"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="showMainMenu:" target="-2" id="ZqU-v5-d0Q"/>
+                                </connections>
+                            </button>
+                            <customView horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hJk-BO-TPf" customClass="MorphicBarView" customModule="Morphic" customModuleProvider="target">
+                                <rect key="frame" x="7" y="7" width="1158" height="101"/>
+                            </customView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="hJk-BO-TPf" firstAttribute="top" secondItem="z16-NM-tBI" secondAttribute="top" constant="7" id="37D-RA-g5W"/>
+                            <constraint firstItem="hJk-BO-TPf" firstAttribute="leading" secondItem="z16-NM-tBI" secondAttribute="leading" constant="7" id="6b4-9B-UMH"/>
+                            <constraint firstItem="ead-JY-BhL" firstAttribute="top" secondItem="z16-NM-tBI" secondAttribute="top" constant="7" placeholder="YES" id="8es-y1-6ua"/>
+                            <constraint firstItem="ead-JY-BhL" firstAttribute="leading" secondItem="hJk-BO-TPf" secondAttribute="trailing" constant="18" placeholder="YES" id="IyH-Ep-wJc"/>
+                            <constraint firstAttribute="bottom" secondItem="hJk-BO-TPf" secondAttribute="bottom" constant="7" placeholder="YES" id="dj7-kD-qiZ"/>
+                            <constraint firstAttribute="trailing" secondItem="ead-JY-BhL" secondAttribute="trailing" constant="7" placeholder="YES" id="mIh-hH-8es"/>
+                        </constraints>
+                    </view>
+                </box>
+                <box ambiguous="YES" boxType="custom" borderType="none" cornerRadius="4" title="Box" translatesAutoresizingMaskIntoConstraints="NO" id="yXR-go-Phb" userLabel="TrayBox">
+                    <rect key="frame" x="0.0" y="0.0" width="64" height="64"/>
+                    <view key="contentView" ambiguous="YES" id="js9-3J-olB" userLabel="Morphic Tray View">
+                        <rect key="frame" x="0.0" y="0.0" width="64" height="64"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <customView ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sJl-gw-Hc4" customClass="MorphicBarTrayView" customModule="Morphic" customModuleProvider="target">
+                                <rect key="frame" x="-188" y="7" width="245" height="247"/>
+                            </customView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="sJl-gw-Hc4" secondAttribute="trailing" constant="7" id="7OA-C5-yMk"/>
+                            <constraint firstItem="sJl-gw-Hc4" firstAttribute="top" secondItem="js9-3J-olB" secondAttribute="top" constant="7" id="BJG-zh-ysL"/>
+                            <constraint firstItem="sJl-gw-Hc4" firstAttribute="leading" secondItem="js9-3J-olB" secondAttribute="leading" constant="7" id="Rws-ks-fRf"/>
+                            <constraint firstAttribute="bottom" secondItem="sJl-gw-Hc4" secondAttribute="bottom" constant="7" id="zD9-ry-PLg"/>
+                        </constraints>
+                    </view>
+                </box>
             </subviews>
             <constraints>
-                <constraint firstItem="ead-JY-BhL" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="7" placeholder="YES" id="MMq-9i-bl2"/>
-                <constraint firstAttribute="trailing" secondItem="ead-JY-BhL" secondAttribute="trailing" constant="7" placeholder="YES" id="PeV-mu-cPY"/>
-                <constraint firstItem="hJk-BO-TPf" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="7" id="T5H-0J-mCf"/>
-                <constraint firstItem="hJk-BO-TPf" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="7" id="WCk-Cp-tfU"/>
-                <constraint firstItem="ead-JY-BhL" firstAttribute="leading" secondItem="hJk-BO-TPf" secondAttribute="trailing" constant="18" placeholder="YES" id="X7I-GO-sbl"/>
-                <constraint firstAttribute="bottom" secondItem="hJk-BO-TPf" secondAttribute="bottom" constant="7" placeholder="YES" id="pJY-6a-tbR"/>
+                <constraint firstItem="qta-8h-N5p" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" id="CP8-yo-Okl"/>
+                <constraint firstItem="qta-8h-N5p" firstAttribute="leading" secondItem="yXR-go-Phb" secondAttribute="trailing" id="Gd1-wL-JO8"/>
+                <constraint firstAttribute="trailing" secondItem="qta-8h-N5p" secondAttribute="trailing" id="JlU-4d-pps"/>
+                <constraint firstItem="yXR-go-Phb" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" id="Rai-MK-8am"/>
+                <constraint firstAttribute="bottom" secondItem="yXR-go-Phb" secondAttribute="bottom" id="mgm-3o-nqc"/>
+                <constraint firstAttribute="bottom" secondItem="qta-8h-N5p" secondAttribute="bottom" id="yw1-6G-ZxP"/>
             </constraints>
-            <point key="canvasLocation" x="-48" y="67"/>
+            <point key="canvasLocation" x="-284" y="81.5"/>
         </customView>
         <menu id="Tdd-O7-ejt">
             <items>

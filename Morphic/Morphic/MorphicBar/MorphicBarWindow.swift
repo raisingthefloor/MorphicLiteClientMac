@@ -46,6 +46,7 @@ public class MorphicBarWindow: NSWindow {
         hasShadow = true
         isReleasedWhenClosed = false
         level = .floating
+        isOpaque = false
         backgroundColor = .clear
         isMovableByWindowBackground = true
         collectionBehavior = [.canJoinAllSpaces]

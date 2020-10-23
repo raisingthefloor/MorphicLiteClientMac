@@ -189,6 +189,8 @@
 		9DE112F52522243800591E08 /* CopySettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DE112E62522243200591E08 /* CopySettingsWindow.xib */; };
 		9DE112FC2522243E00591E08 /* CopySettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE112E52522243100591E08 /* CopySettingsWindowController.swift */; };
 		9DE45BAA25171C6000209421 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
+		DF35CECA2541BCD200C3FF77 /* MorphicBarTrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */; };
+		DF35CED12541BF3C00C3FF77 /* MorphicBarTrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -438,6 +440,7 @@
 		9DE0737125128A180030A978 /* MorphicCommunityConfigurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorphicCommunityConfigurator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DE112E52522243100591E08 /* CopySettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopySettingsWindowController.swift; sourceTree = "<group>"; };
 		9DE112E62522243200591E08 /* CopySettingsWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CopySettingsWindow.xib; sourceTree = "<group>"; };
+		DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarTrayView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -649,6 +652,7 @@
 				31E1E18A244794EF009C4092 /* MorphicBarViewController.xib */,
 				31751B9B2444F22900EEDF14 /* MorphicBarViewController.swift */,
 				31E1E17C24466E7C009C4092 /* MorphicBarView.swift */,
+				DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */,
 			);
 			path = MorphicBar;
 			sourceTree = "<group>";
@@ -1308,6 +1312,7 @@
 				9D8CEB152507AED7001276E4 /* MorphicBarButtonItemView.swift in Sources */,
 				9DE112E72522243200591E08 /* CopySettingsWindowController.swift in Sources */,
 				31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */,
+				DF35CECA2541BCD200C3FF77 /* MorphicBarTrayView.swift in Sources */,
 				31C12CBE24B138D000B617A8 /* ProgressIndicator.swift in Sources */,
 				31C12CC424B1441E00B617A8 /* PageControl.swift in Sources */,
 				9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */,
@@ -1404,6 +1409,7 @@
 				9DE0731D251289C20030A978 /* MorphicBarButtonItemView.swift in Sources */,
 				9DE112FC2522243E00591E08 /* CopySettingsWindowController.swift in Sources */,
 				9DE0731E251289C20030A978 /* AppDelegate.swift in Sources */,
+				DF35CED12541BF3C00C3FF77 /* MorphicBarTrayView.swift in Sources */,
 				9DE0731F251289C20030A978 /* ProgressIndicator.swift in Sources */,
 				9DE07320251289C20030A978 /* PageControl.swift in Sources */,
 				9DE07321251289C20030A978 /* AboutBoxWindowController.swift in Sources */,

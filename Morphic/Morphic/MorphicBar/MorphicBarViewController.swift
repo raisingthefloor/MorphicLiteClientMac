@@ -42,7 +42,9 @@ public class MorphicBarViewController: NSViewController {
         super.viewDidLoad()
         updateConstraints()
         morphicBarView.orientation = self.orientation
-        view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
+        morphicTrayView.orientation = .vertical
+        BarBox.fillColor = self.getThemeBackgroundColor() ?? NSColor.black
+        TrayBox.fillColor = self.getThemeBackgroundColor() ?? NSColor.black
         view.layer?.cornerRadius = 6
         #if EDITION_BASIC
         #elseif EDITION_COMMUNITY
@@ -54,6 +56,9 @@ public class MorphicBarViewController: NSViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
         DistributedNotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.appleInterfaceThemeDidChange(_:)), name: .appleInterfaceThemeChanged, object: nil)
 
+        morphicBarView.tray = morphicTrayView
+        //TrayBox.isHidden = true
+
         logoButton.setAccessibilityRole(.menuButton)
         logoButton.setAccessibilityLabel(logoButton.helpTitle)
     }
@@ -62,7 +67,8 @@ public class MorphicBarViewController: NSViewController {
     
     @objc
     func appleInterfaceThemeDidChange(_ notification: NSNotification) {
-        self.view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
+        BarBox.fillColor = self.getThemeBackgroundColor() ?? NSColor.black
+        TrayBox.fillColor = self.getThemeBackgroundColor() ?? NSColor.black
     }
     
     private func getThemeBackgroundColor() -> NSColor? {
@@ -89,6 +95,10 @@ public class MorphicBarViewController: NSViewController {
     /// The MorphicBar's main menu, accessible via the Logo image button
     @IBOutlet var mainMenu: NSMenu!
     
+    /// The boxes containing the MorphicBar and tray
+    @IBOutlet weak var BarBox: NSBox!
+    @IBOutlet weak var TrayBox: NSBox!
+    
     /// The button that displays the Morphic logo
     @IBOutlet weak var logoButton: LogoButton!
     
@@ -96,6 +106,16 @@ public class MorphicBarViewController: NSViewController {
     @IBAction
     func showMainMenu(_ sender: Any?) {
         mainMenu.popUp(positioning: nil, at: NSPoint(x: logoButton.bounds.origin.x, y: logoButton.bounds.origin.y + logoButton.bounds.size.height), in: logoButton)
+    }
+    
+    @IBAction
+    func openTray(_ sender: Any?) {
+        TrayBox.isHidden = false
+    }
+    
+    @IBAction
+    func closeTray(_ sender: Any?) {
+        TrayBox.isHidden = true
     }
     
     private func updateMainMenu() {
@@ -156,7 +176,7 @@ public class MorphicBarViewController: NSViewController {
             viewToLogoButtonVerticalBottomConstraint?.isActive = false
             
             logoButtonToMorphicBarViewVerticalTopConstraint = NSLayoutConstraint(item: logoButton!, attribute: .top, relatedBy: .equal, toItem: morphicBarView!, attribute: .bottom, multiplier: 1, constant: 18)
-            logoButtonToViewVerticalCenterXConstraint = NSLayoutConstraint(item: logoButton!, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+            logoButtonToViewVerticalCenterXConstraint = NSLayoutConstraint(item: logoButton!, attribute: .centerX, relatedBy: .equal, toItem: morphicBarView!, attribute: .centerX, multiplier: 1, constant: 0)
             viewToMorphicBarViewVerticalTrailingConstraint = NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: morphicBarView!, attribute: .trailing, multiplier: 1, constant: 7)
             viewToLogoButtonVerticalBottomConstraint = NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: logoButton!, attribute: .bottom, multiplier: 1, constant: 7)
 
@@ -171,8 +191,9 @@ public class MorphicBarViewController: NSViewController {
     
     // MARK: - Items
     
-    /// The MorphicBar view managed by this controller
+    /// The MorphicBar view and Tray view managed by this controller
     @IBOutlet weak var morphicBarView: MorphicBarView!
+    @IBOutlet weak var morphicTrayView: MorphicBarTrayView!
     
     /// View constraints
     var logoButtonToMorphicBarViewHorizontalLeadingConstraint: NSLayoutConstraint?
@@ -183,6 +204,8 @@ public class MorphicBarViewController: NSViewController {
     var viewToLogoButtonVerticalBottomConstraint: NSLayoutConstraint?
     var viewToMorphicBarViewHorizontalBottomConstraint: NSLayoutConstraint?
     var viewToMorphicBarViewVerticalTrailingConstraint: NSLayoutConstraint?
+    var trayToMorphicBarViewHorizontalLeftConstraint: NSLayoutConstraint?
+    var trayToMorphicBarViewHorizontalRightConstraint: NSLayoutConstraint?
 
     /// The items that should be shown on the MorphicBar
     public var items = [MorphicBarItem]() {
