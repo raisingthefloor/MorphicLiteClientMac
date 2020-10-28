@@ -26,9 +26,11 @@ import Cocoa
 ///The view that displays any MorphicBar items that couldn't fit on the bar
 public class MorphicBarTrayView: MorphicBarView {
     
-    public private(set) var itemViewGrid = [[MorphicBarItemViewProtocol]]()
+    public private(set) var itemViewGrid: [[MorphicBarItemViewProtocol]] = []
     
-    private var freeSpaceArray = [CGFloat]()
+    private var freeSpaceArray: [CGFloat] = []    //indicates free space left in each column
+    
+    private var collapsed = true    //indicates if view is closed for compression reasons
     
     public var maxSpace: CGFloat = 0    //calculated height of morphic bar so tray is always smaller
     
@@ -59,6 +61,7 @@ public class MorphicBarTrayView: MorphicBarView {
     ///   - index: The index of the item to remove
     public func removeItemView(column: Int, index: Int) {
         let itemView = itemViewGrid[column][index]
+        freeSpaceArray[column] += itemView.intrinsicContentSize.height + itemSpacing
         itemViewGrid[column].remove(at: index)
         itemView.removeFromSuperview()
         itemView.morphicBarView = nil
@@ -79,6 +82,10 @@ public class MorphicBarTrayView: MorphicBarView {
         topColumn = 0
     }
     
+    public func isEmpty() -> Bool {
+        return itemViewGrid[0].isEmpty
+    }
+    
     public override func layout() {
         let itemViewsWithFrames = calculateFramesOfItemViews(itemViewGrid)
         for itemViewWithFrame in itemViewsWithFrames {
@@ -89,23 +96,22 @@ public class MorphicBarTrayView: MorphicBarView {
     ///only calculates for vertical
     func calculateFramesOfItemViews(_ itemViewGrid: [[MorphicBarItemViewProtocol]]) -> [(itemView: MorphicBarItemViewProtocol, frame: CGRect)] {
         var result: [(itemView: MorphicBarItemViewProtocol, frame: CGRect)] = []
-        
         var xoffset: CGFloat = 0
         var yoffset: CGFloat = 0
         for column in itemViewGrid {
             yoffset = 0
+            let cwidth = getColumnWidth(column: column)
             for itemView in column {
                 let itemViewIntrinsicSize = itemView.intrinsicContentSize
-                var frame = CGRect(x: 0, y: 0, width: 0, height: 0)
+                var frame = CGRect(x: 600, y: 0, width: 0, height: 0)
                 frame.size.width = itemViewIntrinsicSize.width
                 frame.size.height = itemViewIntrinsicSize.height
-                frame.origin.x = (getColumnWidth(column: column) - itemViewIntrinsicSize.width) / 2.0 + xoffset
+                frame.origin.x = (cwidth - itemViewIntrinsicSize.width) / 2.0 + xoffset
                 frame.origin.y = yoffset
                 result.append((itemView: itemView, frame: frame))
-                //
                 yoffset += frame.size.height + itemSpacing
             }
-            xoffset += getColumnWidth(column: column) + itemSpacing
+            xoffset += cwidth + itemSpacing
         }
         
         return result
@@ -130,12 +136,20 @@ public class MorphicBarTrayView: MorphicBarView {
     }
     
     public override var intrinsicContentSize: NSSize {
+        if orientation == .horizontal || collapsed {
+            //return NSSize(width: 1, height: 1)
+        }
         var size: NSSize
-        size = NSSize(width: itemSpacing * CGFloat(max(topColumn, 0)), height: 0)
+        size = NSSize(width: 0, height: 0)
         for column in itemViewGrid {
-            size.width += getColumnWidth(column: column)
+            size.width += getColumnWidth(column: column) + itemSpacing
             size.height = max(size.height, getColumnHeight(column: column))
         }
+        size.width -= itemSpacing
         return size
+    }
+    
+    public override var mouseDownCanMoveWindow: Bool {
+        return true
     }
 }

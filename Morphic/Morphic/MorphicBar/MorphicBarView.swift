@@ -208,6 +208,7 @@ public class MorphicBarView: NSView, MorphicBarWindowChildViewDelegate {
         didSet {
             needsLayout = true
             invalidateIntrinsicContentSize()
+            tray?.orientation = orientation
         }
     }
 
