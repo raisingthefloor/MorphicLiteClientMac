@@ -63,6 +63,7 @@ public class MorphicBarViewController: NSViewController {
 
         logoButton.setAccessibilityRole(.menuButton)
         logoButton.setAccessibilityLabel(logoButton.helpTitle)
+        updatePositionConstraints()
     }
     
     // MARK: - Notifications
@@ -119,6 +120,8 @@ public class MorphicBarViewController: NSViewController {
         expandTrayButton.isHidden = true
         TrayBox.isHidden = false
         collapseTrayButton.isHidden = false
+        morphicTrayView.collapsed = false
+        shrinkFitWindow()
     }
     
     @IBAction
@@ -126,6 +129,33 @@ public class MorphicBarViewController: NSViewController {
         collapseTrayButton.isHidden = true
         TrayBox.isHidden = true
         expandTrayButton.isHidden = false
+        morphicTrayView.collapsed = true
+        shrinkFitWindow()
+    }
+    
+    private func shrinkFitWindow() {
+        return
+        var frame: NSRect = NSRect(x: 0, y: 0, width: 0, height: 0)
+        switch orientation {
+        case .horizontal:
+            frame.size.width += morphicBarView.intrinsicContentSize.width
+            frame.size.height += morphicBarView.intrinsicContentSize.height
+        case .vertical:
+            frame.size.width += morphicBarView.intrinsicContentSize.width + 50
+            frame.size.height += morphicBarView.intrinsicContentSize.height
+            if !morphicTrayView.collapsed {
+                frame.size.width += morphicTrayView.intrinsicContentSize.width
+            }
+        }
+        let oframe = view.window?.frame
+        if oframe != nil {
+            frame.origin.x = (oframe?.origin.x)!
+            frame.origin.y = (oframe?.origin.y)!
+            if position == .bottomRight || position == .topRight {
+                frame.origin.x += (oframe?.size.width)! - frame.size.width
+            }
+            view.window?.setFrame(frame, display: true)
+        }
     }
     
     private func updateMainMenu() {
@@ -223,13 +253,6 @@ public class MorphicBarViewController: NSViewController {
             resizeconstraint = NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: TrayBox, attribute: .trailing, multiplier: 1, constant: 50)
             expandTrayButton.image = NSImage(named: "ExpandRight")!
             collapseTrayButton.image = NSImage(named: "ExpandLeft")!
-            self.view.addConstraints([
-                trayToMorphicBarViewHorizontalConstraint!,
-                expandButtonToMorphicBarHorizontalConstraint!,
-                collapseButtonToMorphicBarHorizontalConstraint!,
-                resizeconstraint!,
-                barToViewHorizontalConstraint!
-            ])
         case .topRight, .bottomRight:
             barToViewHorizontalConstraint = NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: BarBox!, attribute: .trailing, multiplier: 1, constant: 0)
             expandButtonToMorphicBarHorizontalConstraint = NSLayoutConstraint(item: expandTrayButton!, attribute: .centerX, relatedBy: .equal, toItem: BarBox!, attribute: .leading, multiplier: 1, constant: 0)
@@ -246,6 +269,11 @@ public class MorphicBarViewController: NSViewController {
             resizeconstraint!,
             barToViewHorizontalConstraint!
         ])
+        shrinkFitWindow()
+        BarBox.invalidateIntrinsicContentSize()
+        TrayBox.invalidateIntrinsicContentSize()
+        view.invalidateIntrinsicContentSize()
+        view.needsLayout = true
     }
     
     // MARK: - Items

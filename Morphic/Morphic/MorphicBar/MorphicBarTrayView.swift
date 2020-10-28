@@ -30,7 +30,11 @@ public class MorphicBarTrayView: MorphicBarView {
     
     private var freeSpaceArray: [CGFloat] = []    //indicates free space left in each column
     
-    private var collapsed = true    //indicates if view is closed for compression reasons
+    public var collapsed = true {    //indicates if view is closed for compression reasons
+        didSet {
+            invalidateIntrinsicContentSize()
+        }
+    }
     
     public var maxSpace: CGFloat = 0    //calculated height of morphic bar so tray is always smaller
     
@@ -137,7 +141,7 @@ public class MorphicBarTrayView: MorphicBarView {
     
     public override var intrinsicContentSize: NSSize {
         if orientation == .horizontal || collapsed {
-            //return NSSize(width: 1, height: 1)
+            return NSSize(width: 1, height: 1)
         }
         var size: NSSize
         size = NSSize(width: 0, height: 0)

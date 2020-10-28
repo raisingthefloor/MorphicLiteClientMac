@@ -210,6 +210,7 @@ public class MorphicBarWindow: NSWindow {
     
     /// Change the window's position, optionally animating the change
     public func setPosition(_ position: Position, animated: Bool) {
+        morphicBarViewController.position = position
         let changed = self.position != position
         self.position = position
         reposition(animated: animated)
@@ -258,6 +259,22 @@ public class MorphicBarWindow: NSWindow {
     public override func mouseUp(with event: NSEvent) {
         super.mouseUp(with: event)
         setPosition(nearestPosition, animated: true)
+    }
+
+    /*
+    public override func mouseDown(with event: NSEvent) {
+        super.mouseDown(with: event)
+        AsyncUtils.wait(atMost: 1, for: {false}, completion: {_ in
+            self.morphicBarViewController.position = self.nearestPosition
+        })
+    }
+ */
+    
+    public override func mouseDragged(with event: NSEvent) {
+        super.mouseDragged(with: event)
+        if(orientation == .vertical && !morphicBarViewController.morphicTrayView.collapsed) {
+            morphicBarViewController.closeTray(nil)
+        }
     }
 
 }
