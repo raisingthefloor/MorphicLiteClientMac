@@ -330,6 +330,15 @@ public class MorphicBarViewController: NSViewController {
         if let logoButton = self.logoButton {
             result.append(logoButton)
         }
+        for column in morphicTrayView.itemViewGrid {
+            for itemView in column {
+                if let children = itemView.accessibilityChildren() {
+                    for child in children {
+                        result.append(child)
+                    }
+                }
+            }
+        }
         return result
     }
 
