@@ -148,6 +148,7 @@ public class MorphicBarWindow: NSWindow {
                 }
             }
         #endif
+        morphicBarViewController.shrinkFitWindow()
         // now that we have updated the items in our bar, update the accessibility children list as well (so that left/right voiceover nav works properly)
         setAccessibilityChildren(morphicBarViewController.accessibilityChildren())
         reposition(animated: false)
@@ -210,7 +211,6 @@ public class MorphicBarWindow: NSWindow {
     
     /// Change the window's position, optionally animating the change
     public func setPosition(_ position: Position, animated: Bool) {
-        morphicBarViewController.position = position
         let changed = self.position != position
         self.position = position
         reposition(animated: animated)
@@ -244,6 +244,7 @@ public class MorphicBarWindow: NSWindow {
     /// Move the window to its position
     func reposition(animated: Bool) {
         layoutIfNeeded()
+        morphicBarViewController.position = position
         let origin = position.origin(for: self)
         let frame = NSRect(origin: origin, size: self.frame.size)
         setFrame(frame, display: true, animate: animated)
@@ -260,7 +261,7 @@ public class MorphicBarWindow: NSWindow {
         super.mouseUp(with: event)
         setPosition(nearestPosition, animated: true)
     }
-
+    
     /*
     public override func mouseDown(with event: NSEvent) {
         super.mouseDown(with: event)
@@ -270,12 +271,14 @@ public class MorphicBarWindow: NSWindow {
     }
  */
     
+    /*uncomment to have tray close when you drag the bar
     public override func mouseDragged(with event: NSEvent) {
         super.mouseDragged(with: event)
         if(orientation == .vertical && !morphicBarViewController.morphicTrayView.collapsed) {
             morphicBarViewController.closeTray(nil)
         }
     }
+    */
 
 }
 
