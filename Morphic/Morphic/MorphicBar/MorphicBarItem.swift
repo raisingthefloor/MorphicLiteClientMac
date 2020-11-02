@@ -800,7 +800,18 @@ class MorphicBarControlItem: MorphicBarItem {
                     }
                     // calculate the inverse state
                     let newValue = !valueAsBoolean
-                    //
+                    
+                    // if the inverse state is "enabled", then make sure we've set the initial color filter type
+                    if newValue == true {
+                        // set the default color filter type (if it hasn't already been set)
+                        let didSetInitialColorFilterType = Session.shared.bool(for: .morphicDidSetInitialColorFilterType) ?? false
+                        if didSetInitialColorFilterType == false {
+                            // NOTE: we get no "success/failure" from the following function, so we just have to assume success
+                            AppDelegate.shared.setInitialColorFilterType()
+                            Session.shared.set(true, for: .morphicDidSetInitialColorFilterType)
+                        }
+                    }
+                    
                     // apply the inverse state
                     //
                     // NOTE: due to current limitations in our implementation, we are unable to disable "invert colors" (which is the desired effect when enabling color filters); this is unlikely to be a common scenario, but if we run into it then we need to use the backup UI automation mechanism

@@ -167,6 +167,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
 
+    func setInitialColorFilterType() {
+//        // NOTE: color-filter types (as their enumerated int values)
+//        1: "Grayscale",
+//        2: "Red/Green filter (Protanopia)",
+//        4: "Green/Red filter (Deuteranopia)",
+//        8: "Blue/Yellow filter (Tritanopia)",
+//        16: "Color Tint"
+        // TODO: convert this int into an enumeration (using the values from
+        let colorFilterTypeAsInt: Int = 2 // Red/Green filter (Protanopia)
+        
+        Session.shared.apply(colorFilterTypeAsInt, for: .macosColorFilterType) {
+            success in
+            
+            // we do not currently have a mechanism to report success/failure
+            SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+                verifyColorFilterType in
+                guard let verifyColorFilterTypeAsInt = verifyColorFilterType as? Int else {
+                    // could not get current setting
+                    return
+                }
+                //
+                if verifyColorFilterTypeAsInt != colorFilterTypeAsInt {
+                    NSLog("Could not set color filter type to Red/Green filter (Protanopia)")
+                    assertionFailure("Could not set color filter type to Red/Green filter (Protanopia)")
+                }
+            }
+        }
+    }
+    
     func applicationWillTerminate(_ aNotification: Notification) {
     }
     
