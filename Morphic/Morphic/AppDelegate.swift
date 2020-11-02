@@ -1090,6 +1090,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
      
     func windowDidResignKey(_ notification: Notification) {
         morphicBarWindow?.windowIsKey = false
+        morphicBarWindow?.morphicBarViewController.closeTray(nil)
         QuickHelpWindow.hide()
     }
      

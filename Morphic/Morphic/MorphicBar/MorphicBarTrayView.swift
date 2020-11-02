@@ -178,6 +178,15 @@ public class MorphicBarTrayView: MorphicBarView {
     }
     
     public override var mouseDownCanMoveWindow: Bool {
-        return true
+        return false
+    }
+    
+    weak var controller: MorphicBarViewController?
+    
+    public override func childViewBecomeFirstResponder(sender: NSView) {
+        if collapsed && NSWorkspace.shared.isVoiceOverEnabled {
+            controller?.openTray(nil)
+        }
+        super.childViewBecomeFirstResponder(sender: sender)
     }
 }

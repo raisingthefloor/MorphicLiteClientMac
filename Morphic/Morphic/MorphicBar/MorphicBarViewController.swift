@@ -43,6 +43,7 @@ public class MorphicBarViewController: NSViewController {
         updateOrientationConstraints()
         morphicBarView.orientation = self.orientation
         morphicTrayView.orientation = .vertical
+        morphicTrayView.controller = self
         BarBox.fillColor = self.getThemeBackgroundColor() ?? NSColor.black
         TrayBox.fillColor = self.getThemeBackgroundColor() ?? NSColor.black
         view.layer?.cornerRadius = 6
