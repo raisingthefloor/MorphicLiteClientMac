@@ -116,22 +116,28 @@ public class MorphicBarViewController: NSViewController {
         mainMenu.popUp(positioning: nil, at: NSPoint(x: logoButton.bounds.origin.x, y: logoButton.bounds.origin.y + logoButton.bounds.size.height), in: logoButton)
     }
     
+    /// Action to open the icon tray
     @IBAction
     func openTray(_ sender: Any?) {
+        if morphicTrayView.isEmpty() {
+            return
+        }
         expandTrayButton.isHidden = true
         TrayBox.isHidden = false
         collapseTrayButton.isHidden = false
         morphicTrayView.collapsed = false
     }
     
+    /// action to close the icon tray
     @IBAction
     func closeTray(_ sender: Any?) {
         collapseTrayButton.isHidden = true
         TrayBox.isHidden = true
-        expandTrayButton.isHidden = false
+        expandTrayButton.isHidden = morphicTrayView.isEmpty()
         morphicTrayView.collapsed = true
     }
     
+    /// shrinks the window to fit the smallest box around the expanded bar
     public func shrinkFitWindow() {
         view.layoutSubtreeIfNeeded()
         var frame: NSRect = NSRect(x: 0, y: 0, width: 0, height: 0)
@@ -275,7 +281,7 @@ public class MorphicBarViewController: NSViewController {
     @IBOutlet weak var morphicBarView: MorphicBarView!
     @IBOutlet weak var morphicTrayView: MorphicBarTrayView!
     
-    /// Orientation constraints
+    /// Orientation constraints (horizontal or vertical)
     var logoButtonToMorphicBarViewHorizontalLeadingConstraint: NSLayoutConstraint?
     var logoButtonToMorphicBarViewVerticalTopConstraint : NSLayoutConstraint?
     var logoButtonToViewHorizontalTopConstraint : NSLayoutConstraint?
@@ -285,7 +291,7 @@ public class MorphicBarViewController: NSViewController {
     var viewToMorphicBarViewHorizontalBottomConstraint: NSLayoutConstraint?
     var viewToMorphicBarViewVerticalTrailingConstraint: NSLayoutConstraint?
     
-    /// Position constraints
+    /// Position constraints (left or right)
     var barToViewHorizontalConstraint: NSLayoutConstraint?
     var expandButtonToMorphicBarHorizontalConstraint: NSLayoutConstraint?
     var collapseButtonToMorphicBarHorizontalConstraint: NSLayoutConstraint?

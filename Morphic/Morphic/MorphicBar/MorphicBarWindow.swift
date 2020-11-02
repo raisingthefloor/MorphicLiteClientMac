@@ -262,15 +262,6 @@ public class MorphicBarWindow: NSWindow {
         setPosition(nearestPosition, animated: true)
     }
     
-    /*
-    public override func mouseDown(with event: NSEvent) {
-        super.mouseDown(with: event)
-        AsyncUtils.wait(atMost: 1, for: {false}, completion: {_ in
-            self.morphicBarViewController.position = self.nearestPosition
-        })
-    }
- */
-    
     /*uncomment to have tray close when you drag the bar
     public override func mouseDragged(with event: NSEvent) {
         super.mouseDragged(with: event)

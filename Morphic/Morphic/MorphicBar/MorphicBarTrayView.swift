@@ -28,15 +28,18 @@ public class MorphicBarTrayView: MorphicBarView {
     
     public private(set) var itemViewGrid: [[MorphicBarItemViewProtocol]] = []
     
-    private var freeSpaceArray: [CGFloat] = []    //indicates free space left in each column
+    ///indicates free space left in each column
+    private var freeSpaceArray: [CGFloat] = []
     
-    public var collapsed = true {    //indicates if view is closed for compression reasons
+    ///indicates if tray is closed
+    public var collapsed = true {
         didSet {
             invalidateIntrinsicContentSize()
         }
     }
     
-    public var maxSpace: CGFloat = 0    //calculated height of morphic bar so tray is always smaller
+    ///calculated height of morphic bar so tray is always smaller
+    public var maxSpace: CGFloat = 0
     
     public var position: MorphicBarWindow.Position = .bottomRight {
         didSet {
@@ -47,7 +50,7 @@ public class MorphicBarTrayView: MorphicBarView {
     
     private var topColumn: Int = 0 //current column being added to
     
-    /// Add an item view to the end of the MorphicBar
+    /// Add an item view to the tray, either at the end of the current column or starting a new one
     ///
     /// - parameters:
     ///   - itemView: The item view to add
@@ -69,7 +72,7 @@ public class MorphicBarTrayView: MorphicBarView {
         }
     }
     
-    /// Remove the item view at the given index
+    /// Remove the item view at the given index. Does not redistribute items, intended for use with removeAllItemViews
     ///
     /// - parameters:
     ///   - index: The index of the item to remove
@@ -95,6 +98,7 @@ public class MorphicBarTrayView: MorphicBarView {
         topColumn = 0
     }
     
+    ///only checks first column, revise if more advanced add/remove is needed
     public func isEmpty() -> Bool {
         return itemViewGrid[0].isEmpty
     }
@@ -106,7 +110,7 @@ public class MorphicBarTrayView: MorphicBarView {
         }
     }
     
-    ///only calculates for vertical
+    ///only calculates for vertical orientation, flips based on position
     func calculateFramesOfItemViews(_ itemViewGrid: [[MorphicBarItemViewProtocol]]) -> [(itemView: MorphicBarItemViewProtocol, frame: CGRect)] {
         var result: [(itemView: MorphicBarItemViewProtocol, frame: CGRect)] = []
         var xoffset: CGFloat = 0
@@ -148,6 +152,7 @@ public class MorphicBarTrayView: MorphicBarView {
         return result
     }
     
+    ///gets width of a single specified column
     private func getColumnWidth(column: [MorphicBarItemViewProtocol]) -> CGFloat {
         var width: CGFloat = 0
         for itemView in column {
@@ -156,6 +161,7 @@ public class MorphicBarTrayView: MorphicBarView {
         return width
     }
     
+    ///gets height of a single specified column
     private func getColumnHeight(column: [MorphicBarItemViewProtocol]) -> CGFloat {
         var height: CGFloat = 0
         for itemView in column {
@@ -177,12 +183,14 @@ public class MorphicBarTrayView: MorphicBarView {
         return size
     }
     
+    ///enables dragging of tray, switch to false to disable
     public override var mouseDownCanMoveWindow: Bool {
-        return false
+        return true
     }
     
     weak var controller: MorphicBarViewController?
     
+    ///triggered if any child of the tray becomes focused by accessibility, if voiceover is enabled opens the tray
     public override func childViewBecomeFirstResponder(sender: NSView) {
         if collapsed && NSWorkspace.shared.isVoiceOverEnabled {
             controller?.openTray(nil)

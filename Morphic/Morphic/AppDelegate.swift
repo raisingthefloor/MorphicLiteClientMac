@@ -1081,6 +1081,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
     var currentKeyboardSelectedQuickHelpViewController: NSViewController? = nil
     
+    ///This function fires if the bar window gains focus.
     func windowDidBecomeKey(_ notification: Notification) {
         morphicBarWindow?.windowIsKey = true
         if let currentKeyboardSelectedQuickHelpViewController = currentKeyboardSelectedQuickHelpViewController {
@@ -1088,9 +1089,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
      
+    ///This function fires if the bar window loses focus.
     func windowDidResignKey(_ notification: Notification) {
         morphicBarWindow?.windowIsKey = false
-        morphicBarWindow?.morphicBarViewController.closeTray(nil)
+        morphicBarWindow?.morphicBarViewController.closeTray(nil)   //get rid of this to have the tray stay open when defocused
         QuickHelpWindow.hide()
     }
      
