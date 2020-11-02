@@ -924,4 +924,5 @@ public extension Preferences.Key {
 // preferences which indicate that we have changed the default values for a setting once.
 public extension Preferences.Key {
     static var morphicDidSetInitialColorFilterType = Preferences.Key(solution: "org.raisingthefloor.morphic.didInitialSet", preference: "colorFilterType")
+    static var morphicDidSetInitialMagnifierZoomStyle = Preferences.Key(solution: "org.raisingthefloor.morphic.didInitialSet", preference: "magnifierZoomStyle")
 }
