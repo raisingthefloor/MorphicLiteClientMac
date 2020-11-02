@@ -800,7 +800,17 @@ class MorphicBarControlItem: MorphicBarItem {
                     }
                     // calculate the inverse state
                     let newValue = !valueAsBoolean
-                    //
+                    
+                    // if the inverse state is "enabled", then make sure we've set the initial color filter type
+                    if newValue == true {
+                        // set the default color filter type (if it hasn't already been set)
+                        let didSetInitialColorFilterType = Session.shared.bool(for: .morphicDidSetInitialColorFilterType) ?? false
+                        if didSetInitialColorFilterType == false {
+                            // NOTE: we get no "success/failure" from the following function, so we just have to assume success
+                            AppDelegate.shared.setInitialColorFilterType()
+                        }
+                    }
+                    
                     // apply the inverse state
                     //
                     // NOTE: due to current limitations in our implementation, we are unable to disable "invert colors" (which is the desired effect when enabling color filters); this is unlikely to be a common scenario, but if we run into it then we need to use the backup UI automation mechanism
@@ -1022,19 +1032,30 @@ class MorphicBarControlItem: MorphicBarItem {
         }
         let session = Session.shared
         if segment == 0 {
-            let keyValuesToSet: [(Preferences.Key, Interoperable?)] = [
-                (.macosZoomStyle, 1)
-            ]
-            let preferences = Preferences(identifier: "__magnifier__")
-            let capture = CaptureSession(settingsManager: session.settings, preferences: preferences)
-            capture.keys = keyValuesToSet.map{ $0.0 }
-            capture.captureDefaultValues = true
-            capture.run {
-                session.storage.save(record: capture.preferences) {
-                    _ in
-                    let apply = ApplySession(settingsManager: session.settings, keyValueTuples: keyValuesToSet)
-                    apply.add(key: .macosZoomEnabled, value: true)
+            // set the default magnifier zoom style (if it hasn't already been set)
+            let didSetInitialMagnifierZoomStyle = Session.shared.bool(for: .morphicDidSetInitialMagnifierZoomStyle) ?? false
+            if didSetInitialMagnifierZoomStyle == false {
+                // NOTE: we get no "success/failure" from the following function, so we just have to assume success
+                AppDelegate.shared.setInitialMagnifierZoomStyle()
+            }
+
+            
+            session.storage.load(identifier: "__magnifier__") {
+                (_, preferences: Preferences?) in
+                if let preferences = preferences {
+                    // temporary workaround: if "style" was specified as a preference, remove it (because it's a one-time setup preference)
+                    var mutablePreferences = preferences
+                    if mutablePreferences.get(key: .macosZoomStyle) != nil {
+                        mutablePreferences.remove(key: .macosZoomStyle)
+                    }
+                    
+                    let apply = ApplySession(settingsManager: session.settings, preferences: mutablePreferences)
+                    apply.addFirst(key: .macosZoomEnabled, value: true)
                     apply.run {
+                    }
+                } else {
+                    session.apply(true, for: .macosZoomEnabled) {
+                        _ in
                     }
                 }
             }
@@ -1042,12 +1063,18 @@ class MorphicBarControlItem: MorphicBarItem {
             session.storage.load(identifier: "__magnifier__") {
                 (_, preferences: Preferences?) in
                 if let preferences = preferences {
-                    let apply = ApplySession(settingsManager: session.settings, preferences: preferences)
+                    // temporary workaround: if "style" was specified as a preference, remove it (because it's a one-time setup preference)
+                    var mutablePreferences = preferences
+                    if mutablePreferences.get(key: .macosZoomStyle) != nil {
+                        mutablePreferences.remove(key: .macosZoomStyle)
+                    }
+
+                    let apply = ApplySession(settingsManager: session.settings, preferences: mutablePreferences)
                     apply.addFirst(key: .macosZoomEnabled, value: false)
                     apply.run {
                     }
                 } else {
-                    session.apply(false, for: .macosZoomEnabled){
+                    session.apply(false, for: .macosZoomEnabled) {
                         _ in
                     }
                 }

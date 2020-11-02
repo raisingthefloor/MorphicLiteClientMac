@@ -920,3 +920,9 @@ public extension Preferences.Key {
     /// The preference key that stores which items appear in each community on the MorphicBar (Morphic Community managed community bar)
     static var morphicBarCommunityBarsAsJson = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "communityBarsAsJson")
 }
+
+// preferences which indicate that we have changed the default values for a setting once.
+public extension Preferences.Key {
+    static var morphicDidSetInitialColorFilterType = Preferences.Key(solution: "org.raisingthefloor.morphic.didInitialSet", preference: "colorFilterType")
+    static var morphicDidSetInitialMagnifierZoomStyle = Preferences.Key(solution: "org.raisingthefloor.morphic.didInitialSet", preference: "magnifierZoomStyle")
+}

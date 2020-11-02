@@ -166,7 +166,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             }
         }
     }
-
+    
     func applicationWillTerminate(_ aNotification: Notification) {
     }
     
@@ -712,6 +712,68 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         morphicBarWindow?.morphicBarViewController.turnOffKeyRepeatMenuItem.state = keyRepeatIsEnabled ? .off : .on
     }
 
+    //
+    
+    func setInitialColorFilterType() {
+//        // NOTE: color-filter types (as their enumerated int values)
+//        1: "Grayscale",
+//        2: "Red/Green filter (Protanopia)",
+//        4: "Green/Red filter (Deuteranopia)",
+//        8: "Blue/Yellow filter (Tritanopia)",
+//        16: "Color Tint"
+        // TODO: convert this int into an enumeration (using the values from the above list)
+        let colorFilterTypeAsInt: Int = 2 // Red/Green filter (Protanopia)
+        
+        Session.shared.apply(colorFilterTypeAsInt, for: .macosColorFilterType) {
+            success in
+            
+            // we do not currently have a mechanism to report success/failure
+            SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+                verifyColorFilterType in
+                guard let verifyColorFilterTypeAsInt = verifyColorFilterType as? Int else {
+                    // could not get current setting
+                    return
+                }
+                //
+                if verifyColorFilterTypeAsInt != colorFilterTypeAsInt {
+                    NSLog("Could not set color filter type to Red/Green filter (Protanopia)")
+                    assertionFailure("Could not set color filter type to Red/Green filter (Protanopia)")
+                }
+            }
+        }
+        
+        Session.shared.set(true, for: .morphicDidSetInitialColorFilterType)
+    }
+    
+    func setInitialMagnifierZoomStyle() {
+//        // NOTE: zoom styles (as their enumerated int values)
+//        0: "Full screen",
+//        1: "Picture-in-picture",
+//        2: "Split screen",
+        // TODO: convert this int into an enumeration (using the values from the above list)
+        let zoomStyleAsInt: Int = 1 // Picture-in-picture (aka "lens")
+
+        Session.shared.apply(zoomStyleAsInt, for: .macosZoomStyle) {
+            success in
+            
+            // we do not currently have a mechanism to report success/failure
+            SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+                verifyZoomStyle in
+                guard let verifyZoomStyleAsInt = verifyZoomStyle as? Int else {
+                    // could not get current setting
+                    return
+                }
+                //
+                if verifyZoomStyleAsInt != verifyZoomStyleAsInt {
+                    NSLog("Could not set magnifier zoom style to Picture-in-picture")
+                    assertionFailure("Could not set magnifier zoom style to Picture-in-picture")
+                }
+            }
+        }
+        
+        Session.shared.set(true, for: .morphicDidSetInitialMagnifierZoomStyle)
+    }
+    
     //
     
     private var menuModifierKeyObserver: CFRunLoopObserver? = nil
