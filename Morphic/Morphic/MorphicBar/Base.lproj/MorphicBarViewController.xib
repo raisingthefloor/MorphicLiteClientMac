@@ -18,6 +18,7 @@
                 <outlet property="morphicBarView" destination="hJk-BO-TPf" id="6Yt-7q-x61"/>
                 <outlet property="selectCommunityMenuItem" destination="eJF-8G-qpw" id="jHG-0d-CSo"/>
                 <outlet property="showMorphicBarAtStartMenuItem" destination="oKM-JA-5Lr" id="xkj-A7-www"/>
+                <outlet property="turnOffKeyRepeatMenuItem" destination="1B9-Zz-V9T" id="9TF-hr-FxJ"/>
                 <outlet property="view" destination="c22-O7-iKe" id="gRp-Cf-8sn"/>
             </connections>
         </customObject>
@@ -164,6 +165,16 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="launchAllAccessibilityOptionsSettings:" target="-1" id="r31-O0-NsE"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="e3L-4M-xtD"/>
+                            <menuItem title="Direct Actions" id="rk6-QZ-BbK">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Turn Off Key Repeat" id="1B9-Zz-V9T">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="turnOffKeyRepeat:" target="-1" id="vJf-Po-R7E"/>
                                 </connections>
                             </menuItem>
                         </items>

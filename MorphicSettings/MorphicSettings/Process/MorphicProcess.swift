@@ -83,4 +83,12 @@ public class MorphicProcess {
             }
         }
     }
+    
+    //
+    
+    public static var operatingSystemVersion: OperatingSystemVersion {
+        get {
+            return ProcessInfo.processInfo.operatingSystemVersion
+        }
+    }
 }
