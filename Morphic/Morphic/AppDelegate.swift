@@ -47,6 +47,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBOutlet weak var showMorphicBarAtStartMenuItem: NSMenuItem!
     @IBOutlet weak var hideQuickHelpMenuItem: NSMenuItem!
 
+    @IBOutlet weak var turnOffKeyRepeatMenuItem: NSMenuItem!
+    
     private let terminateMorphicLauncherNotificationName = NSNotification.Name(rawValue: "org.raisingthefloor.terminateMorphicLauncher")
 
     private let showMorphicBarDueToUserRelaunchNotificationName = NSNotification.Name(rawValue: "org.raisingthefloor.showMorphicBarDueToUserRelaunch")
@@ -126,6 +128,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 
                 // update the "show MorphicBar at start" menu items' states
                 self.updateShowMorphicBarAtStartMenuItems()
+                
+                // update the "turn off key repeat" menu items' states
+                self.updateTurnOffKeyRepeatMenuItems()
 
                 // capture the current state of our launch items (in the corresponding menu items)
                 // NOTE: we must not do this until after we have set up UserDefaults.morphic (if we use UserDefaults.morphic to store/capture this state); we may also consider using the running state of MorphicLauncher (when we first start up) as a heuristic to know that autostart is enabled for our application (or we may consider passing in an argument via the launcher which indicates that we were auto-started)
@@ -656,6 +661,57 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         return success
     }
     
+    //
+    
+    @IBAction func turnOffKeyRepeat(_ sender: NSMenuItem) {
+        let newKeyRepeatEnabledState: Bool
+        
+        switch sender.state {
+        case .on:
+            newKeyRepeatEnabledState = true
+        case .off:
+            newKeyRepeatEnabledState = false
+        default:
+            fatalError("invalid code path")
+        }
+
+        if MorphicInput.isTurnOffKeyRepeatBroken == true {
+            if newKeyRepeatEnabledState == true {
+                let alert = NSAlert()
+                alert.messageText = "Cannot enable Key Repeat."
+                alert.informativeText = "The current version of macOS cannot enable Key Repeat reliably due to a bug in the operating system.\n\nYou may adjust the Key Repeat speed via the \"Keyboard\" pane in System Preferences."
+                alert.alertStyle = .informational
+                alert.addButton(withTitle: "OK")
+                _ = alert.runModal()
+            } else {
+                // if key repeat is broken, set the repeat interval to the slowest speed instead
+                MorphicInput.setKeyRepeatInterval(MorphicInput.slowestKeyRepeatInterval)
+            }
+        } else {
+            MorphicInput.setKeyRepeatIsEnabled(newKeyRepeatEnabledState)
+        }
+
+        self.updateTurnOffKeyRepeatMenuItems()
+    }
+
+    func updateTurnOffKeyRepeatMenuItems() {
+        let keyRepeatIsEnabled: Bool
+
+        if MorphicInput.isTurnOffKeyRepeatBroken == true {
+            let keyRepeatInterval = MorphicInput.keyRepeatInterval
+            if keyRepeatInterval == MorphicInput.slowestKeyRepeatInterval {
+                keyRepeatIsEnabled = false
+            } else {
+                keyRepeatIsEnabled = true
+            }
+        } else {
+            keyRepeatIsEnabled = MorphicInput.keyRepeatIsEnabled
+        }
+
+        turnOffKeyRepeatMenuItem?.state = keyRepeatIsEnabled ? .off : .on
+        morphicBarWindow?.morphicBarViewController.turnOffKeyRepeatMenuItem.state = keyRepeatIsEnabled ? .off : .on
+    }
+
     //
     
     private var menuModifierKeyObserver: CFRunLoopObserver? = nil
