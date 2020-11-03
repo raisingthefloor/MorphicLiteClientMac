@@ -163,6 +163,28 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                         self.launchConfigurator(argument: "login")
                     }
                 #endif
+                
+                // if the user has already configured settings which we set defaults for, make sure we don't change those settings
+                self.markUserConfiguredSettingsAsAlreadySet()
+            }
+        }
+    }
+    
+    func markUserConfiguredSettingsAsAlreadySet() {
+        // if the user is already using features which Morphic does one-time setup for (such as default magnifier zoom style or color filter type), make sure we don't change those settings later.  In other words: mark the settings as "already set"
+        //
+        // color filter
+        SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+            value in
+            if let valueAsBoolean = value as? Bool {
+                // if color filters are enabled, check to see if the initial color filter type has already been set
+                if valueAsBoolean == true {
+                    let didSetInitialColorFilterType = Session.shared.bool(for: .morphicDidSetInitialColorFilterType) ?? false
+                    if didSetInitialColorFilterType == false {
+                        // since the user is already using color filters (i.e. the feature is enabled), assume that they are using the filter type they want to use and mark the initial setting as complete.
+                        Session.shared.set(true, for: .morphicDidSetInitialColorFilterType)
+                    }
+                }
             }
         }
     }
