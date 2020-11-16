@@ -51,6 +51,10 @@ public class UIElement {
         return descendant(role: .staticText)
     }
     
+    public func label(value: String) -> LabelElement? {
+        return descendant(role: .staticText, value: value)
+    }
+    
     public var tabGroup: TabGroupElement? {
         return descendant(role: .tabGroup)
     }
@@ -81,7 +85,14 @@ public class UIElement {
         }
         return ElementType(accessibilityElement: accessibilityElement)
     }
-    
+
+    private func descendant<ElementType: UIElement>(role: NSAccessibility.Role, value: String) -> ElementType? {
+        guard let accessibilityElement = accessibilityDescendant(role: role, value: value) else {
+            return nil
+        }
+        return ElementType(accessibilityElement: accessibilityElement)
+    }
+
     private func descendant<ElementType: UIElement>(role: NSAccessibility.Role) -> ElementType? {
         guard let accessibilityElement = accessibilityDescendant(role: role) else {
             return nil
@@ -115,13 +126,34 @@ public class UIElement {
         return nil
     }
     
-    private func accessibilityDescendant(role: NSAccessibility.Role) -> MorphicA11yUIElement? {
-        guard let children = accessibilityElement.children() else{
+    private func accessibilityDescendant(role: NSAccessibility.Role, value: String) -> MorphicA11yUIElement? {
+        guard let children = accessibilityElement.children() else {
             return nil
         }
         var stack = children
         var i = 0
-        while i < stack.count{
+        while i < stack.count {
+            let candidate = stack[i]
+            if candidate.role == role {
+                if candidate.value(forAttribute: .value) == value {
+                    return candidate
+                }
+            }
+            if let children = candidate.children() {
+                stack.append(contentsOf: children)
+            }
+            i += 1
+        }
+        return nil
+    }
+    
+    private func accessibilityDescendant(role: NSAccessibility.Role) -> MorphicA11yUIElement? {
+        guard let children = accessibilityElement.children() else {
+            return nil
+        }
+        var stack = children
+        var i = 0
+        while i < stack.count {
             let candidate = stack[i]
             if candidate.role == role {
                 return candidate

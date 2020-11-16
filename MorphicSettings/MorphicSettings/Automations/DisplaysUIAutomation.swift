@@ -55,12 +55,23 @@ public class DisplaysUIAutomation: UIAutomation {
                     completion(nil)
                     return
                 }
-                guard displays.select(tabTitled: tab) else {
-                    os_log(.error, log: logger, "Failed to select tab")
-                    completion(nil)
-                    return
+                // NOTE: at this point, displays.tabGroup is not always discoverable yet, so we wait a second for it to appear; this issue may occur elsewhere (so we should make this a more general check when we refactor the UI automation middleware code)
+                AsyncUtils.wait(atMost: 1.0, for: { displays.tabGroup != nil }) {
+                    success in
+                    
+                    guard success == true else {
+                        os_log(.error, log: logger, "Could not find tab")
+                        completion(nil)
+                        return
+                    }
+
+                    guard displays.select(tabTitled: tab) else {
+                        os_log(.error, log: logger, "Failed to select tab")
+                        completion(nil)
+                        return
+                    }
+                    completion(displays)
                 }
-                completion(displays)
             }
         }
     }

@@ -70,7 +70,18 @@ public class AccessibilityPreferencesElement: UIElement {
                 completion(false)
                 return
             }
-            AsyncUtils.wait(atMost: 1.0, for: { self.tabGroup?.tab(titled: "Overview") != nil}) {
+            AsyncUtils.wait(atMost: 1.0, for: {
+	    	// macOS 10.14-10.15
+                if self.tabGroup?.tab(titled: "Overview") != nil {
+                    return true
+                }
+		// macOS 11.0
+                if self.label(value: "Your Mac can be customized to support your vision, hearing, physical motor, and learning & literacy requirements.") != nil {
+                    return true
+                }
+                
+                return false
+            }) {
                 success in
                 completion(success)
             }
