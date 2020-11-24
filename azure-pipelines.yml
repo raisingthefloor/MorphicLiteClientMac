@@ -19,7 +19,7 @@ variables:
 - name: sdk
   value: macosx
 - name: xcodeVersionNum
-  value: 11
+  value: 12.2
 - name: configuration
   value: 'Release'
 - name: workspacePath
