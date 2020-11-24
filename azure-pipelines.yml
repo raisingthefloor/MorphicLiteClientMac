@@ -19,7 +19,7 @@ variables:
 - name: sdk
   value: macosx11.0
 - name: xcodeVersionNum
-  value: 12.2
+  value: 12
 - name: xcodeDeveloperDir
   value: '/Applications/Xcode_12.2.app/Contents/Developer'
 - name: configuration
