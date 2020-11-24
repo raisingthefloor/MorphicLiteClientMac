@@ -21,7 +21,7 @@ variables:
 - name: xcodeVersionNum
   value: 12.2
 - name: xcodeDeveloperDir
-  value: "/Applications/Xcode_12.2.app/Contents/Developer"
+  value: '/Applications/Xcode_12.2.app/Contents/Developer'
 - name: configuration
   value: 'Release'
 - name: workspacePath
@@ -35,7 +35,7 @@ variables:
   value: 'OTHER_CODE_SIGN_FLAGS="--timestamp" CURRENT_PROJECT_VERSION="$(Build.BuildNumber)"'
 
 pool:
-  vmImage: 'macos-latest'
+  vmImage: 'macOS-10.15'
 
 steps:
 - task: InstallAppleCertificate@2
