@@ -19,7 +19,7 @@ variables:
 - name: sdk
   value: macosx11.0
 - name: xcodeVersionNum
-  value: 12
+  value: 12.2
 - name: xcodeDeveloperDir
   value: '/Applications/Xcode_12.2.app/Contents/Developer'
 - name: configuration
@@ -35,7 +35,7 @@ variables:
   value: 'OTHER_CODE_SIGN_FLAGS="--timestamp" CURRENT_PROJECT_VERSION="$(Build.BuildNumber)"'
 
 pool:
-  vmImage: 'macOS-10.15'
+  vmImage: 'macOS-11.0'
 
 steps:
 - task: InstallAppleCertificate@2
