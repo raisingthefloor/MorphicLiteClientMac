@@ -17,9 +17,11 @@ variables:
 # Provides: P12_PASSWORD, APPLICATION_SIGNING_IDENTITY, INSTALLER_SIGNING_IDENTITY, ALTOOL_USERNAME, ALTOOL_APP_PASSWORD
 - group: 'macos-signing'
 - name: sdk
-  value: macosx
+  value: macosx11.0
 - name: xcodeVersionNum
-  value: 11
+  value: 12.2
+- name: XCODE_12.2_DEVELOPER_DIR
+  value: '/Applications/Xcode_12.2.app/Contents/Developer'
 - name: configuration
   value: 'Release'
 - name: workspacePath
@@ -33,7 +35,7 @@ variables:
   value: 'OTHER_CODE_SIGN_FLAGS="--timestamp" CURRENT_PROJECT_VERSION="$(Build.BuildNumber)"'
 
 pool:
-  vmImage: 'macos-latest'
+  vmImage: 'macOS-10.15'
 
 steps:
 - task: InstallAppleCertificate@2
