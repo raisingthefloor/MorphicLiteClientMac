@@ -20,7 +20,7 @@ variables:
   value: macosx11.0
 - name: xcodeVersionNum
   value: 12.2
-- name: xcodeDeveloperDir
+- name: XCODE_12.2_DEVELOPER_DIR
   value: '/Applications/Xcode_12.2.app/Contents/Developer'
 - name: configuration
   value: 'Release'
@@ -35,7 +35,7 @@ variables:
   value: 'OTHER_CODE_SIGN_FLAGS="--timestamp" CURRENT_PROJECT_VERSION="$(Build.BuildNumber)"'
 
 pool:
-  vmImage: 'macOS-11.0'
+  vmImage: 'macOS-10.15'
 
 steps:
 - task: InstallAppleCertificate@2
@@ -64,7 +64,6 @@ steps:
     configuration: '$(configuration)'
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
-    xcodeDeveloperDir: $(xcodeDeveloperDir)
     useXcpretty: false
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
@@ -77,7 +76,6 @@ steps:
     configuration: '$(configuration)'
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
-    xcodeDeveloperDir: $(xcodeDeveloperDir)
     useXcpretty: false
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
@@ -90,7 +88,6 @@ steps:
     configuration: '$(configuration)'
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
-    xcodeDeveloperDir: $(xcodeDeveloperDir)
     useXcpretty: false
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
@@ -103,7 +100,6 @@ steps:
     configuration: '$(configuration)'
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
-    xcodeDeveloperDir: $(xcodeDeveloperDir)
     useXcpretty: false
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
@@ -116,7 +112,6 @@ steps:
     configuration: '$(configuration)'
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
-    xcodeDeveloperDir: $(xcodeDeveloperDir)
     useXcpretty: false
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
@@ -129,7 +124,6 @@ steps:
     configuration: '$(configuration)'
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
-    xcodeDeveloperDir: $(xcodeDeveloperDir)
     useXcpretty: false
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
@@ -142,7 +136,6 @@ steps:
     configuration: '$(configuration)'
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
-    xcodeDeveloperDir: $(xcodeDeveloperDir)
     useXcpretty: false
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
@@ -155,7 +148,6 @@ steps:
     configuration: '$(configuration)'
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
-    xcodeDeveloperDir: $(xcodeDeveloperDir)
     useXcpretty: false
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
@@ -168,7 +160,6 @@ steps:
     configuration: '$(configuration)'
     xcWorkspacePath: '$(workspacePath)'
     xcodeVersion: $(xcodeVersionNum)
-    xcodeDeveloperDir: $(xcodeDeveloperDir)
     useXcpretty: false
     signingOption: '$(signingOption)'
     args: '$(extraArgs)'
