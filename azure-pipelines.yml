@@ -17,7 +17,7 @@ variables:
 # Provides: P12_PASSWORD, APPLICATION_SIGNING_IDENTITY, INSTALLER_SIGNING_IDENTITY, ALTOOL_USERNAME, ALTOOL_APP_PASSWORD
 - group: 'macos-signing'
 - name: sdk
-  value: macosx
+  value: macosx11.0
 - name: xcodeVersionNum
   value: 12.2
 - name: xcodeDeveloperDir
