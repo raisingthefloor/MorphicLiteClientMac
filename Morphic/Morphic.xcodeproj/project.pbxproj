@@ -189,6 +189,11 @@
 		9DE112F52522243800591E08 /* CopySettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DE112E62522243200591E08 /* CopySettingsWindow.xib */; };
 		9DE112FC2522243E00591E08 /* CopySettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE112E52522243100591E08 /* CopySettingsWindowController.swift */; };
 		9DE45BAA25171C6000209421 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
+		DFB032C4256A6021004F2128 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB032C3256A6021004F2128 /* AppDelegate.swift */; };
+		DFB032C6256A6024004F2128 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DFB032C5256A6024004F2128 /* Assets.xcassets */; };
+		DFB032C9256A6024004F2128 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = DFB032C7256A6024004F2128 /* MainMenu.xib */; };
+		DFB032D5256A6024004F2128 /* Switch_to_MorphicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB032D4256A6024004F2128 /* Switch_to_MorphicTests.swift */; };
+		DFB032E0256A6024004F2128 /* Switch_to_MorphicUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB032DF256A6024004F2128 /* Switch_to_MorphicUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -233,6 +238,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = 9DE0735125128A180030A978;
 			remoteInfo = MorphicCommunityConfigurator;
+		};
+		DFB032D1256A6024004F2128 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 31751B012444DE8900EEDF14 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DFB032C0256A6021004F2128;
+			remoteInfo = "Switch to Morphic";
+		};
+		DFB032DC256A6024004F2128 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 31751B012444DE8900EEDF14 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DFB032C0256A6021004F2128;
+			remoteInfo = "Switch to Morphic";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -438,6 +457,18 @@
 		9DE0737125128A180030A978 /* MorphicCommunityConfigurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorphicCommunityConfigurator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DE112E52522243100591E08 /* CopySettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopySettingsWindowController.swift; sourceTree = "<group>"; };
 		9DE112E62522243200591E08 /* CopySettingsWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CopySettingsWindow.xib; sourceTree = "<group>"; };
+		DFB032C1256A6021004F2128 /* Switch to Morphic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Switch to Morphic.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DFB032C3256A6021004F2128 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DFB032C5256A6024004F2128 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DFB032C8256A6024004F2128 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		DFB032CA256A6024004F2128 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DFB032CB256A6024004F2128 /* Switch_to_Morphic.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Switch_to_Morphic.entitlements; sourceTree = "<group>"; };
+		DFB032D0256A6024004F2128 /* Switch to MorphicTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Switch to MorphicTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DFB032D4256A6024004F2128 /* Switch_to_MorphicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Switch_to_MorphicTests.swift; sourceTree = "<group>"; };
+		DFB032D6256A6024004F2128 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DFB032DB256A6024004F2128 /* Switch to MorphicUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Switch to MorphicUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DFB032DF256A6024004F2128 /* Switch_to_MorphicUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Switch_to_MorphicUITests.swift; sourceTree = "<group>"; };
+		DFB032E1256A6024004F2128 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -524,6 +555,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DFB032BE256A6021004F2128 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DFB032CD256A6024004F2128 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DFB032D8256A6024004F2128 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -575,6 +627,9 @@
 				31751B272444DE8B00EEDF14 /* MorphicUITests */,
 				31751B672444E0E400EEDF14 /* MorphicConfiguratorTests */,
 				31751B722444E0E400EEDF14 /* MorphicConfiguratorUITests */,
+				DFB032C2256A6021004F2128 /* Switch to Morphic */,
+				DFB032D3256A6024004F2128 /* Switch to MorphicTests */,
+				DFB032DE256A6024004F2128 /* Switch to MorphicUITests */,
 				31751B0A2444DE8900EEDF14 /* Products */,
 				31751B462444E04300EEDF14 /* Frameworks */,
 			);
@@ -593,6 +648,9 @@
 				9DE0737125128A180030A978 /* MorphicCommunityConfigurator.app */,
 				9DD4F4D8251A2FC400ADCC25 /* MorphicLauncher.app */,
 				9D02547F251A6407009EC865 /* MorphicCommunityLauncher.app */,
+				DFB032C1256A6021004F2128 /* Switch to Morphic.app */,
+				DFB032D0256A6024004F2128 /* Switch to MorphicTests.xctest */,
+				DFB032DB256A6024004F2128 /* Switch to MorphicUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -806,6 +864,36 @@
 			path = CopySettingsWindow;
 			sourceTree = "<group>";
 		};
+		DFB032C2256A6021004F2128 /* Switch to Morphic */ = {
+			isa = PBXGroup;
+			children = (
+				DFB032C3256A6021004F2128 /* AppDelegate.swift */,
+				DFB032C5256A6024004F2128 /* Assets.xcassets */,
+				DFB032C7256A6024004F2128 /* MainMenu.xib */,
+				DFB032CA256A6024004F2128 /* Info.plist */,
+				DFB032CB256A6024004F2128 /* Switch_to_Morphic.entitlements */,
+			);
+			path = "Switch to Morphic";
+			sourceTree = "<group>";
+		};
+		DFB032D3256A6024004F2128 /* Switch to MorphicTests */ = {
+			isa = PBXGroup;
+			children = (
+				DFB032D4256A6024004F2128 /* Switch_to_MorphicTests.swift */,
+				DFB032D6256A6024004F2128 /* Info.plist */,
+			);
+			path = "Switch to MorphicTests";
+			sourceTree = "<group>";
+		};
+		DFB032DE256A6024004F2128 /* Switch to MorphicUITests */ = {
+			isa = PBXGroup;
+			children = (
+				DFB032DF256A6024004F2128 /* Switch_to_MorphicUITests.swift */,
+				DFB032E1256A6024004F2128 /* Info.plist */,
+			);
+			path = "Switch to MorphicUITests";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -997,13 +1085,66 @@
 			productReference = 9DE0737125128A180030A978 /* MorphicCommunityConfigurator.app */;
 			productType = "com.apple.product-type.application";
 		};
+		DFB032C0256A6021004F2128 /* Switch to Morphic */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DFB032E8256A6024004F2128 /* Build configuration list for PBXNativeTarget "Switch to Morphic" */;
+			buildPhases = (
+				DFB032BD256A6021004F2128 /* Sources */,
+				DFB032BE256A6021004F2128 /* Frameworks */,
+				DFB032BF256A6021004F2128 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Switch to Morphic";
+			productName = "Switch to Morphic";
+			productReference = DFB032C1256A6021004F2128 /* Switch to Morphic.app */;
+			productType = "com.apple.product-type.application";
+		};
+		DFB032CF256A6024004F2128 /* Switch to MorphicTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DFB032E9256A6024004F2128 /* Build configuration list for PBXNativeTarget "Switch to MorphicTests" */;
+			buildPhases = (
+				DFB032CC256A6024004F2128 /* Sources */,
+				DFB032CD256A6024004F2128 /* Frameworks */,
+				DFB032CE256A6024004F2128 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DFB032D2256A6024004F2128 /* PBXTargetDependency */,
+			);
+			name = "Switch to MorphicTests";
+			productName = "Switch to MorphicTests";
+			productReference = DFB032D0256A6024004F2128 /* Switch to MorphicTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		DFB032DA256A6024004F2128 /* Switch to MorphicUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DFB032EA256A6024004F2128 /* Build configuration list for PBXNativeTarget "Switch to MorphicUITests" */;
+			buildPhases = (
+				DFB032D7256A6024004F2128 /* Sources */,
+				DFB032D8256A6024004F2128 /* Frameworks */,
+				DFB032D9256A6024004F2128 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DFB032DD256A6024004F2128 /* PBXTargetDependency */,
+			);
+			name = "Switch to MorphicUITests";
+			productName = "Switch to MorphicUITests";
+			productReference = DFB032DB256A6024004F2128 /* Switch to MorphicUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		31751B012444DE8900EEDF14 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1200;
+				LastSwiftUpdateCheck = 1220;
 				LastUpgradeCheck = 1150;
 				ORGANIZATIONNAME = "Raising the Floor";
 				TargetAttributes = {
@@ -1032,6 +1173,17 @@
 					9DD4F4D7251A2FC400ADCC25 = {
 						CreatedOnToolsVersion = 12.0;
 					};
+					DFB032C0256A6021004F2128 = {
+						CreatedOnToolsVersion = 12.2;
+					};
+					DFB032CF256A6024004F2128 = {
+						CreatedOnToolsVersion = 12.2;
+						TestTargetID = DFB032C0256A6021004F2128;
+					};
+					DFB032DA256A6024004F2128 = {
+						CreatedOnToolsVersion = 12.2;
+						TestTargetID = DFB032C0256A6021004F2128;
+					};
 				};
 			};
 			buildConfigurationList = 31751B042444DE8900EEDF14 /* Build configuration list for PBXProject "Morphic" */;
@@ -1057,6 +1209,9 @@
 				31751B6E2444E0E400EEDF14 /* MorphicConfiguratorUITests */,
 				9DD4F4D7251A2FC400ADCC25 /* MorphicLauncher */,
 				9D025475251A6407009EC865 /* MorphicCommunityLauncher */,
+				DFB032C0256A6021004F2128 /* Switch to Morphic */,
+				DFB032CF256A6024004F2128 /* Switch to MorphicTests */,
+				DFB032DA256A6024004F2128 /* Switch to MorphicUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -1208,6 +1363,29 @@
 				9DE0736725128A180030A978 /* MainMenu.xib in Resources */,
 				9DE0736825128A180030A978 /* macos.solutions.json in Resources */,
 				9DE0736925128A180030A978 /* CaptureWindow.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DFB032BF256A6021004F2128 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DFB032C6256A6024004F2128 /* Assets.xcassets in Resources */,
+				DFB032C9256A6024004F2128 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DFB032CE256A6024004F2128 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DFB032D9256A6024004F2128 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1429,6 +1607,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DFB032BD256A6021004F2128 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DFB032C4256A6021004F2128 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DFB032CC256A6024004F2128 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DFB032D5256A6024004F2128 /* Switch_to_MorphicTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DFB032D7256A6024004F2128 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DFB032E0256A6024004F2128 /* Switch_to_MorphicUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1462,6 +1664,16 @@
 			target = 9DE0735125128A180030A978 /* MorphicCommunityConfigurator */;
 			targetProxy = 9DD12AF625128D4900E94C4F /* PBXContainerItemProxy */;
 		};
+		DFB032D2256A6024004F2128 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DFB032C0256A6021004F2128 /* Switch to Morphic */;
+			targetProxy = DFB032D1256A6024004F2128 /* PBXContainerItemProxy */;
+		};
+		DFB032DD256A6024004F2128 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DFB032C0256A6021004F2128 /* Switch to Morphic */;
+			targetProxy = DFB032DC256A6024004F2128 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1494,6 +1706,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				9DD4F4DF251A2FC500ADCC25 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		DFB032C7256A6024004F2128 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DFB032C8256A6024004F2128 /* Base */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";
@@ -2084,6 +2304,142 @@
 			};
 			name = Release;
 		};
+		DFB032E2256A6024004F2128 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = "Switch to Morphic/Switch_to_Morphic.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = "Switch to Morphic/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = "shenanigans.Switch-to-Morphic";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		DFB032E3256A6024004F2128 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = "Switch to Morphic/Switch_to_Morphic.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = "Switch to Morphic/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = "shenanigans.Switch-to-Morphic";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		DFB032E4256A6024004F2128 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				INFOPLIST_FILE = "Switch to MorphicTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = "shenanigans.Switch-to-MorphicTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Switch to Morphic.app/Contents/MacOS/Switch to Morphic";
+			};
+			name = Debug;
+		};
+		DFB032E5256A6024004F2128 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				INFOPLIST_FILE = "Switch to MorphicTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = "shenanigans.Switch-to-MorphicTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Switch to Morphic.app/Contents/MacOS/Switch to Morphic";
+			};
+			name = Release;
+		};
+		DFB032E6256A6024004F2128 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				INFOPLIST_FILE = "Switch to MorphicUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = "shenanigans.Switch-to-MorphicUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "Switch to Morphic";
+			};
+			name = Debug;
+		};
+		DFB032E7256A6024004F2128 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				INFOPLIST_FILE = "Switch to MorphicUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = "shenanigans.Switch-to-MorphicUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "Switch to Morphic";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2182,6 +2538,33 @@
 			buildConfigurations = (
 				9DE0736F25128A180030A978 /* Debug */,
 				9DE0737025128A180030A978 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DFB032E8256A6024004F2128 /* Build configuration list for PBXNativeTarget "Switch to Morphic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DFB032E2256A6024004F2128 /* Debug */,
+				DFB032E3256A6024004F2128 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DFB032E9256A6024004F2128 /* Build configuration list for PBXNativeTarget "Switch to MorphicTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DFB032E4256A6024004F2128 /* Debug */,
+				DFB032E5256A6024004F2128 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DFB032EA256A6024004F2128 /* Build configuration list for PBXNativeTarget "Switch to MorphicUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DFB032E6256A6024004F2128 /* Debug */,
+				DFB032E7256A6024004F2128 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
