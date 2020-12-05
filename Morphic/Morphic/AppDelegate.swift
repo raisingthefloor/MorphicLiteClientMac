@@ -49,8 +49,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
     @IBOutlet weak var turnOffKeyRepeatMenuItem: NSMenuItem!
     
-    private let showMorphicBarDueToUserRelaunchNotificationName = NSNotification.Name(rawValue: "org.raisingthefloor.showMorphicBarDueToUserRelaunch")
-
     private var voiceOverEnabledObservation: NSKeyValueObservation?
     private var appleKeyboardUIModeObservation: NSKeyValueObservation?
 
@@ -61,7 +59,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         AppDelegate.shared = self
 
         // watch for notifications that the user attempted to relaunch Morphic
-        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.showMorphicBarDueToApplicationRelaunch(_:)), name: showMorphicBarDueToUserRelaunchNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.showMorphicBarDueToApplicationRelaunch(_:)), name: .showMorphicBarDueToUserRelaunch, object: nil)
 
         // NOTE: if desired, we could call morphicLauncherIsRunning() to detect if we were auto-started by our launch item (and capture that on startup); this would (generally) confirm that "autostart Morphic on login" is enabled without having to use deprecated SMJob functions
         //
@@ -138,7 +136,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 self.updateMorphicAutostartAtLoginMenuItems()
 
                 // if we receive the "show MorphicBar" notification (from the dock app) then call our showMorphicBarNotify function
-                DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.showMorphicBarNotify), name: .showMorphicBar, object: nil)
+                DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.showMorphicBarDueToDockAppActivation), name: .showMorphicBarDueToDockAppActivation, object: nil)
+                
+                // if the dock icon is closed by the user, that should shut down the rest of Morphic too
+                DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.terminateMorphicClientDueToDockAppTermination), name: .terminateMorphicClientDueToDockAppTermination, object: nil)
 
                 // if keyboard navigation or voiceover is enabled, start up our dock app now
                 if self.shouldDockAppBeRunning() == true {
@@ -208,7 +209,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     // NOTE: this function will send our primary instance a notification request to show the Morphic Bar if the user tried to relaunch Morphic (by double-clicking the application in Finder or clicking on our icon in the dock)
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        NotificationCenter.default.post(name: showMorphicBarDueToUserRelaunchNotificationName, object: nil)
+        NotificationCenter.default.post(name: .showMorphicBarDueToUserRelaunch, object: nil)
         return false
     }
     //
@@ -644,6 +645,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         
         aboutBoxWindowController.showWindow(self)
         NSApp.activate(ignoringOtherApps: true)
+    }
+    
+    @objc
+    func terminateMorphicClientDueToDockAppTermination() {
+        quitApplication(nil)
     }
     
     @IBAction func quitApplication(_ sender: Any?) {
@@ -1160,7 +1166,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     @objc
-    func showMorphicBarNotify() {
+    func showMorphicBarDueToDockAppActivation() {
         showMorphicBar(nil)
     }
     
@@ -1374,7 +1380,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             os_log(.error, log: logger, "Failed to construct bundled dock app URL")
             return
         }
-        MorphicProcess.openProcess(at: url, arguments: [], activate: true, hide: false) {
+        let arguments = ["--ignoreFirstActivation"]
+        MorphicProcess.openProcess(at: url, arguments: arguments, activate: false, hide: false) {
             (app, error) in
             guard error == nil else {
                 os_log(.error, log: logger, "Failed to launch dock app: %{public}s", error!.localizedDescription)
@@ -1449,7 +1456,9 @@ public extension NSNotification.Name {
     static let morphicFeatureColorFiltersEnabledChanged = NSNotification.Name("org.raisingthefloor.morphicFeatureColorFiltersEnabledChanged")
     static let morphicFeatureContrastEnabledChanged = NSNotification.Name("org.raisingthefloor.morphicFeatureContrastEnabledChanged")
     static let morphicFeatureInterfaceThemeChanged = NSNotification.Name("org.raisingthefloor.morphicFeatureInterfaceThemeChanged")
-    static let showMorphicBar = NSNotification.Name("org.raisingthefloor.showMorphicBar")
+    static let showMorphicBarDueToDockAppActivation = NSNotification.Name("org.raisingthefloor.showMorphicBarDueToDockAppActivation")
+    static let showMorphicBarDueToUserRelaunch = NSNotification.Name(rawValue: "org.raisingthefloor.showMorphicBarDueToUserRelaunch")
+    static let terminateMorphicClientDueToDockAppTermination = NSNotification.Name(rawValue: "org.raisingthefloor.terminateMorphicClientDueToDockAppTermination")
     static let terminateMorphicDockApp = NSNotification.Name(rawValue: "org.raisingthefloor.terminateMorphicDockApp")
     static let terminateMorphicLauncher = NSNotification.Name(rawValue: "org.raisingthefloor.terminateMorphicLauncher")
 }

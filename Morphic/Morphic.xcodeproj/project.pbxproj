@@ -103,6 +103,8 @@
 		9DCF885F257AEF23001927C1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9DCF885E257AEF23001927C1 /* Assets.xcassets */; };
 		9DCF8907257AF8F2001927C1 /*  Morphic .app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9DCF885A257AEF23001927C1 /*  Morphic .app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9DCF892E257AF9D8001927C1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCF892D257AF9D8001927C1 /* main.swift */; };
+		9DCF89D2257B4133001927C1 /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B492444E04300EEDF14 /* MorphicSettings.framework */; };
+		9DCF89D3257B4133001927C1 /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B492444E04300EEDF14 /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9DD12AF525128D4900E94C4F /* MorphicCommunityConfigurator.app in Resources */ = {isa = PBXBuildFile; fileRef = 9DE0737125128A180030A978 /* MorphicCommunityConfigurator.app */; };
 		9DD12AF825128D8100E94C4F /* MorphicCommunityConfigurator.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9DE0737125128A180030A978 /* MorphicCommunityConfigurator.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9DD4F4DB251A2FC400ADCC25 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F4DA251A2FC400ADCC25 /* AppDelegate.swift */; };
@@ -305,6 +307,17 @@
 			files = (
 				9DCF8907257AF8F2001927C1 /*  Morphic .app in CopyFiles */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9DCF89D4257B4133001927C1 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				9DCF89D3257B4133001927C1 /* MorphicSettings.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		9DE07344251289C20030A978 /* Embed Frameworks */ = {
@@ -522,6 +535,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9DCF89D2257B4133001927C1 /* MorphicSettings.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -990,6 +1004,7 @@
 				9DCF8856257AEF23001927C1 /* Sources */,
 				9DCF8857257AEF23001927C1 /* Frameworks */,
 				9DCF8858257AEF23001927C1 /* Resources */,
+				9DCF89D4257B4133001927C1 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
