@@ -135,21 +135,25 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 // NOTE: we must not do this until after we have set up UserDefaults.morphic (if we use UserDefaults.morphic to store/capture this state); we may also consider using the running state of MorphicLauncher (when we first start up) as a heuristic to know that autostart is enabled for our application (or we may consider passing in an argument via the launcher which indicates that we were auto-started)
                 self.updateMorphicAutostartAtLoginMenuItems()
 
+                #if EDITION_BASIC
+                //
                 // if we receive the "show MorphicBar" notification (from the dock app) then call our showMorphicBarNotify function
                 DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.showMorphicBarDueToDockAppActivation), name: .showMorphicBarDueToDockAppActivation, object: nil)
-                
+                //
                 // if the dock icon is closed by the user, that should shut down the rest of Morphic too
                 DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.terminateMorphicClientDueToDockAppTermination), name: .terminateMorphicClientDueToDockAppTermination, object: nil)
-
+                //
                 // if keyboard navigation or voiceover is enabled, start up our dock app now
                 if self.shouldDockAppBeRunning() == true {
                     self.launchDockAppIfNotRunning()
                 }
-
+                //
                 // wire up our events to start up and shut down the dock app when VoiceOver or FullKeyboardAccess are enabled/disabled
                 // NOTE: possibly due to the "agent" status of our application, the voiceover disabled and keyboard navigation enabled/disabled events are not always provided to us in real time (i.e. we may need to re-receive focus to receive the events); in the future we may want to consider polling for these or otherwise determining what is keeping us from capturing these events (with that something possibly being a "can hibernate app in background" kind of macOS app setting)
                 self.voiceOverEnabledObservation = NSWorkspace.shared.observe(\.isVoiceOverEnabled, options: [.new], changeHandler: self.voiceOverEnabledChangeHandler)
                 self.appleKeyboardUIModeObservation = UserDefaults.standard.observe(\.AppleKeyboardUIMode, options: [.new], changeHandler: self.appleKeyboardUIModeChangeHandler)
+                //
+                #endif
 
                 if Session.shared.user != nil {
                     #if EDITION_BASIC
@@ -656,8 +660,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         // immediately hide our MorphicBar window
         morphicBarWindow?.setIsVisible(false)
         
+        #if EDITION_BASIC
         // terminate our dock app (if it's running)
         terminateDockAppIfRunning()
+        #endif
         
         if Session.shared.preferencesSaveIsQueued == true {
             var saveIsComplete = false
