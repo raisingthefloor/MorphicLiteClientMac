@@ -49,9 +49,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
     @IBOutlet weak var turnOffKeyRepeatMenuItem: NSMenuItem!
     
-    private let terminateMorphicLauncherNotificationName = NSNotification.Name(rawValue: "org.raisingthefloor.terminateMorphicLauncher")
-
     private let showMorphicBarDueToUserRelaunchNotificationName = NSNotification.Name(rawValue: "org.raisingthefloor.showMorphicBarDueToUserRelaunch")
+
+    private var voiceOverEnabledObservation: NSKeyValueObservation?
+    private var appleKeyboardUIModeObservation: NSKeyValueObservation?
 
     // MARK: - Application Lifecycle
 
@@ -135,6 +136,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 // capture the current state of our launch items (in the corresponding menu items)
                 // NOTE: we must not do this until after we have set up UserDefaults.morphic (if we use UserDefaults.morphic to store/capture this state); we may also consider using the running state of MorphicLauncher (when we first start up) as a heuristic to know that autostart is enabled for our application (or we may consider passing in an argument via the launcher which indicates that we were auto-started)
                 self.updateMorphicAutostartAtLoginMenuItems()
+
+                // if we receive the "show MorphicBar" notification (from the dock app) then call our showMorphicBarNotify function
+                DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.showMorphicBarNotify), name: .showMorphicBar, object: nil)
+
+                // if keyboard navigation or voiceover is enabled, start up our dock app now
+                if self.shouldDockAppBeRunning() == true {
+                    self.launchDockAppIfNotRunning()
+                }
+
+                // wire up our events to start up and shut down the dock app when VoiceOver or FullKeyboardAccess are enabled/disabled
+                // NOTE: possibly due to the "agent" status of our application, the voiceover disabled and keyboard navigation enabled/disabled events are not always provided to us in real time (i.e. we may need to re-receive focus to receive the events); in the future we may want to consider polling for these or otherwise determining what is keeping us from capturing these events (with that something possibly being a "can hibernate app in background" kind of macOS app setting)
+                self.voiceOverEnabledObservation = NSWorkspace.shared.observe(\.isVoiceOverEnabled, options: [.new], changeHandler: self.voiceOverEnabledChangeHandler)
+                self.appleKeyboardUIModeObservation = UserDefaults.standard.observe(\.AppleKeyboardUIMode, options: [.new], changeHandler: self.appleKeyboardUIModeChangeHandler)
 
                 if Session.shared.user != nil {
                     #if EDITION_BASIC
@@ -223,6 +237,26 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
+    func morphicDockAppIsRunning() -> Bool {
+        let morphicDockAppApplications = NSWorkspace.shared.runningApplications.filter({
+            application in
+            switch application.bundleIdentifier {
+            case "org.raisingthefloor.MorphicDockApp",
+                 "org.raisingthefloor.MorphicDockApp-Debug":
+                return true
+            default:
+                return false
+            }
+        })
+        return (morphicDockAppApplications.count > 0)
+    }
+    
+    func terminateDockAppIfRunning() {
+        if morphicDockAppIsRunning() == true {
+            DistributedNotificationCenter.default().postNotificationName(.terminateMorphicDockApp, object: nil, userInfo: nil, deliverImmediately: true)
+        }
+    }
+
     func morphicLauncherIsRunning() -> Bool {
         // if we were launched by MorphicLauncher (i.e. at startup/login), terminate MorphicLauncher if it's still running
         let morphicLauncherApplications = NSWorkspace.shared.runningApplications.filter({
@@ -246,7 +280,38 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     func terminateMorphicLauncherIfRunning() {
         if morphicLauncherIsRunning() == true {
-            DistributedNotificationCenter.default().postNotificationName(terminateMorphicLauncherNotificationName, object: nil, userInfo: nil, deliverImmediately: true)
+            DistributedNotificationCenter.default().postNotificationName(.terminateMorphicLauncher, object: nil, userInfo: nil, deliverImmediately: true)
+        }
+    }
+
+    func shouldDockAppBeRunning() -> Bool {
+        return (NSWorkspace.shared.isVoiceOverEnabled == true) || (NSApplication.shared.isFullKeyboardAccessEnabled == true)
+    }
+    
+    func voiceOverEnabledChangeHandler(workspace: NSWorkspace, change: NSKeyValueObservedChange<Bool>) {
+        if change.newValue == true {
+            launchDockAppIfNotRunning()
+        } else {
+            if shouldDockAppBeRunning() == false {
+                terminateDockAppIfRunning()
+            }
+        }
+    }
+
+    func appleKeyboardUIModeChangeHandler(userDefaults: UserDefaults, change: NSKeyValueObservedChange<Int>) {
+        guard let newValue = change.newValue else {
+            // could not capture new value; don't change anything
+            os_log(.info, log: logger, "received appleKeyboardUIMode change event, but new value was nil")
+            return
+        }
+        
+        if newValue & 2 == 2 {
+            // full keyboard access was enabled
+            launchDockAppIfNotRunning()
+        } else {
+            if shouldDockAppBeRunning() == false {
+                terminateDockAppIfRunning()
+            }
         }
     }
 
@@ -584,6 +649,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction func quitApplication(_ sender: Any?) {
         // immediately hide our MorphicBar window
         morphicBarWindow?.setIsVisible(false)
+        
+        // terminate our dock app (if it's running)
+        terminateDockAppIfRunning()
         
         if Session.shared.preferencesSaveIsQueued == true {
             var saveIsComplete = false
@@ -1091,6 +1159,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
+    @objc
+    func showMorphicBarNotify() {
+        showMorphicBar(nil)
+    }
+    
     @IBAction
     func showMorphicBar(_ sender: Any?) {
         if morphicBarWindow == nil {
@@ -1287,6 +1360,29 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
+    func launchDockAppIfNotRunning() {
+        guard morphicDockAppIsRunning() == false else {
+            os_log(.info, log: logger, "skipping launch of dock app (as dock app is already running)")
+            return
+        }
+        
+        os_log(.info, log: logger, "launching dock app")
+        
+        // NOTE: the application name (with an extra space before and after the application) is an artifact of the fact that we can't easily name the dock app "Morphic" while our main app is also named "Morphic"...yet we need the display name (in the dock and the cmd+tab order) to read as "Morphic."  Adding spaces on both sides makes the name appear reasonably properly (and still be centered) but long-term we should ideally consider making the dock app the startup app or renaming the main application bundle.
+        let morphicDockAppAppName = " Morphic .app"
+        guard let url = Bundle.main.resourceURL?.deletingLastPathComponent().appendingPathComponent("Library").appendingPathComponent(morphicDockAppAppName) else {
+            os_log(.error, log: logger, "Failed to construct bundled dock app URL")
+            return
+        }
+        MorphicProcess.openProcess(at: url, arguments: [], activate: true, hide: false) {
+            (app, error) in
+            guard error == nil else {
+                os_log(.error, log: logger, "Failed to launch dock app: %{public}s", error!.localizedDescription)
+                return
+            }
+        }
+    }
+    
     // MARK: - Native code observers
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -1353,4 +1449,17 @@ public extension NSNotification.Name {
     static let morphicFeatureColorFiltersEnabledChanged = NSNotification.Name("org.raisingthefloor.morphicFeatureColorFiltersEnabledChanged")
     static let morphicFeatureContrastEnabledChanged = NSNotification.Name("org.raisingthefloor.morphicFeatureContrastEnabledChanged")
     static let morphicFeatureInterfaceThemeChanged = NSNotification.Name("org.raisingthefloor.morphicFeatureInterfaceThemeChanged")
+    static let showMorphicBar = NSNotification.Name("org.raisingthefloor.showMorphicBar")
+    static let terminateMorphicDockApp = NSNotification.Name(rawValue: "org.raisingthefloor.terminateMorphicDockApp")
+    static let terminateMorphicLauncher = NSNotification.Name(rawValue: "org.raisingthefloor.terminateMorphicLauncher")
+}
+
+extension UserDefaults
+{
+    @objc dynamic var AppleKeyboardUIMode: Int
+    {
+        get {
+            return integer(forKey: "AppleKeyboardUIMode")
+        }
+    }
 }
