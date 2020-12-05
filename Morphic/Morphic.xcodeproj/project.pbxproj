@@ -105,6 +105,8 @@
 		9DCF892E257AF9D8001927C1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCF892D257AF9D8001927C1 /* main.swift */; };
 		9DCF89D2257B4133001927C1 /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B492444E04300EEDF14 /* MorphicSettings.framework */; };
 		9DCF89D3257B4133001927C1 /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B492444E04300EEDF14 /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9DCF89DB257B4668001927C1 /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B472444E04300EEDF14 /* MorphicCore.framework */; };
+		9DCF89DC257B4668001927C1 /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B472444E04300EEDF14 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9DD12AF525128D4900E94C4F /* MorphicCommunityConfigurator.app in Resources */ = {isa = PBXBuildFile; fileRef = 9DE0737125128A180030A978 /* MorphicCommunityConfigurator.app */; };
 		9DD12AF825128D8100E94C4F /* MorphicCommunityConfigurator.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9DE0737125128A180030A978 /* MorphicCommunityConfigurator.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9DD4F4DB251A2FC400ADCC25 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F4DA251A2FC400ADCC25 /* AppDelegate.swift */; };
@@ -315,6 +317,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				9DCF89DC257B4668001927C1 /* MorphicCore.framework in Embed Frameworks */,
 				9DCF89D3257B4133001927C1 /* MorphicSettings.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -535,6 +538,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9DCF89DB257B4668001927C1 /* MorphicCore.framework in Frameworks */,
 				9DCF89D2257B4133001927C1 /* MorphicSettings.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
