@@ -47,17 +47,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             // if the application isn't already running, launch it now
             
             // calculate the path to the main application's executable
-            let launcherBundlePath = Bundle.main.bundlePath as NSString
-            var pathComponents = launcherBundlePath.pathComponents
-            // remove the last 4 components (.../Contents/Library/LoginItems/MorphicLauncher.app) from the bundle path; the remaining path components will end the path at "Morphic###.app" (our application bundle entry point)
-            pathComponents.removeLast(4)
+            let dockAppBundlePath = Bundle.main.bundlePath as NSString
+            var pathComponents = dockAppBundlePath.pathComponents
+            // remove the last 3 components (.../Contents/Library/MorphicDockapp.app) from the bundle path; the remaining path components will end the path at "Morphic###.app" (our application bundle entry point)
+            pathComponents.removeLast(3)
             // NOTE: if we preferred to do so, we could instead remove the last three componeents and then append "MacOS" and "Morphic###" to the end of the path (to launch the application executable directly, vs. via Morphic###.app)
-            var morphicClientApplicationPath = NSString.path(withComponents: pathComponents)
+            let morphicClientApplicationPath = NSString.path(withComponents: pathComponents)
             
-            // NOTE: for debug time, the specified folder is actually one folder ABOVE Morphic.app (and our application is not embedded), so go ahead and appent the appropriate suffix to our actual application if necessary
-            if morphicClientApplicationPath.hasSuffix("/Morphic.app") == false {
-                morphicClientApplicationPath += "/Morphic.app"
-            }
+            // // NOTE: for debug time, the specified folder is actually one folder ABOVE Morphic.app (and our application is not embedded), so go ahead and appent the appropriate suffix to our actual application if necessary
+            // if morphicClientApplicationPath.hasSuffix("/Morphic.app") == false {
+            //     morphicClientApplicationPath += "/Morphic.app"
+            // }
             
             // launch the main application
             // NOTE: this will behave identically to just starting up Morphic normally (which is our intention since we're covering the scenario that the dock icon was pinned and the intent is just to start up Morphic)
