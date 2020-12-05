@@ -47,6 +47,9 @@ steps:
     provProfileSecureFile: 'Morphic_Launcher_for_macOS.provisionprofile'
 - task: InstallAppleProvisioningProfile@1
   inputs:
+    provProfileSecureFile: 'Morphic_Dock_App_for_macOS.provisionprofile'
+- task: InstallAppleProvisioningProfile@1
+  inputs:
     provProfileSecureFile: 'Morphic_Community_Launcher_for_macOS.provisionprofile'
 - task: InstallAppleProvisioningProfile@1
   inputs:
