@@ -26,6 +26,7 @@ import Cocoa
 import MorphicCore
 import MorphicSettings
 import MorphicService
+import OSLog
 
 public class MorphicBarItem {
     
@@ -1032,32 +1033,45 @@ class MorphicBarControlItem: MorphicBarItem {
         }
         let session = Session.shared
         if segment == 0 {
+            // this is the code which will activate our magnifier once we have established that it is configured properly
+            let activateMagnifier: () -> Void = {
+                session.storage.load(identifier: "__magnifier__") {
+                    (_, preferences: Preferences?) in
+                    if let preferences = preferences {
+                        // temporary workaround: if "style" was specified as a preference, remove it (because it's a one-time setup preference)
+                        var mutablePreferences = preferences
+                        if mutablePreferences.get(key: .macosZoomStyle) != nil {
+                            mutablePreferences.remove(key: .macosZoomStyle)
+                        }
+                        
+                        let apply = ApplySession(settingsManager: session.settings, preferences: mutablePreferences)
+                        apply.addFirst(key: .macosZoomEnabled, value: true)
+                        apply.run {
+                        }
+                    } else {
+                        session.apply(true, for: .macosZoomEnabled) {
+                            _ in
+                        }
+                    }
+                }
+            }
+            
             // set the default magnifier zoom style (if it hasn't already been set)
             let didSetInitialMagnifierZoomStyle = Session.shared.bool(for: .morphicDidSetInitialMagnifierZoomStyle) ?? false
             if didSetInitialMagnifierZoomStyle == false {
                 // NOTE: we get no "success/failure" from the following function, so we just have to assume success
-                AppDelegate.shared.setInitialMagnifierZoomStyle()
-            }
-
-            
-            session.storage.load(identifier: "__magnifier__") {
-                (_, preferences: Preferences?) in
-                if let preferences = preferences {
-                    // temporary workaround: if "style" was specified as a preference, remove it (because it's a one-time setup preference)
-                    var mutablePreferences = preferences
-                    if mutablePreferences.get(key: .macosZoomStyle) != nil {
-                        mutablePreferences.remove(key: .macosZoomStyle)
+                AppDelegate.shared.setInitialMagnifierZoomStyle() {
+                    success in
+                    
+                    guard success == true else {
+                        os_log("Cannot set initial magnifier zoom style")
+                        return
                     }
                     
-                    let apply = ApplySession(settingsManager: session.settings, preferences: mutablePreferences)
-                    apply.addFirst(key: .macosZoomEnabled, value: true)
-                    apply.run {
-                    }
-                } else {
-                    session.apply(true, for: .macosZoomEnabled) {
-                        _ in
-                    }
+                    activateMagnifier()
                 }
+            } else {
+                activateMagnifier()
             }
         } else {
             session.storage.load(identifier: "__magnifier__") {

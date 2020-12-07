@@ -847,7 +847,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         Session.shared.set(true, for: .morphicDidSetInitialColorFilterType)
     }
     
-    func setInitialMagnifierZoomStyle() {
+    func setInitialMagnifierZoomStyle(completion: @escaping (_ success: Bool) -> Void) {
 //        // NOTE: zoom styles (as their enumerated int values)
 //        0: "Full screen",
 //        1: "Picture-in-picture",
@@ -857,23 +857,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
         Session.shared.apply(zoomStyleAsInt, for: .macosZoomStyle) {
             success in
+         
+            guard success == true else {
+                completion(false)
+                return
+            }
             
+            Session.shared.set(true, for: .morphicDidSetInitialMagnifierZoomStyle)
+
             // we do not currently have a mechanism to report success/failure
-            SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+            SettingsManager.shared.capture(valueFor: .macosZoomStyle) {
                 verifyZoomStyle in
+
                 guard let verifyZoomStyleAsInt = verifyZoomStyle as? Int else {
                     // could not get current setting
+                    completion(false)
                     return
                 }
                 //
                 if verifyZoomStyleAsInt != verifyZoomStyleAsInt {
                     NSLog("Could not set magnifier zoom style to Picture-in-picture")
                     assertionFailure("Could not set magnifier zoom style to Picture-in-picture")
+
+                    completion(false)
+                    return
                 }
+                
+                completion(true)
             }
         }
-        
-        Session.shared.set(true, for: .morphicDidSetInitialMagnifierZoomStyle)
     }
     
     //
