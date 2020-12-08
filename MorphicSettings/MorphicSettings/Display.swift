@@ -29,7 +29,13 @@ public class Display {
     init(id: UInt32) {
         self.id = id
         possibleModes = findPossibleModes() ?? []
+        
         normalMode = possibleModes.first(where: { $0.isDefault })
+        // if no modes are marked as "default" then choose the last mode (which in theory has the highest resolution) from the GUI-usable resolutions
+        if normalMode == nil {
+            let possibleModesUsableForDesktopGui = possibleModes.filter { $0.isUsableForDesktopGui == true }
+            normalMode = possibleModesUsableForDesktopGui.last
+        }
     }
     
     private var id: UInt32
@@ -42,7 +48,7 @@ public class Display {
     }()
     
     public func zoom(to percentage: Double) -> Bool {
-        guard let mode = self.mode(for: percentage) else{
+        guard let mode = self.mode(for: percentage) else {
             return false
         }
         do {
