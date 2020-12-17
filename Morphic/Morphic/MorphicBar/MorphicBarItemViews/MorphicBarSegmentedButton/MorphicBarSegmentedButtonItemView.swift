@@ -55,7 +55,7 @@ class MorphicBarSegmentedButtonItemView: NSView, MorphicBarItemViewProtocol {
     var style: MorphicBarControlItemStyle
     
     init(title: String, segments: [MorphicBarSegmentedButton.Segment], style: MorphicBarControlItemStyle) {
-        titleLabel = NSTextField(labelWithString: title)
+        self.titleLabel = NSTextField(labelWithString: title)
         self.style = style
         switch style {
         case .autoWidth:

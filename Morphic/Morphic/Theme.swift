@@ -55,4 +55,5 @@ extension NSFont {
     
     static var morphicRegular: NSFont = .systemFont(ofSize: 14.0, weight: .regular)
     static var morphicBold : NSFont = .systemFont(ofSize: 14.0, weight: .bold)
+    static var morphicHeavyForPlusMinusSymbols: NSFont = .systemFont(ofSize: 22, weight: .heavy)
 }

@@ -20,6 +20,9 @@
 /* Label for the buttons that control text/icon size */
 "control.feature.resolution.title" = "Text Size";
 
+/* Label for the button that increases the text/icon size */
+"control.feature.resolution.bigger" = "+";
+
 /* Text for VoiceOver for the larger text/icon size button */
 "control.feature.resolution.bigger.tts" = "Increase Text Size";
 
@@ -34,6 +37,9 @@
 
 /* Message for the help window for the larger text/icon size button when at its limit */
 "control.feature.resolution.bigger.limit.help.message" = "";
+
+/* Label for the button that decreases the text/icon size */
+"control.feature.resolution.smaller" = "\U2013";
 
 /* Text for VoiceOver for the smaller text/icon size button */
 "control.feature.resolution.smaller.tts" = "Decrease Text Size";
@@ -119,6 +125,9 @@
 /* Label for the buttons that control the volume */
 "control.feature.volume.title" = "Volume";
 
+/* Label for the button that turns the volume up */
+"control.feature.volume.up" = "+";
+
 /* Title for the help window for the volume up button */
 "control.feature.volume.up.help.title" = "Turn the Volume Up";
 
@@ -136,6 +145,9 @@
 
 /* Message for the help window for the volume up button when muted */
 "control.feature.volume.up.muted.help.message" = "Turn the sounds back on";
+
+/* Label for the button that turns the volume down */
+"control.feature.volume.down" = "\U2013";
 
 /* Title for the help window for the volume down button */
 "control.feature.volume.down.help.title" = "Turn the Volume Down";

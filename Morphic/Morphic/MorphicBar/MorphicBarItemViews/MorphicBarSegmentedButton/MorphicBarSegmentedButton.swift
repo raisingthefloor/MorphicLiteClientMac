@@ -339,11 +339,12 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
                 recoloredImageContent.draw(in: imageContentRect)
             } else {
                 // draw text content (self.title)
-                
+
                 let textParagraphStyle = NSMutableParagraphStyle()
                 textParagraphStyle.alignment = .center
                 //
                 let textContent = self.title
+		//
                 let defaultTextFont = NSFont.systemFont(ofSize: 11)
                 let textFont = self.font ?? defaultTextFont
                 //
@@ -357,7 +358,12 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
                 // NOTE: we allow full-width text (and variable height); we do NOT resize the height to match
                 let textContentBoundingRect = textContent.boundingRect(with: NSSize(width: contentRect.width, height: .infinity), options: [.usesLineFragmentOrigin], attributes: textAttributes)
                 let textContentXPos: CGFloat = borderWidth + ((contentRect.width - textContentBoundingRect.width) / 2)
-                let textContentYPos: CGFloat = borderWidth + ((contentRect.height - textContentBoundingRect.height) / 2)
+                var textContentYPos: CGFloat = borderWidth + ((contentRect.height - textContentBoundingRect.height) / 2)
+                // adjust position for plus and minus symbols
+                if textFont == .morphicHeavyForPlusMinusSymbols {
+                    textContentYPos -= 1.5
+                }
+                //
                 let textContentRect = NSRect(origin: CGPoint(x: textContentXPos, y: textContentYPos), size: textContentBoundingRect.size)
                 
                 // draw our text
@@ -589,6 +595,10 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             button.font = .morphicBold
         case .fixedWidth(_):
             button.font = .morphicBold // .morphicRegular
+        }
+        // special-case: if the label is the + or - symbol, use the special heavy font for those characters
+        if segment.title == "+" || segment.title == "\u{2013}" {
+            button.font = .morphicHeavyForPlusMinusSymbols
         }
         button.settingsMenuItemTitle = segment.settingsMenuItemTitle
         //
