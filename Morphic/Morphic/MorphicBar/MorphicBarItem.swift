@@ -318,8 +318,8 @@ class MorphicBarControlItem: MorphicBarItem {
         case .resolution:
             let localized = LocalizedStrings(prefix: "control.feature.resolution")
             let segments = [
-                MorphicBarSegmentedButton.Segment(icon: .plus(), fillColor: buttonColor, helpProvider:  QuickHelpTextSizeBiggerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "bigger.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize), settingsBlock: nil, style: style),
-                MorphicBarSegmentedButton.Segment(icon: .minus(), fillColor: alternateButtonColor, helpProvider: QuickHelpTextSizeSmallerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "smaller.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize), settingsBlock: nil, style: style)
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "bigger"), fillColor: buttonColor, helpProvider:  QuickHelpTextSizeBiggerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "bigger.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize), settingsBlock: nil, style: .fixedWidth(segmentWidth: 31)),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "smaller"), fillColor: alternateButtonColor, helpProvider: QuickHelpTextSizeSmallerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "smaller.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize), settingsBlock: nil, style: .fixedWidth(segmentWidth: 31))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.target = self
@@ -370,8 +370,8 @@ class MorphicBarControlItem: MorphicBarItem {
              .volumewithoutmute:
             let localized = LocalizedStrings(prefix: "control.feature.volume")
             var segments = [
-                MorphicBarSegmentedButton.Segment(icon: .plus(), fillColor: buttonColor, helpProvider: QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "up.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), settingsBlock: nil, style: style),
-                MorphicBarSegmentedButton.Segment(icon: .minus(), fillColor: alternateButtonColor, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "down.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), settingsBlock: nil, style: style)
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "up"), fillColor: buttonColor, helpProvider: QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "up.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), settingsBlock: nil, style: .fixedWidth(segmentWidth: 31)),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "down"), fillColor: alternateButtonColor, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "down.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), settingsBlock: nil, style: .fixedWidth(segmentWidth: 31))
             ]
             if feature == .volume {
                 // create and add mute segment
