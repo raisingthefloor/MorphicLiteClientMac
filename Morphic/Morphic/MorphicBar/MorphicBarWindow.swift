@@ -129,7 +129,21 @@ public class MorphicBarWindow: NSWindow {
         
         #if EDITION_BASIC
             if let preferredItems = Session.shared.array(for: .morphicBarItems) {
-                morphicBarViewController.items = MorphicBarItem.items(from: preferredItems)
+                // convert our list of items
+                var morphicBarItems = MorphicBarItem.items(from: preferredItems)
+                
+                // if we have any extra items to prepend, do so now
+                let morphicBarExtraItems = ConfigurableFeatures.shared.morphicBarExtraItems
+                if morphicBarExtraItems.count > 0 {
+                    // insert spacer at the front to the left of the preferredItems
+                    let separator = MorphicBarSeparatorItem(interoperable: [:])
+                    morphicBarItems.insert(separator, at: 0)
+                    //
+                    // insert the extra items to the left of the spacer
+                    let extraItemsAsMorphicBarItems = MorphicBarItem.items(from: morphicBarExtraItems)
+                    morphicBarItems.insert(contentsOf: extraItemsAsMorphicBarItems, at: 0)
+                }
+                morphicBarViewController.items = morphicBarItems
             }
         #elseif EDITION_COMMUNITY
             if let communityBarsAsJson = Session.shared.dictionary(for: .morphicBarCommunityBarsAsJson),

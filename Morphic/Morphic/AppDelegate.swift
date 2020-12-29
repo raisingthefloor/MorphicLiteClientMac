@@ -77,7 +77,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
         // set up options for the current edition of Morphic
         #if EDITION_BASIC
-            Session.shared.isCaptureAndApplyEnabled = true
+            // capture the common configuration (if one is present)
+            let commonConfiguration = self.getCommonConfiguration()
+            ConfigurableFeatures.shared.morphicBarExtraItems = commonConfiguration.extraMorphicBarItems
+            Session.shared.isCaptureAndApplyEnabled = commonConfiguration.cloudSettingsTransferIsEnabled
             Session.shared.isServerPreferencesSyncEnabled = true
         #elseif EDITION_COMMUNITY
             Session.shared.isCaptureAndApplyEnabled = false
@@ -91,6 +94,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         createEmptyDefaultPreferencesIfNotExist {
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
+                
+                self.copySettingsBetweenComputersMenuItem?.isHidden = (Session.shared.isCaptureAndApplyEnabled == false)
+                
                 #if EDITION_BASIC
                 #elseif EDITION_COMMUNITY
                     if Session.shared.user == nil {
@@ -351,6 +357,117 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             }
         #endif
     }
+    
+    //
+    
+    internal struct MorphicBarExtraItem: Decodable {
+        public let type: String?
+        public let label: String?
+        public let tooltipHeader: String?
+        public let tooltipText: String?
+        public let url: String?
+    }
+    
+    internal struct ConfigFileContents: Decodable
+    {
+        internal struct FeaturesConfigSection: Decodable
+        {
+            internal struct EnabledFeature: Decodable
+            {
+                public let enabled: Bool
+            }
+            //
+            internal let cloudSettingsTransfer: EnabledFeature?
+        }
+        internal struct MorphicBarConfigSection: Decodable
+        {
+            public let extraItems: [MorphicBarExtraItem]?
+        }
+        //
+        public let version: Int?
+        public let features: FeaturesConfigSection?
+        public let morphicBar: MorphicBarConfigSection?
+    }
+    
+    func getCommonConfiguration() -> (cloudSettingsTransferIsEnabled: Bool, extraMorphicBarItems: [MorphicBarExtraItem]) {
+        // set up default configuration
+        var cloudSettingsTransferIsEnabled = true
+        var extraMorphicBarItems: [MorphicBarExtraItem] = []
+        
+        guard let applicationSupportPath = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .localDomainMask, true).first else {
+            os_log(.error, log: logger, "Could not locate system application support directory")
+            assertionFailure("Could not locate system application support directory")
+            return (cloudSettingsTransferIsEnabled: cloudSettingsTransferIsEnabled, extraMorphicBarItems: extraMorphicBarItems)
+        }
+        let morphicCommonConfigPath = NSString.path(withComponents: [applicationSupportPath, "Morphic"])
+        let morphicConfigFilePath = NSString.path(withComponents: [morphicCommonConfigPath, "config.json"])
+        
+        if FileManager.default.fileExists(atPath: morphicConfigFilePath) == false {
+            // no config file; return defaults
+            return (cloudSettingsTransferIsEnabled: cloudSettingsTransferIsEnabled, extraMorphicBarItems: extraMorphicBarItems)
+        }
+        
+        guard let json = FileManager.default.contents(atPath: morphicConfigFilePath) else {
+            return (cloudSettingsTransferIsEnabled: cloudSettingsTransferIsEnabled, extraMorphicBarItems: extraMorphicBarItems)
+        }
+
+        var decodedConfigFile: ConfigFileContents
+        do {
+            let decoder = JSONDecoder()
+            decodedConfigFile = try decoder.decode(ConfigFileContents.self, from: json)
+        } catch {
+            os_log(.error, log: logger, "Could not decode config.json")
+            return (cloudSettingsTransferIsEnabled: cloudSettingsTransferIsEnabled, extraMorphicBarItems: extraMorphicBarItems)
+        }
+
+        guard let configFileVersion = decodedConfigFile.version else {
+            // could not find a version in this file
+            // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
+            os_log(.error, log: logger, "Could not decode version from config file")
+            return (cloudSettingsTransferIsEnabled: cloudSettingsTransferIsEnabled, extraMorphicBarItems: extraMorphicBarItems)
+        }
+        if (configFileVersion < 0) || (configFileVersion > 0) {
+            // sorry, we don't understand this version of the file
+            // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
+            os_log(.error, log: logger, "Unknown config file version")
+            return (cloudSettingsTransferIsEnabled: cloudSettingsTransferIsEnabled, extraMorphicBarItems: extraMorphicBarItems)
+        }
+        
+        // capture the cloud settings transfer "is enabled" setting
+        if let configFileCloudSettingsTransferIsEnabled = decodedConfigFile.features?.cloudSettingsTransfer?.enabled {
+            cloudSettingsTransferIsEnabled = configFileCloudSettingsTransferIsEnabled
+        }
+        
+        // capture any extra items (up to 3)
+        if let configFileMorphicBarExtraItems = decodedConfigFile.morphicBar?.extraItems {
+            for extraItem in configFileMorphicBarExtraItems {
+                // if we already captured 3 extra items, skip this one
+                if (extraMorphicBarItems.count >= 3)
+                {
+                    continue
+                }
+
+                // if the item is invalid, log the error and skip this item
+                if (extraItem.type == nil) || (extraItem.label == nil) || (extraItem.tooltipHeader == nil) || (extraItem.url == nil) {
+                    // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
+                    os_log(.error, log: logger, "Invalid MorphicBar item")
+                    continue
+                }
+
+                let extraMorphicBarItem = MorphicBarExtraItem(
+                    type: extraItem.type,
+                    label: extraItem.label,
+                    tooltipHeader: extraItem.tooltipHeader,
+                    tooltipText: extraItem.tooltipText,
+                    url: extraItem.url)
+                extraMorphicBarItems.append(extraMorphicBarItem)
+            }
+        }
+        
+        return (cloudSettingsTransferIsEnabled: cloudSettingsTransferIsEnabled, extraMorphicBarItems: extraMorphicBarItems)
+    }
+    
+    //
     
     // NOTE: we maintain a reference to the timer so that we can cancel (invalidate) it, reschedule it, etc.
     var dailyCommunityBarRefreshTimer: Timer? = nil

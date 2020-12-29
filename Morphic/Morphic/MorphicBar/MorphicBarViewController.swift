@@ -46,6 +46,7 @@ public class MorphicBarViewController: NSViewController {
         morphicBarView.orientation = self.orientation
         view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
         view.layer?.cornerRadius = 6
+        self.copySettingsBetweenComputersMenuItem?.isHidden = (Session.shared.isCaptureAndApplyEnabled == false)
         #if EDITION_BASIC
         #elseif EDITION_COMMUNITY
             self.loginMenuItem?.isHidden = (Session.shared.user != nil)

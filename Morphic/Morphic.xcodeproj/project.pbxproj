@@ -91,6 +91,8 @@
 		9D2593EB250A830100C38DA3 /* newspaper-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DC250A830100C38DA3 /* newspaper-solid.pdf */; };
 		9D2593EC250A830100C38DA3 /* shopping-cart-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DD250A830100C38DA3 /* shopping-cart-solid.pdf */; };
 		9D2593ED250A830100C38DA3 /* amazon-brands.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DE250A830100C38DA3 /* amazon-brands.pdf */; };
+		9D2A5AB8259B815800ECD513 /* ConfigurableFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */; };
+		9D2A5AC1259B914800ECD513 /* MorphicBarSeparatorItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */; };
 		9D4B24E72517068200F0B2E2 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
 		9D77209E252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
 		9D77209F252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
@@ -448,6 +450,8 @@
 		9D2593DE250A830100C38DA3 /* amazon-brands.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "amazon-brands.pdf"; sourceTree = "<group>"; };
 		9D2593F2250EA81000C38DA3 /* MorphicRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicRelease.entitlements; sourceTree = "<group>"; };
 		9D2593F3250EA87E00C38DA3 /* MorphicConfiguratorRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicConfiguratorRelease.entitlements; sourceTree = "<group>"; };
+		9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableFeatures.swift; sourceTree = "<group>"; };
+		9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarSeparatorItemView.swift; sourceTree = "<group>"; };
 		9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsLinkActions.swift; sourceTree = "<group>"; };
 		9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicImageUtils.swift; sourceTree = "<group>"; };
 		9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutBoxWindowController.swift; sourceTree = "<group>"; };
@@ -665,6 +669,7 @@
 				314EB6D924A6978200CF3D48 /* Solutions */,
 				318744F32481A2DA00AE3954 /* CreateDiskImage.sh */,
 				9DB06AD62534ADD6008AB056 /* CreatePackage.sh */,
+				9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */,
 			);
 			path = Morphic;
 			sourceTree = "<group>";
@@ -793,6 +798,14 @@
 			path = Icons;
 			sourceTree = "<group>";
 		};
+		9D2A5ABF259B911900ECD513 /* MorphicBarSeparatorItem */ = {
+			isa = PBXGroup;
+			children = (
+				9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */,
+			);
+			path = MorphicBarSeparatorItem;
+			sourceTree = "<group>";
+		};
 		9D82576724D3160600F6E932 /* About Box */ = {
 			isa = PBXGroup;
 			children = (
@@ -832,6 +845,7 @@
 		9DDAE61125094C720072C711 /* MorphicBarItemViews */ = {
 			isa = PBXGroup;
 			children = (
+				9D2A5ABF259B911900ECD513 /* MorphicBarSeparatorItem */,
 				9DDAE61325094D760072C711 /* MorphicBarButtonItem */,
 				9DDAE61225094D6A0072C711 /* MorphicBarSegmentedButton */,
 				31E1E17E24466EB0009C4092 /* MorphicBarItemViewProtocol.swift */,
@@ -1388,6 +1402,7 @@
 				31E1E183244682C2009C4092 /* MorphicBarSegmentedButton.swift in Sources */,
 				31CE56F7244A408000A52A7B /* QuickHelpViewController.swift in Sources */,
 				31751B9E2444F22900EEDF14 /* MorphicBarViewController.swift in Sources */,
+				9D2A5AC1259B914800ECD513 /* MorphicBarSeparatorItemView.swift in Sources */,
 				31CE56F9244A428500A52A7B /* ShadowedLabel.swift in Sources */,
 				31751B982444F21700EEDF14 /* Session.swift in Sources */,
 				31C12CC124B143A000B617A8 /* QuickHelpStepViewController.swift in Sources */,
@@ -1400,6 +1415,7 @@
 				9D8CEB152507AED7001276E4 /* MorphicBarButtonItemView.swift in Sources */,
 				9DE112E72522243200591E08 /* CopySettingsWindowController.swift in Sources */,
 				31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */,
+				9D2A5AB8259B815800ECD513 /* ConfigurableFeatures.swift in Sources */,
 				31C12CBE24B138D000B617A8 /* ProgressIndicator.swift in Sources */,
 				31C12CC424B1441E00B617A8 /* PageControl.swift in Sources */,
 				9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */,
