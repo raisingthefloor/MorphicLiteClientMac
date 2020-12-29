@@ -39,6 +39,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         // set up options for the current edition of Morphic
         #if EDITION_BASIC
+            // NOTE: this needs to be consolidated with the main application; we are not taking into account config.json here!
             Session.shared.isCaptureAndApplyEnabled = true
             Session.shared.isServerPreferencesSyncEnabled = true
         #elseif EDITION_COMMUNITY

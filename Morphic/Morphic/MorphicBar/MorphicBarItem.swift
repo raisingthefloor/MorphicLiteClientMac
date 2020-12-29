@@ -51,7 +51,25 @@ public class MorphicBarItem {
         }
         return items
     }
-    
+
+    internal static func items(from extraItems: [AppDelegate.MorphicBarExtraItem]) -> [MorphicBarItem] {
+        var items = [MorphicBarItem]()
+        for extraItem in extraItems {
+            // convert our extra item into a dictionary
+            var itemAsDictionary: [String: Interoperable?] = [:]
+            itemAsDictionary["type"] = extraItem.type
+            itemAsDictionary["label"] = extraItem.label
+            itemAsDictionary["tooltipHeader"] = extraItem.tooltipHeader
+            itemAsDictionary["tooltipText"] = extraItem.tooltipText
+            itemAsDictionary["url"] = extraItem.url
+
+            if let item_ = item(from: itemAsDictionary) {
+                items.append(item_)
+            }
+        }
+        return items
+    }
+
     public static func item(from interoperable: [String: Interoperable?]) -> MorphicBarItem? {
         switch interoperable.string(for: "type") {
         case "control":
@@ -106,6 +124,16 @@ public class MorphicBarItem {
         return morphicBarControlItem
     }
 }
+
+#if EDITION_BASIC
+class MorphicBarSeparatorItem: MorphicBarItem {
+    override func view() -> MorphicBarItemViewProtocol? {
+        let view = MorphicBarSeparatorItemView()
+        view.target = self
+        return view
+    }
+}
+#endif
 
 class MorphicBarLinkItem: MorphicBarItem {
     var label: String
