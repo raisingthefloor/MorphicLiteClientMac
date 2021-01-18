@@ -410,114 +410,116 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         public let features: FeaturesConfigSection?
         public let morphicBar: MorphicBarConfigSection?
     }
-    
-    struct CommonConfigurationContents {        
-        public var cloudSettingsTransferIsEnabled: Bool = false
-        public var morphicBarVisibilityAfterLogin: ConfigurableFeatures.MorphicBarVisibilityAfterLoginOption? = nil
-        public var extraMorphicBarItems: [MorphicBarExtraItem] = []
-    }
-    func getCommonConfiguration() -> CommonConfigurationContents {
-        // set up default configuration
-        var result = CommonConfigurationContents()
-        //
-        // copy settings to/from cloud
-        result.cloudSettingsTransferIsEnabled = true
-        //
-        // morphic bar (visibility and extra items)
-        result.morphicBarVisibilityAfterLogin = nil
-        result.extraMorphicBarItems = []
-        
-        guard let applicationSupportPath = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .localDomainMask, true).first else {
-            os_log(.error, log: logger, "Could not locate system application support directory")
-            assertionFailure("Could not locate system application support directory")
-            return result
-        }
-        let morphicCommonConfigPath = NSString.path(withComponents: [applicationSupportPath, "Morphic"])
-        let morphicConfigFilePath = NSString.path(withComponents: [morphicCommonConfigPath, "config.json"])
-        
-        if FileManager.default.fileExists(atPath: morphicConfigFilePath) == false {
-            // no config file; return defaults
-            return result
-        }
-        
-        guard let json = FileManager.default.contents(atPath: morphicConfigFilePath) else {
-            return result
-        }
 
-        var decodedConfigFile: ConfigFileContents
-        do {
-            let decoder = JSONDecoder()
-            decodedConfigFile = try decoder.decode(ConfigFileContents.self, from: json)
-        } catch {
-            os_log(.error, log: logger, "Could not decode config.json")
-            return result
+    #if EDITION_BASIC
+        struct CommonConfigurationContents {
+            public var cloudSettingsTransferIsEnabled: Bool = false
+            public var morphicBarVisibilityAfterLogin: ConfigurableFeatures.MorphicBarVisibilityAfterLoginOption? = nil
+            public var extraMorphicBarItems: [MorphicBarExtraItem] = []
         }
-
-        guard let configFileVersion = decodedConfigFile.version else {
-            // could not find a version in this file
-            // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
-            os_log(.error, log: logger, "Could not decode version from config file")
-            return result
-        }
-        if (configFileVersion < 0) || (configFileVersion > 0) {
-            // sorry, we don't understand this version of the file
-            // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
-            os_log(.error, log: logger, "Unknown config file version")
-            return result
-        }
-        
-        // capture the cloud settings transfer "is enabled" setting
-        if let configFileCloudSettingsTransferIsEnabled = decodedConfigFile.features?.cloudSettingsTransfer?.enabled {
-            result.cloudSettingsTransferIsEnabled = configFileCloudSettingsTransferIsEnabled
-        }
-        
-        // capture the desired after-login (autorun) visibility of the MorphicBar
-        switch decodedConfigFile.morphicBar?.visibilityAfterLogin
-        {
-            case "restore":
-                result.morphicBarVisibilityAfterLogin = .restore
-            case "show":
-                result.morphicBarVisibilityAfterLogin = .show
-            case "hide":
-                result.morphicBarVisibilityAfterLogin = .hide
-            case nil:
-                // no setting present; use the default setting
-                break;
-            default:
-                // sorry, we don't understand this visibility setting
-                // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
-                os_log(.error, log: logger, "Unknown morphicBar.visibilityAfterLogin setting")
+        func getCommonConfiguration() -> CommonConfigurationContents {
+            // set up default configuration
+            var result = CommonConfigurationContents()
+            //
+            // copy settings to/from cloud
+            result.cloudSettingsTransferIsEnabled = true
+            //
+            // morphic bar (visibility and extra items)
+            result.morphicBarVisibilityAfterLogin = nil
+            result.extraMorphicBarItems = []
+            
+            guard let applicationSupportPath = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .localDomainMask, true).first else {
+                os_log(.error, log: logger, "Could not locate system application support directory")
+                assertionFailure("Could not locate system application support directory")
                 return result
-        }
-        
-        // capture any extra items (up to 3)
-        if let configFileMorphicBarExtraItems = decodedConfigFile.morphicBar?.extraItems {
-            for extraItem in configFileMorphicBarExtraItems {
-                // if we already captured 3 extra items, skip this one
-                if (result.extraMorphicBarItems.count >= 3)
-                {
-                    continue
-                }
-
-                // if the item is invalid, log the error and skip this item
-                if (extraItem.type == nil) || (extraItem.label == nil) || (extraItem.tooltipHeader == nil) || (extraItem.url == nil) {
-                    // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
-                    os_log(.error, log: logger, "Invalid MorphicBar item")
-                    continue
-                }
-
-                let extraMorphicBarItem = MorphicBarExtraItem(
-                    type: extraItem.type,
-                    label: extraItem.label,
-                    tooltipHeader: extraItem.tooltipHeader,
-                    tooltipText: extraItem.tooltipText,
-                    url: extraItem.url)
-                result.extraMorphicBarItems.append(extraMorphicBarItem)
             }
+            let morphicCommonConfigPath = NSString.path(withComponents: [applicationSupportPath, "Morphic"])
+            let morphicConfigFilePath = NSString.path(withComponents: [morphicCommonConfigPath, "config.json"])
+            
+            if FileManager.default.fileExists(atPath: morphicConfigFilePath) == false {
+                // no config file; return defaults
+                return result
+            }
+            
+            guard let json = FileManager.default.contents(atPath: morphicConfigFilePath) else {
+                return result
+            }
+
+            var decodedConfigFile: ConfigFileContents
+            do {
+                let decoder = JSONDecoder()
+                decodedConfigFile = try decoder.decode(ConfigFileContents.self, from: json)
+            } catch {
+                os_log(.error, log: logger, "Could not decode config.json")
+                return result
+            }
+
+            guard let configFileVersion = decodedConfigFile.version else {
+                // could not find a version in this file
+                // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
+                os_log(.error, log: logger, "Could not decode version from config file")
+                return result
+            }
+            if (configFileVersion < 0) || (configFileVersion > 0) {
+                // sorry, we don't understand this version of the file
+                // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
+                os_log(.error, log: logger, "Unknown config file version")
+                return result
+            }
+            
+            // capture the cloud settings transfer "is enabled" setting
+            if let configFileCloudSettingsTransferIsEnabled = decodedConfigFile.features?.cloudSettingsTransfer?.enabled {
+                result.cloudSettingsTransferIsEnabled = configFileCloudSettingsTransferIsEnabled
+            }
+            
+            // capture the desired after-login (autorun) visibility of the MorphicBar
+            switch decodedConfigFile.morphicBar?.visibilityAfterLogin
+            {
+                case "restore":
+                    result.morphicBarVisibilityAfterLogin = .restore
+                case "show":
+                    result.morphicBarVisibilityAfterLogin = .show
+                case "hide":
+                    result.morphicBarVisibilityAfterLogin = .hide
+                case nil:
+                    // no setting present; use the default setting
+                    break;
+                default:
+                    // sorry, we don't understand this visibility setting
+                    // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
+                    os_log(.error, log: logger, "Unknown morphicBar.visibilityAfterLogin setting")
+                    return result
+            }
+            
+            // capture any extra items (up to 3)
+            if let configFileMorphicBarExtraItems = decodedConfigFile.morphicBar?.extraItems {
+                for extraItem in configFileMorphicBarExtraItems {
+                    // if we already captured 3 extra items, skip this one
+                    if (result.extraMorphicBarItems.count >= 3)
+                    {
+                        continue
+                    }
+
+                    // if the item is invalid, log the error and skip this item
+                    if (extraItem.type == nil) || (extraItem.label == nil) || (extraItem.tooltipHeader == nil) || (extraItem.url == nil) {
+                        // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
+                        os_log(.error, log: logger, "Invalid MorphicBar item")
+                        continue
+                    }
+
+                    let extraMorphicBarItem = MorphicBarExtraItem(
+                        type: extraItem.type,
+                        label: extraItem.label,
+                        tooltipHeader: extraItem.tooltipHeader,
+                        tooltipText: extraItem.tooltipText,
+                        url: extraItem.url)
+                    result.extraMorphicBarItems.append(extraMorphicBarItem)
+                }
+            }
+            
+            return result
         }
-        
-        return result
-    }
+    #endif
     
     //
     
@@ -1327,9 +1329,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     private func updateMenu() {
-        if let _ = ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin {
-            self.showMorphicBarAtStartMenuItem.isHidden = true
-        }
+        #if EDITION_BASIC
+            if let _ = ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin {
+                self.showMorphicBarAtStartMenuItem.isHidden = true
+            }
+        #endif
         
         #if EDITION_BASIC
             // NOTE: the default menu items are already configured for Morphic Basic

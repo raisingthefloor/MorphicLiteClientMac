@@ -102,9 +102,11 @@ public class MorphicBarViewController: NSViewController {
     }
     
     private func updateMainMenu() {
-        if let _ = ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin {
-            self.showMorphicBarAtStartMenuItem.isHidden = true
-        }
+        #if EDITION_BASIC
+            if let _ = ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin {
+                self.showMorphicBarAtStartMenuItem.isHidden = true
+            }
+        #endif
 
         #if EDITION_BASIC
             // NOTE: the default menu items are already configured for Morphic Basic
