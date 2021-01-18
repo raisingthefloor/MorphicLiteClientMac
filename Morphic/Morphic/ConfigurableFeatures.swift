@@ -23,6 +23,13 @@
 
 internal class ConfigurableFeatures
 {
+    enum MorphicBarVisibilityAfterLoginOption {
+        case show
+        case hide
+        case restore
+    }
+
+    public var morphicBarVisibilityAfterLogin: MorphicBarVisibilityAfterLoginOption? = nil
     public var morphicBarExtraItems: [AppDelegate.MorphicBarExtraItem] = []
 
     static var shared: ConfigurableFeatures = {
