@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <installer-gui-script minSpecVersion="2">
     <title>Morphic Basic</title>
+    <license file="License.rtf" mime-type="application/rtf" />
     <pkg-ref id="org.raisingthefloor.MorphicBasic.pkg"/>
     <options customize="never" require-scripts="false" hostArchitectures="x86_64"/>
     <volume-check>
