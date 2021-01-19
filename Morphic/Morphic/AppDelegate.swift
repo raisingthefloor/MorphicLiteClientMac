@@ -386,7 +386,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         public let label: String?
         public let tooltipHeader: String?
         public let tooltipText: String?
+        // for type: link
         public let url: String?
+        // for type: action
+        public let function: String?
     }
     
     internal struct ConfigFileContents: Decodable
@@ -501,7 +504,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     }
 
                     // if the item is invalid, log the error and skip this item
-                    if (extraItem.type == nil) || (extraItem.label == nil) || (extraItem.tooltipHeader == nil) || (extraItem.url == nil) {
+                    if (extraItem.type == nil) || (extraItem.label == nil) || (extraItem.tooltipHeader == nil) {
+                        // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
+                        os_log(.error, log: logger, "Invalid MorphicBar item")
+                        continue
+                    }
+                    
+                    // if the "link" is missing its url, log the error and skip this item
+                    if (extraItem.type == "link") && (extraItem.url == nil) {
+                        // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
+                        os_log(.error, log: logger, "Invalid MorphicBar item")
+                        continue
+                    }
+
+                    // if the "action" is missing its function, log the error and skip this item
+                    if (extraItem.type == "action") && (extraItem.function == nil || extraItem.function == "") {
                         // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
                         os_log(.error, log: logger, "Invalid MorphicBar item")
                         continue
@@ -512,7 +529,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                         label: extraItem.label,
                         tooltipHeader: extraItem.tooltipHeader,
                         tooltipText: extraItem.tooltipText,
-                        url: extraItem.url)
+                        url: extraItem.url,
+                        function: extraItem.function)
                     result.extraMorphicBarItems.append(extraMorphicBarItem)
                 }
             }

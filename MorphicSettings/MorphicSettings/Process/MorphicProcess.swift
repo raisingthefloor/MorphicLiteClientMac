@@ -44,8 +44,54 @@ public class MorphicProcess {
          launchctlProcess.launchPath = "/bin/launchctl"
          launchctlProcess.arguments = ["kickstart", "-k", domainTarget]
          launchctlProcess.launch()
-     }
+    }
     
+    public static func logOutUserViaLaunchctl() {
+        // get the current user's ID
+        // NOTE: in future releases of macOS we may need to consider using SCDynamicStoreCopyConsoleUser or other methods
+        let userId = getuid()
+        //
+        // alternate domainTarget is "gui/$(id -u)
+        let domainTarget = "gui/" + String(userId)
+
+        let launchctlProcess = Process()
+        launchctlProcess.launchPath = "/bin/launchctl"
+        launchctlProcess.arguments = ["bootout", domainTarget]
+        launchctlProcess.launch()
+    }
+
+    // NOTE: perhaps we should break out a discrete class for all the logout/reset/shutdown functions
+    public static func logOutUserViaOsaScriptWithConfirmation() {
+        // NOTE: alternative (which requires some permissions): osascript -e 'tell app "System Events" to log out'
+        // NOTE: alternative _might_ be to send Shift+Command+Q to the system via emulated key strokes
+        // NOTE: the event tags (e.g. aevtlogo) can be found in AERegistry.h
+        let launchctlProcess = Process()
+        launchctlProcess.launchPath = "/usr/bin/osascript"
+        launchctlProcess.arguments = ["-e", "tell application \"loginwindow\" to «event aevtlogo»"]
+        launchctlProcess.launch()
+    }
+
+    public static func logOutUserViaOsaScriptWithoutConfirmation() {
+        let launchctlProcess = Process()
+        launchctlProcess.launchPath = "/usr/bin/osascript"
+        launchctlProcess.arguments = ["-e", "tell application \"loginwindow\" to «event aevtrlgo»"]
+        launchctlProcess.launch()
+    }
+
+//    public static func restartSystemViaOsaScriptWithConfirmation() {
+//        let launchctlProcess = Process()
+//        launchctlProcess.launchPath = "/usr/bin/osascript"
+//        launchctlProcess.arguments = ["-e", "tell application \"loginwindow\" to «event aevtrrst»"]
+//        launchctlProcess.launch()
+//    }
+//
+//    public static func shutdownSystemViaOsaScriptWithConfirmation() {
+//        let launchctlProcess = Process()
+//        launchctlProcess.launchPath = "/usr/bin/osascript"
+//        launchctlProcess.arguments = ["-e", "tell application \"loginwindow\" to «event aevtrsdn»"]
+//        launchctlProcess.launch()
+//    }
+
     public static func openProcess(at url: URL, arguments: [String], activate: Bool, hide: Bool, completionHandler: ((NSRunningApplication?, Error?) -> Void)? = nil) {
         if #available(macOS 10.15, *) {
             let config = NSWorkspace.OpenConfiguration()

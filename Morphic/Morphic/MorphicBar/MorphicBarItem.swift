@@ -61,7 +61,10 @@ public class MorphicBarItem {
             itemAsDictionary["label"] = extraItem.label
             itemAsDictionary["tooltipHeader"] = extraItem.tooltipHeader
             itemAsDictionary["tooltipText"] = extraItem.tooltipText
+            // for type: link
             itemAsDictionary["url"] = extraItem.url
+            // for type: action (from config.json file, not from custom bar web app schema)
+            itemAsDictionary["function"] = extraItem.function
 
             if let item_ = item(from: itemAsDictionary) {
                 items.append(item_)
@@ -85,13 +88,19 @@ public class MorphicBarItem {
                 return nil
             }
         case "action":
-            return createMorphicBarActionItem(interoperable: interoperable)
+            if let _ = interoperable["function"] {
+                // config.json (Windows-compatible) action item
+                return MorphicBarActionItem(interoperable: interoperable)
+            } else {
+                // Morphic for macOS-style action (control) item
+                return createMorphicBarActionControlItem(interoperable: interoperable)
+            }
         default:
             return nil
         }
     }
     
-    private static func createMorphicBarActionItem(interoperable: [String: Interoperable?]) -> MorphicBarItem? {
+    private static func createMorphicBarActionControlItem(interoperable: [String: Interoperable?]) -> MorphicBarItem? {
         // NOTE: argument 'label' should never be nil, but it was nil in all API call test results; as a practical matter this does not matter as we are not using the parameter in our implementation
                 
         guard let identifier = interoperable["identifier"] as? String else {
@@ -185,6 +194,52 @@ class MorphicBarLinkItem: MorphicBarItem {
     }
 }
 
+enum MorphicBarActionItemFunction: String {
+    case signOut
+}
+class MorphicBarActionItem: MorphicBarItem {
+    var label: String
+    var color: NSColor?
+    var function: MorphicBarActionItemFunction?
+     
+    // NOTE: realistically these should be failable initializers (which can return nil)
+    override init(interoperable: [String : Interoperable?]) {
+        // NOTE: argument 'label' should never be nil, but we use an empty string as a backup
+        label = interoperable.string(for: "label") ?? ""
+        //
+        if let colorAsString = interoperable.string(for: "color") {
+            color = NSColor.createFromRgbHexString(colorAsString)
+        } else {
+            color = nil
+        }
+        //
+        // NOTE: argument 'function' should never be nil
+        if let functionAsString = interoperable.string(for: "function") {
+            function = MorphicBarActionItemFunction(rawValue: functionAsString)
+        } else {
+            function = nil
+        }
+        
+        super.init(interoperable: interoperable)
+    }
+
+    override func view() -> MorphicBarItemViewProtocol? {
+        let view = MorphicBarButtonItemView(label: label, labelColor: nil, fillColor: color, icon: nil, iconColor: nil)
+        view.target = self
+        view.action = #selector(MorphicBarActionItem.callFunction(_:))
+        return view
+    }
+    
+    @objc
+    func callFunction(_ sender: Any?) {
+        if let function = self.function {
+            switch function {
+            case .signOut:
+                MorphicProcess.logOutUserViaOsaScriptWithConfirmation()
+            }
+        }
+    }
+}
 enum MorphicBarApplicationDefaultOption: String {
     case email
 }
