@@ -559,7 +559,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     //
     
     #if EDITION_BASIC
-    internal func resetSettings() {
+    internal func resetSettings(skipResetsWithUIAutomation: Bool = false) {
         // NOTE: we want to move these defaults to config.json, and we want to modify the solutions registry to allow _all_ settings to be specified, with defaults, in config.json.
 
         // default values
@@ -604,31 +604,34 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
         //
         // high contrast
-        var highContrastReset = false
-        SettingsManager.shared.capture(valueFor: .macosDisplayContrastEnabled) {
-            currentHighContrastIsEnabledAsInteroperable in
-            guard let currentHighContrastIsEnabled = currentHighContrastIsEnabledAsInteroperable as? Bool else {
-                // could not get current setting
-                fatalError()
-            }
-            //
-            if currentHighContrastIsEnabled != defaultHighContrastIsEnabled {
-                Session.shared.apply(defaultHighContrastIsEnabled, for: .macosDisplayContrastEnabled) {
-                    success in
-                    
-                    highContrastReset = true
-                    
-                    if success == false {
-                        // we do not currently have a mechanism to report success/failure
-                        NSLog("Could not set high contrast enabled state to default")
-                        assertionFailure("Could not set high contrast enabled state to default")
-                    }
+        if skipResetsWithUIAutomation == false {
+            var highContrastReset = false
+            SettingsManager.shared.capture(valueFor: .macosDisplayContrastEnabled) {
+                currentHighContrastIsEnabledAsInteroperable in
+                guard let currentHighContrastIsEnabled = currentHighContrastIsEnabledAsInteroperable as? Bool else {
+                    // could not get current setting
+                    fatalError()
                 }
-            } else {
-                highContrastReset = true
+                //
+                if currentHighContrastIsEnabled != defaultHighContrastIsEnabled {
+                    Session.shared.apply(defaultHighContrastIsEnabled, for: .macosDisplayContrastEnabled) {
+                        success in
+
+                        highContrastReset = true
+                        
+                        if success == false {
+                            // we do not currently have a mechanism to report success/failure
+                            NSLog("Could not set high contrast enabled state to default")
+                            assertionFailure("Could not set high contrast enabled state to default")
+                        }
+                    }
+                } else {
+                    highContrastReset = true
+                }
             }
+            // NOTE: as there's no good way to get the get/set functions for .macosDisplayContrastEnabled onto their own background thread, and as locking up the main thread is also not ideal, and as we are not fully capturing the success/failure of set for this setting...we are just letting highContrastReset run asynchronously for now (and not blocking this thread until it completes).
+//            AsyncUtils.syncWait(atMost: waitTimeForSettingCompletion, for: { highContrastReset == true })
         }
-        AsyncUtils.syncWait(atMost: waitTimeForSettingCompletion, for: { highContrastReset == true })
         //
         // dark mode
         let currrentAppearanceTheme = MorphicDisplayAppearance.currentAppearanceTheme
@@ -988,7 +991,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     #if EDITION_BASIC
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        var loginSessionIsClosing = false
+        var computerIsLoggingOutOrShuttingDown = false
         
         if let currentAppleEvent = NSAppleEventManager.shared().currentAppleEvent {
             if let quitReason = currentAppleEvent.attributeDescriptor(forKeyword: kAEQuitReason)?.typeCodeValue {
@@ -1000,17 +1003,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                      kAEShowShutdownDialog,
                      kAEShutDown:
                     // the system is logging out or shutting down
-                    loginSessionIsClosing = true
+                    computerIsLoggingOutOrShuttingDown = true
                 default:
                     // the user has quit the application
-                    loginSessionIsClosing = false
+                    computerIsLoggingOutOrShuttingDown = false
                 }
             }
         }
         
         // NOTE: if the login session is closing, consider any special precautions/procedures we need here
         if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
-            self.resetSettings()
+            self.resetSettings(skipResetsWithUIAutomation: computerIsLoggingOutOrShuttingDown)
         }
         
         // let the system know it's okay to terminate now
