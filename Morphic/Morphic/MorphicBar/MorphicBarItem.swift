@@ -784,6 +784,13 @@ class MorphicBarControlItem: MorphicBarItem {
 
     @objc
     func screensnip(_ sender: Any?) {
+        // verify that we have accessibility permissions (since UI automation and sendKeys will not work without them)
+        // NOTE: this function call will prompt the user for authorization if they have not already granted it
+        guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+            NSLog("User had not granted 'accessibility' authorization; user now prompted")
+            return
+        }
+
         var keyCode: CGKeyCode
         var keyOptions: MorphicInput.KeyOptions
         var hotKeyEnabled: Bool
