@@ -49,4 +49,47 @@ public class AsyncUtils {
         }
         check()
     }
+    
+    public static func syncWait(atMost: TimeInterval, for condition: @escaping () -> Bool) {
+        var conditionIsMet = false
+
+        let conditionLock = NSCondition()
+        conditionLock.lock()
+        defer {
+            conditionLock.unlock()
+        }
+        
+        guard !condition() else {
+            return
+        }
+        var checkTimer: Timer?
+        let timeoutTimer = Timer.scheduledTimer(withTimeInterval: atMost, repeats: false) {
+            _ in
+            checkTimer?.invalidate()
+            conditionIsMet = true
+            conditionLock.signal()
+        }
+        var checkInterval: TimeInterval = 0.1
+        var check: (() -> Void)!
+        check = {
+            checkTimer = Timer.scheduledTimer(withTimeInterval: checkInterval, repeats: false) {
+                _ in
+                if condition() {
+                    timeoutTimer.invalidate()
+                    conditionIsMet = true
+                    conditionLock.signal()
+                } else {
+                    checkInterval *= 2
+                    check()
+                }
+            }
+        }
+        check()
+
+        while conditionIsMet == false {
+            // NOTE: we use waitInterval for the extreme edge case that the condition was met in a timeslice between when we checked and when we started to wait
+            let waitInterval: TimeInterval = 0.1
+            conditionLock.wait(until: Date().addingTimeInterval(waitInterval))
+        }
+    }
 }

@@ -29,6 +29,8 @@ internal class ConfigurableFeatures
         case restore
     }
 
+    public var resetSettingsIsEnabled: Bool = false
+    
     public var morphicBarVisibilityAfterLogin: MorphicBarVisibilityAfterLoginOption? = nil
     public var morphicBarExtraItems: [AppDelegate.MorphicBarExtraItem] = []
 

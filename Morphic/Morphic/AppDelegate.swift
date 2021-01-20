@@ -81,6 +81,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             let commonConfiguration = self.getCommonConfiguration()
             ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin = commonConfiguration.morphicBarVisibilityAfterLogin
             ConfigurableFeatures.shared.morphicBarExtraItems = commonConfiguration.extraMorphicBarItems
+            ConfigurableFeatures.shared.resetSettingsIsEnabled = commonConfiguration.resetSettingsIsEnabled
             Session.shared.isCaptureAndApplyEnabled = commonConfiguration.cloudSettingsTransferIsEnabled
             Session.shared.isServerPreferencesSyncEnabled = true
         #elseif EDITION_COMMUNITY
@@ -95,6 +96,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         createEmptyDefaultPreferencesIfNotExist {
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
+                
+                if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
+                    self.resetSettings()
+                }
                 
                 self.copySettingsBetweenComputersMenuItem?.isHidden = (Session.shared.isCaptureAndApplyEnabled == false)
                 
@@ -402,6 +407,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             }
             //
             internal let cloudSettingsTransfer: EnabledFeature?
+            internal let resetSettings: EnabledFeature?
         }
         internal struct MorphicBarConfigSection: Decodable
         {
@@ -417,6 +423,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     #if EDITION_BASIC
         struct CommonConfigurationContents {
             public var cloudSettingsTransferIsEnabled: Bool = false
+            public var resetSettingsIsEnabled: Bool = false
             public var morphicBarVisibilityAfterLogin: ConfigurableFeatures.MorphicBarVisibilityAfterLoginOption? = nil
             public var extraMorphicBarItems: [MorphicBarExtraItem] = []
         }
@@ -426,6 +433,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             //
             // copy settings to/from cloud
             result.cloudSettingsTransferIsEnabled = true
+            //
+            // reset settings (to standard)
+            result.resetSettingsIsEnabled = false
             //
             // morphic bar (visibility and extra items)
             result.morphicBarVisibilityAfterLogin = nil
@@ -475,6 +485,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 result.cloudSettingsTransferIsEnabled = configFileCloudSettingsTransferIsEnabled
             }
             
+            // capture the reset settings (to standard) "is enabled" setting
+            if let configFileResetSettingsIsEnabled = decodedConfigFile.features?.resetSettings?.enabled {
+                result.resetSettingsIsEnabled = configFileResetSettingsIsEnabled
+            }
+
             // capture the desired after-login (autorun) visibility of the MorphicBar
             switch decodedConfigFile.morphicBar?.visibilityAfterLogin
             {
@@ -538,6 +553,87 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             return result
         }
     #endif
+    
+    //
+    
+    internal func resetSettings() {
+        // NOTE: we want to move these defaults to config.json, and we want to modify the solutions registry to allow _all_ settings to be specified, with defaults, in config.json.
+
+        // default values
+        let defaultColorFiltersIsEnabled = false
+        let defaultDarkModeIsEnabled = false
+        let defaultHighContrastIsEnabled = false
+        //
+        // NOTE: in the future, we should add logic to adjust by a relative %
+        let defaultDisplayZoomPercentage = 1.0
+        //
+        let defaultNightModeIsEnabled = false
+
+        // verify that settings are reset to their default values; if they are not, then set them now
+        // NOTE: we do these in an order that makes sense during logout (i.e. we try to do as much as we can before Windows wants to close us, so we push settings like screen scaling, dark mode and high contrast to the end since they take much longer to change)
+
+        // NOTE: ideally we should move capture and apply functions to an async/await-, promises- or Dispatch-based design.  The current design presents some risks of lockup and blocks the main thread.
+        
+        // NOTE: we should research why we use SettingsManager.shared for capture but Session.shared for apply.
+        
+        let waitTimeForSettingCompletion = TimeInterval(10) // 10 seconds max per setting
+        
+        // color filters
+        // we do not currently have a mechanism to report success/failure
+        let currentColorFiltersIsEnabled = MorphicDisplayAccessibilitySettings.colorFiltersEnabled
+        if currentColorFiltersIsEnabled != defaultColorFiltersIsEnabled {
+            MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(defaultColorFiltersIsEnabled)
+        }
+        //
+        // night mode
+        //
+        let currentNightModeIsEnabled = MorphicNightShift.getEnabled()
+        if currentNightModeIsEnabled != defaultNightModeIsEnabled {
+            MorphicNightShift.setEnabled(defaultNightModeIsEnabled)
+        }
+        //
+        // screen scaling
+        // NOTE: this zooms to 100% of the RECOMMENDED value, not 100% of native resolution
+        if let displayCurrentPercentage = Display.main?.currentPercentage {
+            if displayCurrentPercentage != defaultDisplayZoomPercentage {
+                _ = Display.main?.zoom(to: defaultDisplayZoomPercentage)
+            }
+        }
+        //
+        // high contrast
+        var highContrastReset = false
+        SettingsManager.shared.capture(valueFor: .macosDisplayContrastEnabled) {
+            currentHighContrastIsEnabledAsInteroperable in
+            guard let currentHighContrastIsEnabled = currentHighContrastIsEnabledAsInteroperable as? Bool else {
+                // could not get current setting
+                fatalError()
+            }
+            //
+            if currentHighContrastIsEnabled != defaultHighContrastIsEnabled {
+                Session.shared.apply(defaultHighContrastIsEnabled, for: .macosDisplayContrastEnabled) {
+                    success in
+                    
+                    highContrastReset = true
+                    
+                    if success == false {
+                        // we do not currently have a mechanism to report success/failure
+                        NSLog("Could not set high contrast enabled state to default")
+                        assertionFailure("Could not set high contrast enabled state to default")
+                    }
+                }
+            } else {
+                highContrastReset = true
+            }
+        }
+        AsyncUtils.syncWait(atMost: waitTimeForSettingCompletion, for: { highContrastReset == true })
+        //
+        // dark mode
+        let currrentAppearanceTheme = MorphicDisplayAppearance.currentAppearanceTheme
+        let defaultAppearanceTheme: MorphicDisplayAppearance.AppearanceTheme = defaultDarkModeIsEnabled ? .dark : .light
+        if currrentAppearanceTheme != defaultAppearanceTheme {
+            MorphicDisplayAppearance.setCurrentAppearanceTheme(defaultAppearanceTheme)
+        }
+    }
     
     //
     
@@ -865,13 +961,51 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             AsyncUtils.wait(atMost: TimeInterval(5), for: { saveIsComplete == true }) {
                 _ in
                 
+                if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
+                    self.resetSettings()
+                }
+
                 // shut down regardless of whether the save completed in two seconds or not; it should have saved within milliseconds...and we don't have any guards around apps terminating mid-save in any scenarios
                 NSApplication.shared.terminate(self)
             }
         } else {
+            if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
+                self.resetSettings()
+            }
+
             // shut down immediately
             NSApplication.shared.terminate(self)
         }
+    }
+    
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        var loginSessionIsClosing = false
+        
+        if let currentAppleEvent = NSAppleEventManager.shared().currentAppleEvent {
+            if let quitReason = currentAppleEvent.attributeDescriptor(forKeyword: kAEQuitReason)?.int32Value {
+                switch UInt32(quitReason) {
+                case kAELogOut,
+                     kAEReallyLogOut,
+                     kAEShowRestartDialog,
+                     kAERestart,
+                     kAEShowShutdownDialog,
+                     kAEShutDown:
+                    // the system is logging out or shutting down
+                    loginSessionIsClosing = true
+                default:
+                    // the user has quit the application
+                    loginSessionIsClosing = false
+                }
+            }
+        }
+        
+        // NOTE: if the login session is closing, consider any special precautions/procedures we need here
+        if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
+            self.resetSettings()
+        }
+        
+        // let the system know it's okay to terminate now
+        return .terminateNow
     }
     
     //
@@ -1019,7 +1153,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             success in
             
             // we do not currently have a mechanism to report success/failure
-            SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+            SettingsManager.shared.capture(valueFor: .macosColorFilterType) {
                 verifyColorFilterType in
                 guard let verifyColorFilterTypeAsInt = verifyColorFilterType as? Int else {
                     // could not get current setting
