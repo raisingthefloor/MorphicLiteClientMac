@@ -967,23 +967,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             // wait up to 5 seconds for save of our preferences to complete, then shut down
             AsyncUtils.wait(atMost: TimeInterval(5), for: { saveIsComplete == true }) {
                 _ in
-                
-                #if EDITION_BASIC
-                    if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
-                        self.resetSettings()
-                    }
-                #endif
 
                 // shut down regardless of whether the save completed in two seconds or not; it should have saved within milliseconds...and we don't have any guards around apps terminating mid-save in any scenarios
                 NSApplication.shared.terminate(self)
             }
         } else {
-            #if EDITION_BASIC
-                if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
-                    self.resetSettings()
-                }
-            #endif
-
             // shut down immediately
             NSApplication.shared.terminate(self)
         }
