@@ -991,8 +991,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         var loginSessionIsClosing = false
         
         if let currentAppleEvent = NSAppleEventManager.shared().currentAppleEvent {
-            if let quitReason = currentAppleEvent.attributeDescriptor(forKeyword: kAEQuitReason)?.int32Value {
-                switch UInt32(quitReason) {
+            if let quitReason = currentAppleEvent.attributeDescriptor(forKeyword: kAEQuitReason)?.typeCodeValue {
+                switch quitReason {
                 case kAELogOut,
                      kAEReallyLogOut,
                      kAEShowRestartDialog,
