@@ -582,10 +582,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         let waitTimeForSettingCompletion = TimeInterval(10) // 10 seconds max per setting
         
         // color filters
-        // we do not currently have a mechanism to report success/failure
-        let currentColorFiltersIsEnabled = MorphicDisplayAccessibilitySettings.colorFiltersEnabled
-        if currentColorFiltersIsEnabled != defaultColorFiltersIsEnabled {
-            MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(defaultColorFiltersIsEnabled)
+        if #available(macOS 10.15, *) {
+            // we do not currently have a mechanism to report success/failure
+            let currentColorFiltersIsEnabled = MorphicDisplayAccessibilitySettings.colorFiltersEnabled
+            if currentColorFiltersIsEnabled != defaultColorFiltersIsEnabled {
+                MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(defaultColorFiltersIsEnabled)
+            }
         }
         //
         // night mode
