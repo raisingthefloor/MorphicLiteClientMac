@@ -97,9 +97,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
                 
-                if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
-                    self.resetSettings()
-                }
+                #if EDITION_BASIC
+                    if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
+                        self.resetSettings()
+                    }
+                #endif
                 
                 self.copySettingsBetweenComputersMenuItem?.isHidden = (Session.shared.isCaptureAndApplyEnabled == false)
                 
@@ -556,6 +558,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     //
     
+    #if EDITION_BASIC
     internal func resetSettings() {
         // NOTE: we want to move these defaults to config.json, and we want to modify the solutions registry to allow _all_ settings to be specified, with defaults, in config.json.
 
@@ -634,6 +637,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             MorphicDisplayAppearance.setCurrentAppearanceTheme(defaultAppearanceTheme)
         }
     }
+    #endif
     
     //
     
@@ -961,23 +965,28 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             AsyncUtils.wait(atMost: TimeInterval(5), for: { saveIsComplete == true }) {
                 _ in
                 
-                if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
-                    self.resetSettings()
-                }
+                #if EDITION_BASIC
+                    if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
+                        self.resetSettings()
+                    }
+                #endif
 
                 // shut down regardless of whether the save completed in two seconds or not; it should have saved within milliseconds...and we don't have any guards around apps terminating mid-save in any scenarios
                 NSApplication.shared.terminate(self)
             }
         } else {
-            if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
-                self.resetSettings()
-            }
+            #if EDITION_BASIC
+                if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
+                    self.resetSettings()
+                }
+            #endif
 
             // shut down immediately
             NSApplication.shared.terminate(self)
         }
     }
     
+    #if EDITION_BASIC
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         var loginSessionIsClosing = false
         
@@ -1007,6 +1016,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         // let the system know it's okay to terminate now
         return .terminateNow
     }
+    #endif
     
     //
     
