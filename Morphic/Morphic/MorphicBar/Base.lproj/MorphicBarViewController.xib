@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17156" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17156"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="MorphicBarViewController" customModule="Morphic" customModuleProvider="target">
             <connections>
                 <outlet property="automaticallyStartMorphicAtLoginMenuItem" destination="iaW-3x-w8F" id="Wl6-iz-auk"/>
+                <outlet property="closeButton" destination="yBa-lK-zMh" id="RNG-Dn-QoL"/>
                 <outlet property="copySettingsBetweenComputersMenuItem" destination="nEi-ie-PQT" id="zTb-az-bTI"/>
                 <outlet property="hideQuickHelpMenuItem" destination="8gL-06-y2U" id="QqQ-nz-Q52"/>
                 <outlet property="loginMenuItem" destination="iGo-my-5Ga" id="7tj-Ss-QYR"/>
@@ -28,7 +29,7 @@
             <rect key="frame" x="0.0" y="0.0" width="440" height="58"/>
             <subviews>
                 <button translatesAutoresizingMaskIntoConstraints="NO" id="ead-JY-BhL" customClass="LogoButton" customModule="Morphic" customModuleProvider="target">
-                    <rect key="frame" x="389" y="7" width="44" height="44"/>
+                    <rect key="frame" x="372" y="7" width="44" height="44"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="44" id="Zbh-CS-oIG"/>
                         <constraint firstAttribute="height" constant="44" id="nDa-bv-gGW"/>
@@ -46,13 +47,29 @@
                     </connections>
                 </button>
                 <customView horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hJk-BO-TPf" customClass="MorphicBarView" customModule="Morphic" customModuleProvider="target">
-                    <rect key="frame" x="7" y="7" width="364" height="44"/>
+                    <rect key="frame" x="7" y="7" width="347" height="44"/>
                 </customView>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yBa-lK-zMh" customClass="CloseButton" customModule="Morphic" customModuleProvider="target">
+                    <rect key="frame" x="416" y="39" width="24" height="19"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="19" placeholder="YES" id="POe-qG-uPS"/>
+                        <constraint firstAttribute="width" constant="24" placeholder="YES" id="vNR-n9-BtF"/>
+                    </constraints>
+                    <buttonCell key="cell" type="square" title="X" bezelStyle="shadowlessSquare" alignment="center" imageScaling="proportionallyDown" inset="2" id="Se6-o3-3Hu">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="closeButtonPressed:" target="-2" id="cjb-aB-mNw"/>
+                    </connections>
+                </button>
             </subviews>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="yBa-lK-zMh" secondAttribute="trailing" id="23r-cc-Qon"/>
+                <constraint firstItem="yBa-lK-zMh" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" id="BXU-jS-Tbe"/>
+                <constraint firstItem="yBa-lK-zMh" firstAttribute="leading" secondItem="ead-JY-BhL" secondAttribute="trailing" placeholder="YES" id="Khe-HI-l1K"/>
                 <constraint firstItem="ead-JY-BhL" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="7" placeholder="YES" id="MMq-9i-bl2"/>
-                <constraint firstAttribute="trailing" secondItem="ead-JY-BhL" secondAttribute="trailing" constant="7" placeholder="YES" id="PeV-mu-cPY"/>
-                <constraint firstItem="hJk-BO-TPf" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="7" id="T5H-0J-mCf"/>
+                <constraint firstItem="hJk-BO-TPf" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="7" placeholder="YES" id="T5H-0J-mCf"/>
                 <constraint firstItem="hJk-BO-TPf" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="7" id="WCk-Cp-tfU"/>
                 <constraint firstItem="ead-JY-BhL" firstAttribute="leading" secondItem="hJk-BO-TPf" secondAttribute="trailing" constant="18" placeholder="YES" id="X7I-GO-sbl"/>
                 <constraint firstAttribute="bottom" secondItem="hJk-BO-TPf" secondAttribute="bottom" constant="7" placeholder="YES" id="pJY-6a-tbR"/>

@@ -38,6 +38,9 @@ public class MorphicBarViewController: NSViewController {
     //
     @IBOutlet weak var turnOffKeyRepeatMenuItem: NSMenuItem!
     
+    /// The close button
+    @IBOutlet weak var closeButton: CloseButton!
+
     // MARK: - View Lifecycle
 
     public override func viewDidLoad() {
@@ -124,8 +127,20 @@ public class MorphicBarViewController: NSViewController {
             morphicBarView?.orientation = self.orientation
         }
     }
+    
+    private let closeButtonVisible = true
 
     private func updateConstraints() {
+        // first, configure the close button (on or off); we'll add it to the constraint list in the orientation switch logic below
+        closeButtonWidthConstraint?.isActive = false
+        if closeButtonVisible == true {
+            closeButtonWidthConstraint = NSLayoutConstraint(item: closeButton!, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 24)
+            closeButtonHeightConstraint = NSLayoutConstraint(item: closeButton!, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 19)
+        } else {
+            closeButtonWidthConstraint = NSLayoutConstraint(item: closeButton!, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
+            closeButtonHeightConstraint = NSLayoutConstraint(item: closeButton!, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
+        }
+        
         switch orientation {
         case .horizontal:
             // deactivate the vertical constraints
@@ -133,47 +148,59 @@ public class MorphicBarViewController: NSViewController {
             logoButtonToViewVerticalCenterXConstraint?.isActive = false
             viewToMorphicBarViewVerticalTrailingConstraint?.isActive = false
             viewToLogoButtonVerticalBottomConstraint?.isActive = false
+            morphicBarViewToCloseButtonVerticalTopConstraint?.isActive = false
 
             // deactivate any old copies of our horizontal constraints
             logoButtonToMorphicBarViewHorizontalLeadingConstraint?.isActive = false
             logoButtonToViewHorizontalTopConstraint?.isActive = false
-            viewToLogoButtonHorizontalTrailingConstraint?.isActive = false
+            closeButtonToLogoButtonHorizontalLeadingConstraint?.isActive = false
             viewToMorphicBarViewHorizontalBottomConstraint?.isActive = false
+            morphicBarViewToViewHorizontalTopConstraint?.isActive = false
 
             logoButtonToMorphicBarViewHorizontalLeadingConstraint = NSLayoutConstraint(item: logoButton!, attribute: .leading, relatedBy: .equal, toItem: morphicBarView!, attribute: .trailing, multiplier: 1, constant: 18)
             logoButtonToViewHorizontalTopConstraint = NSLayoutConstraint(item: logoButton!, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 7)
-            viewToLogoButtonHorizontalTrailingConstraint = NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: logoButton!, attribute: .trailing, multiplier: 1, constant: 7)
+            closeButtonToLogoButtonHorizontalLeadingConstraint = NSLayoutConstraint(item: closeButton!, attribute: .leading, relatedBy: .equal, toItem: logoButton!, attribute: .trailing, multiplier: 1, constant: (closeButtonVisible == true ? 0 : 7))
             viewToMorphicBarViewHorizontalBottomConstraint = NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: morphicBarView!, attribute: .bottom, multiplier: 1, constant: 7)
+            morphicBarViewToViewHorizontalTopConstraint = NSLayoutConstraint(item: morphicBarView!, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 7)
 
             self.view.addConstraints([
                 logoButtonToMorphicBarViewHorizontalLeadingConstraint!,
                 logoButtonToViewHorizontalTopConstraint!,
-                viewToLogoButtonHorizontalTrailingConstraint!,
-                viewToMorphicBarViewHorizontalBottomConstraint!
+                closeButtonToLogoButtonHorizontalLeadingConstraint!,
+                viewToMorphicBarViewHorizontalBottomConstraint!,
+                morphicBarViewToViewHorizontalTopConstraint!,
+                closeButtonWidthConstraint!,
+                closeButtonHeightConstraint!
             ])
         case .vertical:
             // deactivate the horizontal constraints
             logoButtonToMorphicBarViewHorizontalLeadingConstraint?.isActive = false
             logoButtonToViewHorizontalTopConstraint?.isActive = false
-            viewToLogoButtonHorizontalTrailingConstraint?.isActive = false
+            closeButtonToLogoButtonHorizontalLeadingConstraint?.isActive = false
             viewToMorphicBarViewHorizontalBottomConstraint?.isActive = false
+            morphicBarViewToViewHorizontalTopConstraint?.isActive = false
 
             // deactivate any old copies of our vertical constraints
             logoButtonToMorphicBarViewVerticalTopConstraint?.isActive = false
             logoButtonToViewVerticalCenterXConstraint?.isActive = false
             viewToMorphicBarViewVerticalTrailingConstraint?.isActive = false
             viewToLogoButtonVerticalBottomConstraint?.isActive = false
+            morphicBarViewToCloseButtonVerticalTopConstraint?.isActive = false 
             
             logoButtonToMorphicBarViewVerticalTopConstraint = NSLayoutConstraint(item: logoButton!, attribute: .top, relatedBy: .equal, toItem: morphicBarView!, attribute: .bottom, multiplier: 1, constant: 18)
             logoButtonToViewVerticalCenterXConstraint = NSLayoutConstraint(item: logoButton!, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
             viewToMorphicBarViewVerticalTrailingConstraint = NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: morphicBarView!, attribute: .trailing, multiplier: 1, constant: 7)
             viewToLogoButtonVerticalBottomConstraint = NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: logoButton!, attribute: .bottom, multiplier: 1, constant: 7)
+            morphicBarViewToCloseButtonVerticalTopConstraint = NSLayoutConstraint(item: morphicBarView!, attribute: .top, relatedBy: .equal, toItem: closeButton!, attribute: .bottom, multiplier: 1, constant: 7)
 
             self.view.addConstraints([
                 logoButtonToMorphicBarViewVerticalTopConstraint!,
                 logoButtonToViewVerticalCenterXConstraint!,
                 viewToMorphicBarViewVerticalTrailingConstraint!,
-                viewToLogoButtonVerticalBottomConstraint!
+                viewToLogoButtonVerticalBottomConstraint!,
+                morphicBarViewToCloseButtonVerticalTopConstraint!,
+                closeButtonWidthConstraint!,
+                closeButtonHeightConstraint!
             ])
         }
     }
@@ -188,10 +215,16 @@ public class MorphicBarViewController: NSViewController {
     var logoButtonToMorphicBarViewVerticalTopConstraint : NSLayoutConstraint?
     var logoButtonToViewHorizontalTopConstraint : NSLayoutConstraint?
     var logoButtonToViewVerticalCenterXConstraint: NSLayoutConstraint?
-    var viewToLogoButtonHorizontalTrailingConstraint : NSLayoutConstraint?
+    var closeButtonToLogoButtonHorizontalLeadingConstraint: NSLayoutConstraint?
+    //
     var viewToLogoButtonVerticalBottomConstraint: NSLayoutConstraint?
     var viewToMorphicBarViewHorizontalBottomConstraint: NSLayoutConstraint?
     var viewToMorphicBarViewVerticalTrailingConstraint: NSLayoutConstraint?
+    var morphicBarViewToViewHorizontalTopConstraint: NSLayoutConstraint?
+    var morphicBarViewToCloseButtonVerticalTopConstraint: NSLayoutConstraint?
+    //
+    var closeButtonWidthConstraint: NSLayoutConstraint?
+    var closeButtonHeightConstraint: NSLayoutConstraint?
 
     /// The items that should be shown on the MorphicBar
     public var items = [MorphicBarItem]() {
@@ -229,9 +262,154 @@ public class MorphicBarViewController: NSViewController {
         if let logoButton = self.logoButton {
             result.append(logoButton)
         }
+        // NOTE: we intentionally do _not_ add the closeButton to our list of accessibility children (as cmd+w will close the window)
         return result
     }
 
+    @IBAction func closeButtonPressed(_ sender: NSButton) {
+        AppDelegate.shared.hideMorphicBar(nil)
+    }
+}
+
+
+
+class CloseButton: NSButton {
+    private var boundsTrackingArea: NSTrackingArea!
+    
+    private var isMouseHovering = false
+    
+    private let standardBackgroundColor: CGColor? = nil
+    private let standardForegroundColor: CGColor = CGColor(red: 0x80 / 255.0, green: 0x80 / 255.0, blue: 0x80 / 255.0, alpha: 0xFF / 255.0)
+    private var standardImage: NSImage!
+    //
+    private let hoverBackgroundColor: CGColor = CGColor(red: 0xE4 / 255.0, green: 0x14 / 255.0, blue: 0x2C / 255.0, alpha: 0xFF / 255.0)
+    private let hoverForegroundColor: CGColor = CGColor.white
+    private var hoverImage: NSImage!
+    //
+    private let pressedBackgroundColor: CGColor = CGColor(red: 0xF1 / 255.0, green: 0x70 / 255.0, blue: 0x7A / 255.0, alpha: 0xFF / 255.0)
+    private let pressedForegroundColor: CGColor = CGColor.white
+    private var pressedImage: NSImage!
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+
+        // remove placeholder title
+        self.title = ""
+        self.imageScaling = .scaleNone
+        self.imagePosition = .imageOnly
+        
+        // set up images
+        self.standardImage = self.closeButtonImage(color: self.standardForegroundColor)
+        self.hoverImage = self.closeButtonImage(color: self.hoverForegroundColor)
+        self.pressedImage = self.closeButtonImage(color: self.pressedForegroundColor)
+
+        redrawButton()
+    }
+    
+    private func closeButtonImage(color: CGColor) -> NSImage? {
+        let imageWidth = 11
+        let imageHeight = 12
+        //
+        let imageXOffset = 1
+        let imageWidthPadding = 1 // used to shift X, to correct centering issues; must be >= imageXOffset
+        //
+        let imageYOffset = 1
+        let imageHeightPadding = 1 // used to shift S, to correct centering issues; must be >= imageYOffset
+        //
+        let topLeft = NSPoint(x: 0 + imageXOffset, y: imageHeight - 1 + imageYOffset)
+        let topRight = NSPoint(x: imageWidth - 1 + imageXOffset, y: imageHeight - 1 + imageYOffset)
+        let bottomLeft = NSPoint(x: 0 + imageXOffset, y: 0 + imageYOffset)
+        let bottomRight = NSPoint(x: imageWidth - 1 + imageXOffset, y: 0 + imageYOffset)
+
+        let image = NSImage(size: NSSize(width: imageWidth + imageWidthPadding, height: imageHeight + imageHeightPadding))
+        image.lockFocus()
+
+        guard let cgContext = NSGraphicsContext.current?.cgContext else {
+            return nil
+        }
+
+        cgContext.setLineWidth(1)
+        cgContext.setStrokeColor(color)
+        
+        cgContext.beginPath()
+        cgContext.move(to: topLeft)
+        cgContext.addLine(to: bottomRight)
+        cgContext.closePath()
+        //
+        cgContext.move(to: bottomLeft)
+        cgContext.addLine(to: topRight)
+        cgContext.closePath()
+        cgContext.strokePath()
+
+        image.unlockFocus()
+
+        return image
+    }
+
+    override func becomeFirstResponder() -> Bool {
+        // do not accept first responder status
+        return false
+    }
+    
+    override func mouseEntered(with event: NSEvent) {
+        self.isMouseHovering = true
+        self.redrawButton()
+        
+        super.mouseEntered(with: event)
+    }
+    
+    override func mouseExited(with event: NSEvent) {
+        self.isMouseHovering = false
+        self.redrawButton()
+
+        super.mouseExited(with: event)
+    }
+    
+    override func mouseDown(with event: NSEvent) {
+        self.redrawButton()
+
+        super.mouseDown(with: event)
+    }
+
+    override func mouseUp(with event: NSEvent) {
+        self.redrawButton()
+
+        super.mouseUp(with: event)
+    }
+    
+    private func redrawButton() {
+        var isMouseDown = false
+        if NSEvent.pressedMouseButtons & 0b01 != 0 {
+            isMouseDown = true
+        }
+        
+        if self.isMouseHovering == true {
+            if isMouseDown == true {
+                self.image = self.pressedImage
+                self.layer?.backgroundColor = self.pressedBackgroundColor
+            } else {
+                self.image = self.hoverImage
+                self.layer?.backgroundColor = self.hoverBackgroundColor
+            }
+        } else {
+            self.image = self.standardImage
+            self.layer?.backgroundColor = self.standardBackgroundColor
+        }
+    }
+    
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        createBoundsTrackingArea()
+    }
+
+    private func createBoundsTrackingArea() {
+        if self.boundsTrackingArea != nil {
+            removeTrackingArea(self.boundsTrackingArea)
+        }
+        //
+        self.boundsTrackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
+        addTrackingArea(self.boundsTrackingArea)
+    }
 }
 
 class LogoButton: NSButton {
