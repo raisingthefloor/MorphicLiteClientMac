@@ -23,12 +23,20 @@
 
 internal class ConfigurableFeatures
 {
-    enum MorphicBarVisibilityAfterLoginOption {
+    public enum AutorunConfigOption
+    {
+        case disabled
+        case allLocalUsers
+        case currentUser
+    }
+
+    public enum MorphicBarVisibilityAfterLoginOption {
         case show
         case hide
         case restore
     }
 
+    public var autorunConfig: AutorunConfigOption? = nil 
     public var resetSettingsIsEnabled: Bool = false
     
     public var morphicBarVisibilityAfterLogin: MorphicBarVisibilityAfterLoginOption? = nil
