@@ -265,9 +265,9 @@ stages:
             targetType: 'filePath'
             filePath: push-to-s3.sh
 
-  - stage: Publish auto-update
+  - stage: autoupdate
     jobs:
-      - job: publish_autoupdate
+      - job: autoupdate
         pool:
           vmImage: "ubuntu-18.04"
         steps:
