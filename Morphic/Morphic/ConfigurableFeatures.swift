@@ -36,7 +36,8 @@ internal class ConfigurableFeatures
         case restore
     }
 
-    public var autorunConfig: AutorunConfigOption? = nil 
+    public var autorunConfig: AutorunConfigOption? = nil
+    public var checkForUpdatesIsEnabled: Bool = false 
     public var resetSettingsIsEnabled: Bool = false
     
     public var morphicBarVisibilityAfterLogin: MorphicBarVisibilityAfterLoginOption? = nil
