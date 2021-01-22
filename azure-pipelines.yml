@@ -260,6 +260,10 @@ steps:
   inputs:
     targetType: 'filePath'
     filePath: push-to-s3.sh
+
+pool:
+  vmImage: "ubuntu-18.04"
+steps:
 - task: Bash@3
   displayName: Publish auto-update files to AWS S3
   env:
