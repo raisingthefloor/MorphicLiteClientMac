@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17156" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17156"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner"/>
         <customObject id="ZNk-5q-oDb" customClass="AppDelegate" customModule="Morphic" customModuleProvider="target">
             <connections>
-                <outlet property="automaticallyStartMorphicMenuItem" destination="Ir1-cH-h7Z" id="qjx-8X-a5H"/>
+                <outlet property="automaticallyStartMorphicAtLoginMenuItem" destination="Ir1-cH-h7Z" id="o0E-FB-fVt"/>
                 <outlet property="copySettingsBetweenComputersMenuItem" destination="WUC-ZR-CdM" id="vlM-8I-iQP"/>
                 <outlet property="hideMorphicBarMenuItem" destination="gOm-Gw-nLp" id="f86-ih-DaC"/>
                 <outlet property="hideQuickHelpMenuItem" destination="v0X-Ch-Q5h" id="Xc2-0F-awk"/>

@@ -106,6 +106,9 @@ public class MorphicBarViewController: NSViewController {
     
     private func updateMainMenu() {
         #if EDITION_BASIC
+            if let _ = ConfigurableFeatures.shared.autorunConfig {
+                self.automaticallyStartMorphicAtLoginMenuItem.isHidden = true
+            }
             if let _ = ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin {
                 self.showMorphicBarAtStartMenuItem.isHidden = true
             }

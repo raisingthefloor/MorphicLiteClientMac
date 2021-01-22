@@ -43,7 +43,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBOutlet weak var logoutMenuItem: NSMenuItem?
     @IBOutlet weak var selectCommunityMenuItem: NSMenuItem!
     
-    @IBOutlet weak var automaticallyStartMorphicMenuItem: NSMenuItem!
+    @IBOutlet weak var automaticallyStartMorphicAtLoginMenuItem: NSMenuItem!
     @IBOutlet weak var showMorphicBarAtStartMenuItem: NSMenuItem!
     @IBOutlet weak var hideQuickHelpMenuItem: NSMenuItem!
 
@@ -81,6 +81,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             let commonConfiguration = self.getCommonConfiguration()
             ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin = commonConfiguration.morphicBarVisibilityAfterLogin
             ConfigurableFeatures.shared.morphicBarExtraItems = commonConfiguration.extraMorphicBarItems
+            ConfigurableFeatures.shared.autorunConfig = commonConfiguration.autorunConfig
             ConfigurableFeatures.shared.resetSettingsIsEnabled = commonConfiguration.resetSettingsIsEnabled
             Session.shared.isCaptureAndApplyEnabled = commonConfiguration.cloudSettingsTransferIsEnabled
             Session.shared.isServerPreferencesSyncEnabled = true
@@ -215,6 +216,24 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     if (Session.shared.user == nil) {
                         self.launchConfigurator(argument: "login")
                     }
+                #endif
+                
+                #if EDITION_BASIC
+                switch ConfigurableFeatures.shared.autorunConfig {
+                case nil:
+                    // if this is our first run and autorunAfterLogin is not configured via config.json, configure the system to autorun Morphic after login
+                    // NOTE: consider moving this logic to the first time that a bar is shown (so that we don't re-prompt users to log in when their computer turns on if they're logged out...unless they've already logged in at least once)
+                    let didSetInitialAutorunAfterLoginEnabled = Session.shared.bool(for: .morphicDidSetInitialAutorunAfterLoginEnabled) ?? false
+                    if didSetInitialAutorunAfterLoginEnabled == false {
+                        self.setInitialAutorunAfterLoginEnabled()
+                    }
+                case .currentUser:
+                    _ = self.setMorphicAutostartAtLogin(true)
+                case .allLocalUsers,
+                     .disabled:
+                    // if autorunAfterLogin is set to "disabled" or to "allLocalUsers", we should _not_ launch Morphic via MorphicLauncher (i.e. not using SMLoginItemSetEnabled); if the administrator wants to run Morphic automatically after login system-wide (all users), they should configure Morphic as a global Launch Item.
+                    _ = self.setMorphicAutostartAtLogin(false)
+                }
                 #endif
                 
                 // if the user has already configured settings which we set defaults for, make sure we don't change those settings
@@ -405,9 +424,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         {
             internal struct EnabledFeature: Decodable
             {
-                public let enabled: Bool
+                public let enabled: Bool?
+                public let scope: String?
             }
             //
+            internal let autorunAfterLogin: EnabledFeature?
             internal let cloudSettingsTransfer: EnabledFeature?
             internal let resetSettings: EnabledFeature?
         }
@@ -424,6 +445,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
     #if EDITION_BASIC
         struct CommonConfigurationContents {
+            public var autorunConfig: ConfigurableFeatures.AutorunConfigOption? = nil
             public var cloudSettingsTransferIsEnabled: Bool = false
             public var resetSettingsIsEnabled: Bool = false
             public var morphicBarVisibilityAfterLogin: ConfigurableFeatures.MorphicBarVisibilityAfterLoginOption? = nil
@@ -432,6 +454,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         func getCommonConfiguration() -> CommonConfigurationContents {
             // set up default configuration
             var result = CommonConfigurationContents()
+            //
+            // autorun
+            result.autorunConfig = nil
             //
             // copy settings to/from cloud
             result.cloudSettingsTransferIsEnabled = true
@@ -480,6 +505,30 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
                 os_log(.error, log: logger, "Unknown config file version")
                 return result
+            }
+            
+            // capture the autorun setting
+            if let configFileAutorunAfterLoginIsEnabled = decodedConfigFile.features?.autorunAfterLogin?.enabled {
+                if configFileAutorunAfterLoginIsEnabled == false {
+                    result.autorunConfig = ConfigurableFeatures.AutorunConfigOption.disabled
+                } else {
+                    switch decodedConfigFile.features?.autorunAfterLogin?.scope {
+                    case "allLocalUsers":
+                        result.autorunConfig = .allLocalUsers
+                        break
+                    case "currentUser":
+                        result.autorunConfig = .currentUser
+                        break
+                    case nil:
+                        // no scope present; use the default scope
+                        break
+                    default:
+                        // sorry, we don't understand this scope setting
+                        // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
+                        os_log(.error, log: logger, "Unknown autorunAfterLogin scope")
+                        return result
+                    }
+                }
             }
             
             // capture the cloud settings transfer "is enabled" setting
@@ -1026,7 +1075,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     func updateMorphicAutostartAtLoginMenuItems() {
         let autostartAtLogin = self.morphicAutostartAtLogin()
-        automaticallyStartMorphicMenuItem?.state = (autostartAtLogin ? .on : .off)
+        automaticallyStartMorphicAtLoginMenuItem?.state = (autostartAtLogin ? .on : .off)
         morphicBarWindow?.morphicBarViewController.automaticallyStartMorphicAtLoginMenuItem.state = (autostartAtLogin ? .on : .off)
     }
     
@@ -1082,7 +1131,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         
         // update the appropriate menu items to match
         if success == true {
-            automaticallyStartMorphicMenuItem?.state = (autostartAtLogin ? .on : .off)
+            automaticallyStartMorphicAtLoginMenuItem?.state = (autostartAtLogin ? .on : .off)
             morphicBarWindow?.morphicBarViewController.automaticallyStartMorphicAtLoginMenuItem.state = (autostartAtLogin ? .on : .off)
         }
         
@@ -1214,6 +1263,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
+    func setInitialAutorunAfterLoginEnabled() {
+        _ = setMorphicAutostartAtLogin(true)
+        
+        Session.shared.set(true, for: .morphicDidSetInitialAutorunAfterLoginEnabled)
+    }
+
     //
     
     private var menuModifierKeyObserver: CFRunLoopObserver? = nil
@@ -1485,6 +1540,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     private func updateMenu() {
         #if EDITION_BASIC
+            if let _ = ConfigurableFeatures.shared.autorunConfig {
+                self.automaticallyStartMorphicAtLoginMenuItem.isHidden = true
+            }
             if let _ = ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin {
                 self.showMorphicBarAtStartMenuItem.isHidden = true
             }

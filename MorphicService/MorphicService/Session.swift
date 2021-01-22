@@ -925,4 +925,5 @@ public extension Preferences.Key {
 public extension Preferences.Key {
     static var morphicDidSetInitialColorFilterType = Preferences.Key(solution: "org.raisingthefloor.morphic.didInitialSet", preference: "colorFilterType")
     static var morphicDidSetInitialMagnifierZoomStyle = Preferences.Key(solution: "org.raisingthefloor.morphic.didInitialSet", preference: "magnifierZoomStyle")
+    static var morphicDidSetInitialAutorunAfterLoginEnabled = Preferences.Key(solution: "org.raisingthefloor.morphic.didInitialSet", preference: "autorunAfterLoginEnabled")
 }
