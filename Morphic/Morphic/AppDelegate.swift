@@ -91,9 +91,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             Session.shared.isServerPreferencesSyncEnabled = false
         #endif
         
+        #if EDITION_BASIC
         if ConfigurableFeatures.shared.checkForUpdatesIsEnabled == true {
             self.startCheckingForUpdates()
         }
+        #endif
 
         os_log(.info, log: logger, "opening morphic session...")
         populateSolutions()
