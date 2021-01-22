@@ -82,12 +82,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin = commonConfiguration.morphicBarVisibilityAfterLogin
             ConfigurableFeatures.shared.morphicBarExtraItems = commonConfiguration.extraMorphicBarItems
             ConfigurableFeatures.shared.autorunConfig = commonConfiguration.autorunConfig
+            ConfigurableFeatures.shared.checkForUpdatesIsEnabled = commonConfiguration.checkForUpdatesIsEnabled
             ConfigurableFeatures.shared.resetSettingsIsEnabled = commonConfiguration.resetSettingsIsEnabled
             Session.shared.isCaptureAndApplyEnabled = commonConfiguration.cloudSettingsTransferIsEnabled
             Session.shared.isServerPreferencesSyncEnabled = true
         #elseif EDITION_COMMUNITY
             Session.shared.isCaptureAndApplyEnabled = false
             Session.shared.isServerPreferencesSyncEnabled = false
+        #endif
+        
+        #if EDITION_BASIC
+        if ConfigurableFeatures.shared.checkForUpdatesIsEnabled == true {
+            self.startCheckingForUpdates()
+        }
         #endif
 
         os_log(.info, log: logger, "opening morphic session...")
@@ -429,6 +436,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             }
             //
             internal let autorunAfterLogin: EnabledFeature?
+            internal let checkForUpdates: EnabledFeature?
             internal let cloudSettingsTransfer: EnabledFeature?
             internal let resetSettings: EnabledFeature?
         }
@@ -446,6 +454,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     #if EDITION_BASIC
         struct CommonConfigurationContents {
             public var autorunConfig: ConfigurableFeatures.AutorunConfigOption? = nil
+            public var checkForUpdatesIsEnabled: Bool = false
             public var cloudSettingsTransferIsEnabled: Bool = false
             public var resetSettingsIsEnabled: Bool = false
             public var morphicBarVisibilityAfterLogin: ConfigurableFeatures.MorphicBarVisibilityAfterLoginOption? = nil
@@ -457,6 +466,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             //
             // autorun
             result.autorunConfig = nil
+            //
+            // check for updates
+            result.checkForUpdatesIsEnabled = true
             //
             // copy settings to/from cloud
             result.cloudSettingsTransferIsEnabled = true
@@ -531,6 +543,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 }
             }
             
+            // capture the check for updates "is enabled" setting
+            if let configFileCheckForUpdatesIsEnabled = decodedConfigFile.features?.checkForUpdates?.enabled {
+                result.checkForUpdatesIsEnabled = configFileCheckForUpdatesIsEnabled
+            }
+
             // capture the cloud settings transfer "is enabled" setting
             if let configFileCloudSettingsTransferIsEnabled = decodedConfigFile.features?.cloudSettingsTransfer?.enabled {
                 result.cloudSettingsTransferIsEnabled = configFileCloudSettingsTransferIsEnabled
@@ -604,6 +621,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             return result
         }
     #endif
+    
+    // MARK: - Updates
+    
+    private func startCheckingForUpdates() {
+	// TODO: check for updates
+    }
     
     //
     
