@@ -260,3 +260,43 @@ steps:
   inputs:
     targetType: 'filePath'
     filePath: push-to-s3.sh
+- task: Bash@3
+  displayName: Publish auto-update files to AWS S3
+  env:
+    AWS_ACCESS_KEY_ID: $(accessKey)
+    AWS_SECRET_ACCESS_KEY: $(secretKey)
+    BUCKET: $(bucket)
+    AWS_DEFAULT_REGION: $(region)
+    BRANCH: $(Build.SourceBranch)
+    BRANCH_NAME: $(Build.SourceBranchName)
+  inputs:
+    targetType: 'inline'
+    script: |
+      set -e
+      set -x
+
+      EXTRA_ARGS=""
+      S3_OBJECT_PREFIX=""
+
+      EXTRA_ARGS="--expires $(date -d '+21 days' --iso-8601=seconds)"
+      S3_OBJECT_PREFIX="osx/edge"
+
+      S3_PUBLISHED_HTTP_URL="https://d23vryjv7k8eyb.cloudfront.net"
+
+      LOCAL_APPCAST_SOURCE="${AGENT_BUILDDIRECTORY}/MorphicBasic-v1.$(Build.BuildNumber).appcast.xml"
+      S3_MSI_OBJECT_NAME="${S3_OBJECT_PREFIX}/MorphicBasic-v1.$(Build.BuildNumber).msi"
+      S3_APPCAST_OBJECT_NAME="${S3_OBJECT_PREFIX}/MorphicBasic-v1.$(Build.BuildNumber).appcast.xml"
+
+      cat > "${LOCAL_APPCAST_SOURCE}" <<EOF
+      <?xml version="1.0" encoding="utf-8"?>
+      <item>
+          <version>1.$(Build.BuildNumber)</version>
+          <url>${S3_PUBLISHED_HTTP_URL}/${S3_MSI_OBJECT_NAME}</url>
+      </item>
+      EOF
+
+      echo ${S3_PUBLISHED_HTTP_URL}/${S3_APPCAST_OBJECT_NAME}
+      cat "${LOCAL_APPCAST_SOURCE}"
+
+      ls -al ${AGENT_BUILDDIRECTORY}
+      aws s3 cp $EXTRA_ARGS "${LOCAL_APPCAST_SOURCE}" "s3://${BUCKET}/${S3_APPCAST_OBJECT_NAME}"
