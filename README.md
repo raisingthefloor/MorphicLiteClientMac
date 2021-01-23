@@ -3,7 +3,7 @@ Getting Started
 
 Open up `Morphic.xcworkspace` to see all of the related macOS projects.
 
-For debugging, you'll want to run the `MorphicMenuBar` scheme in XCode.
+For debugging, you'll want to run the `Morphic` scheme in XCode.
 
 Project Organization
 ==========
