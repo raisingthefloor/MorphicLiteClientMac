@@ -52,6 +52,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     private var voiceOverEnabledObservation: NSKeyValueObservation?
     private var appleKeyboardUIModeObservation: NSKeyValueObservation?
 
+    let appCastUrl = URL(string: "https://app.morphic.org/autoupdate/morphic-macos.appcast.xml")!
+
     // MARK: - Application Lifecycle
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -92,9 +94,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         #endif
         
         #if EDITION_BASIC
-        if ConfigurableFeatures.shared.checkForUpdatesIsEnabled == true {
-            self.startCheckingForUpdates()
-        }
+	    #if DEBUG
+	    	// do not run the auto-updater checks in debug mode
+	    #else
+                if ConfigurableFeatures.shared.checkForUpdatesIsEnabled == true {
+		    Autoupdater.startCheckingForUpdates(url: self.appCastUrl)
+	    	}
+	    #endif
         #endif
 
         os_log(.info, log: logger, "opening morphic session...")
