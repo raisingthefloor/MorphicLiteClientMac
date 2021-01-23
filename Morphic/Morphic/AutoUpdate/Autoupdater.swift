@@ -42,7 +42,10 @@ internal struct Autoupdater {
             }
 
             // compare version to our current version
-            let currentVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
+            guard let currentVersion = self.compositeVersion() else {
+                assertionFailure("Could not create composite version tag")
+                return
+            }
             guard let comparisonResult = Autoupdater.compareVersions(version, currentVersion) else {
                 // error (generally in string formatting); abort and we'll try again the next time
                 return
@@ -65,6 +68,26 @@ internal struct Autoupdater {
                 Autoupdater.updateAvailableWindow.showWindow(nil)
             }
         }
+    }
+    
+    private static func compositeVersion() -> String? {
+        // create a composite tag indicating the version of this build of our software (to match the version #s used by the autoupdate files)
+        
+        // version # (major.minor)
+        guard let shortVersionAsString = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else {
+            return nil
+        }
+        // build # (build.revision...which the build pipelines treat as minor.patch)
+        guard let buildAsString = Bundle.main.infoDictionary?["CFBundleVersion" as String] as? String else {
+            return nil
+        }
+
+        // capture the major version for the version #
+        guard let majorVersionAsString = shortVersionAsString.split(separator: ".").first else {
+            return nil
+        }
+        
+        return majorVersionAsString + "." + buildAsString
     }
     
     private enum CompareVersionResult {
