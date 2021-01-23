@@ -8,13 +8,14 @@ For debugging, you'll want to run the `MorphicMenuBar` scheme in XCode.
 Project Organization
 ==========
 
-The Morphic macOS client consists of a native mac application,
+Morphic for macOS is a native macOS application,
+
 [MorphicMenuBar](MorphicMenuBar):
 
 * Runs as an icon the system menu bar without a Dock presence
-* When the user clicks the icon, they see a Quick Strip
+* When the user clicks the icon, they see a MorphicBar
 * An embedded application, [MorphicConfigurator](MorphicMenuBar/MorphicConfigurator)
-  can open to handle first-time-setup tasks or other taks inappropriate for the Quick Strip
+  can open to handle first-run setup tasks or other tasks inappropriate for the MorphicBar
 
 
 A collection of Frameworks support the application:
