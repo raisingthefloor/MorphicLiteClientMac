@@ -42,11 +42,11 @@ internal struct Autoupdater {
             }
 
             // compare version to our current version
-            guard let currentVersion = self.compositeVersion() else {
+            guard let currentVersion = VersionUtils.compositeVersion() else {
                 assertionFailure("Could not create composite version tag")
                 return
             }
-            guard let comparisonResult = Autoupdater.compareVersions(version, currentVersion) else {
+            guard let comparisonResult = VersionUtils.compareVersions(version, currentVersion) else {
                 // error (generally in string formatting); abort and we'll try again the next time
                 return
             }
@@ -68,76 +68,6 @@ internal struct Autoupdater {
                 Autoupdater.updateAvailableWindow.showWindow(nil)
             }
         }
-    }
-    
-    private static func compositeVersion() -> String? {
-        // create a composite tag indicating the version of this build of our software (to match the version #s used by the autoupdate files)
-        
-        // version # (major.minor)
-        guard let shortVersionAsString = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else {
-            return nil
-        }
-        // build # (build.revision...which the build pipelines treat as minor.patch)
-        guard let buildAsString = Bundle.main.infoDictionary?["CFBundleVersion" as String] as? String else {
-            return nil
-        }
-
-        // capture the major version for the version #
-        guard let majorVersionAsString = shortVersionAsString.split(separator: ".").first else {
-            return nil
-        }
-        
-        return majorVersionAsString + "." + buildAsString
-    }
-    
-    private enum CompareVersionResult {
-        case lessThan
-        case greaterThan
-        case equals
-    }
-    private static func compareVersions(_ lhs: String, _ rhs: String) -> CompareVersionResult? {
-        let lhsComponents = lhs.split(separator: ".")
-        guard lhsComponents.count > 0 else {
-            return nil
-        }
-        let rhsComponents = rhs.split(separator: ".")
-        guard rhsComponents.count > 0 else {
-            return nil
-        }
-
-        var lhsComponentsAsInts: [Int] = []
-        for lhsComponent in lhsComponents {
-            guard let componentAsInt = Int(lhsComponent) else {
-                // invalid (non-numeric) component
-                return nil
-            }
-            lhsComponentsAsInts.append(componentAsInt)
-        }
-        //
-        var rhsComponentsAsInts: [Int] = []
-        for rhsComponent in rhsComponents {
-            guard let componentAsInt = Int(rhsComponent) else {
-                // invalid (non-numeric) component
-                return nil
-            }
-            rhsComponentsAsInts.append(componentAsInt)
-        }
-        
-        let numberOfComponentsToCompare = max(lhsComponentsAsInts.count, rhsComponentsAsInts.count)
-        
-        for index in 0..<numberOfComponentsToCompare {
-            let lhsInt = lhsComponentsAsInts.count > index ? lhsComponentsAsInts[index] : 0
-            let rhsInt = rhsComponentsAsInts.count > index ? rhsComponentsAsInts[index] : 0
-            
-            if lhsInt > rhsInt {
-                return .greaterThan
-            } else if lhsInt < rhsInt {
-                return .lessThan
-            }
-        }
-        
-        // if all of the components matched, the version #s are equal
-        return .equals
     }
 }
 

@@ -1,4 +1,4 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2021 Raising the Floor - International
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Cocoa
+import Countly
 import OSLog
 import MorphicCore
 import MorphicService
@@ -93,12 +94,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             Session.shared.isServerPreferencesSyncEnabled = false
         #endif
         
+        self.configureCountly()
+        
         #if EDITION_BASIC
 	    #if DEBUG
 	    	// do not run the auto-updater checks in debug mode
 	    #else
-                if ConfigurableFeatures.shared.checkForUpdatesIsEnabled == true {
-		    Autoupdater.startCheckingForUpdates(url: self.appCastUrl)
+            if ConfigurableFeatures.shared.checkForUpdatesIsEnabled == true {
+                Autoupdater.startCheckingForUpdates(url: self.appCastUrl)
 	    	}
 	    #endif
         #endif
@@ -255,6 +258,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
+    func configureCountly() {
+        guard let appKey = Bundle.main.infoDictionary?["CountlyAppKey"] as? String else {
+            assertionFailure("Missing Countly app key.  Check build config files")
+            os_log(.fault, log: logger, "Missing Countly app key.  Check build config files")
+            return
+        }
+        guard let serverUrl = Bundle.main.infoDictionary?["CountlyServerUrl"] as? String else {
+            assertionFailure("Missing Countly server url.  Check build config files")
+            os_log(.fault, log: logger, "Missing Countly server url.  Check build config files")
+            return
+        }
+
+        let config: CountlyConfig = CountlyConfig()
+        config.appKey = appKey
+        config.host = serverUrl
+        if let compositeVersion = VersionUtils.compositeVersion() {
+            // TODO: figure out where we pass in the appVersion on macOS
+            config.customMetrics[CLYMetricKey.appVersion.rawValue] = compositeVersion
+        }
+        config.features = [CLYFeature.crashReporting]
+        //
+        #if DEBUG
+        config.enableDebug = true
+        #endif
+        //
+        Countly.sharedInstance().start(with: config)
+        Countly.sharedInstance().beginSession()
+    }
+    
     func markUserConfiguredSettingsAsAlreadySet() {
         // if the user is already using features which Morphic does one-time setup for (such as default magnifier zoom style or color filter type), make sure we don't change those settings later.  In other words: mark the settings as "already set"
         //
@@ -275,6 +307,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     func applicationWillTerminate(_ aNotification: Notification) {
+        Countly.sharedInstance().endSession()
     }
     
     // NOTE: this function will send our primary instance a notification request to show the Morphic Bar if the user tried to relaunch Morphic (by double-clicking the application in Finder or clicking on our icon in the dock)
