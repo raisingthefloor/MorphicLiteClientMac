@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CountlyAppKey</key>
+	<string>$(COUNTLY_APP_KEY)</string>
+	<key>CountlyServerUrl</key>
+	<string>$(COUNTLY_SERVER_URL)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -34,7 +38,7 @@
 		<true/>
 	</dict>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2020 Raising the Floor. All rights reserved.</string>
+	<string>Copyright © 2020-2021 Raising the Floor. All rights reserved.</string>
 	<key>NSMainNibFile</key>
 	<string>Main</string>
 	<key>NSPrincipalClass</key>

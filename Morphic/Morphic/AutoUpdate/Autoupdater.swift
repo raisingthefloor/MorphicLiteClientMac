@@ -70,7 +70,8 @@ internal struct Autoupdater {
         }
     }
     
-    private static func compositeVersion() -> String? {
+    // TODO: consider moving this logic (and the version comparison functions) to a discrete class (since they might be used elsewhere in the app)
+    internal static func compositeVersion() -> String? {
         // create a composite tag indicating the version of this build of our software (to match the version #s used by the autoupdate files)
         
         // version # (major.minor)

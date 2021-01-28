@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -93,6 +93,7 @@
 		9D2593ED250A830100C38DA3 /* amazon-brands.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DE250A830100C38DA3 /* amazon-brands.pdf */; };
 		9D2A5AB8259B815800ECD513 /* ConfigurableFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */; };
 		9D2A5AC1259B914800ECD513 /* MorphicBarSeparatorItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */; };
+		9D3530A525C2860200F8D590 /* Countly in Frameworks */ = {isa = PBXBuildFile; productRef = 9D3530A425C2860200F8D590 /* Countly */; };
 		9D49D4DD25BBA93B001DD452 /* Autoupdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */; };
 		9D49D4F225BBAA00001DD452 /* UpdateAvailableWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */; };
 		9D49D4F325BBAA00001DD452 /* UpdateAvailableWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */; };
@@ -494,6 +495,7 @@
 			files = (
 				31751B4A2444E04300EEDF14 /* MorphicCore.framework in Frameworks */,
 				9D1FA1CF251A31990008559D /* ServiceManagement.framework in Frameworks */,
+				9D3530A525C2860200F8D590 /* Countly in Frameworks */,
 				31751B4E2444E04300EEDF14 /* MorphicSettings.framework in Frameworks */,
 				31751B4C2444E04300EEDF14 /* MorphicService.framework in Frameworks */,
 			);
@@ -921,6 +923,9 @@
 				31751B962444F0CA00EEDF14 /* PBXTargetDependency */,
 			);
 			name = Morphic;
+			packageProductDependencies = (
+				9D3530A425C2860200F8D590 /* Countly */,
+			);
 			productName = Morphic;
 			productReference = 31751B092444DE8900EEDF14 /* Morphic.app */;
 			productType = "com.apple.product-type.application";
@@ -1157,6 +1162,9 @@
 				Base,
 			);
 			mainGroup = 31751B002444DE8900EEDF14;
+			packageReferences = (
+				9D3530A325C2860200F8D590 /* XCRemoteSwiftPackageReference "countly-sdk-ios" */,
+			);
 			productRefGroup = 31751B0A2444DE8900EEDF14 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2381,6 +2389,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9D3530A325C2860200F8D590 /* XCRemoteSwiftPackageReference "countly-sdk-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Countly/countly-sdk-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 20.11.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9D3530A425C2860200F8D590 /* Countly */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D3530A325C2860200F8D590 /* XCRemoteSwiftPackageReference "countly-sdk-ios" */;
+			productName = Countly;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 31751B012444DE8900EEDF14 /* Project object */;
 }
