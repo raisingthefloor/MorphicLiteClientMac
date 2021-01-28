@@ -94,6 +94,9 @@
 		9D2A5AB8259B815800ECD513 /* ConfigurableFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */; };
 		9D2A5AC1259B914800ECD513 /* MorphicBarSeparatorItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */; };
 		9D3530A525C2860200F8D590 /* Countly in Frameworks */ = {isa = PBXBuildFile; productRef = 9D3530A425C2860200F8D590 /* Countly */; };
+		9D3530AD25C30FA200F8D590 /* Countly in Frameworks */ = {isa = PBXBuildFile; productRef = 9D3530AC25C30FA200F8D590 /* Countly */; };
+		9D3530DD25C3101100F8D590 /* VersionUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3530DC25C3101100F8D590 /* VersionUtils.swift */; };
+		9D3530DE25C3101100F8D590 /* VersionUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3530DC25C3101100F8D590 /* VersionUtils.swift */; };
 		9D49D4DD25BBA93B001DD452 /* Autoupdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */; };
 		9D49D4F225BBAA00001DD452 /* UpdateAvailableWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */; };
 		9D49D4F325BBAA00001DD452 /* UpdateAvailableWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */; };
@@ -456,6 +459,7 @@
 		9D2593F3250EA87E00C38DA3 /* MorphicConfiguratorRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicConfiguratorRelease.entitlements; sourceTree = "<group>"; };
 		9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableFeatures.swift; sourceTree = "<group>"; };
 		9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarSeparatorItemView.swift; sourceTree = "<group>"; };
+		9D3530DC25C3101100F8D590 /* VersionUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionUtils.swift; sourceTree = "<group>"; };
 		9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Autoupdater.swift; sourceTree = "<group>"; };
 		9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAvailableWindow.swift; sourceTree = "<group>"; };
 		9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpdateAvailableWindow.xib; sourceTree = "<group>"; };
@@ -567,6 +571,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9DE07325251289C20030A978 /* MorphicCore.framework in Frameworks */,
+				9D3530AD25C30FA200F8D590 /* Countly in Frameworks */,
 				9DE07326251289C20030A978 /* MorphicSettings.framework in Frameworks */,
 				9DE07327251289C20030A978 /* MorphicService.framework in Frameworks */,
 			);
@@ -676,6 +681,7 @@
 				9DE112E42522240700591E08 /* CopySettingsWindow */,
 				31CE56EC244A3C9800A52A7B /* Help Window */,
 				314EB6D924A6978200CF3D48 /* Solutions */,
+				9D3530DB25C30FF600F8D590 /* Versioning */,
 				318744F32481A2DA00AE3954 /* CreateDiskImage.sh */,
 				9DB06AD62534ADD6008AB056 /* CreatePackage.sh */,
 				9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */,
@@ -813,6 +819,14 @@
 				9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */,
 			);
 			path = MorphicBarSeparatorItem;
+			sourceTree = "<group>";
+		};
+		9D3530DB25C30FF600F8D590 /* Versioning */ = {
+			isa = PBXGroup;
+			children = (
+				9D3530DC25C3101100F8D590 /* VersionUtils.swift */,
+			);
+			path = Versioning;
 			sourceTree = "<group>";
 		};
 		9D49D4DB25BBA903001DD452 /* AutoUpdate */ = {
@@ -1091,6 +1105,9 @@
 				9DD12AF725128D4900E94C4F /* PBXTargetDependency */,
 			);
 			name = "Morphic Community";
+			packageProductDependencies = (
+				9D3530AC25C30FA200F8D590 /* Countly */,
+			);
 			productName = Morphic;
 			productReference = 9DE0734F251289C20030A978 /* Morphic Community.app */;
 			productType = "com.apple.product-type.application";
@@ -1433,6 +1450,7 @@
 				31CE56F9244A428500A52A7B /* ShadowedLabel.swift in Sources */,
 				31751B982444F21700EEDF14 /* Session.swift in Sources */,
 				31C12CC124B143A000B617A8 /* QuickHelpStepViewController.swift in Sources */,
+				9D3530DD25C3101100F8D590 /* VersionUtils.swift in Sources */,
 				31E1E17F24466EB0009C4092 /* MorphicBarItemViewProtocol.swift in Sources */,
 				31C12CB824B1174900B617A8 /* QuickHelpContentProvider.swift in Sources */,
 				9D49D4F225BBAA00001DD452 /* UpdateAvailableWindow.swift in Sources */,
@@ -1552,6 +1570,7 @@
 				9DE0731F251289C20030A978 /* ProgressIndicator.swift in Sources */,
 				9DE07320251289C20030A978 /* PageControl.swift in Sources */,
 				9DE07321251289C20030A978 /* AboutBoxWindowController.swift in Sources */,
+				9D3530DE25C3101100F8D590 /* VersionUtils.swift in Sources */,
 				9DE07322251289C20030A978 /* HyperlinkTextField.swift in Sources */,
 				9DE07323251289C20030A978 /* MorphicBarItem.swift in Sources */,
 				9D77209F252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */,
@@ -2403,6 +2422,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		9D3530A425C2860200F8D590 /* Countly */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D3530A325C2860200F8D590 /* XCRemoteSwiftPackageReference "countly-sdk-ios" */;
+			productName = Countly;
+		};
+		9D3530AC25C30FA200F8D590 /* Countly */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 9D3530A325C2860200F8D590 /* XCRemoteSwiftPackageReference "countly-sdk-ios" */;
 			productName = Countly;

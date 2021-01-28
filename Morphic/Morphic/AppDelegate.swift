@@ -94,9 +94,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             Session.shared.isServerPreferencesSyncEnabled = false
         #endif
         
-        #if EDITION_BASIC
         self.configureCountly()
-        #endif
         
         #if EDITION_BASIC
 	    #if DEBUG
@@ -275,7 +273,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         let config: CountlyConfig = CountlyConfig()
         config.appKey = appKey
         config.host = serverUrl
-        if let compositeVersion = Autoupdater.compositeVersion() {
+        if let compositeVersion = VersionUtils.compositeVersion() {
             // TODO: figure out where we pass in the appVersion on macOS
             config.customMetrics[CLYMetricKey.appVersion.rawValue] = compositeVersion
         }
