@@ -68,7 +68,7 @@ public class Display {
     }
     
     public func percentage(zoomingOut steps: Int) -> Double {
-        guard let currentMode = currentMode, let normalMode = normalMode else {
+        guard let currentMode = self.currentMode, let normalMode = self.normalMode else {
             return 1
         }
         let target = possibleModes.first(where: { $0.widthInVirtualPixels > currentMode.widthInVirtualPixels }) ?? currentMode
@@ -76,7 +76,7 @@ public class Display {
     }
     
     public var currentPercentage: Double {
-        guard let currentMode = currentMode, let normalMode = normalMode else {
+        guard let currentMode = self.currentMode, let normalMode = self.normalMode else {
             return 1
         }
         return Double(normalMode.widthInVirtualPixels) / Double(currentMode.widthInVirtualPixels)
@@ -86,11 +86,24 @@ public class Display {
         return possibleModes.count
     }
     
-    public var currentStep: Int {
-        guard let current = currentMode else {
-            return -1
+    public var currentStepOffsetFromNormalMode: Int? {
+        guard let currentMode = self.currentMode, let normalMode = self.normalMode else {
+            return nil
         }
-        return possibleModes.firstIndex(of: current) ?? -1
+        guard let normalModeIndex = self.possibleModes.firstIndex(of: normalMode) else {
+            return nil
+        }
+        guard let currentModeIndex = self.possibleModes.firstIndex(of: currentMode) else {
+            return nil
+        }
+        return normalModeIndex - currentModeIndex
+    }
+    
+    public var currentStep: Int? {
+        guard let current = currentMode else {
+            return nil
+        }
+        return possibleModes.firstIndex(of: current) ?? nil
     }
     
     private var possibleModes: [MorphicDisplay.DisplayMode]!
