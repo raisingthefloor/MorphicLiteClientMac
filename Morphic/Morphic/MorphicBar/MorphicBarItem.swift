@@ -23,6 +23,7 @@
 
 import Carbon.HIToolbox
 import Cocoa
+import Countly
 import MorphicCore
 import MorphicSettings
 import MorphicService
@@ -662,11 +663,32 @@ class MorphicBarControlItem: MorphicBarItem {
             return
         }
         var percentage: Double
+        var isZoomingIn: Bool
+        var zoomToStep: Int?
+        let currentStepOffsetFromNormalMode = display.currentStepOffsetFromNormalMode
         if segment == 0 {
             percentage = display.percentage(zoomingIn: 1)
+            zoomToStep = currentStepOffsetFromNormalMode != nil ? currentStepOffsetFromNormalMode! + 1 : nil
+            isZoomingIn = true
         } else {
             percentage = display.percentage(zoomingOut: 1)
+            zoomToStep = currentStepOffsetFromNormalMode != nil ? currentStepOffsetFromNormalMode! - 1 : nil
+            isZoomingIn = false
         }
+        //
+        defer {
+            var segmentation: [String: String] = [:]
+            segmentation["scalePercent"] =  String(Int(percentage * 100))
+            if let zoomToStep = zoomToStep {
+                segmentation["dotOffset"] = String(zoomToStep)
+            }
+            if isZoomingIn == true {
+                Countly.sharedInstance().recordEvent("textSizeIncrease", segmentation: segmentation)
+            } else {
+                Countly.sharedInstance().recordEvent("textSizeDecrease", segmentation: segmentation)
+            }
+        }
+        //
         _ = display.zoom(to: percentage)
     }
     
@@ -784,6 +806,10 @@ class MorphicBarControlItem: MorphicBarItem {
 
     @objc
     func screensnip(_ sender: Any?) {
+        defer {
+            Countly.sharedInstance().recordEvent("screenSnip")
+        }
+
         // verify that we have accessibility permissions (since UI automation and sendKeys will not work without them)
         // NOTE: this function call will prompt the user for authorization if they have not already granted it
         guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
@@ -869,6 +895,10 @@ class MorphicBarControlItem: MorphicBarItem {
                 let increaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
                 // calculate the inverse state
                 let newIncreaseContrastEnabled = !increaseContrastEnabled
+                //
+                defer {
+                    Countly.sharedInstance().recordEvent(newIncreaseContrastEnabled ? "highContrastOn" : "highContrastOff")
+                }
                 // apply the inverse state
                 Session.shared.apply(newIncreaseContrastEnabled, for: .macosDisplayContrastEnabled) {
                     success in
@@ -891,6 +921,10 @@ class MorphicBarControlItem: MorphicBarItem {
                     }
                     // calculate the inverse state
                     let newValue = !valueAsBoolean
+                    
+                    defer {
+                        Countly.sharedInstance().recordEvent(newValue ? "colorFiltersOn" : "colorFiltersOff")
+                    }
                     
                     // if the inverse state is "enabled", then make sure we've set the initial color filter type
                     if newValue == true {
@@ -941,14 +975,23 @@ class MorphicBarControlItem: MorphicBarItem {
             // dark
             
             // NOTE: unlike System Preferences, we do not copy the current screen and then "fade" it into the new theme once the theme has switched; if we need that kind of behavior then we'll need screen capture permissions or we'll need to use the alternate (UI automation) code below.  There may also be other alternatives.
-//            let newButtonState: Bool
+            let newDarkModeEnabled: Bool
             switch MorphicDisplayAppearance.currentAppearanceTheme {
             case .dark:
-                MorphicDisplayAppearance.setCurrentAppearanceTheme(.light)
-//                newButtonState = false
+                newDarkModeEnabled = false
             case .light:
+                newDarkModeEnabled = true
+            }
+            //
+            defer {
+                Countly.sharedInstance().recordEvent(newDarkModeEnabled ? "darkModeOn" : "darkModeOff")
+            }
+            //
+            switch newDarkModeEnabled {
+            case true:
                 MorphicDisplayAppearance.setCurrentAppearanceTheme(.dark)
-//                newButtonState = true
+            case false:
+                MorphicDisplayAppearance.setCurrentAppearanceTheme(.light)
             }
             //
             let verifyCurrentAppearanceTheme = MorphicDisplayAppearance.currentAppearanceTheme
@@ -992,6 +1035,11 @@ class MorphicBarControlItem: MorphicBarItem {
             
             let nightShiftEnabled = MorphicNightShift.getEnabled()
             let newNightShiftEnabled = !nightShiftEnabled
+            //
+            defer {
+                Countly.sharedInstance().recordEvent(newNightShiftEnabled ? "nightModeOn" : "nightModeOff")
+            }
+            //
             MorphicNightShift.setEnabled(newNightShiftEnabled)
             //
             let verifyNightShiftEnabled = MorphicNightShift.getEnabled()
@@ -1031,6 +1079,10 @@ class MorphicBarControlItem: MorphicBarItem {
 
     @objc
     func readselected(_ sender: Any?) {
+        defer {
+            Countly.sharedInstance().recordEvent("readSelectedToggle")
+        }
+        
         // verify that we have accessibility permissions (since UI automation and sendKeys will not work without them)
         // NOTE: this function call will prompt the user for authorization if they have not already granted it
         guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
@@ -1123,6 +1175,10 @@ class MorphicBarControlItem: MorphicBarItem {
         }
         let session = Session.shared
         if segment == 0 {
+            defer {
+                Countly.sharedInstance().recordEvent("magnifierShow")
+            }
+            
             // this is the code which will activate our magnifier once we have established that it is configured properly
             let activateMagnifier: () -> Void = {
                 session.storage.load(identifier: "__magnifier__") {
@@ -1164,6 +1220,10 @@ class MorphicBarControlItem: MorphicBarItem {
                 activateMagnifier()
             }
         } else {
+            defer {
+                Countly.sharedInstance().recordEvent("magnifierHide")
+            }
+            
             session.storage.load(identifier: "__magnifier__") {
                 (_, preferences: Preferences?) in
                 if let preferences = preferences {
