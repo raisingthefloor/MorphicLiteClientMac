@@ -26,3 +26,6 @@
 MORPHIC_BASIC_SERVICE_ENDPOINT=http:/$()/localhost:5002/
 MORPHIC_COMMUNITY_SERVICE_ENDPOINT=http:/$()/localhost:5002/
 FRONT_END_URL=http:/$()/localhost:5003/
+
+COUNTLY_APP_KEY=b518ed6ca13aae3f60197dc5fdda2a0e649a54b3
+COUNTLY_SERVER_URL=https:/$()/countly.morphic.dev
