@@ -1172,8 +1172,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction func automaticallyStartMorphicAtLoginClicked(_ sender: NSMenuItem) {
         switch sender.state {
         case .on:
+            defer {
+                Countly.sharedInstance().recordEvent("autorunAfterLoginDisabled")
+            }
             _ = setMorphicAutostartAtLogin(false)
         case .off:
+            defer {
+                Countly.sharedInstance().recordEvent("autorunAfterLoginEnabled")
+            }
             _ = setMorphicAutostartAtLogin(true)
         default:
             fatalError("invalid code path")
@@ -1494,8 +1500,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         let showMorphicBarAtStart: Bool
         switch sender.state {
         case .on:
+            defer {
+                Countly.sharedInstance().recordEvent("showMorphicBarAfterLoginDisabled")
+            }
             showMorphicBarAtStart = false
         case .off:
+            defer {
+                Countly.sharedInstance().recordEvent("showMorphicBarAfterLoginEnabled")
+            }
             showMorphicBarAtStart = true
         default:
             fatalError("invalid code path")
