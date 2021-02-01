@@ -32,13 +32,13 @@
                 <menuItem title="Show MorphicBar" id="4BS-cA-IvL">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="showMorphicBar:" target="-1" id="Rpj-au-WRa"/>
+                        <action selector="menuBarExtraShowMorphicBarMenuItemClicked:" target="ZNk-5q-oDb" id="k57-W6-uFZ"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Hide MorphicBar" hidden="YES" id="gOm-Gw-nLp">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="hideMorphicBar:" target="-1" id="YMq-QB-Pag"/>
+                        <action selector="menuBarExtraHideMorphicBarMenuItemClicked:" target="ZNk-5q-oDb" id="Tp9-yj-w3C"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Select Community" hidden="YES" id="qcc-Q2-sYr">

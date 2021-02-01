@@ -1223,6 +1223,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     //
     
+    enum MenuOpenedSource: String {
+        case trayIcon
+        case morphicBarIcon
+    }
+    
+    func createMenuOpenedSourceSegmentation(menuOpenedSource: MenuOpenedSource?) -> [String: String] {
+        var result: [String: String] = [:]
+        if let menuOpenedSource = menuOpenedSource {
+            result["method"] = menuOpenedSource.rawValue + "Menu"
+        }
+        return result
+    }
+    
+    //
+    
     @IBAction func turnOffKeyRepeat(_ sender: NSMenuItem) {
         let newKeyRepeatEnabledState: Bool
         
@@ -1233,6 +1248,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             newKeyRepeatEnabledState = false
         default:
             fatalError("invalid code path")
+        }
+        
+        defer {
+            switch newKeyRepeatEnabledState {
+            case true:
+                Countly.sharedInstance().recordEvent("stopKeyRepeatOff")
+            case false:
+                Countly.sharedInstance().recordEvent("stopKeyRepeatOn")
+            }
         }
 
         if MorphicInput.isTurnOffKeyRepeatBroken == true {
@@ -1585,6 +1609,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             // when the left mouse button is pressed, toggle the MorphicBar's visibility (i.e. show/hide the MorphicBar)
 
             #if EDITION_BASIC
+                let morphicBarWindowWasVisible = morphicBarWindow != nil
+                defer {
+                    let segmentation: [String: String] = ["method": "trayIconClick"]
+                    if morphicBarWindowWasVisible == true {
+                        Countly.sharedInstance().recordEvent("hideMorphicBar", segmentation: segmentation)
+                    } else {
+                        Countly.sharedInstance().recordEvent("showMorphicBar", segmentation: segmentation)
+                    }
+                }
                 toggleMorphicBar(sender)
             #elseif EDITION_COMMUNITY
                 if (Session.shared.user == nil) {
@@ -1607,6 +1640,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             }
 
             // show the menu (by assigning it to the menubar extra and re-clicking the extra; then disconnect the menu again so that our custom actions (custom left- and right-mouseDown) work properly.
+            defer {
+                let segmentation = AppDelegate.shared.createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
+                Countly.sharedInstance().recordEvent("showMenu", segmentation: segmentation)
+            }
             statusItem.menu = self.menu
             statusItemButton.performClick(sender)
             statusItem.menu = nil
@@ -1662,6 +1699,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     @IBAction
+    func menuBarExtraShowMorphicBarMenuItemClicked(_ sender: NSMenuItem) {
+        let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
+        Countly.sharedInstance().recordEvent("showMorphicBar", segmentation: segmentation)
+        showMorphicBar(sender)
+    }
+    
     func showMorphicBar(_ sender: Any?) {
         if morphicBarWindow == nil {
             morphicBarWindow = MorphicBarWindow()
@@ -1685,6 +1728,25 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     @IBAction
+    func menuBarExtraHideMorphicBarMenuItemClicked(_ sender: NSMenuItem) {
+        let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
+        Countly.sharedInstance().recordEvent("hideMorphicBar", segmentation: segmentation)
+        hideMorphicBar(sender)
+    }
+
+    @IBAction
+    func morphicBarIconHideMorphicBarMenuItemClicked(_ sender: NSMenuItem) {
+        let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
+        Countly.sharedInstance().recordEvent("hideMorphicBar", segmentation: segmentation)
+        hideMorphicBar(sender)
+    }
+
+    func morphicBarCloseButtonPressed() {
+        let segmentation = ["method": "closeButton"]
+        Countly.sharedInstance().recordEvent("hideMorphicBar", segmentation: segmentation)
+        hideMorphicBar(nil)
+    }
+    
     func hideMorphicBar(_ sender: Any?) {
         currentKeyboardSelectedQuickHelpViewController = nil
 

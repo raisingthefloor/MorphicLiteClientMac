@@ -81,7 +81,7 @@
                 <menuItem title="Hide MorphicBar" id="rih-DC-jC5">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="hideMorphicBar:" target="-1" id="8CC-hU-78U"/>
+                        <action selector="morphicBarIconHideMorphicBarMenuItemClicked:" target="-1" id="S22-gK-waz"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Select Community" hidden="YES" id="eJF-8G-qpw">
