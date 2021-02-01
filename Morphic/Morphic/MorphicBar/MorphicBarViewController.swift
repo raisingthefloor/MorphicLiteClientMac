@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Cocoa
+import Countly
 import MorphicService
 import MorphicSettings
 
@@ -101,6 +102,11 @@ public class MorphicBarViewController: NSViewController {
     /// Action to show the main menu from the logo button
     @IBAction
     func showMainMenu(_ sender: Any?) {
+        defer {
+            let segmentation = AppDelegate.shared.createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
+            Countly.sharedInstance().recordEvent("showMenu", segmentation: segmentation)
+        }
+        
         mainMenu.popUp(positioning: nil, at: NSPoint(x: logoButton.bounds.origin.x, y: logoButton.bounds.origin.y + logoButton.bounds.size.height), in: logoButton)
     }
     
@@ -270,7 +276,7 @@ public class MorphicBarViewController: NSViewController {
     }
 
     @IBAction func closeButtonPressed(_ sender: NSButton) {
-        AppDelegate.shared.hideMorphicBar(nil)
+        AppDelegate.shared.morphicBarCloseButtonPressed()
     }
 }
 

@@ -173,7 +173,7 @@ class UpdateAvailableWindow: NSWindowController, URLSessionTaskDelegate, URLSess
             //       starting up instead; the old version would surpress its resetSettings (reset to standard) while exiting.
             //
             DispatchQueue.main.async {
-                AppDelegate.shared.quitApplication(nil)
+                AppDelegate.shared.quitApplication()
             }
         }
     }
