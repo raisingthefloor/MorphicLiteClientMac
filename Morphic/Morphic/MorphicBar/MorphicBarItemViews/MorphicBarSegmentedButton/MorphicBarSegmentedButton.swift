@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Cocoa
+import Countly
 
 // A control similar to a segmented control, but with momentary buttons and custom styling.
 //
@@ -96,7 +97,9 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         var style: MorphicBarControlItemStyle
         
         var learnMoreUrl: URL? = nil
+        var learnMoreTelemetryCategory: String? = nil
         var quickDemoVideoUrl: URL? = nil
+        var quickDemoVideoTelemetryCategory: String? = nil
         var settingsBlock: (() -> Void)? = nil
         
         var getStateBlock: (() -> Bool)? = nil
@@ -113,25 +116,29 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         var accessibilityLabelByState: [NSControl.StateValue : String]? = [:]
         
         /// Create a segment with a title
-        init(title: String, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, quickDemoVideoUrl: URL?, settingsBlock: (() -> Void)?, style: MorphicBarControlItemStyle) {
+        init(title: String, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() -> Void)?, style: MorphicBarControlItemStyle) {
             self.title = title
             self.helpProvider = helpProvider
             self.fillColor = fillColor
             self.accessibilityLabel = accessibilityLabel
             self.learnMoreUrl = learnMoreUrl
+            self.learnMoreTelemetryCategory = learnMoreTelemetryCategory
             self.quickDemoVideoUrl = quickDemoVideoUrl
+            self.quickDemoVideoTelemetryCategory = quickDemoVideoTelemetryCategory
             self.settingsBlock = settingsBlock
             self.style = style
         }
         
         /// Create a segment with an icon
-        init(icon: NSImage, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, quickDemoVideoUrl: URL?, settingsBlock: (() -> Void)?, style: MorphicBarControlItemStyle) {
+        init(icon: NSImage, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() -> Void)?, style: MorphicBarControlItemStyle) {
             self.icon = icon
             self.helpProvider = helpProvider
             self.fillColor = fillColor
             self.accessibilityLabel = accessibilityLabel
             self.learnMoreUrl = learnMoreUrl
+            self.learnMoreTelemetryCategory = learnMoreTelemetryCategory
             self.quickDemoVideoUrl = quickDemoVideoUrl
+            self.quickDemoVideoTelemetryCategory = quickDemoVideoTelemetryCategory
             self.settingsBlock = settingsBlock
             self.style = style
         }
@@ -678,6 +685,17 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         guard let learnMoreUrl = selectedSegment.learnMoreUrl else {
             return
         }
+        //
+        let learnMoreTelemetryCategory = selectedSegment.learnMoreTelemetryCategory
+        defer {
+            var segmentation: [String: String] = [:]
+            if learnMoreTelemetryCategory != nil {
+                segmentation["category"] = learnMoreTelemetryCategory
+            }
+            segmentation["menuType"] = "contextMenu"
+            Countly.sharedInstance().recordEvent("learnMore", segmentation: segmentation)
+        }
+        //
         NSWorkspace.shared.open(learnMoreUrl)
     }
 
@@ -691,6 +709,17 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         guard let quickDemoVideoUrl = selectedSegment.quickDemoVideoUrl else {
             return
         }
+        //
+        let quickDemoVideoTelemetryCategory = selectedSegment.quickDemoVideoTelemetryCategory
+        defer {
+            var segmentation: [String: String] = [:]
+            if quickDemoVideoTelemetryCategory != nil {
+                segmentation["category"] = quickDemoVideoTelemetryCategory
+            }
+            segmentation["menuType"] = "contextMenu"
+            Countly.sharedInstance().recordEvent("quickDemoVideo", segmentation: segmentation)
+        }
+        //
         NSWorkspace.shared.open(quickDemoVideoUrl)
     }
 

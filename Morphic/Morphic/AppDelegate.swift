@@ -1795,18 +1795,37 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     @IBAction
     func learnAboutMorphicClicked(_ sender: NSMenuItem?) {
+        defer {
+            var segmentation: [String: String] = [:]
+            segmentation["menuType"] = "mainMenu"
+            Countly.sharedInstance().recordEvent("learnAboutMorphicClicked", segmentation: segmentation)
+        }
+
         let url = URL(string: "https://morphic.org")!
         NSWorkspace.shared.open(url)
     }
 
     @IBAction
     func quickDemoMoviesClicked(_ sender: NSMenuItem?) {
+        defer {
+            var segmentation: [String: String] = [:]
+            segmentation["category"] = "main"
+            segmentation["menuType"] = "mainMenu"
+            Countly.sharedInstance().recordEvent("quickDemoVideo", segmentation: segmentation)
+        }
+
         let url = URL(string: "https://morphic.org/movies/main")!
         NSWorkspace.shared.open(url)
     }
 
     @IBAction
     func otherHelpfulThingsClicked(_ sender: NSMenuItem?) {
+        defer {
+            var segmentation: [String: String] = [:]
+            segmentation["menuType"] = "mainMenu"
+            Countly.sharedInstance().recordEvent("otherHelpfulThingsClicked", segmentation: segmentation)
+        }
+
         let url = URL(string: "https://morphic.org/helpful")!
         NSWorkspace.shared.open(url)
     }
