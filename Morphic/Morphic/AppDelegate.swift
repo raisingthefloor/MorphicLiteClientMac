@@ -1068,6 +1068,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     @IBAction func showAboutBox(_ sender: NSMenuItem) {
+        defer {
+            Countly.sharedInstance().recordEvent("aboutMorphic")
+        }
+        
         let aboutBoxWindowController = AboutBoxWindowController.single
         if aboutBoxWindowController.window?.isVisible == false {
             aboutBoxWindowController.centerOnScreen()
