@@ -39,7 +39,7 @@ MORPHIC_BASIC_SERVICE_ENDPOINT=https:/$()/api.morphic.dev/
 MORPHIC_COMMUNITY_SERVICE_ENDPOINT=https:/$()/api.morphic.dev/
 FRONT_END_URL=https:/$()/app.morphic.dev/
 
-COUNTLY_APP_KEY=b518ed6ca13aae3f60197dc5fdda2a0e649a54b3
-COUNTLY_SERVER_URL=https:/$()/countly.morphic.dev
+COUNTLY_APP_KEY=bd50af084d5c23c75be8e9a2979bd67d772e7cd0
+COUNTLY_SERVER_URL=https:/$()/countly.morphic.org
 
 #include? "Local.xcconfig"
