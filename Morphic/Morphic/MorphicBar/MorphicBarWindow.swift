@@ -71,7 +71,7 @@ public class MorphicBarWindow: NSWindow {
             AppDelegate.shared.hideMorphicBar(nil)
         } else if event.modifierFlags.contains(.command) && event.keyCode == kVK_ANSI_Q {
             // quit Morphic
-            AppDelegate.shared.quitApplication(nil)
+            AppDelegate.shared.quitApplication()
         } else if event.keyCode == kVK_Escape {
             // activate the topmost window
             activateTopmostWindow()

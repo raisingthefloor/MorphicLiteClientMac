@@ -1079,10 +1079,34 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     @objc
     func terminateMorphicClientDueToDockAppTermination() {
-        quitApplication(nil)
+        quitApplication()
     }
     
-    @IBAction func quitApplication(_ sender: Any?) {
+    func terminateMorphicClientDueToCmdQ() {
+        defer {
+            let segmentation = ["method": "keyboardShortcut"]
+            Countly.sharedInstance().recordEvent("quit", segmentation: segmentation)
+        }
+        quitApplication()
+    }
+    
+    @IBAction func menuBarExtraQuitApplicationMenuItemClicked(_ sender: NSMenuItem) {
+        defer {
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
+            Countly.sharedInstance().recordEvent("quit", segmentation: segmentation)
+        }
+        quitApplication()
+    }
+
+    @IBAction func morphicBarIconQuitApplicationMenuItemClicked(_ sender: NSMenuItem) {
+        defer {
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
+            Countly.sharedInstance().recordEvent("quit", segmentation: segmentation)
+        }
+        quitApplication()
+    }
+
+    func quitApplication() {
         // immediately hide our MorphicBar window
         morphicBarWindow?.setIsVisible(false)
         

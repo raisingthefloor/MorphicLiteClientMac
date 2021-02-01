@@ -207,7 +207,7 @@
                 </menuItem>
                 <menuItem title="Quit Morphic" keyEquivalent="q" id="aYd-9o-084">
                     <connections>
-                        <action selector="quitApplication:" target="ZNk-5q-oDb" id="8qb-cn-Wqb"/>
+                        <action selector="menuBarExtraQuitApplicationMenuItemClicked:" target="-1" id="Rfo-zy-Okg"/>
                     </connections>
                 </menuItem>
             </items>
