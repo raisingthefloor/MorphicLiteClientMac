@@ -270,6 +270,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             return
         }
 
+        // retrieve the telemetry device ID for this device; if it doesn't exist then create a new one
+        let telemetryDeviceUuid: String
+        let telemetryDeviceUuidAsOptional = UserDefaults.morphic.telemetryDeviceUuid()
+        if let telemetryDeviceUuidAsOptional = telemetryDeviceUuidAsOptional {
+            // use the existing telemetry device uuid
+            telemetryDeviceUuid = telemetryDeviceUuidAsOptional
+        } else {
+            // create a new device uuid for purposes of telemetry
+            telemetryDeviceUuid = "D_" + NSUUID().uuidString
+            UserDefaults.morphic.set(telemetryDeviceUuid: telemetryDeviceUuid)
+        }
+        
         let config: CountlyConfig = CountlyConfig()
         config.appKey = appKey
         config.host = serverUrl
@@ -282,6 +294,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         #if DEBUG
         config.enableDebug = true
         #endif
+        //
+        // if Countly is using another telemetry ID, update it now (but only locally for this session; don't resync existing records on the server to this id)
+        if Countly.sharedInstance().deviceID() != telemetryDeviceUuid {
+            // NOTE: changing the deviceID via config takes no effect if an existing "deviceID" is already in use; therefore we reset it here out of an abundance of caution (and to handle situations where we might change the "deviceID" to another telemetry ID instead)
+            config.resetStoredDeviceID = true
+            config.deviceID = telemetryDeviceUuid
+            
+            // NOTE: if we want to use setNewDeviceID instead, we might need to start the session (or ".beingSession()") and then change it; setting the deviceID via config (which we have done here) seems like the better technical approach
+//            Countly.sharedInstance().setNewDeviceID(telemetryDeviceUuid, onServer: false)
+        }
         //
         Countly.sharedInstance().start(with: config)
         Countly.sharedInstance().beginSession()
