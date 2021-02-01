@@ -59,10 +59,19 @@ public extension UserDefaults {
         userCommunityIdentifiersByUserIdentifier[userIdentifier] = selectedUserCommunityIdentifier
         setValue(userCommunityIdentifiersByUserIdentifier, forKey: .morphicDefaultsKeyUserCommunityIdentifiersByUserIdentifier)
     }
+    
+    func telemetryDeviceUuid() -> String? {
+        return string(forKey: .morphicDefaultsKeyTelemetryDeviceUuid)
+    }
+    
+    func set(telemetryDeviceUuid: String?) {
+        setValue(telemetryDeviceUuid, forKey: .morphicDefaultsKeyTelemetryDeviceUuid)
+    }
 }
 
 public extension String {
     static var morphicDefaultsKeyUserIdentifier = "userIdentifier"
     static var morphicDefaultsKeyUsernamesByIdentifier = "usernamesByIdentifier"
     static var morphicDefaultsKeyUserCommunityIdentifiersByUserIdentifier = "userCommunityIdentifiersByUserIdentifier"
+    static var morphicDefaultsKeyTelemetryDeviceUuid = "telemetryDeviceUuid"
 }
