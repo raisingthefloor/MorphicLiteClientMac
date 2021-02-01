@@ -278,7 +278,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             telemetryDeviceUuid = telemetryDeviceUuidAsOptional
         } else {
             // create a new device uuid for purposes of telemetry
-            telemetryDeviceUuid = "D_" + NSUUID().uuidString
+            // NOTE: GUIDs should be lowercase; macOS outputs UUIDs as uppercase; therefore we manually lowercase them
+            telemetryDeviceUuid = "D_" + NSUUID().uuidString.lowercased()
             UserDefaults.morphic.set(telemetryDeviceUuid: telemetryDeviceUuid)
         }
         
@@ -295,14 +296,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         config.enableDebug = true
         #endif
         //
-        // if Countly is using another telemetry ID, update it now (but only locally for this session; don't resync existing records on the server to this id)
+        // if Countly is using another telemetry ID, reset the stored device ID and specify the new telemetry ID
+        // NOTE: There is also a 'setNewDeviceID' method on Countly.sharedInstance() which would let us change the session ID _after_ starting up the session...which has additional features like being able to update older records to the new telemetry ID...but this method is simpler and less error-prone for our current needs (and we can supplement our use with the function call method if needed in the future)
         if Countly.sharedInstance().deviceID() != telemetryDeviceUuid {
             // NOTE: changing the deviceID via config takes no effect if an existing "deviceID" is already in use; therefore we reset it here out of an abundance of caution (and to handle situations where we might change the "deviceID" to another telemetry ID instead)
             config.resetStoredDeviceID = true
             config.deviceID = telemetryDeviceUuid
-            
-            // NOTE: if we want to use setNewDeviceID instead, we might need to start the session (or ".beingSession()") and then change it; setting the deviceID via config (which we have done here) seems like the better technical approach
-//            Countly.sharedInstance().setNewDeviceID(telemetryDeviceUuid, onServer: false)
         }
         //
         Countly.sharedInstance().start(with: config)
