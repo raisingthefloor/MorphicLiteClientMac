@@ -91,6 +91,9 @@ public class MorphicBarItem {
         case "action":
             if let _ = interoperable["function"] {
                 // config.json (Windows-compatible) action item
+                defer {
+                    Countly.sharedInstance().recordEvent("morphicBarExtraItemPressed")
+                }
                 return MorphicBarActionItem(interoperable: interoperable)
             } else {
                 // Morphic for macOS-style action (control) item
