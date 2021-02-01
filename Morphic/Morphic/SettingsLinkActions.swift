@@ -43,6 +43,13 @@ class SettingsLinkActions {
         case mouse
     }
     
+    static func openSystemPreferencesPaneWithTelemetry(_ pane: SystemPreferencePane, category systemSettingsCategory: String) {
+        defer {
+            AppDelegate.shared.recordCountlyOpenSystemSettingsEvent(category: systemSettingsCategory, tag: 1)
+        }
+        openSystemPreferencesPane(pane)
+    }
+    
     static func openSystemPreferencesPane(_ pane: SystemPreferencePane) {
         switch pane {
         case .accessibilityOverview:

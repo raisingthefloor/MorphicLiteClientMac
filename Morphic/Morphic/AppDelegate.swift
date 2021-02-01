@@ -1729,62 +1729,113 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
     @IBAction
     func launchAllAccessibilityOptionsSettings(_ sender: Any?) {
+        defer {
+            recordCountlyOpenSystemSettingsEvent(category: "allAccessibility", tag: (sender as? NSView)?.tag)
+        }
         SettingsLinkActions.openSystemPreferencesPane(.accessibilityOverview)
     }
     
     @IBAction
     func launchBrightnessSettings(_ sender: Any?) {
+        defer {
+            recordCountlyOpenSystemSettingsEvent(category: "brightness", tag: (sender as? NSView)?.tag)
+        }
         SettingsLinkActions.openSystemPreferencesPane(.displaysDisplay)
     }
     
     @IBAction
     func launchColorVisionSettings(_ sender: Any?) {
+        defer {
+            recordCountlyOpenSystemSettingsEvent(category: "colorFilter", tag: (sender as? NSView)?.tag)
+        }
         SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayColorFilters)
     }
     
     @IBAction
     func launchContrastSettings(_ sender: Any?) {
+        defer {
+            recordCountlyOpenSystemSettingsEvent(category: "highContrast", tag: (sender as? NSView)?.tag)
+        }
         SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay)
     }
     
     @IBAction
     func launchDarkModeSettings(_ sender: Any?) {
+        defer {
+            recordCountlyOpenSystemSettingsEvent(category: "darkMode", tag: (sender as? NSView)?.tag)
+        }
         SettingsLinkActions.openSystemPreferencesPane(.general)
     }
 
     @IBAction
     func launchLanguageSettings(_ sender: Any?) {
+        defer {
+            recordCountlyOpenSystemSettingsEvent(category: "language", tag: (sender as? NSView)?.tag)
+        }
         SettingsLinkActions.openSystemPreferencesPane(.languageandregionGeneral)
     }
-
+    
     @IBAction
     func launchMagnifierSettings(_ sender: Any?) {
+        defer {
+            recordCountlyOpenSystemSettingsEvent(category: "magnifier", tag: (sender as? NSView)?.tag)
+        }
         SettingsLinkActions.openSystemPreferencesPane(.accessibilityZoom)
     }
 
     @IBAction
     func launchMouseSettings(_ sender: Any?) {
+        defer {
+            recordCountlyOpenSystemSettingsEvent(category: "mouse", tag: (sender as? NSView)?.tag)
+        }
         SettingsLinkActions.openSystemPreferencesPane(.mouse)
     }
 
     @IBAction
     func launchNightModeSettings(_ sender: Any?) {
+        defer {
+            recordCountlyOpenSystemSettingsEvent(category: "nightMode", tag: (sender as? NSView)?.tag)
+        }
         SettingsLinkActions.openSystemPreferencesPane(.displaysNightShift)
     }
     
     @IBAction
     func launchPointerSizeSettings(_ sender: Any?) {
+        defer {
+            recordCountlyOpenSystemSettingsEvent(category: "pointerSize", tag: (sender as? NSView)?.tag)
+        }
         SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayCursor)
     }
     
     @IBAction
     func launchReadAloudSettings(_ sender: Any?) {
+        defer {
+            recordCountlyOpenSystemSettingsEvent(category: "readAloud", tag: (sender as? NSView)?.tag)
+        }
         SettingsLinkActions.openSystemPreferencesPane(.accessibilitySpeech)
     }
 
     @IBAction
     func launchKeyboardSettings(_ sender: Any?) {
+        defer {
+            recordCountlyOpenSystemSettingsEvent(category: "keyboard", tag: (sender as? NSView)?.tag)
+        }
         SettingsLinkActions.openSystemPreferencesPane(.keyboardKeyboard)
+    }
+    
+    //
+    
+    func recordCountlyOpenSystemSettingsEvent(category settingsCategoryName: String, tag: Int?) {
+        var segmentation: [String: String] = [:]
+        segmentation["category"] = settingsCategoryName
+        if tag == nil || tag! == 0 {
+            // main menu
+            segmentation["menuType"] = "mainMenu"
+        } else if tag! == 1 {
+            segmentation["menuType"] = "contextMenu"
+        }
+        Countly.sharedInstance().recordEvent("openSystemSettings", segmentation: segmentation)
+//        Countly.sharedInstance().recordEvent("openSystemSettings" + settingsCategoryName)
     }
     
     //
