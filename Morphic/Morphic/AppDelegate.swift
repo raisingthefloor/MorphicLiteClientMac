@@ -1088,7 +1088,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     func terminateMorphicClientDueToCmdQ() {
         defer {
-            let segmentation = ["method": "keyboardShortcut"]
+            let segmentation = ["eventSource": "keyboardShortcut"]
             Countly.sharedInstance().recordEvent("quit", segmentation: segmentation)
         }
         quitApplication()
@@ -1265,7 +1265,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func createMenuOpenedSourceSegmentation(menuOpenedSource: MenuOpenedSource?) -> [String: String] {
         var result: [String: String] = [:]
         if let menuOpenedSource = menuOpenedSource {
-            result["method"] = menuOpenedSource.rawValue + "Menu"
+            result["eventSource"] = menuOpenedSource.rawValue + "Menu"
         }
         return result
     }
@@ -1651,11 +1651,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             #if EDITION_BASIC
                 let morphicBarWindowWasVisible = morphicBarWindow != nil
                 defer {
-                    let segmentation: [String: String] = ["method": "trayIconClick"]
+                    let segmentation: [String: String] = ["eventSource": "trayIconClick"]
                     if morphicBarWindowWasVisible == true {
-                        Countly.sharedInstance().recordEvent("hideMorphicBar", segmentation: segmentation)
+                        Countly.sharedInstance().recordEvent("morphicBarHide", segmentation: segmentation)
                     } else {
-                        Countly.sharedInstance().recordEvent("showMorphicBar", segmentation: segmentation)
+                        Countly.sharedInstance().recordEvent("morphicBarShow", segmentation: segmentation)
                     }
                 }
                 toggleMorphicBar(sender)
@@ -1741,7 +1741,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func menuBarExtraShowMorphicBarMenuItemClicked(_ sender: NSMenuItem) {
         let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-        Countly.sharedInstance().recordEvent("showMorphicBar", segmentation: segmentation)
+        Countly.sharedInstance().recordEvent("morphicBarShow", segmentation: segmentation)
         showMorphicBar(sender)
     }
     
@@ -1770,20 +1770,20 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func menuBarExtraHideMorphicBarMenuItemClicked(_ sender: NSMenuItem) {
         let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-        Countly.sharedInstance().recordEvent("hideMorphicBar", segmentation: segmentation)
+        Countly.sharedInstance().recordEvent("morphicBarHide", segmentation: segmentation)
         hideMorphicBar(sender)
     }
 
     @IBAction
     func morphicBarIconHideMorphicBarMenuItemClicked(_ sender: NSMenuItem) {
         let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-        Countly.sharedInstance().recordEvent("hideMorphicBar", segmentation: segmentation)
+        Countly.sharedInstance().recordEvent("morphicBarHide", segmentation: segmentation)
         hideMorphicBar(sender)
     }
 
     func morphicBarCloseButtonPressed() {
-        let segmentation = ["method": "closeButton"]
-        Countly.sharedInstance().recordEvent("hideMorphicBar", segmentation: segmentation)
+        let segmentation = ["eventSource": "closeButton"]
+        Countly.sharedInstance().recordEvent("morphicBarHide", segmentation: segmentation)
         hideMorphicBar(nil)
     }
     
@@ -1810,38 +1810,76 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     //
     
     @IBAction
-    func learnAboutMorphicClicked(_ sender: NSMenuItem?) {
+    func menuBarExtraLearnAboutMorphicMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            var segmentation: [String: String] = [:]
-            segmentation["menuType"] = "mainMenu"
-            Countly.sharedInstance().recordEvent("learnAboutMorphicClicked", segmentation: segmentation)
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
+            Countly.sharedInstance().recordEvent("learnAboutMorphic", segmentation: segmentation)
         }
 
+        learnAboutMorphicClicked()
+    }
+
+    @IBAction
+    func morphicBarIconLearnAboutMorphicMenuItemClicked(_ sender: NSMenuItem?) {
+        defer {
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
+            Countly.sharedInstance().recordEvent("learnAboutMorphic", segmentation: segmentation)
+        }
+        
+        learnAboutMorphicClicked()
+    }
+    
+    func learnAboutMorphicClicked() {
         let url = URL(string: "https://morphic.org")!
         NSWorkspace.shared.open(url)
     }
 
     @IBAction
-    func quickDemoMoviesClicked(_ sender: NSMenuItem?) {
+    func menuBarExtraQuickDemoMoviesMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            var segmentation: [String: String] = [:]
-            segmentation["category"] = "main"
-            segmentation["menuType"] = "mainMenu"
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
+            Countly.sharedInstance().recordEvent("quickDemoVideo", segmentation: segmentation)
+        }
+        
+        quickDemoMoviesClicked()
+    }
+    
+    @IBAction
+    func morphicBarIconQuickDemoMoviesMenuItemClicked(_ sender: NSMenuItem?) {
+        defer {
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
             Countly.sharedInstance().recordEvent("quickDemoVideo", segmentation: segmentation)
         }
 
+        quickDemoMoviesClicked()
+    }
+    
+    func quickDemoMoviesClicked() {
         let url = URL(string: "https://morphic.org/movies/main")!
         NSWorkspace.shared.open(url)
     }
 
     @IBAction
-    func otherHelpfulThingsClicked(_ sender: NSMenuItem?) {
+    func menuBarExtraOtherHelpfulThingsMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            var segmentation: [String: String] = [:]
-            segmentation["menuType"] = "mainMenu"
-            Countly.sharedInstance().recordEvent("otherHelpfulThingsClicked", segmentation: segmentation)
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
+            Countly.sharedInstance().recordEvent("otherHelpfulThings", segmentation: segmentation)
+        }
+        
+        otherHelpfulThingsClicked()
+    }
+    
+    @IBAction
+    func morphicBarIconOtherHelpfulThingsMenuItemClicked(_ sender: NSMenuItem?) {
+        defer {
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
+            Countly.sharedInstance().recordEvent("otherHelpfulThings", segmentation: segmentation)
         }
 
+        otherHelpfulThingsClicked()
+    }
+    
+    func otherHelpfulThingsClicked() {
         let url = URL(string: "https://morphic.org/helpful")!
         NSWorkspace.shared.open(url)
     }
@@ -1951,12 +1989,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         segmentation["category"] = settingsCategoryName
         if tag == nil || tag! == 0 {
             // main menu
-            segmentation["menuType"] = "mainMenu"
+            segmentation["eventSource"] = "iconMenu"
         } else if tag! == 1 {
-            segmentation["menuType"] = "contextMenu"
+            segmentation["eventSource"] = "contextMenu"
         }
-        Countly.sharedInstance().recordEvent("openSystemSettings", segmentation: segmentation)
-//        Countly.sharedInstance().recordEvent("openSystemSettings" + settingsCategoryName)
+        Countly.sharedInstance().recordEvent("systemSettings", segmentation: segmentation)
+//        Countly.sharedInstance().recordEvent("systemSettings" + settingsCategoryName)
     }
     
     //
