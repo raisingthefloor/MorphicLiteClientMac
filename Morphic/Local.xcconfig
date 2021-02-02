@@ -23,7 +23,7 @@
 
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
-MORPHIC_BASIC_SERVICE_ENDPOINT=http:/$()/localhost:5002/
+MORPHIC_SERVICE_ENDPOINT=http:/$()/localhost:5002/
 MORPHIC_COMMUNITY_SERVICE_ENDPOINT=http:/$()/localhost:5002/
 FRONT_END_URL=http:/$()/localhost:5003/
 

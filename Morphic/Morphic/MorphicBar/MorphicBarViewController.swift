@@ -51,10 +51,12 @@ public class MorphicBarViewController: NSViewController {
         view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
         view.layer?.cornerRadius = 6
         self.copySettingsBetweenComputersMenuItem?.isHidden = (Session.shared.isCaptureAndApplyEnabled == false)
-        #if EDITION_BASIC
-        #elseif EDITION_COMMUNITY
+        switch Session.morphicEdition {
+        case .basic:
+            break
+        case .plus:
             self.loginMenuItem?.isHidden = (Session.shared.user != nil)
-        #endif
+        }
         self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
         self.mainMenu?.delegate = AppDelegate.shared
         updateMainMenu()
@@ -84,10 +86,12 @@ public class MorphicBarViewController: NSViewController {
         guard let session = notification.object as? Session else {
             return
         }
-        #if EDITION_BASIC
-        #elseif EDITION_COMMUNITY
+        switch Session.morphicEdition {
+        case .basic:
+            break
+        case .plus:
             self.loginMenuItem?.isHidden = (session.user != nil)
-        #endif
+        }
         self.logoutMenuItem?.isHidden = (session.user == nil)
     }
     
@@ -111,21 +115,26 @@ public class MorphicBarViewController: NSViewController {
     }
     
     private func updateMainMenu() {
-        #if EDITION_BASIC
+        switch Session.morphicEdition {
+        case .basic:
             if let _ = ConfigurableFeatures.shared.autorunConfig {
                 self.automaticallyStartMorphicAtLoginMenuItem.isHidden = true
             }
             if let _ = ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin {
                 self.showMorphicBarAtStartMenuItem.isHidden = true
             }
-        #endif
+        case .plus:
+            break
+        }
 
-        #if EDITION_BASIC
+        switch Session.morphicEdition {
+        case .basic:
             // NOTE: the default menu items are already configured for Morphic Basic
-        #elseif EDITION_COMMUNITY
+            break
+        case .plus:
             // configure menu items to match the Morphic Community scheme
             copySettingsBetweenComputersMenuItem?.isHidden = true
-        #endif
+        }
     }
 
     // MARK: - Orientation and orientation-related constraints

@@ -196,12 +196,12 @@ stages:
             targetType: 'filePath'
             filePath: notarize.sh
         - task: Bash@3
-          displayName: Notarize 'MorphicBasic.pkg'
+          displayName: Notarize 'Morphic.pkg'
           env:
             BRANCH: $(Build.SourceBranch)
             BRANCH_NAME: $(Build.SourceBranchName)
-            PKG_PATH: './Morphic/MorphicBasic.pkg'
-            BUNDLE_ID: 'org.raisingthefloor.MorphicBasicInstaller.pkg'
+            PKG_PATH: './Morphic/Morphic.pkg'
+            BUNDLE_ID: 'org.raisingthefloor.MorphicInstaller.pkg'
             USERNAME: '$(ALTOOL_USERNAME)'
             APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
           inputs:
@@ -242,8 +242,8 @@ stages:
             BRANCH: $(Build.SourceBranch)
             BRANCH_NAME: $(Build.SourceBranchName)
             LOCAL_DMG: './Morphic/Morphic.dmg'
-            LOCAL_PKG: './Morphic/MorphicBasic.pkg'
-            AWS_FILE_PREFIX: 'MorphicBasic'
+            LOCAL_PKG: './Morphic/Morphic.pkg'
+            AWS_FILE_PREFIX: 'Morphic'
             VERSION: '$(finalVersion)'
           inputs:
             targetType: 'filePath'
@@ -308,9 +308,9 @@ stages:
 
               S3_PUBLISHED_HTTP_URL="https://d23vryjv7k8eyb.cloudfront.net"
 
-              LOCAL_APPCAST_SOURCE="${AGENT_BUILDDIRECTORY}/MorphicBasic-v1.$(Build.BuildNumber).appcast.xml"
-              S3_PKG_OBJECT_NAME="${S3_OBJECT_PREFIX}/MorphicBasic-v1.$(Build.BuildNumber).pkg"
-              S3_APPCAST_OBJECT_NAME="${S3_OBJECT_PREFIX}/MorphicBasic-v1.$(Build.BuildNumber).appcast.xml"
+              LOCAL_APPCAST_SOURCE="${AGENT_BUILDDIRECTORY}/Morphic-v1.$(Build.BuildNumber).appcast.xml"
+              S3_PKG_OBJECT_NAME="${S3_OBJECT_PREFIX}/Morphic-v1.$(Build.BuildNumber).pkg"
+              S3_APPCAST_OBJECT_NAME="${S3_OBJECT_PREFIX}/Morphic-v1.$(Build.BuildNumber).appcast.xml"
 
               cat > "${LOCAL_APPCAST_SOURCE}" <<EOF
               <?xml version="1.0" encoding="utf-8"?>

@@ -31,7 +31,21 @@ private let logger = OSLog(subsystem: "MorphicService", category: "Session")
 
 /// Manage a user's session with Morphic
 public class Session {
-    
+    public enum MorphicEdition {
+        case basic
+        case plus
+    }
+    private static var _morphicEdition: MorphicEdition!
+    public static var morphicEdition: MorphicEdition {
+        get {
+            // NOTE: this will _intentionally_ crash if the edition has not yet been set
+            return Session._morphicEdition!
+        }
+        set {
+            Session._morphicEdition = newValue
+        }
+    }
+
     /// Create a new session that talks to the given endpoint
     public init(endpoint: URL) {
         urlSession = URLSession(configuration: .ephemeral)

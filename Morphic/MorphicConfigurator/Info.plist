@@ -26,8 +26,8 @@
 	<string>$(FRONT_END_URL)</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
-	<key>MorphicBasicServiceEndpoint</key>
-	<string>$(MORPHIC_BASIC_SERVICE_ENDPOINT)</string>
+	<key>MorphicServiceEndpoint</key>
+	<string>$(MORPHIC_SERVICE_ENDPOINT)</string>
 	<key>MorphicCommunityServiceEndpoint</key>
 	<string>$(MORPHIC_COMMUNITY_SERVICE_ENDPOINT)</string>
 	<key>NSAppTransportSecurity</key>
