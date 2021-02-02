@@ -1341,6 +1341,7 @@
 				9DE0733D251289C20030A978 /* macos.solutions.json in Resources */,
 				9DE0733E251289C20030A978 /* DefaultPreferences.json in Resources */,
 				9DD12AF525128D4900E94C4F /* MorphicCommunityConfigurator.app in Resources */,
+				9D577A2F25C9F50F00710701 /* UpdateAvailableWindow.xib in Resources */,
 				9DE0733F251289C20030A978 /* comment-solid.pdf in Resources */,
 				9DE07340251289C20030A978 /* newspaper-solid.pdf in Resources */,
 				9DE07341251289C20030A978 /* QuickHelpVolumeViewController.xib in Resources */,
@@ -1555,6 +1556,7 @@
 			files = (
 				9DE0730E251289C20030A978 /* MorphicBarButtonItemIcon.swift in Sources */,
 				9DE0730F251289C20030A978 /* Theme.swift in Sources */,
+				9D577A2125C9F50300710701 /* Autoupdater.swift in Sources */,
 				9D577A1325C9EE9300710701 /* ConfigurableFeatures.swift in Sources */,
 				9DE07310251289C20030A978 /* MorphicBarWindow.swift in Sources */,
 				9DE45BAA25171C6000209421 /* SettingsLinkActions.swift in Sources */,
@@ -1574,6 +1576,7 @@
 				9DE0731D251289C20030A978 /* MorphicBarButtonItemView.swift in Sources */,
 				9DE112FC2522243E00591E08 /* CopySettingsWindowController.swift in Sources */,
 				9DE0731E251289C20030A978 /* AppDelegate.swift in Sources */,
+				9D577A2825C9F50700710701 /* UpdateAvailableWindow.swift in Sources */,
 				9DE0731F251289C20030A978 /* ProgressIndicator.swift in Sources */,
 				9DE07320251289C20030A978 /* PageControl.swift in Sources */,
 				9DE07321251289C20030A978 /* AboutBoxWindowController.swift in Sources */,
