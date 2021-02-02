@@ -1378,7 +1378,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    export TEMPLATE_NAME=\"MorphicTemplate.dmg\"\n    sh \"${SRCROOT}/Morphic/CreateDiskImage.sh\"\nfi\n\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    export PACKAGE_PRODUCT_NAME=\"MorphicBasic\"\n    sh \"${SRCROOT}/Morphic/CreatePackage.sh\"\nfi\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    export TEMPLATE_NAME=\"MorphicTemplate.dmg\"\n    sh \"${SRCROOT}/Morphic/CreateDiskImage.sh\"\nfi\n\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    export PACKAGE_PRODUCT_NAME=\"Morphic\"\n    sh \"${SRCROOT}/Morphic/CreatePackage.sh\"\nfi\n";
 		};
 		9D0AF79024A57FC2007E177E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

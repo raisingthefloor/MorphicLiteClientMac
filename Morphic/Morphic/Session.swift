@@ -45,7 +45,7 @@ extension Session {
     /// creating a `Local.xcconfig` with whatever value is relevant to their local setup.
     static var mainBundleEndpoint: URL! = {
         #if EDITION_BASIC
-            guard let endpointString = Bundle.main.infoDictionary?["MorphicBasicServiceEndpoint"] as? String else {
+            guard let endpointString = Bundle.main.infoDictionary?["MorphicServiceEndpoint"] as? String else {
                 os_log(.fault, log: logger, "Missing morphic endpoint.  Check build config files")
                 return nil
             }
