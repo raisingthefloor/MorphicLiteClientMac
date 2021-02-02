@@ -63,9 +63,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
         // capture the edition of Morphic
         #if EDITION_BASIC
-        Session.shared.morphicEdition = .basic
+        Session.morphicEdition = .basic
         #elseif EDITION_COMMUNITY
-        Session.shared.morphicEdition = .plus
+        Session.morphicEdition = .plus
         #else
         fatalError("This application was not compiled with the mandatory EDITION flag")
         #endif
@@ -79,7 +79,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         terminateMorphicLauncherIfRunning()
 
         // before we open any storage or use UserDefaults, set up our ApplicationSupport path and UserDefaults suiteName
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             Storage.setApplicationSupportDirectoryName("org.raisingthefloor.MorphicBasic")
             UserDefaults.setMorphicSuiteName("org.raisingthefloor.MorphicBasic")
@@ -89,7 +89,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
 
         // set up options for the current edition of Morphic
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             // capture the common configuration (if one is present)
             let commonConfiguration = self.getCommonConfiguration()
@@ -107,7 +107,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
         self.configureCountly()
         
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             #if DEBUG
                 // do not run the auto-updater checks in debug mode
@@ -128,7 +128,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
                 
-                switch Session.shared.morphicEdition {
+                switch Session.morphicEdition {
                 case .basic:
                     if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
                         self.resetSettings()
@@ -139,7 +139,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
                 self.copySettingsBetweenComputersMenuItem?.isHidden = (Session.shared.isCaptureAndApplyEnabled == false)
                 
-                switch Session.shared.morphicEdition {
+                switch Session.morphicEdition {
                 case .basic:
                     break
                 case .plus:
@@ -147,7 +147,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                         self.showMorphicBarMenuItem?.isHidden = true
                     }
                 }
-                switch Session.shared.morphicEdition {
+                switch Session.morphicEdition {
                 case .basic:
                     break
                 case .plus:
@@ -162,7 +162,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 let showMorphicBarAtStart = Session.shared.bool(for: .showMorphicBarAtStart) ?? false
 
                 // show the Morphic Bar (if we have a bar to show and it's (a) our first startup or (b) the user had the bar showing when the app was last exited or (c) the user has "show MorphicBar at start" set to true
-                switch Session.shared.morphicEdition {
+                switch Session.morphicEdition {
                 case .basic:
                     var showMorphicBar: Bool = false
                     if showMorphicBarAtStart == true {
@@ -205,7 +205,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 // NOTE: we must not do this until after we have set up UserDefaults.morphic (if we use UserDefaults.morphic to store/capture this state); we may also consider using the running state of MorphicLauncher (when we first start up) as a heuristic to know that autostart is enabled for our application (or we may consider passing in an argument via the launcher which indicates that we were auto-started)
                 self.updateMorphicAutostartAtLoginMenuItems()
 
-                switch Session.shared.morphicEdition {
+                switch Session.morphicEdition {
                 case .basic:
                     // if we receive the "show MorphicBar" notification (from the dock app) then call our showMorphicBarNotify function
                     DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.showMorphicBarDueToDockAppActivation), name: .showMorphicBarDueToDockAppActivation, object: nil)
@@ -227,7 +227,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 }
 
                 if Session.shared.user != nil {
-                    switch Session.shared.morphicEdition {
+                    switch Session.morphicEdition {
                     case .basic:
                         break
                     case .plus:
@@ -247,7 +247,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.userDidSignin), name: .morphicSignin, object: nil)
                 NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
 
-                switch Session.shared.morphicEdition {
+                switch Session.morphicEdition {
                 case .basic:
                     break
                 case .plus:
@@ -258,7 +258,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     }
                 }
                 
-                switch Session.shared.morphicEdition {
+                switch Session.morphicEdition {
                 case .basic:
                     switch ConfigurableFeatures.shared.autorunConfig {
                     case nil:
@@ -377,7 +377,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         os_log(.info, log: logger, "Got signin notification from configurator")
         Session.shared.open {
             NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: Session.shared)
-            switch Session.shared.morphicEdition {
+            switch Session.morphicEdition {
             case .basic:
                 let userInfo = notification.userInfo ?? [:]
                 if !(userInfo["isRegister"] as? Bool ?? false) {
@@ -416,7 +416,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         let morphicLauncherApplications = NSWorkspace.shared.runningApplications.filter({
             application in
             
-            switch Session.shared.morphicEdition {
+            switch Session.morphicEdition {
             case .basic:
                 switch application.bundleIdentifier {
                 case "org.raisingthefloor.MorphicLauncher",
@@ -480,7 +480,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         guard let session = notification.object as? Session else {
             return
         }
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             break
         case .plus:
@@ -488,7 +488,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
         self.logoutMenuItem?.isHidden = (session.user == nil)
         
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             break
         case .plus:
@@ -1044,7 +1044,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func logout(_ sender: Any?) {
         Session.shared.signout {
-            switch Session.shared.morphicEdition {
+            switch Session.morphicEdition {
             case .basic:
                 break
             case .plus:
@@ -1061,7 +1061,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 }
             }
             
-            switch Session.shared.morphicEdition {
+            switch Session.morphicEdition {
             case .basic:
                 break
             case .plus:
@@ -1162,7 +1162,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         // immediately hide our MorphicBar window
         morphicBarWindow?.setIsVisible(false)
         
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             // terminate our dock app (if it's running)
             terminateDockAppIfRunning()
@@ -1191,7 +1191,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             break
         case .plus:
@@ -1261,7 +1261,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             return false
         }
         for userLaunchedApp in userLaunchedApps {
-            switch Session.shared.morphicEdition {
+            switch Session.morphicEdition {
             case .basic:
                 switch userLaunchedApp["Program"] as? String {
                 case "org.raisingthefloor.MorphicLauncher",
@@ -1291,7 +1291,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func setMorphicAutostartAtLogin(_ autostartAtLogin: Bool) -> Bool {
         let success: Bool
         
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             #if DEBUG
                 success = SMLoginItemSetEnabled("org.raisingthefloor.MorphicLauncher-Debug" as CFString, autostartAtLogin)
@@ -1514,7 +1514,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         // get the currently-pressed modifier keys
         let currentModifierKeys = NSEvent.modifierFlags
 
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             if currentModifierKeys.rawValue & NSEvent.ModifierFlags.option.rawValue != 0 {
                 self.hideQuickHelpMenuItem.isHidden = false
@@ -1712,7 +1712,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         if currentEvent.type == .leftMouseDown {
             // when the left mouse button is pressed, toggle the MorphicBar's visibility (i.e. show/hide the MorphicBar)
 
-            switch Session.shared.morphicEdition {
+            switch Session.morphicEdition {
             case .basic:
                 let morphicBarWindowWasVisible = morphicBarWindow != nil
                 defer {
@@ -1765,7 +1765,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     private func updateMenu() {
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             if let _ = ConfigurableFeatures.shared.autorunConfig {
                 self.automaticallyStartMorphicAtLoginMenuItem.isHidden = true
@@ -1777,7 +1777,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             break
         }
 
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             // NOTE: the default menu items are already configured for Morphic Basic
         break
@@ -1822,7 +1822,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             self.updateMorphicAutostartAtLoginMenuItems()
             self.updateShowMorphicBarAtStartMenuItems()
             self.updateHideQuickHelpMenuItems()
-            switch Session.shared.morphicEdition {
+            switch Session.morphicEdition {
             case .basic:
                 morphicBarWindow?.orientation = .horizontal
             case .plus:
@@ -1863,7 +1863,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         currentKeyboardSelectedQuickHelpViewController = nil
 
         morphicBarWindow?.close()
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             showMorphicBarMenuItem?.isHidden = false
         case .plus:
@@ -2123,7 +2123,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         os_log(.info, log: logger, "launching configurator")
         
         let morphicConfiguratorAppName: String
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             morphicConfiguratorAppName = "MorphicConfigurator.app"
         case .plus:

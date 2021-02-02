@@ -51,7 +51,7 @@ public class MorphicBarViewController: NSViewController {
         view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
         view.layer?.cornerRadius = 6
         self.copySettingsBetweenComputersMenuItem?.isHidden = (Session.shared.isCaptureAndApplyEnabled == false)
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             break
         case .plus:
@@ -86,7 +86,7 @@ public class MorphicBarViewController: NSViewController {
         guard let session = notification.object as? Session else {
             return
         }
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             break
         case .plus:
@@ -115,7 +115,7 @@ public class MorphicBarViewController: NSViewController {
     }
     
     private func updateMainMenu() {
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             if let _ = ConfigurableFeatures.shared.autorunConfig {
                 self.automaticallyStartMorphicAtLoginMenuItem.isHidden = true
@@ -127,7 +127,7 @@ public class MorphicBarViewController: NSViewController {
             break
         }
 
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             // NOTE: the default menu items are already configured for Morphic Basic
             break

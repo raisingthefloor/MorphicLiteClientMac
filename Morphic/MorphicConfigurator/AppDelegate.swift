@@ -31,14 +31,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // capture the edition of Morphic
         #if EDITION_BASIC
-        Session.shared.morphicEdition = .basic
+        Session.morphicEdition = .basic
         #elseif EDITION_COMMUNITY
-        Session.shared.morphicEdition = .plus
+        Session.morphicEdition = .plus
         #else
         fatalError("This application was not compiled with the mandatory EDITION flag")
         #endif
 
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
            Storage.setApplicationSupportDirectoryName("org.raisingthefloor.MorphicBasic")
            UserDefaults.setMorphicSuiteName("org.raisingthefloor.MorphicBasic")
@@ -48,7 +48,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
 
         // set up options for the current edition of Morphic
-        switch Session.shared.morphicEdition {
+        switch Session.morphicEdition {
         case .basic:
             // NOTE: this needs to be consolidated with the main application; we are not taking into account config.json here!
             Session.shared.isCaptureAndApplyEnabled = true

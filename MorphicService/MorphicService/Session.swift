@@ -35,14 +35,14 @@ public class Session {
         case basic
         case plus
     }
-    private var _morphicEdition: MorphicEdition!
-    public var morphicEdition: MorphicEdition {
+    private static var _morphicEdition: MorphicEdition!
+    public static var morphicEdition: MorphicEdition {
         get {
             // NOTE: this will _intentionally_ crash if the edition has not yet been set
-            return _morphicEdition!
+            return Session._morphicEdition!
         }
         set {
-            _morphicEdition = newValue
+            Session._morphicEdition = newValue
         }
     }
 
