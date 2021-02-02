@@ -92,7 +92,7 @@ public class MorphicBarItem {
             if let _ = interoperable["function"] {
                 // config.json (Windows-compatible) action item
                 defer {
-                    Countly.sharedInstance().recordEvent("morphicBarExtraItemPressed")
+                    Countly.sharedInstance().recordEvent("morphicBarExtraItem")
                 }
                 return MorphicBarActionItem(interoperable: interoperable)
             } else {

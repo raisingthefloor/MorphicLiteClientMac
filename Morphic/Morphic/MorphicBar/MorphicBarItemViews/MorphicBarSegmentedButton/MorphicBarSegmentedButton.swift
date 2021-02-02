@@ -692,7 +692,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             if learnMoreTelemetryCategory != nil {
                 segmentation["category"] = learnMoreTelemetryCategory
             }
-            segmentation["menuType"] = "contextMenu"
+            segmentation["eventSource"] = "contextMenu"
             Countly.sharedInstance().recordEvent("learnMore", segmentation: segmentation)
         }
         //
@@ -716,7 +716,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             if quickDemoVideoTelemetryCategory != nil {
                 segmentation["category"] = quickDemoVideoTelemetryCategory
             }
-            segmentation["menuType"] = "contextMenu"
+            segmentation["eventSource"] = "contextMenu"
             Countly.sharedInstance().recordEvent("quickDemoVideo", segmentation: segmentation)
         }
         //
