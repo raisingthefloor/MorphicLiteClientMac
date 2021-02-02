@@ -245,7 +245,7 @@
                 <menuItem title="About Morphic..." id="GjN-rN-rcZ">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="showAboutBox:" target="-1" id="iCU-gX-DgC"/>
+                        <action selector="morphicBarIconAboutMorphicMenuItemClicked:" target="-1" id="Eu1-uz-SW9"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Quit Morphic" keyEquivalent="q" id="tHP-m8-Lto">
