@@ -1067,11 +1067,23 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
-    @IBAction func showAboutBox(_ sender: NSMenuItem) {
+    @IBAction func menuBarExtraAboutMorphicMenuItemClicked(_ sender: NSMenuItem) {
         defer {
-            Countly.sharedInstance().recordEvent("aboutMorphic")
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
+            Countly.sharedInstance().recordEvent("aboutMorphic", segmentation: segmentation)
         }
-        
+        showAboutBox()
+    }
+
+    @IBAction func morphicBarIconAboutMorphicMenuItemClicked(_ sender: NSMenuItem) {
+        defer {
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
+            Countly.sharedInstance().recordEvent("aboutMorphic", segmentation: segmentation)
+        }
+        showAboutBox()
+    }
+
+    func showAboutBox() {
         let aboutBoxWindowController = AboutBoxWindowController.single
         if aboutBoxWindowController.window?.isVisible == false {
             aboutBoxWindowController.centerOnScreen()
@@ -1087,26 +1099,23 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     func terminateMorphicClientDueToCmdQ() {
-        defer {
-            let segmentation = ["eventSource": "keyboardShortcut"]
-            Countly.sharedInstance().recordEvent("quit", segmentation: segmentation)
-        }
+        let segmentation = ["eventSource": "keyboardShortcut"]
+        Countly.sharedInstance().recordEvent("quit", segmentation: segmentation)
+
         quitApplication()
     }
     
     @IBAction func menuBarExtraQuitApplicationMenuItemClicked(_ sender: NSMenuItem) {
-        defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            Countly.sharedInstance().recordEvent("quit", segmentation: segmentation)
-        }
+        let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
+        Countly.sharedInstance().recordEvent("quit", segmentation: segmentation)
+
         quitApplication()
     }
 
     @IBAction func morphicBarIconQuitApplicationMenuItemClicked(_ sender: NSMenuItem) {
-        defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-            Countly.sharedInstance().recordEvent("quit", segmentation: segmentation)
-        }
+        let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
+        Countly.sharedInstance().recordEvent("quit", segmentation: segmentation)
+
         quitApplication()
     }
 
