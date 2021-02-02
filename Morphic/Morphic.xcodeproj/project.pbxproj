@@ -103,6 +103,9 @@
 		9D4B24E72517068200F0B2E2 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
 		9D577A1325C9EE9300710701 /* ConfigurableFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */; };
 		9D577A1A25C9EEAF00710701 /* MorphicBarSeparatorItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */; };
+		9D577A2125C9F50300710701 /* Autoupdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */; };
+		9D577A2825C9F50700710701 /* UpdateAvailableWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */; };
+		9D577A2F25C9F50F00710701 /* UpdateAvailableWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */; };
 		9D77209E252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
 		9D77209F252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
 		9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */; };
