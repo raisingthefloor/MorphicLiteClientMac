@@ -138,7 +138,6 @@ public class MorphicBarItem {
     }
 }
 
-#if EDITION_BASIC
 class MorphicBarSeparatorItem: MorphicBarItem {
     override func view() -> MorphicBarItemViewProtocol? {
         let view = MorphicBarSeparatorItemView()
@@ -146,7 +145,6 @@ class MorphicBarSeparatorItem: MorphicBarItem {
         return view
     }
 }
-#endif
 
 class MorphicBarLinkItem: MorphicBarItem {
     var label: String

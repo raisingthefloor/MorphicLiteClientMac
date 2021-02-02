@@ -101,6 +101,8 @@
 		9D49D4F225BBAA00001DD452 /* UpdateAvailableWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */; };
 		9D49D4F325BBAA00001DD452 /* UpdateAvailableWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */; };
 		9D4B24E72517068200F0B2E2 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
+		9D577A1325C9EE9300710701 /* ConfigurableFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */; };
+		9D577A1A25C9EEAF00710701 /* MorphicBarSeparatorItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */; };
 		9D77209E252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
 		9D77209F252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
 		9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */; };
@@ -1550,6 +1552,7 @@
 			files = (
 				9DE0730E251289C20030A978 /* MorphicBarButtonItemIcon.swift in Sources */,
 				9DE0730F251289C20030A978 /* Theme.swift in Sources */,
+				9D577A1325C9EE9300710701 /* ConfigurableFeatures.swift in Sources */,
 				9DE07310251289C20030A978 /* MorphicBarWindow.swift in Sources */,
 				9DE45BAA25171C6000209421 /* SettingsLinkActions.swift in Sources */,
 				9DE07311251289C20030A978 /* MorphicBarSegmentedButton.swift in Sources */,
@@ -1561,6 +1564,7 @@
 				9DE07317251289C20030A978 /* MorphicBarItemViewProtocol.swift in Sources */,
 				9DE07318251289C20030A978 /* QuickHelpContentProvider.swift in Sources */,
 				9DE07319251289C20030A978 /* MorphicBarSegmentedButtonItemView.swift in Sources */,
+				9D577A1A25C9EEAF00710701 /* MorphicBarSeparatorItemView.swift in Sources */,
 				9DE0731A251289C20030A978 /* QuickHelpVolumeViewController.swift in Sources */,
 				9DE0731B251289C20030A978 /* QuickHelpWindow.swift in Sources */,
 				9DE0731C251289C20030A978 /* MorphicBarView.swift in Sources */,
