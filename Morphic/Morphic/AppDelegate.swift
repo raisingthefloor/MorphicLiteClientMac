@@ -1725,7 +1725,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 }
                 toggleMorphicBar(sender)
             case .plus:
-                //
                 if (Session.shared.user == nil) {
                     // NOTE: if we're running MorphicCommunity and there is no actively logged-in user, then show the login instead of toggling the MorphicBar
                     self.launchConfigurator(argument: "login")
@@ -1928,7 +1927,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     func quickDemoMoviesClicked() {
-        let url = URL(string: "https://morphic.org/movies/main")!
+        let url = URL(string: "https://morphic.org/demos")!
         NSWorkspace.shared.open(url)
     }
 
