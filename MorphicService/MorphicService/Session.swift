@@ -845,7 +845,7 @@ extension HTTPURLResponse {
     }
 }
 
-extension URLResponse{
+extension URLResponse {
     
     /// Get a Morphic model object by decoding the response JSON data
     ///
