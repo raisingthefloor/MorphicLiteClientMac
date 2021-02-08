@@ -71,6 +71,9 @@ class MorphicBarSeparatorItemView: NSButton, MorphicBarItemViewProtocol {
     private func initialize() {
         // make our view a layer-based view
         self.wantsLayer = true
+        
+        // remove ourselves from any potential tab order or focus
+        self.refusesFirstResponder = true
     }
     
     // MARK: self-sizing hints to layout engine
