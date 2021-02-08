@@ -1874,6 +1874,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         } else {
             os_log(.info, log: logger, "Could not close MorphicBar; morphicBarWindow is nil")
         }
+        self.morphicBarWindow = nil
+        
         switch Session.morphicEdition {
         case .basic:
             showMorphicBarMenuItem?.isHidden = false
@@ -2097,10 +2099,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         QuickHelpWindow.hide()
     }
      
-    func windowWillClose(_ notification: Notification) {
-        morphicBarWindow = nil
-    }
-    
     func windowDidChangeScreen(_ notification: Notification) {
         morphicBarWindow?.reposition(animated: false)
     }

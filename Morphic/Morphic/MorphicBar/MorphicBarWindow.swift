@@ -54,12 +54,23 @@ public class MorphicBarWindow: NSWindow {
         }
         setAccessibilityLabel("MorphicBar")
         updateMorphicBar()
-        NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarWindow.userDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
+
+        switch Session.morphicEdition {
+        case .basic:
+            break
+        case .plus:
+            NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarWindow.userDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
+        }
     }
     
     @objc
     func userDidChange(_ notification: NSNotification) {
-        updateMorphicBar()
+        switch Session.morphicEdition {
+        case .basic:
+            break
+        case .plus:
+            updateMorphicBar()
+        }
     }
     
     var windowIsKey: Bool = false
