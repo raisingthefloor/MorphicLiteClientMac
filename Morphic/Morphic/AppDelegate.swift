@@ -246,6 +246,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 }
                 DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.userDidSignin), name: .morphicSignin, object: nil)
                 NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
+                NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.permissionsPopupFired(_:)), name: .morphicPermissionsPopup, object: nil)
 
                 switch Session.morphicEdition {
                 case .basic:
@@ -809,6 +810,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         if currrentAppearanceTheme != defaultAppearanceTheme {
             MorphicDisplayAppearance.setCurrentAppearanceTheme(defaultAppearanceTheme)
         }
+    }
+    
+    //
+    
+    @objc
+    func permissionsPopupFired(_ notification: NSNotification) {
+        PermissionsGuidanceSystem.startNew()
     }
     
     //
@@ -1861,7 +1869,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func hideMorphicBar(_ sender: Any?) {
         currentKeyboardSelectedQuickHelpViewController = nil
 
-        morphicBarWindow?.close()
+        if let morphicBarWindow = morphicBarWindow {
+            morphicBarWindow.close()
+        } else {
+            os_log(.info, log: logger, "Could not close MorphicBar; morphicBarWindow is nil")
+        }
         switch Session.morphicEdition {
         case .basic:
             showMorphicBarMenuItem?.isHidden = false
