@@ -84,26 +84,47 @@
                         <action selector="morphicBarIconHideMorphicBarMenuItemClicked:" target="-1" id="S22-gK-waz"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Select Community" hidden="YES" id="eJF-8G-qpw">
+                <menuItem isSeparatorItem="YES" id="cjn-tB-bSI"/>
+                <menuItem title="Sign into Morphic..." hidden="YES" id="iGo-my-5Ga">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="Select Community" id="UaH-F4-gmM"/>
+                    <connections>
+                        <action selector="launchLogin:" target="-1" id="iDp-T7-VY1"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Sign out of Morphic" hidden="YES" id="O7a-6a-ADF">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="logout:" target="-1" id="x5Y-bD-SlU"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Copy settings to or from Morphic account..." id="nEi-ie-PQT">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showCopySettingsWindow:" target="-1" id="Z1i-5A-3wb"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="88H-pk-G8q"/>
+                <menuItem title="Select MorphicBar" hidden="YES" id="eJF-8G-qpw">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Select MorphicBar" id="UaH-F4-gmM"/>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="PsU-Tp-zqY"/>
-                <menuItem title="Learn About Morphic" id="BA9-KD-2Ap">
+                <menuItem title="Explore everything Morphic can do..." id="BA9-KD-2Ap">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="morphicBarIconLearnAboutMorphicMenuItemClicked:" target="-1" id="FP8-Ot-aRr"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Quick Demo Movies" id="o8V-T1-TvK">
+                <menuItem title="Quick Morphic demo movies..." id="o8V-T1-TvK">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="morphicBarIconQuickDemoMoviesMenuItemClicked:" target="-1" id="bgA-WD-dKm"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Settings to Make Computer Easier" id="Mey-BI-mff">
+                <menuItem isSeparatorItem="YES" id="FQS-u9-gCw"/>
+                <menuItem title="More settings to make the computer easier" id="Mey-BI-mff">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="Settings to Make Computer Easier" id="Ye1-Jc-wJg">
+                    <menu key="submenu" title="More settings to make the computer easier" id="Ye1-Jc-wJg">
                         <items>
                             <menuItem title="macOS Settings for MorphicBar Controls" id="i24-e7-7q3">
                                 <modifierMask key="keyEquivalentModifierMask"/>
@@ -197,29 +218,10 @@
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="Other Helpful Things" id="0Q8-b6-0NJ">
+                <menuItem title="Other resources to make computers easier..." id="0Q8-b6-0NJ">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="morphicBarIconOtherHelpfulThingsMenuItemClicked:" target="-1" id="PrO-nO-c4y"/>
-                    </connections>
-                </menuItem>
-                <menuItem isSeparatorItem="YES" id="88H-pk-G8q"/>
-                <menuItem title="Copy Settings Between Computers" id="nEi-ie-PQT">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <connections>
-                        <action selector="showCopySettingsWindow:" target="-1" id="Z1i-5A-3wb"/>
-                    </connections>
-                </menuItem>
-                <menuItem title="Sign In..." hidden="YES" id="iGo-my-5Ga">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <connections>
-                        <action selector="launchLogin:" target="-1" id="iDp-T7-VY1"/>
-                    </connections>
-                </menuItem>
-                <menuItem title="Sign Out" hidden="YES" id="O7a-6a-ADF">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <connections>
-                        <action selector="logout:" target="-1" id="x5Y-bD-SlU"/>
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="vgL-Lb-axj"/>
@@ -241,7 +243,6 @@
                         <action selector="hideQuickHelpClicked:" target="-1" id="jIL-cu-YOe"/>
                     </connections>
                 </menuItem>
-                <menuItem isSeparatorItem="YES" id="XwC-a4-IE3"/>
                 <menuItem title="About Morphic..." id="GjN-rN-rcZ">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>

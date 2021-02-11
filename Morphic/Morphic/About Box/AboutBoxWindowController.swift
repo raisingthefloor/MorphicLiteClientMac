@@ -59,7 +59,7 @@ class AboutBoxWindowController: NSWindowController, NSWindowDelegate {
 
         // populate the version and build # in our labels
         if let shortVersionAsString = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-            versionTextField.stringValue = shortVersionAsString
+            versionTextField.stringValue = "version " + shortVersionAsString
         } else {
             versionTextField.stringValue = "[version is unknown]"
         }
