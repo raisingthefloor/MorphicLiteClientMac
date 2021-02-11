@@ -105,7 +105,7 @@ public class CaptureSession {
             case .succeeded(let value):
                 if self.captureDefaultValues || !setting.isDefault(value) {
                     self.preferences.set(value, for: key)
-                }else{
+                } else {
                     self.preferences.remove(key: key)
                 }
             case .failed:

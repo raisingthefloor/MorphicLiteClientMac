@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -70,6 +70,12 @@
 		31E1E185244683DC009C4092 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E1E184244683DC009C4092 /* Theme.swift */; };
 		31E1E187244792D9009C4092 /* DefaultPreferences.json in Resources */ = {isa = PBXBuildFile; fileRef = 31E1E186244792D9009C4092 /* DefaultPreferences.json */; };
 		31E1E188244794EF009C4092 /* MorphicBarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31E1E18A244794EF009C4092 /* MorphicBarViewController.xib */; };
+		9D025477251A6407009EC865 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F4DA251A2FC400ADCC25 /* AppDelegate.swift */; };
+		9D02547A251A6407009EC865 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9DD4F4DC251A2FC500ADCC25 /* Assets.xcassets */; };
+		9D02547B251A6407009EC865 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DD4F4DE251A2FC500ADCC25 /* MainMenu.xib */; };
+		9D0FD4AC251A782900BE72B3 /* MorphicCommunityLauncher.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9D02547F251A6407009EC865 /* MorphicCommunityLauncher.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9D1FA1CD251A317F0008559D /* MorphicLauncher.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9DD4F4D8251A2FC400ADCC25 /* MorphicLauncher.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9D1FA1CF251A31990008559D /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D1FA1CE251A31990008559D /* ServiceManagement.framework */; };
 		9D2593DF250A830100C38DA3 /* envelope-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D0250A830100C38DA3 /* envelope-solid.pdf */; };
 		9D2593E0250A830100C38DA3 /* music-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D1250A830100C38DA3 /* music-solid.pdf */; };
 		9D2593E1250A830100C38DA3 /* google-brands.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D2250A830100C38DA3 /* google-brands.pdf */; };
@@ -85,13 +91,51 @@
 		9D2593EB250A830100C38DA3 /* newspaper-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DC250A830100C38DA3 /* newspaper-solid.pdf */; };
 		9D2593EC250A830100C38DA3 /* shopping-cart-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DD250A830100C38DA3 /* shopping-cart-solid.pdf */; };
 		9D2593ED250A830100C38DA3 /* amazon-brands.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DE250A830100C38DA3 /* amazon-brands.pdf */; };
+		9D2A5AB8259B815800ECD513 /* ConfigurableFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */; };
+		9D2A5AC1259B914800ECD513 /* MorphicBarSeparatorItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */; };
+		9D3530A525C2860200F8D590 /* Countly in Frameworks */ = {isa = PBXBuildFile; productRef = 9D3530A425C2860200F8D590 /* Countly */; };
+		9D3530AD25C30FA200F8D590 /* Countly in Frameworks */ = {isa = PBXBuildFile; productRef = 9D3530AC25C30FA200F8D590 /* Countly */; };
+		9D3530DD25C3101100F8D590 /* VersionUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3530DC25C3101100F8D590 /* VersionUtils.swift */; };
+		9D3530DE25C3101100F8D590 /* VersionUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3530DC25C3101100F8D590 /* VersionUtils.swift */; };
+		9D49D4DD25BBA93B001DD452 /* Autoupdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */; };
+		9D49D4F225BBAA00001DD452 /* UpdateAvailableWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */; };
+		9D49D4F325BBAA00001DD452 /* UpdateAvailableWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */; };
+		9D4B24E72517068200F0B2E2 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
+		9D577A1325C9EE9300710701 /* ConfigurableFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */; };
+		9D577A1A25C9EEAF00710701 /* MorphicBarSeparatorItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */; };
+		9D577A2125C9F50300710701 /* Autoupdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */; };
+		9D577A2825C9F50700710701 /* UpdateAvailableWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */; };
+		9D577A2F25C9F50F00710701 /* UpdateAvailableWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */; };
+		9D77209E252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
+		9D77209F252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
 		9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */; };
 		9D82576F24D31C1E00F6E932 /* AboutBoxWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D82576D24D31C1E00F6E932 /* AboutBoxWindowController.xib */; };
 		9D82577124D353C800F6E932 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82577024D353C800F6E932 /* HyperlinkTextField.swift */; };
 		9D8CEB132507AECF001276E4 /* MorphicBarButtonItemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */; };
 		9D8CEB152507AED7001276E4 /* MorphicBarButtonItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */; };
+		9DA46E7925CA743B006BEAAC /* PermissionsSuccessWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DA46E7225CA743B006BEAAC /* PermissionsSuccessWindow.xib */; };
+		9DA46E7A25CA743B006BEAAC /* PermissionsSuccessWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DA46E7225CA743B006BEAAC /* PermissionsSuccessWindow.xib */; };
+		9DA46E7B25CA743B006BEAAC /* PermissionsGuidanceWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DA46E7325CA743B006BEAAC /* PermissionsGuidanceWindow.xib */; };
+		9DA46E7C25CA743B006BEAAC /* PermissionsGuidanceWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DA46E7325CA743B006BEAAC /* PermissionsGuidanceWindow.xib */; };
+		9DA46E7D25CA743B006BEAAC /* PermissionsGuidanceSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7425CA743B006BEAAC /* PermissionsGuidanceSystem.swift */; };
+		9DA46E7E25CA743B006BEAAC /* PermissionsGuidanceSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7425CA743B006BEAAC /* PermissionsGuidanceSystem.swift */; };
+		9DA46E8125CA743B006BEAAC /* PermissionsSuccessWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7625CA743B006BEAAC /* PermissionsSuccessWindowController.swift */; };
+		9DA46E8225CA743B006BEAAC /* PermissionsSuccessWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7625CA743B006BEAAC /* PermissionsSuccessWindowController.swift */; };
+		9DA46E8325CA743B006BEAAC /* PermissionsGuidanceWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7725CA743B006BEAAC /* PermissionsGuidanceWindowController.swift */; };
+		9DA46E8425CA743B006BEAAC /* PermissionsGuidanceWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7725CA743B006BEAAC /* PermissionsGuidanceWindowController.swift */; };
+		9DCF885D257AEF23001927C1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCF885C257AEF23001927C1 /* AppDelegate.swift */; };
+		9DCF885F257AEF23001927C1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9DCF885E257AEF23001927C1 /* Assets.xcassets */; };
+		9DCF8907257AF8F2001927C1 /*  Morphic .app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9DCF885A257AEF23001927C1 /*  Morphic .app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9DCF892E257AF9D8001927C1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCF892D257AF9D8001927C1 /* main.swift */; };
+		9DCF89D2257B4133001927C1 /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B492444E04300EEDF14 /* MorphicSettings.framework */; };
+		9DCF89D3257B4133001927C1 /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B492444E04300EEDF14 /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9DCF89DB257B4668001927C1 /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B472444E04300EEDF14 /* MorphicCore.framework */; };
+		9DCF89DC257B4668001927C1 /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B472444E04300EEDF14 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9DD12AF525128D4900E94C4F /* MorphicCommunityConfigurator.app in Resources */ = {isa = PBXBuildFile; fileRef = 9DE0737125128A180030A978 /* MorphicCommunityConfigurator.app */; };
 		9DD12AF825128D8100E94C4F /* MorphicCommunityConfigurator.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9DE0737125128A180030A978 /* MorphicCommunityConfigurator.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9DD4F4DB251A2FC400ADCC25 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F4DA251A2FC400ADCC25 /* AppDelegate.swift */; };
+		9DD4F4DD251A2FC500ADCC25 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9DD4F4DC251A2FC500ADCC25 /* Assets.xcassets */; };
+		9DD4F4E0251A2FC500ADCC25 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DD4F4DE251A2FC500ADCC25 /* MainMenu.xib */; };
 		9DDAE61025094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DDAE60F25094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift */; };
 		9DE0730E251289C20030A978 /* MorphicBarButtonItemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */; };
 		9DE0730F251289C20030A978 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E1E184244683DC009C4092 /* Theme.swift */; };
@@ -172,6 +216,11 @@
 		9DE0736B25128A180030A978 /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B472444E04300EEDF14 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9DE0736C25128A180030A978 /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B492444E04300EEDF14 /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9DE0736D25128A180030A978 /* MorphicService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 31751B482444E04300EEDF14 /* MorphicService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9DE112E72522243200591E08 /* CopySettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE112E52522243100591E08 /* CopySettingsWindowController.swift */; };
+		9DE112E82522243200591E08 /* CopySettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DE112E62522243200591E08 /* CopySettingsWindow.xib */; };
+		9DE112F52522243800591E08 /* CopySettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DE112E62522243200591E08 /* CopySettingsWindow.xib */; };
+		9DE112FC2522243E00591E08 /* CopySettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE112E52522243100591E08 /* CopySettingsWindowController.swift */; };
+		9DE45BAA25171C6000209421 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -254,6 +303,48 @@
 			files = (
 				31751B942444F06100EEDF14 /* MorphicConfigurator.app in CopyFiles */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9D1FA1CC251A315D0008559D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LoginItems;
+			dstSubfolderSpec = 1;
+			files = (
+				9D1FA1CD251A317F0008559D /* MorphicLauncher.app in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9D7AFFC6251A582500F37B2C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LoginItems;
+			dstSubfolderSpec = 1;
+			files = (
+				9D0FD4AC251A782900BE72B3 /* MorphicCommunityLauncher.app in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9DCF8906257AF8DA001927C1 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library;
+			dstSubfolderSpec = 1;
+			files = (
+				9DCF8907257AF8F2001927C1 /*  Morphic .app in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9DCF89D4257B4133001927C1 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				9DCF89DC257B4668001927C1 /* MorphicCore.framework in Embed Frameworks */,
+				9DCF89D3257B4133001927C1 /* MorphicSettings.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		9DE07344251289C20030A978 /* Embed Frameworks */ = {
@@ -362,6 +453,8 @@
 		31E1E184244683DC009C4092 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		31E1E186244792D9009C4092 /* DefaultPreferences.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = DefaultPreferences.json; sourceTree = "<group>"; };
 		31E1E189244794EF009C4092 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MorphicBarViewController.xib; sourceTree = "<group>"; };
+		9D02547F251A6407009EC865 /* MorphicCommunityLauncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorphicCommunityLauncher.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9D1FA1CE251A31990008559D /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
 		9D2593D0250A830100C38DA3 /* envelope-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "envelope-solid.pdf"; sourceTree = "<group>"; };
 		9D2593D1250A830100C38DA3 /* music-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "music-solid.pdf"; sourceTree = "<group>"; };
 		9D2593D2250A830100C38DA3 /* google-brands.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "google-brands.pdf"; sourceTree = "<group>"; };
@@ -379,14 +472,44 @@
 		9D2593DE250A830100C38DA3 /* amazon-brands.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "amazon-brands.pdf"; sourceTree = "<group>"; };
 		9D2593F2250EA81000C38DA3 /* MorphicRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicRelease.entitlements; sourceTree = "<group>"; };
 		9D2593F3250EA87E00C38DA3 /* MorphicConfiguratorRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicConfiguratorRelease.entitlements; sourceTree = "<group>"; };
+		9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableFeatures.swift; sourceTree = "<group>"; };
+		9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarSeparatorItemView.swift; sourceTree = "<group>"; };
+		9D3530DC25C3101100F8D590 /* VersionUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionUtils.swift; sourceTree = "<group>"; };
+		9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Autoupdater.swift; sourceTree = "<group>"; };
+		9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAvailableWindow.swift; sourceTree = "<group>"; };
+		9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpdateAvailableWindow.xib; sourceTree = "<group>"; };
+		9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsLinkActions.swift; sourceTree = "<group>"; };
+		9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicImageUtils.swift; sourceTree = "<group>"; };
 		9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutBoxWindowController.swift; sourceTree = "<group>"; };
 		9D82576D24D31C1E00F6E932 /* AboutBoxWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutBoxWindowController.xib; sourceTree = "<group>"; };
 		9D82577024D353C800F6E932 /* HyperlinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperlinkTextField.swift; sourceTree = "<group>"; };
 		9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemIcon.swift; sourceTree = "<group>"; };
 		9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemView.swift; sourceTree = "<group>"; };
+		9D9DF072251DAE460073F8FB /* MorphicLauncherRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = MorphicLauncherRelease.entitlements; sourceTree = "<group>"; };
+		9DA46E7225CA743B006BEAAC /* PermissionsSuccessWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PermissionsSuccessWindow.xib; path = "Permissions Guidance/PermissionsSuccessWindow.xib"; sourceTree = "<group>"; };
+		9DA46E7325CA743B006BEAAC /* PermissionsGuidanceWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PermissionsGuidanceWindow.xib; path = "Permissions Guidance/PermissionsGuidanceWindow.xib"; sourceTree = "<group>"; };
+		9DA46E7425CA743B006BEAAC /* PermissionsGuidanceSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionsGuidanceSystem.swift; path = "Permissions Guidance/PermissionsGuidanceSystem.swift"; sourceTree = "<group>"; };
+		9DA46E7625CA743B006BEAAC /* PermissionsSuccessWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionsSuccessWindowController.swift; path = "Permissions Guidance/PermissionsSuccessWindowController.swift"; sourceTree = "<group>"; };
+		9DA46E7725CA743B006BEAAC /* PermissionsGuidanceWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionsGuidanceWindowController.swift; path = "Permissions Guidance/PermissionsGuidanceWindowController.swift"; sourceTree = "<group>"; };
+		9DB06AD62534ADD6008AB056 /* CreatePackage.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = CreatePackage.sh; sourceTree = "<group>"; };
+		9DCF885A257AEF23001927C1 /*  Morphic .app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = " Morphic .app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9DCF885C257AEF23001927C1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		9DCF885E257AEF23001927C1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9DCF8863257AEF23001927C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9DCF8864257AEF23001927C1 /* MorphicDockAppRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicDockAppRelease.entitlements; sourceTree = "<group>"; };
+		9DCF8884257AEF7F001927C1 /* MorphicDockAppDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicDockAppDebug.entitlements; sourceTree = "<group>"; };
+		9DCF892D257AF9D8001927C1 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		9DD4F4D8251A2FC400ADCC25 /* MorphicLauncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorphicLauncher.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9DD4F4DA251A2FC400ADCC25 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		9DD4F4DC251A2FC500ADCC25 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9DD4F4DF251A2FC500ADCC25 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		9DD4F4E1251A2FC500ADCC25 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9DD4F4E2251A2FC500ADCC25 /* MorphicLauncherDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicLauncherDebug.entitlements; sourceTree = "<group>"; };
 		9DDAE60F25094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarSegmentedButtonItemView.swift; sourceTree = "<group>"; };
 		9DE0734F251289C20030A978 /* Morphic Community.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Morphic Community.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DE0737125128A180030A978 /* MorphicCommunityConfigurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorphicCommunityConfigurator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9DE112E52522243100591E08 /* CopySettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopySettingsWindowController.swift; sourceTree = "<group>"; };
+		9DE112E62522243200591E08 /* CopySettingsWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CopySettingsWindow.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -395,6 +518,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				31751B4A2444E04300EEDF14 /* MorphicCore.framework in Frameworks */,
+				9D1FA1CF251A31990008559D /* ServiceManagement.framework in Frameworks */,
+				9D3530A525C2860200F8D590 /* Countly in Frameworks */,
 				31751B4E2444E04300EEDF14 /* MorphicSettings.framework in Frameworks */,
 				31751B4C2444E04300EEDF14 /* MorphicService.framework in Frameworks */,
 			);
@@ -438,11 +563,35 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9D025478251A6407009EC865 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9DCF8857257AEF23001927C1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9DCF89DB257B4668001927C1 /* MorphicCore.framework in Frameworks */,
+				9DCF89D2257B4133001927C1 /* MorphicSettings.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9DD4F4D5251A2FC400ADCC25 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9DE07324251289C20030A978 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				9DE07325251289C20030A978 /* MorphicCore.framework in Frameworks */,
+				9D3530AD25C30FA200F8D590 /* Countly in Frameworks */,
 				9DE07326251289C20030A978 /* MorphicSettings.framework in Frameworks */,
 				9DE07327251289C20030A978 /* MorphicService.framework in Frameworks */,
 			);
@@ -504,10 +653,12 @@
 				31751B802444E11600EEDF14 /* Release.xcconfig */,
 				31751B0B2444DE8900EEDF14 /* Morphic */,
 				31751B562444E0E300EEDF14 /* MorphicConfigurator */,
+				9DD4F4D9251A2FC400ADCC25 /* MorphicLauncher */,
 				31751B1C2444DE8B00EEDF14 /* MorphicTests */,
 				31751B272444DE8B00EEDF14 /* MorphicUITests */,
 				31751B672444E0E400EEDF14 /* MorphicConfiguratorTests */,
 				31751B722444E0E400EEDF14 /* MorphicConfiguratorUITests */,
+				9DCF885B257AEF23001927C1 /* MorphicDockApp */,
 				31751B0A2444DE8900EEDF14 /* Products */,
 				31751B462444E04300EEDF14 /* Frameworks */,
 			);
@@ -524,6 +675,9 @@
 				31751B6F2444E0E400EEDF14 /* MorphicConfiguratorUITests.xctest */,
 				9DE0734F251289C20030A978 /* Morphic Community.app */,
 				9DE0737125128A180030A978 /* MorphicCommunityConfigurator.app */,
+				9DD4F4D8251A2FC400ADCC25 /* MorphicLauncher.app */,
+				9D02547F251A6407009EC865 /* MorphicCommunityLauncher.app */,
+				9DCF885A257AEF23001927C1 /*  Morphic .app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -531,6 +685,7 @@
 		31751B0B2444DE8900EEDF14 /* Morphic */ = {
 			isa = PBXGroup;
 			children = (
+				9DA46E7125CA7418006BEAAC /* Permissions Guidance */,
 				31751B132444DE8B00EEDF14 /* Info.plist */,
 				31751B142444DE8B00EEDF14 /* MorphicDebug.entitlements */,
 				9D2593F2250EA81000C38DA3 /* MorphicRelease.entitlements */,
@@ -538,13 +693,19 @@
 				31751B3A2444DFAA00EEDF14 /* Main.xib */,
 				31751B0C2444DE8900EEDF14 /* AppDelegate.swift */,
 				31751B972444F21700EEDF14 /* Session.swift */,
+				9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */,
 				31E1E184244683DC009C4092 /* Theme.swift */,
 				31E1E186244792D9009C4092 /* DefaultPreferences.json */,
 				9D82576724D3160600F6E932 /* About Box */,
-				31751B3F2444E01B00EEDF14 /* MorphicBar */,
+				9D49D4DB25BBA903001DD452 /* AutoUpdate */,
+				9DE112E42522240700591E08 /* CopySettingsWindow */,
 				31CE56EC244A3C9800A52A7B /* Help Window */,
+				31751B3F2444E01B00EEDF14 /* MorphicBar */,
 				314EB6D924A6978200CF3D48 /* Solutions */,
+				9D3530DB25C30FF600F8D590 /* Versioning */,
 				318744F32481A2DA00AE3954 /* CreateDiskImage.sh */,
+				9DB06AD62534ADD6008AB056 /* CreatePackage.sh */,
+				9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */,
 			);
 			path = Morphic;
 			sourceTree = "<group>";
@@ -584,6 +745,7 @@
 		31751B462444E04300EEDF14 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9D1FA1CE251A31990008559D /* ServiceManagement.framework */,
 				31751B472444E04300EEDF14 /* MorphicCore.framework */,
 				31751B482444E04300EEDF14 /* MorphicService.framework */,
 				31751B492444E04300EEDF14 /* MorphicSettings.framework */,
@@ -672,6 +834,32 @@
 			path = Icons;
 			sourceTree = "<group>";
 		};
+		9D2A5ABF259B911900ECD513 /* MorphicBarSeparatorItem */ = {
+			isa = PBXGroup;
+			children = (
+				9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */,
+			);
+			path = MorphicBarSeparatorItem;
+			sourceTree = "<group>";
+		};
+		9D3530DB25C30FF600F8D590 /* Versioning */ = {
+			isa = PBXGroup;
+			children = (
+				9D3530DC25C3101100F8D590 /* VersionUtils.swift */,
+			);
+			path = Versioning;
+			sourceTree = "<group>";
+		};
+		9D49D4DB25BBA903001DD452 /* AutoUpdate */ = {
+			isa = PBXGroup;
+			children = (
+				9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */,
+				9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */,
+				9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */,
+			);
+			path = AutoUpdate;
+			sourceTree = "<group>";
+		};
 		9D82576724D3160600F6E932 /* About Box */ = {
 			isa = PBXGroup;
 			children = (
@@ -682,12 +870,52 @@
 			path = "About Box";
 			sourceTree = "<group>";
 		};
+		9DA46E7125CA7418006BEAAC /* Permissions Guidance */ = {
+			isa = PBXGroup;
+			children = (
+				9DA46E7425CA743B006BEAAC /* PermissionsGuidanceSystem.swift */,
+				9DA46E7325CA743B006BEAAC /* PermissionsGuidanceWindow.xib */,
+				9DA46E7725CA743B006BEAAC /* PermissionsGuidanceWindowController.swift */,
+				9DA46E7225CA743B006BEAAC /* PermissionsSuccessWindow.xib */,
+				9DA46E7625CA743B006BEAAC /* PermissionsSuccessWindowController.swift */,
+			);
+			name = "Permissions Guidance";
+			sourceTree = "<group>";
+		};
+		9DCF885B257AEF23001927C1 /* MorphicDockApp */ = {
+			isa = PBXGroup;
+			children = (
+				9DCF885C257AEF23001927C1 /* AppDelegate.swift */,
+				9DCF885E257AEF23001927C1 /* Assets.xcassets */,
+				9DCF8863257AEF23001927C1 /* Info.plist */,
+				9DCF8884257AEF7F001927C1 /* MorphicDockAppDebug.entitlements */,
+				9DCF8864257AEF23001927C1 /* MorphicDockAppRelease.entitlements */,
+				9DCF892D257AF9D8001927C1 /* main.swift */,
+			);
+			path = MorphicDockApp;
+			sourceTree = "<group>";
+		};
+		9DD4F4D9251A2FC400ADCC25 /* MorphicLauncher */ = {
+			isa = PBXGroup;
+			children = (
+				9DD4F4DA251A2FC400ADCC25 /* AppDelegate.swift */,
+				9DD4F4DC251A2FC500ADCC25 /* Assets.xcassets */,
+				9DD4F4DE251A2FC500ADCC25 /* MainMenu.xib */,
+				9DD4F4E1251A2FC500ADCC25 /* Info.plist */,
+				9DD4F4E2251A2FC500ADCC25 /* MorphicLauncherDebug.entitlements */,
+				9D9DF072251DAE460073F8FB /* MorphicLauncherRelease.entitlements */,
+			);
+			path = MorphicLauncher;
+			sourceTree = "<group>";
+		};
 		9DDAE61125094C720072C711 /* MorphicBarItemViews */ = {
 			isa = PBXGroup;
 			children = (
+				9D2A5ABF259B911900ECD513 /* MorphicBarSeparatorItem */,
 				9DDAE61325094D760072C711 /* MorphicBarButtonItem */,
 				9DDAE61225094D6A0072C711 /* MorphicBarSegmentedButton */,
 				31E1E17E24466EB0009C4092 /* MorphicBarItemViewProtocol.swift */,
+				9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */,
 			);
 			path = MorphicBarItemViews;
 			sourceTree = "<group>";
@@ -710,6 +938,15 @@
 			path = MorphicBarButtonItem;
 			sourceTree = "<group>";
 		};
+		9DE112E42522240700591E08 /* CopySettingsWindow */ = {
+			isa = PBXGroup;
+			children = (
+				9DE112E52522243100591E08 /* CopySettingsWindowController.swift */,
+				9DE112E62522243200591E08 /* CopySettingsWindow.xib */,
+			);
+			path = CopySettingsWindow;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -722,6 +959,8 @@
 				31751B072444DE8900EEDF14 /* Resources */,
 				31751B502444E04300EEDF14 /* Embed Frameworks */,
 				31751B932444F03900EEDF14 /* CopyFiles */,
+				9DCF8906257AF8DA001927C1 /* CopyFiles */,
+				9D1FA1CC251A315D0008559D /* CopyFiles */,
 				9D0AF79024A57FC2007E177E /* ShellScript */,
 				318744F52481B38C00AE3954 /* ShellScript */,
 			);
@@ -731,6 +970,9 @@
 				31751B962444F0CA00EEDF14 /* PBXTargetDependency */,
 			);
 			name = Morphic;
+			packageProductDependencies = (
+				9D3530A425C2860200F8D590 /* Countly */,
+			);
 			productName = Morphic;
 			productReference = 31751B092444DE8900EEDF14 /* Morphic.app */;
 			productType = "com.apple.product-type.application";
@@ -825,6 +1067,58 @@
 			productReference = 31751B6F2444E0E400EEDF14 /* MorphicConfiguratorUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		9D025475251A6407009EC865 /* MorphicCommunityLauncher */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9D02547C251A6407009EC865 /* Build configuration list for PBXNativeTarget "MorphicCommunityLauncher" */;
+			buildPhases = (
+				9D025476251A6407009EC865 /* Sources */,
+				9D025478251A6407009EC865 /* Frameworks */,
+				9D025479251A6407009EC865 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MorphicCommunityLauncher;
+			productName = MorphicLauncher;
+			productReference = 9D02547F251A6407009EC865 /* MorphicCommunityLauncher.app */;
+			productType = "com.apple.product-type.application";
+		};
+		9DCF8859257AEF23001927C1 /* MorphicDockApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9DCF8865257AEF23001927C1 /* Build configuration list for PBXNativeTarget "MorphicDockApp" */;
+			buildPhases = (
+				9DCF8856257AEF23001927C1 /* Sources */,
+				9DCF8857257AEF23001927C1 /* Frameworks */,
+				9DCF8858257AEF23001927C1 /* Resources */,
+				9DCF89D4257B4133001927C1 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MorphicDockApp;
+			productName = MorphicDockApp;
+			productReference = 9DCF885A257AEF23001927C1 /*  Morphic .app */;
+			productType = "com.apple.product-type.application";
+		};
+		9DD4F4D7251A2FC400ADCC25 /* MorphicLauncher */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9DD4F4E3251A2FC500ADCC25 /* Build configuration list for PBXNativeTarget "MorphicLauncher" */;
+			buildPhases = (
+				9DD4F4D4251A2FC400ADCC25 /* Sources */,
+				9DD4F4D5251A2FC400ADCC25 /* Frameworks */,
+				9DD4F4D6251A2FC400ADCC25 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MorphicLauncher;
+			productName = MorphicLauncher;
+			productReference = 9DD4F4D8251A2FC400ADCC25 /* MorphicLauncher.app */;
+			productType = "com.apple.product-type.application";
+		};
 		9DE0730A251289C20030A978 /* Morphic Community */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9DE0734C251289C20030A978 /* Build configuration list for PBXNativeTarget "Morphic Community" */;
@@ -834,6 +1128,7 @@
 				9DE07328251289C20030A978 /* Resources */,
 				9DE07344251289C20030A978 /* Embed Frameworks */,
 				9DE07348251289C20030A978 /* CopyFiles */,
+				9D7AFFC6251A582500F37B2C /* CopyFiles */,
 				9DE0734A251289C20030A978 /* ShellScript */,
 				9DE0734B251289C20030A978 /* ShellScript */,
 			);
@@ -843,6 +1138,9 @@
 				9DD12AF725128D4900E94C4F /* PBXTargetDependency */,
 			);
 			name = "Morphic Community";
+			packageProductDependencies = (
+				9D3530AC25C30FA200F8D590 /* Countly */,
+			);
 			productName = Morphic;
 			productReference = 9DE0734F251289C20030A978 /* Morphic Community.app */;
 			productType = "com.apple.product-type.application";
@@ -871,7 +1169,7 @@
 		31751B012444DE8900EEDF14 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1140;
+				LastSwiftUpdateCheck = 1220;
 				LastUpgradeCheck = 1150;
 				ORGANIZATIONNAME = "Raising the Floor";
 				TargetAttributes = {
@@ -897,6 +1195,12 @@
 						CreatedOnToolsVersion = 11.4;
 						TestTargetID = 31751B542444E0E300EEDF14;
 					};
+					9DCF8859257AEF23001927C1 = {
+						CreatedOnToolsVersion = 12.2;
+					};
+					9DD4F4D7251A2FC400ADCC25 = {
+						CreatedOnToolsVersion = 12.0;
+					};
 				};
 			};
 			buildConfigurationList = 31751B042444DE8900EEDF14 /* Build configuration list for PBXProject "Morphic" */;
@@ -908,6 +1212,9 @@
 				Base,
 			);
 			mainGroup = 31751B002444DE8900EEDF14;
+			packageReferences = (
+				9D3530A325C2860200F8D590 /* XCRemoteSwiftPackageReference "countly-sdk-ios" */,
+			);
 			productRefGroup = 31751B0A2444DE8900EEDF14 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -920,6 +1227,9 @@
 				9DE0735125128A180030A978 /* MorphicCommunityConfigurator */,
 				31751B632444E0E400EEDF14 /* MorphicConfiguratorTests */,
 				31751B6E2444E0E400EEDF14 /* MorphicConfiguratorUITests */,
+				9DCF8859257AEF23001927C1 /* MorphicDockApp */,
+				9DD4F4D7251A2FC400ADCC25 /* MorphicLauncher */,
+				9D025475251A6407009EC865 /* MorphicCommunityLauncher */,
 			);
 		};
 /* End PBXProject section */
@@ -932,17 +1242,21 @@
 				31C12CC224B143A000B617A8 /* QuickHelpStepViewController.xib in Resources */,
 				9D2593E5250A830100C38DA3 /* link-solid.pdf in Resources */,
 				9D2593EA250A830100C38DA3 /* google-drive-brands.pdf in Resources */,
+				9DA46E7925CA743B006BEAAC /* PermissionsSuccessWindow.xib in Resources */,
 				31751B822444E11600EEDF14 /* Local.xcconfig in Resources */,
 				9D2593EC250A830100C38DA3 /* shopping-cart-solid.pdf in Resources */,
 				9D2593E0250A830100C38DA3 /* music-solid.pdf in Resources */,
 				9D2593E8250A830100C38DA3 /* question-solid.pdf in Resources */,
 				9D2593E9250A830100C38DA3 /* skype-brands.pdf in Resources */,
+				9DA46E7B25CA743B006BEAAC /* PermissionsGuidanceWindow.xib in Resources */,
 				9D82576F24D31C1E00F6E932 /* AboutBoxWindowController.xib in Resources */,
 				31CE56F5244A407000A52A7B /* QuickHelpViewController.xib in Resources */,
 				31751B3C2444DFAA00EEDF14 /* Main.xib in Resources */,
 				9D2593ED250A830100C38DA3 /* amazon-brands.pdf in Resources */,
 				9D2593E1250A830100C38DA3 /* google-brands.pdf in Resources */,
 				9D2593E7250A830100C38DA3 /* video-solid.pdf in Resources */,
+				9D49D4F325BBAA00001DD452 /* UpdateAvailableWindow.xib in Resources */,
+				9DE112E82522243200591E08 /* CopySettingsWindow.xib in Resources */,
 				31E1E188244794EF009C4092 /* MorphicBarViewController.xib in Resources */,
 				9D2593E3250A830100C38DA3 /* calendar-solid.pdf in Resources */,
 				31751B842444E11600EEDF14 /* Debug.xcconfig in Resources */,
@@ -1003,12 +1317,39 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9D025479251A6407009EC865 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9D02547A251A6407009EC865 /* Assets.xcassets in Resources */,
+				9D02547B251A6407009EC865 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9DCF8858257AEF23001927C1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9DCF885F257AEF23001927C1 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9DD4F4D6251A2FC400ADCC25 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9DD4F4DD251A2FC500ADCC25 /* Assets.xcassets in Resources */,
+				9DD4F4E0251A2FC500ADCC25 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9DE07328251289C20030A978 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				9DE07329251289C20030A978 /* QuickHelpStepViewController.xib in Resources */,
 				9DE0732A251289C20030A978 /* link-solid.pdf in Resources */,
+				9DA46E7C25CA743B006BEAAC /* PermissionsGuidanceWindow.xib in Resources */,
 				9DE0732B251289C20030A978 /* google-drive-brands.pdf in Resources */,
 				9DE0732C251289C20030A978 /* Local.xcconfig in Resources */,
 				9DE0732D251289C20030A978 /* shopping-cart-solid.pdf in Resources */,
@@ -1021,8 +1362,10 @@
 				9DE07334251289C20030A978 /* amazon-brands.pdf in Resources */,
 				9DE07335251289C20030A978 /* google-brands.pdf in Resources */,
 				9DE07336251289C20030A978 /* video-solid.pdf in Resources */,
+				9DE112F52522243800591E08 /* CopySettingsWindow.xib in Resources */,
 				9DE07337251289C20030A978 /* MorphicBarViewController.xib in Resources */,
 				9DE07338251289C20030A978 /* calendar-solid.pdf in Resources */,
+				9DA46E7A25CA743B006BEAAC /* PermissionsSuccessWindow.xib in Resources */,
 				9DE07339251289C20030A978 /* Debug.xcconfig in Resources */,
 				9DE0733A251289C20030A978 /* camera-solid.pdf in Resources */,
 				9DE0733B251289C20030A978 /* Assets.xcassets in Resources */,
@@ -1030,6 +1373,7 @@
 				9DE0733D251289C20030A978 /* macos.solutions.json in Resources */,
 				9DE0733E251289C20030A978 /* DefaultPreferences.json in Resources */,
 				9DD12AF525128D4900E94C4F /* MorphicCommunityConfigurator.app in Resources */,
+				9D577A2F25C9F50F00710701 /* UpdateAvailableWindow.xib in Resources */,
 				9DE0733F251289C20030A978 /* comment-solid.pdf in Resources */,
 				9DE07340251289C20030A978 /* newspaper-solid.pdf in Resources */,
 				9DE07341251289C20030A978 /* QuickHelpVolumeViewController.xib in Resources */,
@@ -1072,7 +1416,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    export TEMPLATE_NAME=\"MorphicTemplate.dmg\"\n    sh \"${SRCROOT}/Morphic/CreateDiskImage.sh\"\nfi\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    export TEMPLATE_NAME=\"MorphicTemplate.dmg\"\n    sh \"${SRCROOT}/Morphic/CreateDiskImage.sh\"\nfi\n\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    export PACKAGE_PRODUCT_NAME=\"Morphic\"\n    sh \"${SRCROOT}/Morphic/CreatePackage.sh\"\nfi\n";
 		};
 		9D0AF79024A57FC2007E177E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1089,7 +1433,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    codesign --timestamp --force --options=runtime --entitlements \"${SRCROOT}/MorphicConfigurator/MorphicConfiguratorRelease.entitlements\" --sign \"Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)\" \"${CONFIGURATION_BUILD_DIR}/Morphic.app/Contents/Library/MorphicConfigurator.app/Contents/MacOS/MorphicConfigurator\"\n\n    codesign --timestamp --force --options=runtime --entitlements \"${SRCROOT}/Morphic/MorphicRelease.entitlements\" --sign \"Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)\" \"${CONFIGURATION_BUILD_DIR}/Morphic.app/Contents/MacOS/Morphic\"\nfi\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    codesign --timestamp --force --options=runtime --entitlements \"${SRCROOT}/MorphicConfigurator/MorphicConfiguratorRelease.entitlements\" --sign \"Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)\" \"${CONFIGURATION_BUILD_DIR}/Morphic.app/Contents/Library/MorphicConfigurator.app/Contents/MacOS/MorphicConfigurator\"\n\n    codesign --timestamp --force --options=runtime --entitlements \"${SRCROOT}/MorphicDockApp/MorphicDockAppRelease.entitlements\" --sign \"Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)\" \"${CONFIGURATION_BUILD_DIR}/Morphic.app/Contents/Library/ Morphic .app/Contents/MacOS/ Morphic \"\n\n    codesign --timestamp --force --options=runtime --entitlements \"${SRCROOT}/Morphic/MorphicRelease.entitlements\" --sign \"Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)\" \"${CONFIGURATION_BUILD_DIR}/Morphic.app/Contents/MacOS/Morphic\"\nfi\n";
 		};
 		9DE0734A251289C20030A978 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1123,7 +1467,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    export TEMPLATE_NAME=\"MorphicCommunityTemplate.dmg\"\n    sh \"${SRCROOT}/Morphic/CreateDiskImage.sh\"\nfi\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    export TEMPLATE_NAME=\"MorphicCommunityTemplate.dmg\"\n    sh \"${SRCROOT}/Morphic/CreateDiskImage.sh\"\nfi\n\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    export PACKAGE_PRODUCT_NAME=\"MorphicCommunity\"\n    sh \"${SRCROOT}/Morphic/CreatePackage.sh\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1134,26 +1478,37 @@
 			files = (
 				9D8CEB132507AECF001276E4 /* MorphicBarButtonItemIcon.swift in Sources */,
 				31E1E185244683DC009C4092 /* Theme.swift in Sources */,
+				9DA46E8125CA743B006BEAAC /* PermissionsSuccessWindowController.swift in Sources */,
 				31751B9F2444F22900EEDF14 /* MorphicBarWindow.swift in Sources */,
+				9D4B24E72517068200F0B2E2 /* SettingsLinkActions.swift in Sources */,
 				31E1E183244682C2009C4092 /* MorphicBarSegmentedButton.swift in Sources */,
+				9DA46E7D25CA743B006BEAAC /* PermissionsGuidanceSystem.swift in Sources */,
 				31CE56F7244A408000A52A7B /* QuickHelpViewController.swift in Sources */,
+				9DA46E8325CA743B006BEAAC /* PermissionsGuidanceWindowController.swift in Sources */,
+				9D49D4DD25BBA93B001DD452 /* Autoupdater.swift in Sources */,
 				31751B9E2444F22900EEDF14 /* MorphicBarViewController.swift in Sources */,
+				9D2A5AC1259B914800ECD513 /* MorphicBarSeparatorItemView.swift in Sources */,
 				31CE56F9244A428500A52A7B /* ShadowedLabel.swift in Sources */,
 				31751B982444F21700EEDF14 /* Session.swift in Sources */,
 				31C12CC124B143A000B617A8 /* QuickHelpStepViewController.swift in Sources */,
+				9D3530DD25C3101100F8D590 /* VersionUtils.swift in Sources */,
 				31E1E17F24466EB0009C4092 /* MorphicBarItemViewProtocol.swift in Sources */,
 				31C12CB824B1174900B617A8 /* QuickHelpContentProvider.swift in Sources */,
+				9D49D4F225BBAA00001DD452 /* UpdateAvailableWindow.swift in Sources */,
 				9DDAE61025094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift in Sources */,
 				31C12CBB24B11F5A00B617A8 /* QuickHelpVolumeViewController.swift in Sources */,
 				31CE56F3244A3CDB00A52A7B /* QuickHelpWindow.swift in Sources */,
 				31E1E17D24466E7C009C4092 /* MorphicBarView.swift in Sources */,
 				9D8CEB152507AED7001276E4 /* MorphicBarButtonItemView.swift in Sources */,
+				9DE112E72522243200591E08 /* CopySettingsWindowController.swift in Sources */,
 				31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */,
+				9D2A5AB8259B815800ECD513 /* ConfigurableFeatures.swift in Sources */,
 				31C12CBE24B138D000B617A8 /* ProgressIndicator.swift in Sources */,
 				31C12CC424B1441E00B617A8 /* PageControl.swift in Sources */,
 				9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */,
 				9D82577124D353C800F6E932 /* HyperlinkTextField.swift in Sources */,
 				31E1E17B24466D28009C4092 /* MorphicBarItem.swift in Sources */,
+				9D77209E252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1205,13 +1560,42 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9D025476251A6407009EC865 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9D025477251A6407009EC865 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9DCF8856257AEF23001927C1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9DCF892E257AF9D8001927C1 /* main.swift in Sources */,
+				9DCF885D257AEF23001927C1 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9DD4F4D4251A2FC400ADCC25 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9DD4F4DB251A2FC400ADCC25 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9DE0730D251289C20030A978 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9DA46E8425CA743B006BEAAC /* PermissionsGuidanceWindowController.swift in Sources */,
 				9DE0730E251289C20030A978 /* MorphicBarButtonItemIcon.swift in Sources */,
 				9DE0730F251289C20030A978 /* Theme.swift in Sources */,
+				9D577A2125C9F50300710701 /* Autoupdater.swift in Sources */,
+				9D577A1325C9EE9300710701 /* ConfigurableFeatures.swift in Sources */,
 				9DE07310251289C20030A978 /* MorphicBarWindow.swift in Sources */,
+				9DE45BAA25171C6000209421 /* SettingsLinkActions.swift in Sources */,
 				9DE07311251289C20030A978 /* MorphicBarSegmentedButton.swift in Sources */,
 				9DE07312251289C20030A978 /* QuickHelpViewController.swift in Sources */,
 				9DE07313251289C20030A978 /* MorphicBarViewController.swift in Sources */,
@@ -1221,16 +1605,23 @@
 				9DE07317251289C20030A978 /* MorphicBarItemViewProtocol.swift in Sources */,
 				9DE07318251289C20030A978 /* QuickHelpContentProvider.swift in Sources */,
 				9DE07319251289C20030A978 /* MorphicBarSegmentedButtonItemView.swift in Sources */,
+				9D577A1A25C9EEAF00710701 /* MorphicBarSeparatorItemView.swift in Sources */,
+				9DA46E8225CA743B006BEAAC /* PermissionsSuccessWindowController.swift in Sources */,
 				9DE0731A251289C20030A978 /* QuickHelpVolumeViewController.swift in Sources */,
 				9DE0731B251289C20030A978 /* QuickHelpWindow.swift in Sources */,
 				9DE0731C251289C20030A978 /* MorphicBarView.swift in Sources */,
 				9DE0731D251289C20030A978 /* MorphicBarButtonItemView.swift in Sources */,
+				9DE112FC2522243E00591E08 /* CopySettingsWindowController.swift in Sources */,
 				9DE0731E251289C20030A978 /* AppDelegate.swift in Sources */,
+				9D577A2825C9F50700710701 /* UpdateAvailableWindow.swift in Sources */,
 				9DE0731F251289C20030A978 /* ProgressIndicator.swift in Sources */,
+				9DA46E7E25CA743B006BEAAC /* PermissionsGuidanceSystem.swift in Sources */,
 				9DE07320251289C20030A978 /* PageControl.swift in Sources */,
 				9DE07321251289C20030A978 /* AboutBoxWindowController.swift in Sources */,
+				9D3530DE25C3101100F8D590 /* VersionUtils.swift in Sources */,
 				9DE07322251289C20030A978 /* HyperlinkTextField.swift in Sources */,
 				9DE07323251289C20030A978 /* MorphicBarItem.swift in Sources */,
+				9D77209F252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1309,6 +1700,14 @@
 				31CE56E92448E27400A52A7B /* en */,
 			);
 			name = MorphicBarViewController.xib;
+			sourceTree = "<group>";
+		};
+		9DD4F4DE251A2FC500ADCC25 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9DD4F4DF251A2FC500ADCC25 /* Base */,
+			);
+			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -1444,7 +1843,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.9;
+				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "-DEDITION_BASIC";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.Morphic-Debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1459,6 +1858,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Morphic/MorphicRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 5AAXYGZ428;
@@ -1468,7 +1868,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.9;
+				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "-DEDITION_BASIC";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.Morphic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1576,7 +1976,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.9;
+				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "-DEDITION_BASIC";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.MorphicConfigurator-Debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1600,7 +2000,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.9;
+				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "-DEDITION_BASIC";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1693,6 +2093,160 @@
 			};
 			name = Release;
 		};
+		9D02547D251A6407009EC865 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = MorphicLauncher/MorphicLauncherDebug.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = MorphicLauncher/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				OTHER_SWIFT_FLAGS = "-DEDITION_COMMUNITY";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.MorphicCommunityLauncher-Debug";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		9D02547E251A6407009EC865 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = MorphicLauncher/MorphicLauncherRelease.entitlements;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = MorphicLauncher/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				OTHER_SWIFT_FLAGS = "-DEDITION_COMMUNITY";
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicCommunityLauncher;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Morphic Community Launcher for macOS";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		9DCF8866257AEF23001927C1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = MorphicDockApp/MorphicDockAppDebug.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = MorphicDockApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.MorphicDockApp-Debug";
+				PRODUCT_NAME = " Morphic ";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		9DCF8867257AEF23001927C1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = MorphicDockApp/MorphicDockAppRelease.entitlements;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = MorphicDockApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicDockApp;
+				PRODUCT_NAME = " Morphic ";
+				PROVISIONING_PROFILE_SPECIFIER = "Morphic Dock App for macOS";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		9DD4F4E4251A2FC500ADCC25 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = MorphicLauncher/MorphicLauncherDebug.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = MorphicLauncher/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				OTHER_SWIFT_FLAGS = "-DEDITION_BASIC";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.MorphicLauncher-Debug";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		9DD4F4E5251A2FC500ADCC25 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = MorphicLauncher/MorphicLauncherRelease.entitlements;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5AAXYGZ428;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = MorphicLauncher/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				OTHER_SWIFT_FLAGS = "-DEDITION_BASIC";
+				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicLauncher;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Morphic Launcher for macOS";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		9DE0734D251289C20030A978 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1708,7 +2262,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.9;
+				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "-DEDITION_COMMUNITY";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.Morphic-Debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1723,6 +2277,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Morphic/MorphicRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Developer ID Application: Raising the Floor - US Inc. (5AAXYGZ428)";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 5AAXYGZ428;
@@ -1732,7 +2287,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.9;
+				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "-DEDITION_COMMUNITY";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.Morphic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1756,7 +2311,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.9;
+				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "-DEDITION_COMMUNITY";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.MorphicConfigurator-Debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1780,7 +2335,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.9;
+				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "-DEDITION_COMMUNITY";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1855,6 +2410,33 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		9D02547C251A6407009EC865 /* Build configuration list for PBXNativeTarget "MorphicCommunityLauncher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9D02547D251A6407009EC865 /* Debug */,
+				9D02547E251A6407009EC865 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9DCF8865257AEF23001927C1 /* Build configuration list for PBXNativeTarget "MorphicDockApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9DCF8866257AEF23001927C1 /* Debug */,
+				9DCF8867257AEF23001927C1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9DD4F4E3251A2FC500ADCC25 /* Build configuration list for PBXNativeTarget "MorphicLauncher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9DD4F4E4251A2FC500ADCC25 /* Debug */,
+				9DD4F4E5251A2FC500ADCC25 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		9DE0734C251289C20030A978 /* Build configuration list for PBXNativeTarget "Morphic Community" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1874,6 +2456,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9D3530A325C2860200F8D590 /* XCRemoteSwiftPackageReference "countly-sdk-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Countly/countly-sdk-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 20.11.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9D3530A425C2860200F8D590 /* Countly */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D3530A325C2860200F8D590 /* XCRemoteSwiftPackageReference "countly-sdk-ios" */;
+			productName = Countly;
+		};
+		9D3530AC25C30FA200F8D590 /* Countly */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D3530A325C2860200F8D590 /* XCRemoteSwiftPackageReference "countly-sdk-ios" */;
+			productName = Countly;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 31751B012444DE8900EEDF14 /* Project object */;
 }

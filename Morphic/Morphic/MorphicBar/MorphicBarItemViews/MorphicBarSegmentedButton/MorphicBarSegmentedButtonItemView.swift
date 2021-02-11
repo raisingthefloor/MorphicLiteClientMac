@@ -38,7 +38,14 @@ class MorphicBarSegmentedButtonItemView: NSView, MorphicBarItemViewProtocol {
     }
     //
     public weak var morphicBarView: MorphicBarView?
-
+    //
+    public var contentFrames: [CGRect] {
+        var result: [CGRect] = []
+        result.append(titleLabel.frame)
+        result.append(segmentedButton.frame)
+        return result
+    }
+    
     //
     
     var titleLabel: NSTextField
@@ -48,7 +55,7 @@ class MorphicBarSegmentedButtonItemView: NSView, MorphicBarItemViewProtocol {
     var style: MorphicBarControlItemStyle
     
     init(title: String, segments: [MorphicBarSegmentedButton.Segment], style: MorphicBarControlItemStyle) {
-        titleLabel = NSTextField(labelWithString: title)
+        self.titleLabel = NSTextField(labelWithString: title)
         self.style = style
         switch style {
         case .autoWidth:

@@ -24,7 +24,11 @@
 framework module MorphicSettings {
     umbrella header "MorphicSettings.h"
 
+    header "ApplicationServices.h"
     header "CBBlueLightClient.h"
+    header "MediaAccessibility.h"
+    header "SkyLight.h"
+    header "UniversalAccess.h"
 
     export *
 }

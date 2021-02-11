@@ -19,6 +19,13 @@ APP_PASSWORD="${APP_PASSWORD}"
 SIGNING_IDENTITY="${SIGNING_IDENTITY}"
 BUNDLE_ID="${BUNDLE_ID}"
 DMG_PATH="${DMG_PATH}"
+PKG_PATH="${PKG_PATH}"
+
+if [[ "$DMG_PATH" != "" ]]; then
+  FILE_PATH=${DMG_PATH}
+else 
+  FILE_PATH=${PKG_PATH}
+fi
 
 exitWithErr()
 {
@@ -49,23 +56,26 @@ fi
 if [[ "$APP_PASSWORD" == "" ]]; then
   exitWithErr "APP_PASSWORD env var must be provided"
 fi
-if [[ "$SIGNING_IDENTITY" == "" ]]; then
-  exitWithErr "SIGNING_IDENTITY env var must be provided"
+
+if [[ "$DMG_PATH" != "" && "$SIGNING_IDENTITY" == "" ]]; then
+  exitWithErr "SIGNING_IDENTITY env var must be provided for DMG files"
 fi
 
 set -e
 set -x
 
-codesign --timestamp \
-  --sign "${SIGNING_IDENTITY}" \
-   "${DMG_PATH}"
+if [[ "$SIGNING_IDENTITY" != "" ]]; then
+  codesign --timestamp \
+    --sign "${SIGNING_IDENTITY}" \
+     "${FILE_PATH}"
+fi
 
 # this will return a “RequestUUID”...which is used as a command-line argument for polling
 NOTARIZE_REQUST=$(xcrun altool --notarize-app \
   --primary-bundle-id "${BUNDLE_ID}" \
   --username "${USERNAME}" \
   --password "${APP_PASSWORD}" \
-  --file "${DMG_PATH}")
+  --file "${FILE_PATH}")
 
 echo "${NOTARIZE_REQUST}"
 
@@ -98,7 +108,7 @@ if [[ "$REQUEST_STATUS" != "success" ]]; then
   exitWithErr "failed to get notarization. Status is not 'success'"
 fi
 
-echo "stapling notarization to dmg"
-xcrun stapler staple "${DMG_PATH}"
+echo "stapling notarization to file"
+xcrun stapler staple "${FILE_PATH}"
 
-echo "successfully stapled notarize to DMG"
+echo "successfully stapled notarization to file"

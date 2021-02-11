@@ -26,8 +26,10 @@ import MorphicCore
 
 public class SystemPreferencesElement: ApplicationElement {
     
+    public static let bundleIdentifier = "com.apple.systempreferences"
+    
     public init() {
-        super.init(bundleIdentifier: "com.apple.systempreferences")
+        super.init(bundleIdentifier: SystemPreferencesElement.bundleIdentifier)
     }
     
     public required init(accessibilityElement: MorphicA11yUIElement?) {
@@ -36,21 +38,57 @@ public class SystemPreferencesElement: ApplicationElement {
     
     public enum PaneIdentifier {
         case accessibility
+        case displays
+        case general
+        case keyboard
+        case languageAndRegion
+        case mouse 
         
         public var buttonTitle: String {
-            get{
+            get {
                 switch self {
                 case .accessibility:
                     return "Accessibility"
+                case .displays:
+                    return "Displays"
+                case .general:
+                    return "General"
+                case .keyboard:
+                    return "Keyboard"
+                case .languageAndRegion:
+                    return "Language\n& Region"
+                case .mouse:
+                    return "Mouse"
                 }
             }
         }
         
-        public var windowTitle: String {
-            get{
+        public enum IdentificationMethod {
+            case uiElementMatchFunction(_ function: (_ uiElement: UIElement) -> Bool)
+            case windowTitle(_ title: String)
+        }
+        
+        public var paneIdentificationMethod: PaneIdentifier.IdentificationMethod {
+            get {
                 switch self {
                 case .accessibility:
-                    return "Accessibility"
+                    return .windowTitle("Accessibility")
+                case .displays:
+                    return .uiElementMatchFunction(
+                        { displaysAsUIElement in
+                            guard let displays = displaysAsUIElement as? DisplaysPreferencesElement else {
+                                return false
+                            }
+                            return displays.checkbox(titled: "Show mirroring options in the menu bar when available") != nil
+                        })
+                case .general:
+                    return .windowTitle("General")
+                case .keyboard:
+                    return .windowTitle("Keyboard")
+                case .languageAndRegion:
+                    return .windowTitle("Language & Region")
+                case .mouse:
+                    return .windowTitle("Mouse")
                 }
             }
         }
@@ -59,7 +97,27 @@ public class SystemPreferencesElement: ApplicationElement {
     public func showAccessibility(completion: @escaping (_ success: Bool, _ pane: AccessibilityPreferencesElement?) -> Void) {
         return show(pane: .accessibility, completion: completion)
     }
-    
+
+    public func showDisplays(completion: @escaping (_ success: Bool, _ pane: DisplaysPreferencesElement?) -> Void) {
+        return show(pane: .displays, completion: completion)
+    }
+
+    public func showGeneral(completion: @escaping (_ success: Bool, _ pane: GeneralPreferencesElement?) -> Void) {
+        return show(pane: .general, completion: completion)
+    }
+
+    public func showKeyboard(completion: @escaping (_ success: Bool, _ pane: KeyboardPreferencesElement?) -> Void) {
+        return show(pane: .keyboard, completion: completion)
+    }
+
+    public func showLanguageAndRegion(completion: @escaping (_ success: Bool, _ pane: LanguageAndRegionPreferencesElement?) -> Void) {
+        return show(pane: .languageAndRegion, completion: completion)
+    }
+
+    public func showMouse(completion: @escaping (_ success: Bool, _ pane: MousePreferencesElement?) -> Void) {
+        return show(pane: .mouse, completion: completion)
+    }
+
     public func show<ElementType: UIElement>(pane identifier: PaneIdentifier, completion: @escaping (_ success: Bool, _ pane: ElementType?) -> Void) {
         var window: WindowElement! = mainWindow
         if window == nil {
@@ -84,9 +142,19 @@ public class SystemPreferencesElement: ApplicationElement {
             }
         }
         //
-        guard window.title != identifier.windowTitle else {
-            completion(true, ElementType(accessibilityElement: window.accessibilityElement))
-            return
+        let windowAsUIElement = ElementType(accessibilityElement: window.accessibilityElement)
+        //
+        switch identifier.paneIdentificationMethod {
+        case .uiElementMatchFunction(let matchFunction):
+            if matchFunction(windowAsUIElement) == true {
+                completion(true, ElementType(accessibilityElement: window.accessibilityElement))
+                return
+            }
+        case .windowTitle(let identifierWindowTitle):
+            guard window.title != identifierWindowTitle else {
+                completion(true, ElementType(accessibilityElement: window.accessibilityElement))
+                return
+            }
         }
         guard let showAllButton = window.toolbar?.button(titled: "Show All") else {
             completion(false, nil)
@@ -110,7 +178,15 @@ public class SystemPreferencesElement: ApplicationElement {
                 completion(false, nil)
                 return
             }
-            AsyncUtils.wait(atMost: 3.0, for: { window.title == identifier.windowTitle }) {
+            AsyncUtils.wait(atMost: 3.0,
+                for: {
+                    switch identifier.paneIdentificationMethod {
+                    case .uiElementMatchFunction(let matchFunction):
+                        return matchFunction(windowAsUIElement) == true
+                    case .windowTitle(let identifierWindowTitle):
+                        return window.title == identifierWindowTitle
+                    }
+            }) {
                 success in
                 completion(success, ElementType(accessibilityElement: window.accessibilityElement))
             }

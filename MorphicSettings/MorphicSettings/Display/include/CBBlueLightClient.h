@@ -23,9 +23,9 @@
 
 // NOTE: this is a partially-reverse-engineered header (i.e. not the complete original header)
 //
-// Tools: nm; Ghidra; RuntimeBrowser; manual analysis
+// Tools: nm; Ghidra; RuntimeBrowser; Hopper Disassembler v4; manual analysis
 // Path: /System/Library/PrivateFrameworks/CoreBrightness.framework/CoreBrightness
-// OS: macOS 10.15.5
+// OS: macOS 10.15.7
 
 #import <Foundation/Foundation.h>
 
@@ -57,6 +57,10 @@ typedef struct {
 - (BOOL)setEnabled:(BOOL)enabled;
 - (BOOL)setMode:(int)mode;
 - (BOOL)setSchedule:(const CBBlueLight_Schedule*)schedule;
+// NOTE: a Hopper header file export provided us with an unknown block signature; the first argument appears to be in the format of CBBlueLight_Status, so we're using that; in the future if we have any problems we could alternatively use the "empty block signature" (below, from Hopper) and call getBlueLightStatus instead.  Note that there may be additional arguments passed in the callback; more research (presumably Ghidra or Hopper) would be needed to determine further details
+//- (void)setStatusNotificationBlock:(void (^ /* unknown block signature */)(void))v1;
+// NOTE: in our brief Ghidra analysis, it appears that setting statusNotificationBlock to nil suspends notifications (and setting it to non-nil enables them)
+- (void)setStatusNotificationBlock:(void(^)(CBBlueLight_Status* pointerToStatus))statusNotificationBlock;
 - (BOOL)setStrength:(float)strength commit:(BOOL)commit;
 
 @end

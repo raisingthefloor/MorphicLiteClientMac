@@ -34,7 +34,18 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
     }
     //
     public weak var morphicBarView: MorphicBarView?
+    //
+    public var contentFrames: [CGRect] {
+        var result: [CGRect] = []
+        result.append(CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height))
+        return result
+    }
 
+    //
+    
+    let fixedHeightInHorizontalBar: CGFloat = 44
+    let maximumWidth: CGFloat = 100
+    
     //
     
     private var titleBoxLayer: CAShapeLayer!
@@ -46,7 +57,8 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
         super.init(frame: NSRect(x: 0, y: 0, width: 100, height: 96))
         //
         self.title = label
-        self.font = .morphicRegular
+//        self.font = .morphicRegular
+        self.font = .morphicBold
         self.fontColor = labelColor
         // NOTE: if fillColor is nil, the default color is used instead
         if let fillColor = fillColor {
@@ -189,7 +201,7 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
             pdfImageRep.draw(in: imageRect)
             return true
         }
-        let recoloredNsImage = colorImage(nsImage, withColor: self.iconColor ?? self.fillColor)
+        let recoloredNsImage = MorphicImageUtils.colorImage(nsImage, withColor: self.iconColor ?? self.fillColor)
         newIconLayer.contents = recoloredNsImage
         
         self.layer?.replaceSublayer(self.iconImageLayer, with: newIconLayer)
@@ -227,7 +239,7 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
         }
 
         // get size and lines of our title
-        let (titleTextPixelWidth, titleTextPixelHeight, titleLines) = measureAndSplitText(title)
+        let (titleTextPixelWidth, titleTextPixelHeight, titleLines) = measureAndSplitText(self.title, maxWidth: self.maximumWidth, maxHeight: self.calculateMaximumTextHeight())
         let titleMultilineText = titleLines.joined(separator: "\n")
         
         // calculate the bounds of our title text
@@ -254,39 +266,6 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
         
         self.layer?.replaceSublayer(self.titleTextLayer, with: newTitleTextLayer)
         self.titleTextLayer = newTitleTextLayer
-    }
-    
-    // MARK: B&W image recoloring
-    
-    private func colorImage(_ image: NSImage, withColor tintColor: NSColor) -> NSImage? {
-        // calculate the bounds of our image
-        let imageBounds = NSRect(origin: .zero, size: image.size)
-
-        // create an opaque copy of the provided tint color; we will lower the opacity of our image to preserve the color opacity
-        let opaqueTintColor = tintColor.withAlphaComponent(1)
-
-        // create a copy of the original image (but at the alpha level specified by our color)
-        // NOTE: we create the image copy at the alpha level of our tint color so that we can then flood it with a color with 100% opacity
-        //
-        // first create the empty image
-        let copyOfImage = NSImage(size: image.size)
-        let copyOfImageBounds = NSRect(origin: .zero, size: copyOfImage.size)
-        //
-        // prepare our new image to receive drawing commands
-        copyOfImage.lockFocus()
-        //
-        // draw a copy of our image (at the alpha level of our tintColor) into the new image
-        image.draw(in: copyOfImageBounds, from: imageBounds, operation: .sourceOver, fraction: tintColor.alphaComponent)
-
-        // choose the provided tintColor (but using 100% opacity) to tint our image
-        opaqueTintColor.set()
-        // tint (recolor) our image
-        copyOfImageBounds.fill(using: .sourceAtop)
-
-        // remove the focus from our image (as we are done drawing)
-        copyOfImage.unlockFocus()
-
-        return copyOfImage
     }
     
     // MARK: size/position calculations
@@ -318,18 +297,29 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
         return iconCircleBounds
     }
 
+    // NOTE: this function calculates the title box size based on the contents of the box
     private func calculateTitleBoxSize() -> NSSize {
+        let orientation = self.morphicBarView?.orientation ?? .horizontal
+
         // get the size of our frame
         let frameSize = self.frame.size
 
+        // calculate the height of our text in pixels
+        let (_, titleTextPixelHeight, _) = measureAndSplitText(title, maxWidth: self.maximumWidth, maxHeight: self.calculateMaximumTextHeight())
+
+        // calculate the size of our icon (if any) in pixels)
         let iconCircleDiameter = calculateIconCircleDiameter()
         
         let titleBoxSize: NSSize
         if icon != nil {
             // NOTE: 2/3 of the circle is above the box; the remainder of the circle is inside the box
-            titleBoxSize = NSSize(width: frameSize.width, height: frameSize.height - (iconCircleDiameter * 2.0/3))
+            titleBoxSize = NSSize(width: frameSize.width, height: titleTextPixelHeight + self.titleBottomPadding + ((iconCircleDiameter * 2.0)/3))
         } else {
-            titleBoxSize = NSSize(width: frameSize.width, height: frameSize.height)
+            if orientation == .horizontal {
+                titleBoxSize = NSSize(width: frameSize.width, height: self.fixedHeightInHorizontalBar)
+            } else /* if orientation == .vertical */ {
+                titleBoxSize = NSSize(width: frameSize.width, height: titleTextPixelHeight + (self.titleBottomPadding * 2))
+            }
         }
         
         return titleBoxSize
@@ -341,18 +331,13 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
 
         // calculate the size of our title's background rounded rectangle box
         let titleBoxSize = calculateTitleBoxSize()
-        let titleBoxBounds = NSRect(x: 0.0, y: frameSize.height - titleBoxSize.height, width: titleBoxSize.width, height: titleBoxSize.height)
+        let titleBoxBounds: NSRect
+        titleBoxBounds = NSRect(x: 0.0, y: frameSize.height - titleBoxSize.height, width: titleBoxSize.width, height: titleBoxSize.height)
 
         return titleBoxBounds
     }
     
-    private func measureAndSplitText(_ text: String, maxWidth: CGFloat? = nil) -> (pixelWidth: CGFloat, pixelHeight: CGFloat, lines: [String]) {
-        // get the size of our frame
-        let frameSize = self.frame.size
-        
-        // calculate the maximum allowed text width
-        let maximumTextWidth = maxWidth ?? (frameSize.width - (titleLeftAndRightPadding * 2))
-
+    private func measureAndSplitText(_ text: String, maxWidth: CGFloat, maxHeight: CGFloat? = nil) -> (pixelWidth: CGFloat, pixelHeight: CGFloat, lines: [String]) {
         // establish the maximum number of lines we're willing to support in this control
         let maximumNumberOfLines = 2
         
@@ -365,23 +350,35 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
         // measure each word sequence in our title (to make sure each one fits on a single line); replace text with elipses where necessary
         while remainingText.count > 0 && lines.count < maximumNumberOfLines {
             var nextWord: String
-            if let nextWordEndIndex = remainingText.firstIndex(of: " ") {
+            var whitespaceCharacter: Character? = nil
+            var wordIsFollowedByNewline = false
+            if let nextSpaceIndex = remainingText.firstIndex(of: " ") {
+                let nextWordEndIndex = remainingText.index(before: nextSpaceIndex)
+                whitespaceCharacter = " "
                 nextWord = String(remainingText[...nextWordEndIndex])
+            } else if let newlineIndex = remainingText.firstIndex(of: "\n") {
+                let nextWordEndIndex = remainingText.index(before: newlineIndex)
+                whitespaceCharacter = "\n"
+                nextWord = String(remainingText[...nextWordEndIndex])
+                wordIsFollowedByNewline = true
             } else {
                 nextWord = String(remainingText[..<remainingText.endIndex])
+                whitespaceCharacter = nil
             }
 
             // append the next word (plus the trailing space)
-            var proposedCurrentLine = currentLine + nextWord
+            var proposedCurrentLine = currentLine + (currentLine != "" ? " " : "") + nextWord
             var numberOfWordsInProposedCurrentLine = numberOfWordsInCurrentLine + 1
             
+            var finishCurrentLineAndStartNewLine = false
+            
             // determine if the line is now too long for the line
-            if calculateWidthOfText(proposedCurrentLine) > maximumTextWidth {
+            if calculateWidthOfText(proposedCurrentLine) > maxWidth {
                 // line is too long
                 
                 if numberOfWordsInProposedCurrentLine == 1 {
                     // truncate the word by using ellipses
-                    proposedCurrentLine = truncateText(proposedCurrentLine, toWidth: maximumTextWidth, withEllipses: true)
+                    proposedCurrentLine = truncateText(proposedCurrentLine, toWidth: maxWidth, withEllipses: true)
 
                     // remove the leading text we just copied from the remainingText variable
                     remainingText.removeFirst(nextWord.count)
@@ -391,18 +388,30 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
                     numberOfWordsInProposedCurrentLine -= 1
                 }
                 
-                // append the current line to 'lines' and reset the current line
-                lines.append(proposedCurrentLine)
-                //
-                currentLine = ""
-                numberOfWordsInCurrentLine = 0
+                finishCurrentLineAndStartNewLine = true
             } else {
-                // line still fits; keep the proposed changes and keep adding words
+                // line still fits; keep the proposed changes (and keep adding words, unless it was followed by the newline character)
                 currentLine = proposedCurrentLine
                 numberOfWordsInCurrentLine = numberOfWordsInProposedCurrentLine
                 
                 // remove the leading text we just copied from the remainingText variable
                 remainingText.removeFirst(nextWord.count)
+                if whitespaceCharacter != nil {
+                    remainingText.removeFirst()
+                }
+                
+                // if the word was followed by \n, create a new line
+                if wordIsFollowedByNewline == true {
+                    finishCurrentLineAndStartNewLine = true
+                }
+            }
+            
+            if finishCurrentLineAndStartNewLine == true {
+                // append the current line to 'lines' and reset the current line
+                lines.append(proposedCurrentLine)
+                //
+                currentLine = ""
+                numberOfWordsInCurrentLine = 0
             }
         }
         
@@ -411,7 +420,7 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
             lines.append(currentLine)
         }
         
-        // remove any trailing spaces from the lines
+        // remove any leading or trailing spaces from the lines
         for index in 0..<lines.count {
             lines[index] = lines[index].trimmingCharacters(in: [" "])
         }
@@ -420,13 +429,23 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
         var pixelWidth: CGFloat = 0
         var pixelHeight: CGFloat = 0
         
-        for line in lines {
+        for index in 0..<lines.count {
+            let line = lines[index]
             let linePixelSize = calculateSizeOfText(line)
+            
+            if (maxHeight != nil) && (pixelHeight + linePixelSize.height > maxHeight!) {
+                // line will not fit; remove it and all further lines and exit
+                lines.removeLast(lines.count - index)
+                break
+            }
+
             pixelWidth = max(pixelWidth, linePixelSize.width)
-            pixelHeight = pixelHeight + linePixelSize.height + titleVerticalLineSpacing
+            if index > 0 {
+                // add a bit of vertical space between each line
+                pixelHeight += titleVerticalLineSpacing
+            }
+            pixelHeight = pixelHeight + linePixelSize.height
         }
-        // remove the spacing included after the last line
-        pixelHeight -= titleVerticalLineSpacing
         
         return (pixelWidth: pixelWidth, pixelHeight: pixelHeight, lines: lines)
     }
@@ -467,16 +486,32 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
         return textSize.width
     }
 
+    private func calculateMaximumTextHeight() -> CGFloat? {
+        let orientation = self.morphicBarView?.orientation ?? .horizontal
+
+        if orientation == .horizontal {
+            // we will let the text flow closer to the top/bottom edges than the full padding requires (using "top" padding which is technically the icon-to-text padding); ideally our caller would set the padding and we would use exact numbers instead
+            return self.fixedHeightInHorizontalBar - self.titleTopPadding * 2
+        } else {
+            return nil
+        }
+    }
+    
     private func calculateTitleTextBounds() -> NSRect {
+        let orientation = self.morphicBarView?.orientation ?? .horizontal
+
         // get the size of our frame
         let frameSize = self.frame.size
 
-        let titleBoxBounds = calculateTitleBoxBounds()
-        
-        let (titleTextPixelWidth, titleTextPixelHeight, _) = measureAndSplitText(title)
-                //
+        let (titleTextPixelWidth, titleTextPixelHeight, _) = measureAndSplitText(title, maxWidth: self.maximumWidth, maxHeight: self.calculateMaximumTextHeight())
+        //
         let titleTextPosX = (frameSize.width - titleTextPixelWidth) / 2.0
-        let titleTextPosY = titleBoxBounds.maxY - titleTextPixelHeight - self.titleBottomPadding
+        let titleTextPosY: CGFloat
+        if orientation == .horizontal {
+            titleTextPosY = (self.frame.height - titleTextPixelHeight) / 2
+        } else /* if orientation == .vertical */ {
+            titleTextPosY = self.frame.height - titleTextPixelHeight - self.titleBottomPadding
+        }
         
         let titleTextBounds = NSRect(x: titleTextPosX, y: titleTextPosY, width: titleTextPixelWidth, height: titleTextPixelHeight)
         
@@ -514,11 +549,15 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
     
     override var intrinsicContentSize: NSSize {
         get {
-            let width: CGFloat = 100
-            
+            let orientation = self.morphicBarView?.orientation ?? .horizontal
+
+            var width: CGFloat = 0
             var height: CGFloat = 0
-            //
-            let (_, titleTextPixelHeight, _) = measureAndSplitText(title, maxWidth: width)
+
+            let (titleTextPixelWidth, titleTextPixelHeight, _) = measureAndSplitText(title, maxWidth: self.maximumWidth, maxHeight: self.calculateMaximumTextHeight())
+
+            width += titleTextPixelWidth
+        
             height += titleTextPixelHeight
             //
             height += self.titleBottomPadding
@@ -528,10 +567,22 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
                 //
                 let iconCircleDiameter = calculateIconCircleDiameter(usingFrameWidth: width)
                 height += iconCircleDiameter
+                width = max(width, iconCircleDiameter)
             } else {
+                // if there is no icon, mirro the title's bottom padding on top (since the "top padding" is really the icon-to-text vertical padding)
                 height += self.titleBottomPadding
             }
             
+            width += self.titleLeftAndRightPadding * 2
+            
+            if orientation == .horizontal {
+                // for horizontal bars, make the buttons full-height
+                height = self.fixedHeightInHorizontalBar
+            } else if orientation == .vertical {
+                // for vertical bars, make the buttons full-width
+                width = max(width, self.maximumWidth)
+            }
+
             return NSSize(width: width, height: height)
         }
     }
@@ -637,7 +688,7 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
         }
     }
     
-    public var titleLeftAndRightPadding: CGFloat = 3.0 {
+    public var titleLeftAndRightPadding: CGFloat = 10.0 {
         didSet {
             configureTitleBoxLayer()
             configureTitleTextLayer()
@@ -651,5 +702,17 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
             configureTitleTextLayer()
             self.needsLayout = true
         }
+    }
+    
+    override func becomeFirstResponder() -> Bool {
+    	// alert the MorphicBarWindow that we have gained focus
+        morphicBarView?.childViewBecomeFirstResponder(sender: self)
+        return super.becomeFirstResponder()
+    }
+    
+    override func resignFirstResponder() -> Bool {
+    	// alert the MorphicBarWindow that we have lost focus
+        morphicBarView?.childViewResignFirstResponder()
+        return super.resignFirstResponder()
     }
 }

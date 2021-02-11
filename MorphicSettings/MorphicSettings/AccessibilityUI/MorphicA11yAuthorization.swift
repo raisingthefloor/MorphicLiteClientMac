@@ -40,7 +40,14 @@ public struct MorphicA11yAuthorization {
         let optionsAsCFDictionary = optionsAsNSDictionary as CFDictionary
         
         // NOTE: this function call also adds Morphic to the list of possible applications to authorize in the accessibility section
-        return AXIsProcessTrustedWithOptions(optionsAsCFDictionary)
+        let response = AXIsProcessTrustedWithOptions(optionsAsCFDictionary)
+        
+        // if we are not authorized (yet we just requested the pop-up to say we are not authorized), let our appdelegate know so we can show our a11y permissions helper overlay
+        if response == false /* not authorized */ && promptIfNotAuthorized == true {
+            NotificationCenter.default.post(name: .morphicPermissionsPopup, object: nil)
+        }
+
+	return response
     }
     
     public static func promptUserToGrantAuthorization() {
@@ -57,4 +64,8 @@ public struct MorphicA11yAuthorization {
 //            callback(/* true or false */)
 //        }
 //    }
+}
+
+public extension NSNotification.Name {
+    static let morphicPermissionsPopup = NSNotification.Name("org.raisingthefloor.morphicPermissionsPopup")
 }

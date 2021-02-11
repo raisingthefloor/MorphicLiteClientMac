@@ -53,6 +53,82 @@ public class MorphicInput {
         ]
     }
     
+    // NOTE: a list of probably constants was found at: https://stackoverflow.com/questions/866056/how-do-i-programmatically-get-the-shortcut-keys-reserved-by-mac-os-x
+    public enum SystemHotKeyId: Int {
+        case savePictureOfSelectedAreaAsAFile = 30 // kSHKSavePictureOfSelectedAreaAsAFile
+        case copyPictureOfSelectedAreaToTheClipboard = 31 // kSHKCopyPictureOfSelectedAreaToTheClipboard
+    }
+    
+    public static func hotKeyForSystemKeyboardShortcut(_ systemHotKeyId: SystemHotKeyId) -> (keyCode: CGKeyCode, keyOptions: MorphicInput.KeyOptions, enabled: Bool)? {
+        guard let symbolicHotKeyDefaults = UserDefaults(suiteName: "com.apple.symbolichotkeys") else {
+            NSLog("Could not access defaults domain: \"com.apple.symbolichotkeys\"")
+            return nil
+        }
+        
+        // locate the target hot key by id
+        guard let appleSymbolicHotKeys = symbolicHotKeyDefaults.value(forKey: "AppleSymbolicHotKeys") as? [String: Any] else {
+            return nil
+        }
+        guard let hotKey = appleSymbolicHotKeys[String(systemHotKeyId.rawValue)] as? [String: Any] else {
+            return nil
+        }
+
+        // get whether or not the hot key is currently enabled
+        guard let hotKeyEnabledAsInt = hotKey["enabled"] as? Int else {
+            return nil
+        }
+        let hotKeyEnabled = hotKeyEnabledAsInt != 0 ? true : false
+        
+        guard let hotKeyValue = hotKey["value"] as? [String: Any] else {
+            return nil
+        }
+
+        // make sure the hot key is a "standard" hot key (i.e. not a mouse shortcut, etc.)
+        guard let hotKeyType = hotKeyValue["type"] as? String else {
+            return nil
+        }
+        guard hotKeyType.lowercased() == "standard" else {
+            return nil
+        }
+
+        // get the keycode and modifier keys used for this hot key
+        guard let hotKeyParameters = hotKeyValue["parameters"] as? [Any] else {
+            return nil
+        }
+        guard hotKeyParameters.count >= 3 else {
+            return nil
+        }
+//        // NOTE: hotKeyAsciiCode may be Int16.max (if the character isn't an ASCII character)
+//        guard let hotKeyAsciiCode: Int = hotKeyParameters[0] as? Int else {
+//            return nil
+//        }
+        guard let hotKeyKeyCode: Int = hotKeyParameters[1] as? Int else {
+            return nil
+        }
+        guard let hotKeyModifiers: Int = hotKeyParameters[2] as? Int else {
+            return nil
+        }
+
+        // NOTE: this modifier key mapping is specific to the (legacy, from the macOS 'Carbon' days) key mappings
+        // NOTE: these should be the same values we could get via CopySymbolicHotKeys (but of course here we can retrieve which key combo goes with which system feature)
+        var keyOptionsAsUInt32: UInt32 = 0
+        if (hotKeyModifiers & (1 << 17)) != 0 {
+            keyOptionsAsUInt32 |= MorphicInput.KeyOptions.withShiftKey.rawValue
+        }
+        if (hotKeyModifiers & (1 << 18)) != 0 {
+            keyOptionsAsUInt32 |= MorphicInput.KeyOptions.withControlKey.rawValue
+        }
+        if (hotKeyModifiers & (1 << 19)) != 0 {
+            keyOptionsAsUInt32 |= MorphicInput.KeyOptions.withAlternateKey.rawValue
+        }
+        if (hotKeyModifiers & (1 << 20)) != 0 {
+            keyOptionsAsUInt32 |= MorphicInput.KeyOptions.withCommandKey.rawValue
+        }
+        let keyOptions = MorphicInput.KeyOptions(rawValue: keyOptionsAsUInt32)
+
+        return (keyCode: CGKeyCode(hotKeyKeyCode), keyOptions: keyOptions, enabled: hotKeyEnabled)
+    }
+    
     public static func parseDefaultsKeyCombo(_ value: Int) -> (keyCode: CGKeyCode, keyOptions: KeyOptions)? {
         guard var valueAsUInt32 = UInt32(exactly: value) else {
             return nil
@@ -151,6 +227,7 @@ public class MorphicInput {
         } else {
             // send the key to the system itself
             
+	    // NOTE: CGEventTapLocation.cghidEventTap might be a reasonable alternative CGEventTapLocation (for some or all keyboard events)
             // press the key
             keyDownEvent.post(tap: CGEventTapLocation.cgSessionEventTap)
             // then release the key
@@ -195,5 +272,136 @@ public class MorphicInput {
         keyEvent.flags = CGEventFlags(rawValue: keyEventFlagsRawValue)
 
         return keyEvent
+    }
+    
+    // MARK: - key repeat settings
+    
+    // NOTE: NSOpenEventStatus, NXCloseEventStatus, NXKeyRepeatThreshold and NXKeyRepeatInterval were officially deprecated in macOS 10.12, but they are still the way that macOS adjusts the key repeat intervals inside System Preferences so we continue to use them.
+    // NOTE: behind the scenes, the NXKeyRepeat functions (in IOKit) appear to use IOHIDSetParameter and IOHIDGetParameter; if the higher-level NX functions are ever removed then we can consider moving to the IOHID functions directly instead
+    
+    // NOTE: if key repeat's threshold is set to 5000 seconds, this is macOS's signal that key repeat is (effectively) turned off
+    private static let keyRepeatOffThreshold: Double = 5000.0
+    
+    private static let defaultKeyRepeatInterval: Double = 6.0 / 60.0 // NOTE: as observed in a clean install of macOS 10.15.7
+    public static let slowestKeyRepeatInterval: Double = 2.0
+    
+    private static let defaultKeyRepeatThreshold: Double = 68.0 / 60.0 // NOTE: as observed in a clean install of macOS 10.15.7
+    
+    public static var keyRepeatIsEnabled: Bool {
+        return (MorphicInput.initialDelayUntilKeyRepeat != nil)
+    }
+    
+    public static func setKeyRepeatIsEnabled(_ value: Bool) {
+        // capture the current repeat threshold
+        let currentInitialDelayUntilKeyRepeat = MorphicInput.initialDelayUntilKeyRepeat
+
+        if value == true {
+            // turn on key repeat
+            
+            // if the current repeat threshold is the "off" constant, then capture the saved repeat threshold from global defaults (so we can restore it)
+            let initialKeyRepeatSavedLevelAsOptional = MorphicInput.savedInitialDelayUntilKeyRepeat
+            // NOTE: if we could not retrieve a saved "initial key repeat" value, then use a default value instead
+            let initialKeyRepeatSavedLevel = initialKeyRepeatSavedLevelAsOptional ?? MorphicInput.defaultKeyRepeatThreshold
+            
+            if currentInitialDelayUntilKeyRepeat == nil {
+                // restore the saved repeat threshold
+                MorphicInput.setInitialDelayUntilKeyRepeat(initialKeyRepeatSavedLevel)
+            }
+        } else {
+            // turn off key repeat
+            
+            // if the current repeat threshold is not the "off" constant, then save it in defaults (so it can be restored)
+            if let currentInitialDelayUntilKeyRepeat = currentInitialDelayUntilKeyRepeat {
+                // save the existing threshold to global defaults
+                MorphicInput.setSavedInitialDelayUntilKeyRepeat(currentInitialDelayUntilKeyRepeat)
+                
+                // turn off key repeat (by "disabling" the initial key repeat)
+                MorphicInput.setInitialDelayUntilKeyRepeat(nil)
+            }
+        }
+    }
+    
+    // NOTE: this function is used to determine if "key repeat" is broken in this release of macOS
+    public static var isTurnOffKeyRepeatBroken: Bool {
+        get {
+            let operatingSystemVersion = MorphicProcess.operatingSystemVersion
+            // TODO: if key repeat is broken in versions of macOS Catalina before/after 10.15.7, update this logic; the observation that this feature was broken in Catalina was made in macOS Catalina 10.15.7 specifically
+            if operatingSystemVersion.majorVersion == 10 && operatingSystemVersion.minorVersion == 15 && operatingSystemVersion.patchVersion >= 7 {
+                return true
+            }
+            
+            // otherwise, return false
+            return false
+        }
+    }
+    
+    // NOTE: if key repeat is turned off, this will return nil
+    public static var initialDelayUntilKeyRepeat: Double? {
+        get {
+            let eventStatus = NXOpenEventStatus()
+            defer {
+                NXCloseEventStatus(eventStatus)
+            }
+            
+            let resultAsDouble = NXKeyRepeatThreshold(eventStatus)
+            if resultAsDouble == MorphicInput.keyRepeatOffThreshold {
+                return nil
+            } else {
+                return resultAsDouble
+            }
+        }
+    }
+    
+    // NOTE: to turn key repeat off, set this value to nil
+    public static func setInitialDelayUntilKeyRepeat(_ value: Double?) {
+        let eventStatus = NXOpenEventStatus()
+        defer {
+            NXCloseEventStatus(eventStatus)
+        }
+
+        let newKeyRepeatThreshold = value ?? MorphicInput.keyRepeatOffThreshold
+        NXSetKeyRepeatThreshold(eventStatus, newKeyRepeatThreshold)
+    }
+    
+    private static var savedInitialDelayUntilKeyRepeat: Double? {
+        guard let rawValue = CFPreferencesCopyValue("InitialKeyRepeat_Level_Saved" as CFString, kCFPreferencesAnyApplication, kCFPreferencesCurrentUser, kCFPreferencesAnyHost) as? Double else {
+            return nil
+        }
+
+        // NOTE: the value stored in defaults is multiplied by 60 (for an unknown reason)
+        return rawValue / 60
+    }
+    
+    private static func setSavedInitialDelayUntilKeyRepeat(_ value: Double) {
+        // NOTE: the value stored in defaults is multiplied by 60 (for an unknown reason)
+        let rawValue = round(value * 60)
+        
+        // NOTE: this function sets the property in the global domain (AnyApplication), but only for the current user
+        CFPreferencesSetValue("InitialKeyRepeat_Level_Saved" as CFString, rawValue as CFNumber, kCFPreferencesAnyApplication, kCFPreferencesCurrentUser, kCFPreferencesAnyHost)
+        let success = CFPreferencesSynchronize(kCFPreferencesAnyApplication, kCFPreferencesCurrentUser, kCFPreferencesAnyHost)
+        if success == false {
+            NSLog("Could not save initial key repeat delay to global defaults")
+            assertionFailure("Could not save initial key repeat delay to global defaults")
+        }
+    }
+
+    public static var keyRepeatInterval: Double {
+        get {
+            let eventStatus = NXOpenEventStatus()
+            defer {
+                NXCloseEventStatus(eventStatus)
+            }
+            
+            return NXKeyRepeatInterval(eventStatus)
+        }
+    }
+    
+    public static func setKeyRepeatInterval(_ value: Double) {
+        let eventStatus = NXOpenEventStatus()
+        defer {
+            NXCloseEventStatus(eventStatus)
+        }
+
+        NXSetKeyRepeatInterval(eventStatus, value)
     }
 }

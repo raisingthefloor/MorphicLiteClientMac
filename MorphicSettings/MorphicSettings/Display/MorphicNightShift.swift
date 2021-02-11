@@ -140,4 +140,31 @@ public struct MorphicNightShift {
         let commit = !overrideEnabled
         blueLightClient.setStrength(value, commit: commit)
     }
+
+    private static var notificationBlueLightClient: CBBlueLightClient? = nil
+    private static var notificationCache_Enabled: Bool? = nil
+    public static func enableStatusChangeNotifications() {
+        if self.notificationBlueLightClient == nil {
+            notificationBlueLightClient = CBBlueLightClient()
+        }
+
+        // capture cache values of all our Night Shift states/properties
+        MorphicNightShift.notificationCache_Enabled = MorphicNightShift.getEnabled()
+        
+        self.notificationBlueLightClient?.setStatusNotificationBlock { pointerToStatus in
+            guard let status = pointerToStatus?.pointee else {
+                return
+            }
+
+            // if the enabled state has changed, notify our client of the change now
+            if status.enabled.boolValue != MorphicNightShift.notificationCache_Enabled {
+                MorphicNightShift.notificationCache_Enabled = status.enabled.boolValue
+                NotificationCenter.default.post(name: .morphicFeatureNightShiftEnabledChanged, object: nil, userInfo: ["enabled" : status.enabled.boolValue])
+            }
+        }
+    }
+}
+
+public extension NSNotification.Name {
+    static let morphicFeatureNightShiftEnabledChanged = NSNotification.Name("org.raisingthefloor.morphicFeatureNightShiftEnabledChanged")
 }
