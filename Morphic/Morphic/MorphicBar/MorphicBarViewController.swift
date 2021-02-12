@@ -423,6 +423,13 @@ class LogoButton: NSButton {
         QuickHelpWindow.hide()
     }
     
+    override func rightMouseUp(with event: NSEvent) {
+        super.rightMouseUp(with: event)
+        
+        // special for logo button: fire the "action" if right-clicked (in addition to the default left-click action event behavior)
+        self.sendAction(self.action, to: self.target)
+    }
+    
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
         createBoundsTrackingArea()
