@@ -55,12 +55,7 @@ public class MorphicBarWindow: NSWindow {
         setAccessibilityLabel("MorphicBar")
         updateMorphicBar()
 
-        switch Session.morphicEdition {
-        case .basic:
-            break
-        case .plus:
-            NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarWindow.userDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarWindow.userDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
     }
     
     @objc

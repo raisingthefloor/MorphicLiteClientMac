@@ -116,14 +116,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
                 self.copySettingsBetweenComputersMenuItem?.isHidden = (Session.shared.isCaptureAndApplyEnabled == false)
                 
-                switch Session.morphicEdition {
-                case .basic:
-                    break
-                case .plus:
-                    if Session.shared.user == nil {
-                        self.showMorphicBarMenuItem?.isHidden = true
-                    }
-                }
                 self.loginMenuItem?.isHidden = (Session.shared.user != nil)
                 self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
 
@@ -150,15 +142,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     }
                 }
                 //
-                switch Session.morphicEdition {
-                case .basic:
-                    if showMorphicBar == true {
-                        self.showMorphicBar(nil)
-                    }
-                case .plus:
-                    if (Session.shared.user != nil) && (showMorphicBar == true) {
-                        self.showMorphicBar(nil)
-                    }
+                if showMorphicBar == true {
+                    self.showMorphicBar(nil)
                 }
                 
                 // update the "hide quickhelp menu" menu item's state
@@ -326,16 +311,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         os_log(.info, log: logger, "Got signin notification from configurator")
         Session.shared.open {
             NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: Session.shared)
-            switch Session.morphicEdition {
+            
             case .basic:
-                let userInfo = notification.userInfo ?? [:]
-                if !(userInfo["isRegister"] as? Bool ?? false) {
-                    os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
-                    Session.shared.applyAllPreferences {
-                    }
+            let userInfo = notification.userInfo ?? [:]
+            if !(userInfo["isRegister"] as? Bool ?? false) {
+                os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
+                Session.shared.applyAllPreferences {
                 }
-            case .plus:
-                break
             }
         }
     }
@@ -995,12 +977,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 }
             }
             
-            switch Session.morphicEdition {
-            case .basic:
-                break
-            case .plus:
-                self.selectCommunityMenuItem.isHidden = true
-            }
+            self.selectCommunityMenuItem.isHidden = true
             self.loginMenuItem?.isHidden = false
             self.logoutMenuItem?.isHidden = true
         }
@@ -1601,26 +1578,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         if currentEvent.type == .leftMouseDown {
             // when the left mouse button is pressed, toggle the MorphicBar's visibility (i.e. show/hide the MorphicBar)
 
-            switch Session.morphicEdition {
-            case .basic:
-                let morphicBarWindowWasVisible = morphicBarWindow != nil
-                defer {
-                    let segmentation: [String: String] = ["eventSource": "trayIconClick"]
-                    if morphicBarWindowWasVisible == true {
-                        Countly.sharedInstance().recordEvent("morphicBarHide", segmentation: segmentation)
-                    } else {
-                        Countly.sharedInstance().recordEvent("morphicBarShow", segmentation: segmentation)
-                    }
-                }
-                toggleMorphicBar(sender)
-            case .plus:
-                if (Session.shared.user == nil) {
-                    // NOTE: if we're running MorphicCommunity and there is no actively logged-in user, then show the login instead of toggling the MorphicBar
-                    self.launchConfigurator(argument: "login")
+            let morphicBarWindowWasVisible = morphicBarWindow != nil
+            defer {
+                let segmentation: [String: String] = ["eventSource": "trayIconClick"]
+                if morphicBarWindowWasVisible == true {
+                    Countly.sharedInstance().recordEvent("morphicBarHide", segmentation: segmentation)
                 } else {
-                    toggleMorphicBar(sender)
+                    Countly.sharedInstance().recordEvent("morphicBarShow", segmentation: segmentation)
                 }
             }
+            toggleMorphicBar(sender)
         } else if currentEvent.type == .rightMouseDown {
             // when the right mouse button is pressed, show the main menu
 
@@ -1743,16 +1710,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
         self.morphicBarWindow = nil
         
-        switch Session.morphicEdition {
-        case .basic:
-            showMorphicBarMenuItem?.isHidden = false
-        case .plus:
-            if Session.shared.user != nil {
-                showMorphicBarMenuItem?.isHidden = false
-            } else {
-                showMorphicBarMenuItem?.isHidden = true
-            }
-        }
+        showMorphicBarMenuItem?.isHidden = false
         hideMorphicBarMenuItem?.isHidden = true
         QuickHelpWindow.hide()
         if Session.shared.bool(for: .morphicBarVisible) != false {
