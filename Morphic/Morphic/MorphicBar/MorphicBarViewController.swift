@@ -51,12 +51,7 @@ public class MorphicBarViewController: NSViewController {
         view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
         view.layer?.cornerRadius = 6
         self.copySettingsBetweenComputersMenuItem?.isHidden = (Session.shared.isCaptureAndApplyEnabled == false)
-        switch Session.morphicEdition {
-        case .basic:
-            break
-        case .plus:
-            self.loginMenuItem?.isHidden = (Session.shared.user != nil)
-        }
+        self.loginMenuItem?.isHidden = (Session.shared.user != nil)
         self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
         self.mainMenu?.delegate = AppDelegate.shared
         updateMainMenu()
@@ -86,12 +81,7 @@ public class MorphicBarViewController: NSViewController {
         guard let session = notification.object as? Session else {
             return
         }
-        switch Session.morphicEdition {
-        case .basic:
-            break
-        case .plus:
-            self.loginMenuItem?.isHidden = (session.user != nil)
-        }
+        self.loginMenuItem?.isHidden = (session.user != nil)
         self.logoutMenuItem?.isHidden = (session.user == nil)
     }
     
@@ -115,25 +105,11 @@ public class MorphicBarViewController: NSViewController {
     }
     
     private func updateMainMenu() {
-        switch Session.morphicEdition {
-        case .basic:
-            if let _ = ConfigurableFeatures.shared.autorunConfig {
-                self.automaticallyStartMorphicAtLoginMenuItem.isHidden = true
-            }
-            if let _ = ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin {
-                self.showMorphicBarAtStartMenuItem.isHidden = true
-            }
-        case .plus:
-            break
+        if let _ = ConfigurableFeatures.shared.autorunConfig {
+            self.automaticallyStartMorphicAtLoginMenuItem.isHidden = true
         }
-
-        switch Session.morphicEdition {
-        case .basic:
-            // NOTE: the default menu items are already configured for Morphic Basic
-            break
-        case .plus:
-            // configure menu items to match the Morphic Community scheme
-            copySettingsBetweenComputersMenuItem?.isHidden = true
+        if let _ = ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin {
+            self.showMorphicBarAtStartMenuItem.isHidden = true
         }
     }
 

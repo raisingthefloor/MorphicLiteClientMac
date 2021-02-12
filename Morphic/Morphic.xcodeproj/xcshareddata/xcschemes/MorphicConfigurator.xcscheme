@@ -28,46 +28,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "31751B6E2444E0E400EEDF14"
-               BuildableName = "MorphicConfiguratorUITests.xctest"
-               BlueprintName = "MorphicConfiguratorUITests"
-               ReferencedContainer = "container:Morphic.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "31751B632444E0E400EEDF14"
-               BuildableName = "MorphicConfiguratorTests.xctest"
-               BlueprintName = "MorphicConfiguratorTests"
-               ReferencedContainer = "container:Morphic.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "31751B632444E0E400EEDF14"
-               BuildableName = "MorphicConfiguratorTests.xctest"
-               BlueprintName = "MorphicConfiguratorTests"
-               ReferencedContainer = "container:Morphic.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "31751B6E2444E0E400EEDF14"
-               BuildableName = "MorphicConfiguratorUITests.xctest"
-               BlueprintName = "MorphicConfiguratorUITests"
-               ReferencedContainer = "container:Morphic.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

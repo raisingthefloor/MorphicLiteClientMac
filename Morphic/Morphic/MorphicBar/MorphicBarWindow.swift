@@ -111,25 +111,9 @@ public class MorphicBarWindow: NSWindow {
         }
     }
         
-    static var showsHelpByDefault: Bool {
-        switch Session.morphicEdition {
-        case .basic:
-            return true
-        case .plus:
-            return false
-        }
-    }
-    
     var showsHelp: Bool {
         get {
-            let showsHelpByDefault = MorphicBarWindow.showsHelpByDefault
-            switch Session.morphicEdition {
-            case .basic:
-                return Session.shared.bool(for: .morphicBarShowsHelp) ?? showsHelpByDefault
-            case .plus:
-                // NOTE: for now, permanently surpress the help pop-up in Morphic Community
-                return showsHelpByDefault
-            }
+            return Session.shared.bool(for: .morphicBarShowsHelp) ?? true
         }
     }
     
@@ -315,55 +299,19 @@ public extension Preferences.Key {
     /// It is platform specific because mac controls tend to be at the top of the screen while windows
     /// controls tend to be at the bottom.  A user who works between platforms can move the MorphicBar
     /// on one platform without affecting the MorphicBar's location on the other.
-    static let morphicBarPosition: Preferences.Key = {
-        switch Session.morphicEdition {
-        case .basic:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "position.mac")
-        case .plus:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "position.mac")
-        }
-    }()
+    static let morphicBarPosition = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "position.mac")
 
     /// The preference key that stores whether the MorphicBar should always appear at startup
-    static let showMorphicBarAtStart: Preferences.Key = {
-        switch Session.morphicEdition {
-        case .basic:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "showMorphicBarAtStart")
-        case .plus:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "showMorphicBarAtStart")
-        }
-    }()
+    static let showMorphicBarAtStart = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "showMorphicBarAtStart")
 
     /// The preference key that stores whether the MorphicBar should appear by default
-    static let morphicBarVisible: Preferences.Key = {
-        switch Session.morphicEdition {
-        case .basic:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "visible")
-        case .plus:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "visible")
-        }
-    }()
+    static let morphicBarVisible = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "visible")
     
     /// The preference key that stores whether the MorphicBar buttons should show giant help tips
-    static let morphicBarShowsHelp: Preferences.Key = {
-        switch Session.morphicEdition {
-        case .basic:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "showsHelp")
-        case .plus:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "showsHelp")
-        }
-    }()
+    static let morphicBarShowsHelp = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "showsHelp")
     
     /// The preference key that stores which items appear on the MorphicBar (Morphic Basic personal bar)
-    static let morphicBarItems: Preferences.Key = {
-        switch Session.morphicEdition {
-        case .basic:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "items")
-        case .plus:
-            //return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "items")
-            fatalError("Invalid key for this edition")
-        }
-    }()
+    static let morphicBarItems = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "items")
 }
 
 public enum MorphicBarOrientation {

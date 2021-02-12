@@ -54,9 +54,6 @@ stages:
             provProfileSecureFile: 'Morphic_Dock_App_for_macOS.provisionprofile'
         - task: InstallAppleProvisioningProfile@1
           inputs:
-            provProfileSecureFile: 'Morphic_Community_Launcher_for_macOS.provisionprofile'
-        - task: InstallAppleProvisioningProfile@1
-          inputs:
             provProfileSecureFile: 'Morphic_Configurator_for_macOS.provisionprofile'
         - task: InstallAppleProvisioningProfile@1
           inputs:
@@ -111,35 +108,11 @@ stages:
             signingOption: '$(signingOption)'
             args: '$(extraArgs)'
         - task: Xcode@5
-          displayName: Build MorphicCommunityConfigurator
-          inputs:
-            actions: 'build'
-            sdk: $(sdk)
-            scheme: 'MorphicCommunityConfigurator'
-            configuration: '$(configuration)'
-            xcWorkspacePath: '$(workspacePath)'
-            xcodeVersion: $(xcodeVersionNum)
-            useXcpretty: false
-            signingOption: '$(signingOption)'
-            args: '$(extraArgs)'
-        - task: Xcode@5
           displayName: Build MorphicLauncher
           inputs:
             actions: 'build'
             sdk: $(sdk)
             scheme: 'MorphicLauncher'
-            configuration: '$(configuration)'
-            xcWorkspacePath: '$(workspacePath)'
-            xcodeVersion: $(xcodeVersionNum)
-            useXcpretty: false
-            signingOption: '$(signingOption)'
-            args: '$(extraArgs)'
-        - task: Xcode@5
-          displayName: Build MorphicCommunityLauncher
-          inputs:
-            actions: 'build'
-            sdk: $(sdk)
-            scheme: 'MorphicCommunityLauncher'
             configuration: '$(configuration)'
             xcWorkspacePath: '$(workspacePath)'
             xcodeVersion: $(xcodeVersionNum)
@@ -164,18 +137,6 @@ stages:
             actions: 'build'
             sdk: $(sdk)
             scheme: 'Morphic'
-            configuration: '$(configuration)'
-            xcWorkspacePath: '$(workspacePath)'
-            xcodeVersion: $(xcodeVersionNum)
-            useXcpretty: false
-            signingOption: '$(signingOption)'
-            args: '$(extraArgs)'
-        - task: Xcode@5
-          displayName: Build Morphic Community
-          inputs:
-            actions: 'build'
-            sdk: $(sdk)
-            scheme: 'Morphic Community'
             configuration: '$(configuration)'
             xcWorkspacePath: '$(workspacePath)'
             xcodeVersion: $(xcodeVersionNum)
@@ -208,31 +169,6 @@ stages:
             targetType: 'filePath'
             filePath: notarize.sh  
         - task: Bash@3
-          displayName: Notarize 'Morphic Community.dmg'
-          env:
-            BRANCH: $(Build.SourceBranch)
-            BRANCH_NAME: $(Build.SourceBranchName)
-            DMG_PATH: './Morphic/Morphic Community.dmg'
-            BUNDLE_ID: 'org.raisingthefloor.MorphicCommunity.dmg'
-            USERNAME: '$(ALTOOL_USERNAME)'
-            APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
-            SIGNING_IDENTITY: '$(APPLICATION_SIGNING_IDENTITY)'
-          inputs:
-            targetType: 'filePath'
-            filePath: notarize.sh
-        - task: Bash@3
-          displayName: Notarize 'MorphicCommunity.pkg'
-          env:
-            BRANCH: $(Build.SourceBranch)
-            BRANCH_NAME: $(Build.SourceBranchName)
-            PKG_PATH: './Morphic/MorphicCommunity.pkg'
-            BUNDLE_ID: 'org.raisingthefloor.MorphicCommunityInstaller.pkg'
-            USERNAME: '$(ALTOOL_USERNAME)'
-            APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
-          inputs:
-            targetType: 'filePath'
-            filePath: notarize.sh
-        - task: Bash@3
           displayName: Publish Morphic to AWS S3
           env:
             AWS_ACCESS_KEY_ID: $(accessKey)
@@ -244,22 +180,6 @@ stages:
             LOCAL_DMG: './Morphic/Morphic.dmg'
             LOCAL_PKG: './Morphic/Morphic.pkg'
             AWS_FILE_PREFIX: 'Morphic'
-            VERSION: '$(finalVersion)'
-          inputs:
-            targetType: 'filePath'
-            filePath: push-to-s3.sh
-        - task: Bash@3
-          displayName: Publish Morphic Community to AWS S3
-          env:
-            AWS_ACCESS_KEY_ID: $(accessKey)
-            AWS_SECRET_ACCESS_KEY: $(secretKey)
-            BUCKET: $(bucket)
-            AWS_DEFAULT_REGION: $(region)
-            BRANCH: $(Build.SourceBranch)
-            BRANCH_NAME: $(Build.SourceBranchName)
-            LOCAL_DMG: './Morphic/Morphic Community.dmg'
-            LOCAL_PKG: './Morphic/MorphicCommunity.pkg'
-            AWS_FILE_PREFIX: 'MorphicCommunity'
             VERSION: '$(finalVersion)'
           inputs:
             targetType: 'filePath'
