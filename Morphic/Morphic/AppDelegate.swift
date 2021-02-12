@@ -312,13 +312,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         Session.shared.open {
             NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: Session.shared)
             
-            case .basic:
-            let userInfo = notification.userInfo ?? [:]
-            if !(userInfo["isRegister"] as? Bool ?? false) {
-                os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
-                Session.shared.applyAllPreferences {
-                }
-            }
+//            // TODO: previously in Morphic Basic for macOS, a user's cloud preferences were applied when they logged in; this behavior has been commented out while the new prefs sets backup/apply flow is being workedo ut
+//            let userInfo = notification.userInfo ?? [:]
+//            if !(userInfo["isRegister"] as? Bool ?? false) {
+//                os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
+//                Session.shared.applyAllPreferences {
+//                }
+//            }
         }
     }
     
@@ -632,12 +632,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
         
         return result
-    }
-    
-    // MARK: - Updates
-    
-    private func startCheckingForUpdates() {
-	// TODO: check for updates
     }
     
     //
@@ -994,28 +988,28 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         copySettingsWindowController?.window?.delegate = self
     }
     
-    @IBAction
-    func reapplyAllSettings(_ sender: Any) {
-        Session.shared.open {
-            os_log(.info, "Re-applying all settings")
-            Session.shared.applyAllPreferences {
-                
-            }
-        }
-    }
+//    @IBAction
+//    func reapplyAllSettings(_ sender: Any) {
+//        Session.shared.open {
+//            os_log(.info, "Re-applying all settings")
+//            Session.shared.applyAllPreferences {
+//
+//            }
+//        }
+//    }
     
-    @IBAction
-    func captureAllSettings(_ sender: Any) {
-        let prefs = Preferences(identifier: "")
-        let capture = CaptureSession(settingsManager: Session.shared.settings, preferences: prefs)
-        capture.captureDefaultValues = true
-        capture.addAllSolutions()
-        capture.run {
-            for pair in capture.preferences.keyValueTuples(){
-                print(pair.0, pair.1 ?? "<nil>")
-            }
-        }
-    }
+//    @IBAction
+//    func captureAllSettings(_ sender: Any) {
+//        let prefs = Preferences(identifier: "")
+//        let capture = CaptureSession(settingsManager: Session.shared.settings, preferences: prefs)
+//        capture.captureDefaultValues = true
+//        capture.addAllSolutions()
+//        capture.run {
+//            for pair in capture.preferences.keyValueTuples(){
+//                print(pair.0, pair.1 ?? "<nil>")
+//            }
+//        }
+//    }
     
     @IBAction func menuBarExtraAboutMorphicMenuItemClicked(_ sender: NSMenuItem) {
         defer {
