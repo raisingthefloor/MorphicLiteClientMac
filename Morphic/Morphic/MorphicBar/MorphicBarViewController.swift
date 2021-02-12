@@ -29,16 +29,6 @@ import MorphicSettings
 /// The View Controller for a MorphicBar showing a collection of actions the user can take
 public class MorphicBarViewController: NSViewController {
     
-    @IBOutlet weak var copySettingsBetweenComputersMenuItem: NSMenuItem!
-    @IBOutlet weak var loginMenuItem: NSMenuItem!
-    @IBOutlet weak var logoutMenuItem: NSMenuItem!
-    @IBOutlet weak var selectCommunityMenuItem: NSMenuItem!
-    @IBOutlet weak var automaticallyStartMorphicAtLoginMenuItem: NSMenuItem!
-    @IBOutlet weak var showMorphicBarAtStartMenuItem: NSMenuItem!
-    @IBOutlet weak var hideQuickHelpMenuItem: NSMenuItem!
-    //
-    @IBOutlet weak var turnOffKeyRepeatMenuItem: NSMenuItem!
-    
     /// The close button
     @IBOutlet weak var closeButton: CloseButton!
 
@@ -50,11 +40,6 @@ public class MorphicBarViewController: NSViewController {
         morphicBarView.orientation = self.orientation
         view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
         view.layer?.cornerRadius = 6
-        self.copySettingsBetweenComputersMenuItem?.isHidden = (Session.shared.isCaptureAndApplyEnabled == false)
-        self.loginMenuItem?.isHidden = (Session.shared.user != nil)
-        self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
-        self.mainMenu?.delegate = AppDelegate.shared
-        updateMainMenu()
         NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
         DistributedNotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.appleInterfaceThemeDidChange(_:)), name: .appleInterfaceThemeChanged, object: nil)
 
@@ -81,14 +66,9 @@ public class MorphicBarViewController: NSViewController {
         guard let session = notification.object as? Session else {
             return
         }
-        self.loginMenuItem?.isHidden = (session.user != nil)
-        self.logoutMenuItem?.isHidden = (session.user == nil)
     }
     
     // MARK: - Logo Button & Main Menu
-    
-    /// The MorphicBar's main menu, accessible via the Logo image button
-    @IBOutlet var mainMenu: NSMenu!
     
     /// The button that displays the Morphic logo
     @IBOutlet weak var logoButton: LogoButton!
@@ -100,19 +80,10 @@ public class MorphicBarViewController: NSViewController {
             let segmentation = AppDelegate.shared.createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
             Countly.sharedInstance().recordEvent("showMenu", segmentation: segmentation)
         }
-        
-        mainMenu.popUp(positioning: nil, at: NSPoint(x: logoButton.bounds.origin.x, y: logoButton.bounds.origin.y + logoButton.bounds.size.height), in: logoButton)
+
+        AppDelegate.shared.mainMenu.popUp(positioning: nil, at: NSPoint(x: logoButton.bounds.origin.x, y: logoButton.bounds.origin.y + logoButton.bounds.size.height), in: logoButton)
     }
     
-    private func updateMainMenu() {
-        if let _ = ConfigurableFeatures.shared.autorunConfig {
-            self.automaticallyStartMorphicAtLoginMenuItem.isHidden = true
-        }
-        if let _ = ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin {
-            self.showMorphicBarAtStartMenuItem.isHidden = true
-        }
-    }
-
     // MARK: - Orientation and orientation-related constraints
     
     public var orientation: MorphicBarOrientation = .horizontal {

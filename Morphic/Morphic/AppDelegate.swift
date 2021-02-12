@@ -36,7 +36,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     static var shared: AppDelegate!
     
-    @IBOutlet var menu: NSMenu!
+    @IBOutlet var mainMenu: NSMenu!
     @IBOutlet weak var showMorphicBarMenuItem: NSMenuItem?
     @IBOutlet weak var hideMorphicBarMenuItem: NSMenuItem?
     @IBOutlet weak var copySettingsBetweenComputersMenuItem: NSMenuItem!
@@ -127,7 +127,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 self.loginMenuItem?.isHidden = (Session.shared.user != nil)
                 self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
 
-                self.menu?.delegate = self
+                self.mainMenu?.delegate = self
                 
                 // show the Morphic Bar (if we have a bar to show and it's (a) our first startup or (b) the user had the bar showing when the app was last exited or (c) the user has "show MorphicBar at start" set to true
                 var showMorphicBar: Bool = false
@@ -841,9 +841,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
             // update our list of communities (after any community re-selection has been done)
             self.updateSelectCommunityMenuItem(selectCommunityMenuItem: self.selectCommunityMenuItem)
-            if let morphicBarWindow = self.morphicBarWindow {
-                self.updateSelectCommunityMenuItem(selectCommunityMenuItem: morphicBarWindow.morphicBarViewController.selectCommunityMenuItem)
-            }
 
             // now it's time to update the morphic bar
             self.morphicBarWindow?.updateMorphicBar()
@@ -960,9 +957,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
         // update our list of communities (so that we move the checkbox to the appropriate entry)
         self.updateSelectCommunityMenuItem(selectCommunityMenuItem: self.selectCommunityMenuItem)
-        if let morphicBarWindow = morphicBarWindow {
-            self.updateSelectCommunityMenuItem(selectCommunityMenuItem: morphicBarWindow.morphicBarViewController.selectCommunityMenuItem)
-        }
         
         // now that the user has selected a new community bar, we switch to it using our cached data
         self.morphicBarWindow?.updateMorphicBar()
@@ -1177,7 +1171,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func updateMorphicAutostartAtLoginMenuItems() {
         let autostartAtLogin = self.morphicAutostartAtLogin()
         automaticallyStartMorphicAtLoginMenuItem?.state = (autostartAtLogin ? .on : .off)
-        morphicBarWindow?.morphicBarViewController.automaticallyStartMorphicAtLoginMenuItem.state = (autostartAtLogin ? .on : .off)
     }
     
     func morphicAutostartAtLogin() -> Bool {
@@ -1218,7 +1211,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         // update the appropriate menu items to match
         if success == true {
             automaticallyStartMorphicAtLoginMenuItem?.state = (autostartAtLogin ? .on : .off)
-            morphicBarWindow?.morphicBarViewController.automaticallyStartMorphicAtLoginMenuItem.state = (autostartAtLogin ? .on : .off)
         }
         
         return success
@@ -1296,7 +1288,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
 
         turnOffKeyRepeatMenuItem?.state = keyRepeatIsEnabled ? .off : .on
-        morphicBarWindow?.morphicBarViewController.turnOffKeyRepeatMenuItem.state = keyRepeatIsEnabled ? .off : .on
     }
 
     //
@@ -1423,10 +1414,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
         if currentModifierKeys.rawValue & NSEvent.ModifierFlags.option.rawValue != 0 {
             self.hideQuickHelpMenuItem.isHidden = false
-            self.morphicBarWindow?.morphicBarViewController.hideQuickHelpMenuItem.isHidden = false
         } else {
             self.hideQuickHelpMenuItem.isHidden = true
-            self.morphicBarWindow?.morphicBarViewController.hideQuickHelpMenuItem.isHidden = true
         }
     }
     
@@ -1445,7 +1434,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func updateHideQuickHelpMenuItems() {
         let hideQuickHelpAtLogin = self.hideQuickHelpState()
         hideQuickHelpMenuItem?.state = (hideQuickHelpAtLogin ? .on : .off)
-        morphicBarWindow?.morphicBarViewController.hideQuickHelpMenuItem.state = (hideQuickHelpAtLogin ? .on : .off)
     }
 
     func hideQuickHelpState() -> Bool {
@@ -1491,7 +1479,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func updateShowMorphicBarAtStartMenuItems() {
         let showMorphicBarAtStart = Session.shared.bool(for: .showMorphicBarAtStart) ?? false
         showMorphicBarAtStartMenuItem?.state = (showMorphicBarAtStart ? .on : .off)
-        morphicBarWindow?.morphicBarViewController.showMorphicBarAtStartMenuItem.state = (showMorphicBarAtStart ? .on : .off)
     }
     
     //
@@ -1566,7 +1553,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         os_log(.info, log: logger, "Creating status item")
         statusItem = NSStatusBar.system.statusItem(withLength: -1)
         // NOTE: here we use a default menu for the statusicon (which works with VoiceOver and with ^F8 a11y keyboard navigation); separately we will capture mouse enter/exit events to make the statusitem something more custom
-        statusItem.menu = menu
+        statusItem.menu = self.mainMenu
         
         // update the menu to match the proper edition of Morphic
         updateMenu()
@@ -1601,7 +1588,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             statusItem.menu = nil
         case false:
             // re-enable menu by default (for macos keyboard accessibility and voiceover compatibility
-            statusItem.menu = menu
+            statusItem.menu = mainMenu
         }
     }
     
@@ -1651,7 +1638,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 let segmentation = AppDelegate.shared.createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
                 Countly.sharedInstance().recordEvent("showMenu", segmentation: segmentation)
             }
-            statusItem.menu = self.menu
+            statusItem.menu = self.mainMenu
             statusItemButton.performClick(sender)
             statusItem.menu = nil
 

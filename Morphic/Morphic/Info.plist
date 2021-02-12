@@ -30,8 +30,6 @@
 	<true/>
 	<key>MorphicServiceEndpoint</key>
 	<string>$(MORPHIC_SERVICE_ENDPOINT)</string>
-	<key>MorphicCommunityServiceEndpoint</key>
-	<string>$(MORPHIC_COMMUNITY_SERVICE_ENDPOINT)</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
