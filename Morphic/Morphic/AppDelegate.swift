@@ -55,7 +55,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     private var voiceOverEnabledObservation: NSKeyValueObservation?
     private var appleKeyboardUIModeObservation: NSKeyValueObservation?
 
-    let appCastUrl = URL(string: "https://app.morphic.org/autoupdate/morphic-macos.appcast.xml")!
+    private func appCastUrl() -> URL {
+        guard let frontEndUrlAsString = Bundle.main.infoDictionary?["FrontEndURL"] as? String else {
+            fatalError("FRONT_END_URL (mandatory) not set in .xcconfig")
+        }
+        return URL(string: frontEndUrlAsString)!.appendingPathComponent("autoupdate").appendingPathComponent("morphic-macos.appcast.xml")
+    }
 
     // MARK: - Application Lifecycle
 
@@ -91,7 +96,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             // do not run the auto-updater checks in debug mode
         #else
             if ConfigurableFeatures.shared.checkForUpdatesIsEnabled == true {
-                Autoupdater.startCheckingForUpdates(url: self.appCastUrl)
+                Autoupdater.startCheckingForUpdates(url: self.createAppCastUrl())
             }
         #endif
 
@@ -783,9 +788,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             if userSelectedCommunityId == nil || customMorphicBarsAsJson[userSelectedCommunityId!] == nil {
                 // the user has left the previous community; choose the first community bar instead (and save our change)
 
-                // NOTE: in this implementation, we automatically switch the user to their first custom bar (and off of the basic bar); in the future, we may want to consider syncing their "latest bar selection" to the cloud or maybe prompt the user for which bar they'd like to use
-                userSelectedCommunityId = customMorphicBarsAsJson.keys.first
-                UserDefaults.morphic.set(selectedUserCommunityIdentifier: userSelectedCommunityId, for: user.identifier)
+                // NOTE: in this implementation, we keep the user on the basic bar until they have intentionally switched to another bar; in the future we may want to: automatically switch them to the first custom bar in their list; sync their 'bar selection' to the cloud; and/or prompt the user as to which bar they'd like to use
+                // NOTE: as an example, if we wanted to automatically select their first bar, we would do the following:
+//                userSelectedCommunityId = customMorphicBarsAsJson.keys.first
+//                UserDefaults.morphic.set(selectedUserCommunityIdentifier: userSelectedCommunityId, for: user.identifier)
             }
 
             // update our list of custom MorphicBars (after any 'current bar' re-selection has been done)
