@@ -55,12 +55,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     private var voiceOverEnabledObservation: NSKeyValueObservation?
     private var appleKeyboardUIModeObservation: NSKeyValueObservation?
 
-    private func appCastUrl() -> URL {
+    private let appCastUrl: URL = {
         guard let frontEndUrlAsString = Bundle.main.infoDictionary?["FrontEndURL"] as? String else {
             fatalError("FRONT_END_URL (mandatory) not set in .xcconfig")
         }
         return URL(string: frontEndUrlAsString)!.appendingPathComponent("autoupdate").appendingPathComponent("morphic-macos.appcast.xml")
-    }
+    }()
 
     // MARK: - Application Lifecycle
 
@@ -96,7 +96,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             // do not run the auto-updater checks in debug mode
         #else
             if ConfigurableFeatures.shared.checkForUpdatesIsEnabled == true {
-                Autoupdater.startCheckingForUpdates(url: self.appCastUrl())
+                Autoupdater.startCheckingForUpdates(url: self.appCastUrl)
             }
         #endif
 
