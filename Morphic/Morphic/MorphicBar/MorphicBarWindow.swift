@@ -55,22 +55,12 @@ public class MorphicBarWindow: NSWindow {
         setAccessibilityLabel("MorphicBar")
         updateMorphicBar()
 
-        switch Session.morphicEdition {
-        case .basic:
-            break
-        case .plus:
-            NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarWindow.userDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarWindow.userDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
     }
     
     @objc
     func userDidChange(_ notification: NSNotification) {
-        switch Session.morphicEdition {
-        case .basic:
-            break
-        case .plus:
-            updateMorphicBar()
-        }
+        updateMorphicBar()
     }
     
     var windowIsKey: Bool = false
@@ -111,25 +101,9 @@ public class MorphicBarWindow: NSWindow {
         }
     }
         
-    static var showsHelpByDefault: Bool {
-        switch Session.morphicEdition {
-        case .basic:
-            return true
-        case .plus:
-            return false
-        }
-    }
-    
     var showsHelp: Bool {
         get {
-            let showsHelpByDefault = MorphicBarWindow.showsHelpByDefault
-            switch Session.morphicEdition {
-            case .basic:
-                return Session.shared.bool(for: .morphicBarShowsHelp) ?? showsHelpByDefault
-            case .plus:
-                // NOTE: for now, permanently surpress the help pop-up in Morphic Community
-                return showsHelpByDefault
-            }
+            return Session.shared.bool(for: .morphicBarShowsHelp) ?? true
         }
     }
     
@@ -140,8 +114,30 @@ public class MorphicBarWindow: NSWindow {
     func updateMorphicBar() {
         morphicBarViewController.showsHelp = self.showsHelp
         
-        switch Session.morphicEdition {
-        case .basic:
+        // if the user has a set of custom bars and one of them is selected, grab that community (custom bar) id now
+        var userSelectedCommunityId: String? = nil
+        //
+        let customBarsAsJson = Session.shared.dictionary(for: .morphicCustomMorphicBarsAsJson)
+        if let _ = customBarsAsJson,
+           customBarsAsJson!.count > 0 {
+            //
+            if let user = Session.shared.user {
+                userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
+            }
+        }
+        //
+        if userSelectedCommunityId != nil && customBarsAsJson![userSelectedCommunityId!] != nil {
+            // if the user has selected a community (custom bar) and it's present in the JSON, then use the elements for this bar
+            let selectedCommunityBarAsJsonString = customBarsAsJson![userSelectedCommunityId!] as! String
+            let selectedCommunityBarAsJsonData = selectedCommunityBarAsJsonString.data(using: .utf8)!
+            let selectedCommunityBar = try! JSONDecoder().decode(Service.UserCommunityDetails.self, from: selectedCommunityBarAsJsonData)
+            
+            let encodedMorphicBarItems = selectedCommunityBar.encodeAsMorphicBarItems()
+            morphicBarViewController.items = MorphicBarItem.items(from: encodedMorphicBarItems)
+            
+            morphicBarViewController.orientation = .vertical
+        } else {
+            // otherwise, show the basic bar
             if let preferredItems = Session.shared.array(for: .morphicBarItems) {
                 // convert our list of items
                 var morphicBarItems = MorphicBarItem.items(from: preferredItems)
@@ -158,23 +154,13 @@ public class MorphicBarWindow: NSWindow {
                     morphicBarItems.insert(contentsOf: extraItemsAsMorphicBarItems, at: 0)
                 }
                 morphicBarViewController.items = morphicBarItems
-            }
-        case .plus:
-            if let communityBarsAsJson = Session.shared.dictionary(for: .morphicBarCommunityBarsAsJson),
-                communityBarsAsJson.count > 0 {
-                if let user = Session.shared.user {
-                    let userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
-                    if userSelectedCommunityId != nil && communityBarsAsJson[userSelectedCommunityId!] != nil {
-                        let selectedCommunityBarAsJsonString = communityBarsAsJson[userSelectedCommunityId!] as! String
-                        let selectedCommunityBarAsJsonData = selectedCommunityBarAsJsonString.data(using: .utf8)!
-                        let selectedCommunityBar = try! JSONDecoder().decode(Service.UserCommunityDetails.self, from: selectedCommunityBarAsJsonData)
-                        
-                        let encodedMorphicBarItems = selectedCommunityBar.encodeAsMorphicBarItems()
-                        morphicBarViewController.items = MorphicBarItem.items(from: encodedMorphicBarItems)
-                    }
-                }
+                
+                morphicBarViewController.orientation = .horizontal
+            } else {
+                assertionFailure("No custom bar was selected, but no basic bar items could be found either")
             }
         }
+
         // now that we have updated the items in our bar, update the accessibility children list as well (so that left/right voiceover nav works properly)
         setAccessibilityChildren(morphicBarViewController.accessibilityChildren())
         reposition(animated: false)
@@ -315,55 +301,19 @@ public extension Preferences.Key {
     /// It is platform specific because mac controls tend to be at the top of the screen while windows
     /// controls tend to be at the bottom.  A user who works between platforms can move the MorphicBar
     /// on one platform without affecting the MorphicBar's location on the other.
-    static let morphicBarPosition: Preferences.Key = {
-        switch Session.morphicEdition {
-        case .basic:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "position.mac")
-        case .plus:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "position.mac")
-        }
-    }()
+    static let morphicBarPosition = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "position.mac")
 
     /// The preference key that stores whether the MorphicBar should always appear at startup
-    static let showMorphicBarAtStart: Preferences.Key = {
-        switch Session.morphicEdition {
-        case .basic:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "showMorphicBarAtStart")
-        case .plus:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "showMorphicBarAtStart")
-        }
-    }()
+    static let showMorphicBarAtStart = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "showMorphicBarAtStart")
 
     /// The preference key that stores whether the MorphicBar should appear by default
-    static let morphicBarVisible: Preferences.Key = {
-        switch Session.morphicEdition {
-        case .basic:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "visible")
-        case .plus:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "visible")
-        }
-    }()
+    static let morphicBarVisible = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "visible")
     
     /// The preference key that stores whether the MorphicBar buttons should show giant help tips
-    static let morphicBarShowsHelp: Preferences.Key = {
-        switch Session.morphicEdition {
-        case .basic:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "showsHelp")
-        case .plus:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "showsHelp")
-        }
-    }()
+    static let morphicBarShowsHelp = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "showsHelp")
     
     /// The preference key that stores which items appear on the MorphicBar (Morphic Basic personal bar)
-    static let morphicBarItems: Preferences.Key = {
-        switch Session.morphicEdition {
-        case .basic:
-            return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "items")
-        case .plus:
-            //return Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "items")
-            fatalError("Invalid key for this edition")
-        }
-    }()
+    static let morphicBarItems = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarbasic", preference: "items")
 }
 
 public enum MorphicBarOrientation {

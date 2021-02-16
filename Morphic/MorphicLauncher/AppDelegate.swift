@@ -29,31 +29,7 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
     private let terminateMorphicLauncherNotificationName = NSNotification.Name(rawValue: "org.raisingthefloor.terminateMorphicLauncher")
     
-    public enum MorphicEdition {
-        case basic
-        case plus
-    }
-    private var _morphicEdition: MorphicEdition!
-    public var morphicEdition: MorphicEdition {
-        get {
-            // NOTE: this will _intentionally_ crash if the edition has not yet been set
-            return _morphicEdition!
-        }
-        set {
-            _morphicEdition = newValue
-        }
-    }
-
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // capture the edition of Morphic
-        #if EDITION_BASIC
-        self.morphicEdition = .basic
-        #elseif EDITION_COMMUNITY
-        self.morphicEdition = .plus
-        #else
-        fatalError("This application was not compiled with the mandatory EDITION flag")
-        #endif
-
         if morphicIsRunning() == false {
             // if the application isn't already running, launch it now
             
@@ -81,23 +57,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let morphicApplications = NSWorkspace.shared.runningApplications.filter({
             application in
             //
-            switch self.morphicEdition {
-            case .basic:
-                switch application.bundleIdentifier {
-                case "org.raisingthefloor.Morphic",
-                     "org.raisingthefloor.Morphic-Debug":
-                    return true
-                default:
-                    return false
-                }
-            case .plus:
-                switch application.bundleIdentifier {
-                case "org.raisingthefloor.MorphicCommunity",
-                     "org.raisingthefloor.MorphicCommunity-Debug":
-                    return true
-                default:
-                    return false
-                }
+            switch application.bundleIdentifier {
+            case "org.raisingthefloor.Morphic",
+                 "org.raisingthefloor.Morphic-Debug":
+                return true
+            default:
+                return false
             }
         })
         return (morphicApplications.count > 0)

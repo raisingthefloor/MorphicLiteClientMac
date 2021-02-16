@@ -36,19 +36,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     static var shared: AppDelegate!
     
-    @IBOutlet var menu: NSMenu!
+    @IBOutlet var mainMenu: NSMenu!
     @IBOutlet weak var showMorphicBarMenuItem: NSMenuItem?
     @IBOutlet weak var hideMorphicBarMenuItem: NSMenuItem?
     @IBOutlet weak var copySettingsBetweenComputersMenuItem: NSMenuItem!
     @IBOutlet weak var loginMenuItem: NSMenuItem!
     @IBOutlet weak var logoutMenuItem: NSMenuItem?
-    @IBOutlet weak var selectCommunityMenuItem: NSMenuItem!
+    @IBOutlet weak var selectMorphicBarMenuItem: NSMenuItem!
     
     @IBOutlet weak var automaticallyStartMorphicAtLoginMenuItem: NSMenuItem!
     @IBOutlet weak var showMorphicBarAtStartMenuItem: NSMenuItem!
     @IBOutlet weak var hideQuickHelpMenuItem: NSMenuItem!
 
     @IBOutlet weak var turnOffKeyRepeatMenuItem: NSMenuItem!
+    
+    @IBOutlet weak var selectBasicMorphicBarMenuItem: NSMenuItem!
     
     private var voiceOverEnabledObservation: NSKeyValueObservation?
     private var appleKeyboardUIModeObservation: NSKeyValueObservation?
@@ -61,15 +63,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         os_log(.info, log: logger, "applicationDidFinishLaunching")
         AppDelegate.shared = self
 
-        // capture the edition of Morphic
-        #if EDITION_BASIC
-        Session.morphicEdition = .basic
-        #elseif EDITION_COMMUNITY
-        Session.morphicEdition = .plus
-        #else
-        fatalError("This application was not compiled with the mandatory EDITION flag")
-        #endif
-        
         // watch for notifications that the user attempted to relaunch Morphic
         NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.showMorphicBarDueToApplicationRelaunch(_:)), name: .showMorphicBarDueToUserRelaunch, object: nil)
 
@@ -79,46 +72,28 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         terminateMorphicLauncherIfRunning()
 
         // before we open any storage or use UserDefaults, set up our ApplicationSupport path and UserDefaults suiteName
-        switch Session.morphicEdition {
-        case .basic:
-            Storage.setApplicationSupportDirectoryName("org.raisingthefloor.MorphicBasic")
-            UserDefaults.setMorphicSuiteName("org.raisingthefloor.MorphicBasic")
-        case .plus:
-            Storage.setApplicationSupportDirectoryName("org.raisingthefloor.MorphicCommunity")
-            UserDefaults.setMorphicSuiteName("org.raisingthefloor.MorphicCommunity")
-        }
+        Storage.setApplicationSupportDirectoryName("org.raisingthefloor.MorphicBasic")
+        UserDefaults.setMorphicSuiteName("org.raisingthefloor.MorphicBasic")
 
-        // set up options for the current edition of Morphic
-        switch Session.morphicEdition {
-        case .basic:
-            // capture the common configuration (if one is present)
-            let commonConfiguration = self.getCommonConfiguration()
-            ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin = commonConfiguration.morphicBarVisibilityAfterLogin
-            ConfigurableFeatures.shared.morphicBarExtraItems = commonConfiguration.extraMorphicBarItems
-            ConfigurableFeatures.shared.autorunConfig = commonConfiguration.autorunConfig
-            ConfigurableFeatures.shared.checkForUpdatesIsEnabled = commonConfiguration.checkForUpdatesIsEnabled
-            ConfigurableFeatures.shared.resetSettingsIsEnabled = commonConfiguration.resetSettingsIsEnabled
-            Session.shared.isCaptureAndApplyEnabled = commonConfiguration.cloudSettingsTransferIsEnabled
-            Session.shared.isServerPreferencesSyncEnabled = true
-        case .plus:
-            Session.shared.isCaptureAndApplyEnabled = false
-            Session.shared.isServerPreferencesSyncEnabled = false
-        }
+        // capture the common configuration (if one is present)
+        let commonConfiguration = self.getCommonConfiguration()
+        ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin = commonConfiguration.morphicBarVisibilityAfterLogin
+        ConfigurableFeatures.shared.morphicBarExtraItems = commonConfiguration.extraMorphicBarItems
+        ConfigurableFeatures.shared.autorunConfig = commonConfiguration.autorunConfig
+        ConfigurableFeatures.shared.checkForUpdatesIsEnabled = commonConfiguration.checkForUpdatesIsEnabled
+        ConfigurableFeatures.shared.resetSettingsIsEnabled = commonConfiguration.resetSettingsIsEnabled
+        Session.shared.isCaptureAndApplyEnabled = commonConfiguration.cloudSettingsTransferIsEnabled
+        Session.shared.isServerPreferencesSyncEnabled = true
 
         self.configureCountly()
         
-        switch Session.morphicEdition {
-        case .basic:
-            #if DEBUG
-                // do not run the auto-updater checks in debug mode
-            #else
-                if ConfigurableFeatures.shared.checkForUpdatesIsEnabled == true {
-                    Autoupdater.startCheckingForUpdates(url: self.appCastUrl)
-                }
-            #endif
-        case .plus:
-            break
-        }
+        #if DEBUG
+            // do not run the auto-updater checks in debug mode
+        #else
+            if ConfigurableFeatures.shared.checkForUpdatesIsEnabled == true {
+                Autoupdater.startCheckingForUpdates(url: self.appCastUrl)
+            }
+        #endif
 
         os_log(.info, log: logger, "opening morphic session...")
         populateSolutions()
@@ -128,68 +103,40 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             Session.shared.open {
                 os_log(.info, log: logger, "session open")
                 
-                switch Session.morphicEdition {
-                case .basic:
-                    if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
-                        self.resetSettings()
-                    }
-                case .plus:
-                    break
+                if ConfigurableFeatures.shared.resetSettingsIsEnabled == true {
+                    self.resetSettings()
                 }
 
                 self.copySettingsBetweenComputersMenuItem?.isHidden = (Session.shared.isCaptureAndApplyEnabled == false)
                 
-                switch Session.morphicEdition {
-                case .basic:
-                    break
-                case .plus:
-                    if Session.shared.user == nil {
-                        self.showMorphicBarMenuItem?.isHidden = true
-                    }
-                }
-                switch Session.morphicEdition {
-                case .basic:
-                    break
-                case .plus:
-                    self.loginMenuItem?.isHidden = (Session.shared.user != nil)
-                }
+                self.loginMenuItem?.isHidden = (Session.shared.user != nil)
                 self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
 
-                self.menu?.delegate = self
+                self.mainMenu?.delegate = self
                 
-                // capture the user's preference as to whether or not to show the Morphic Bar at startup
-                // showMorphicBarAtStart: true if we should always try to show the MorphicBar at application startup
-                let showMorphicBarAtStart = Session.shared.bool(for: .showMorphicBarAtStart) ?? false
-
                 // show the Morphic Bar (if we have a bar to show and it's (a) our first startup or (b) the user had the bar showing when the app was last exited or (c) the user has "show MorphicBar at start" set to true
-                switch Session.morphicEdition {
-                case .basic:
-                    var showMorphicBar: Bool = false
+                var showMorphicBar: Bool = false
+                switch ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin {
+                case .show:
+                    showMorphicBar = true
+                case .hide:
+                    showMorphicBar = false
+                case .restore,
+                     nil: // restore is the default setting
+                    // capture the user's preference as to whether or not to show the Morphic Bar at startup
+                    // showMorphicBarAtStart: true if we should always try to show the MorphicBar at application startup
+                    let showMorphicBarAtStart = Session.shared.bool(for: .showMorphicBarAtStart) ?? false
                     if showMorphicBarAtStart == true {
-                        showMorphicBar = true;
-                    }
-                    switch ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin {
-                    case .show:
                         showMorphicBar = true
-                    case .hide:
-                        showMorphicBar = false
-                    case .restore,
-                         nil: // restore is the default setting
+                    } else {
                         // if the bar has not been shown before, show it now; if it has been shown/hidden before, use the last known visibility state
                         // NOTE: morphicBarVisible is true if the MorphicBar was visible when we last exited the application
                         showMorphicBar = Session.shared.bool(for: .morphicBarVisible) ?? true
                     }
-
-                    if showMorphicBar == true {
-                        self.showMorphicBar(nil)
-                    }
-                case .plus:
-                    // morphicBarVisible: true if the MorphicBar was visible when we last exited the application
-                    let morphicBarVisible = Session.shared.bool(for: .morphicBarVisible) ?? true
-
-                    if Session.shared.user != nil && (morphicBarVisible || showMorphicBarAtStart) {
-                        self.showMorphicBar(nil)
-                    }
+                }
+                //
+                if showMorphicBar == true {
+                    self.showMorphicBar(nil)
                 }
                 
                 // update the "hide quickhelp menu" menu item's state
@@ -205,79 +152,50 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 // NOTE: we must not do this until after we have set up UserDefaults.morphic (if we use UserDefaults.morphic to store/capture this state); we may also consider using the running state of MorphicLauncher (when we first start up) as a heuristic to know that autostart is enabled for our application (or we may consider passing in an argument via the launcher which indicates that we were auto-started)
                 self.updateMorphicAutostartAtLoginMenuItems()
 
-                switch Session.morphicEdition {
-                case .basic:
-                    // if we receive the "show MorphicBar" notification (from the dock app) then call our showMorphicBarNotify function
-                    DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.showMorphicBarDueToDockAppActivation), name: .showMorphicBarDueToDockAppActivation, object: nil)
-                    //
-                    // if the dock icon is closed by the user, that should shut down the rest of Morphic too
-                    DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.terminateMorphicClientDueToDockAppTermination), name: .terminateMorphicClientDueToDockAppTermination, object: nil)
-                    //
-                    // if keyboard navigation or voiceover is enabled, start up our dock app now
-                    if self.shouldDockAppBeRunning() == true {
-                        self.launchDockAppIfNotRunning()
-                    }
-                    //
-                    // wire up our events to start up and shut down the dock app when VoiceOver or FullKeyboardAccess are enabled/disabled
-                    // NOTE: possibly due to the "agent" status of our application, the voiceover disabled and keyboard navigation enabled/disabled events are not always provided to us in real time (i.e. we may need to re-receive focus to receive the events); in the future we may want to consider polling for these or otherwise determining what is keeping us from capturing these events (with that something possibly being a "can hibernate app in background" kind of macOS app setting)
-                    self.voiceOverEnabledObservation = NSWorkspace.shared.observe(\.isVoiceOverEnabled, options: [.new], changeHandler: self.voiceOverEnabledChangeHandler)
-                    self.appleKeyboardUIModeObservation = UserDefaults.standard.observe(\.AppleKeyboardUIMode, options: [.new], changeHandler: self.appleKeyboardUIModeChangeHandler)
-                case .plus:
-                    break
+                // if we receive the "show MorphicBar" notification (from the dock app) then call our showMorphicBarNotify function
+                DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.showMorphicBarDueToDockAppActivation), name: .showMorphicBarDueToDockAppActivation, object: nil)
+                //
+                // if the dock icon is closed by the user, that should shut down the rest of Morphic too
+                DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.terminateMorphicClientDueToDockAppTermination), name: .terminateMorphicClientDueToDockAppTermination, object: nil)
+                //
+                // if keyboard navigation or voiceover is enabled, start up our dock app now
+                if self.shouldDockAppBeRunning() == true {
+                    self.launchDockAppIfNotRunning()
                 }
+                //
+                // wire up our events to start up and shut down the dock app when VoiceOver or FullKeyboardAccess are enabled/disabled
+                // NOTE: possibly due to the "agent" status of our application, the voiceover disabled and keyboard navigation enabled/disabled events are not always provided to us in real time (i.e. we may need to re-receive focus to receive the events); in the future we may want to consider polling for these or otherwise determining what is keeping us from capturing these events (with that something possibly being a "can hibernate app in background" kind of macOS app setting)
+                self.voiceOverEnabledObservation = NSWorkspace.shared.observe(\.isVoiceOverEnabled, options: [.new], changeHandler: self.voiceOverEnabledChangeHandler)
+                self.appleKeyboardUIModeObservation = UserDefaults.standard.observe(\.AppleKeyboardUIMode, options: [.new], changeHandler: self.appleKeyboardUIModeChangeHandler)
 
                 if Session.shared.user != nil {
-                    switch Session.morphicEdition {
-                    case .basic:
-                        break
-                    case .plus:
-                        // reload the community bar
-                        self.reloadMorphicCommunityBar() {
-                            success, error in
-                            
-                            if error == .userHasNoCommunities {
-                                // if the user has no communities, log them back out
-                                self.logout(nil)
-                            }
-                        }
-                        // schedule daily refreshes of the Morphic community bars
-                        self.scheduleNextDailyMorphicCommunityBarRefresh()
+                    // reload custom MorphicBars
+                    self.reloadCustomMorphicBars() {
+                        success, error in
                     }
+                    // schedule daily refreshes of the Morphic community bars
+                    self.scheduleNextDailyMorphicCustomMorphicBarsRefresh()
                 }
                 DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.userDidSignin), name: .morphicSignin, object: nil)
                 NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
                 NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.permissionsPopupFired(_:)), name: .morphicPermissionsPopup, object: nil)
 
-                switch Session.morphicEdition {
-                case .basic:
-                    break
-                case .plus:
-                    // if no user is logged in, launch the login window at startup of Morphic Community
-                    // NOTE: in the future we may want to consider only auto-launching the login window on first-run (perhaps as part of an animated sequence introducing Morphic to the user).
-                    if (Session.shared.user == nil) {
-                        self.launchConfigurator(argument: "login")
+                // TODO: if this is the first launch of Morphic, show the welcome screen (offering to sign the user into their Morphic account!)
+
+                switch ConfigurableFeatures.shared.autorunConfig {
+                case nil:
+                    // if this is our first run and autorunAfterLogin is not configured via config.json, configure the system to autorun Morphic after login
+                    // NOTE: consider moving this logic to the first time that a bar is shown (so that we don't re-prompt users to log in when their computer turns on if they're logged out...unless they've already logged in at least once)
+                    let didSetInitialAutorunAfterLoginEnabled = Session.shared.bool(for: .morphicDidSetInitialAutorunAfterLoginEnabled) ?? false
+                    if didSetInitialAutorunAfterLoginEnabled == false {
+                        self.setInitialAutorunAfterLoginEnabled()
                     }
-                }
-                
-                switch Session.morphicEdition {
-                case .basic:
-                    switch ConfigurableFeatures.shared.autorunConfig {
-                    case nil:
-                        // if this is our first run and autorunAfterLogin is not configured via config.json, configure the system to autorun Morphic after login
-                        // NOTE: consider moving this logic to the first time that a bar is shown (so that we don't re-prompt users to log in when their computer turns on if they're logged out...unless they've already logged in at least once)
-                        let didSetInitialAutorunAfterLoginEnabled = Session.shared.bool(for: .morphicDidSetInitialAutorunAfterLoginEnabled) ?? false
-                        if didSetInitialAutorunAfterLoginEnabled == false {
-                            self.setInitialAutorunAfterLoginEnabled()
-                        }
-                    case .currentUser:
-                        _ = self.setMorphicAutostartAtLogin(true)
-                    case .allLocalUsers,
-                         .disabled:
-                        // if autorunAfterLogin is set to "disabled" or to "allLocalUsers", we should _not_ launch Morphic via MorphicLauncher (i.e. not using SMLoginItemSetEnabled); if the administrator wants to run Morphic automatically after login system-wide (all users), they should configure Morphic as a global Launch Item.
-                        _ = self.setMorphicAutostartAtLogin(false)
-                    }
-                case .plus:
-                    break
+                case .currentUser:
+                    _ = self.setMorphicAutostartAtLogin(true)
+                case .allLocalUsers,
+                     .disabled:
+                    // if autorunAfterLogin is set to "disabled" or to "allLocalUsers", we should _not_ launch Morphic via MorphicLauncher (i.e. not using SMLoginItemSetEnabled); if the administrator wants to run Morphic automatically after login system-wide (all users), they should configure Morphic as a global Launch Item.
+                    _ = self.setMorphicAutostartAtLogin(false)
                 }
                 
                 // if the user has already configured settings which we set defaults for, make sure we don't change those settings
@@ -378,17 +296,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         os_log(.info, log: logger, "Got signin notification from configurator")
         Session.shared.open {
             NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: Session.shared)
-            switch Session.morphicEdition {
-            case .basic:
-                let userInfo = notification.userInfo ?? [:]
-                if !(userInfo["isRegister"] as? Bool ?? false) {
-                    os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
-                    Session.shared.applyAllPreferences {
-                    }
-                }
-            case .plus:
-                break
-            }
+            
+//            // TODO: previously in Morphic Basic for macOS, a user's cloud preferences were applied when they logged in; this behavior has been commented out while the new prefs sets backup/apply flow is being workedo ut
+//            let userInfo = notification.userInfo ?? [:]
+//            if !(userInfo["isRegister"] as? Bool ?? false) {
+//                os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
+//                Session.shared.applyAllPreferences {
+//                }
+//            }
         }
     }
     
@@ -417,23 +332,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         let morphicLauncherApplications = NSWorkspace.shared.runningApplications.filter({
             application in
             
-            switch Session.morphicEdition {
-            case .basic:
-                switch application.bundleIdentifier {
-                case "org.raisingthefloor.MorphicLauncher",
-                     "org.raisingthefloor.MorphicLauncher-Debug":
-                    return true
-                default:
-                    return false
-                }
-            case .plus:
-                switch application.bundleIdentifier {
-                case "org.raisingthefloor.MorphicCommunityLauncher",
-                     "org.raisingthefloor.MorphicCommunityLauncher-Debug":
-                    return true
-                default:
-                    return false
-                }
+            switch application.bundleIdentifier {
+            case "org.raisingthefloor.MorphicLauncher",
+                 "org.raisingthefloor.MorphicLauncher-Debug":
+                return true
+            default:
+                return false
             }
         })
         return (morphicLauncherApplications.count > 0)
@@ -481,34 +385,23 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         guard let session = notification.object as? Session else {
             return
         }
-        switch Session.morphicEdition {
-        case .basic:
-            break
-        case .plus:
-            self.loginMenuItem?.isHidden = (session.user != nil)
-        }
+        self.loginMenuItem?.isHidden = (session.user != nil)
         self.logoutMenuItem?.isHidden = (session.user == nil)
         
-        switch Session.morphicEdition {
-        case .basic:
-            break
-        case .plus:
-            if session.user != nil {
-                // reload the community bar
-                reloadMorphicCommunityBar() {
-                    success, error in
-                    if success == true {
-                        self.showMorphicBar(nil)
-                    } else {
-                        /* NOTE: logging in but then not being able to get a community bar typically comes down to one of three things:
-                         * 1. User is not a Morphic Community user
-                         * 2. User does not have any community bars
-                         * 3. Intermittent server failure
-                         */
-                        self.logout(nil)
-                    }
-                }
+        if session.user != nil {
+            // reload the community bar
+            reloadCustomMorphicBars() {
+                success, error in
+                // NOTE: we may want to consider telling the user of the error if we can't reload the bars
+
+                // update the morphic bar (and the selected MorphicBar entry)
+                self.morphicBarWindow?.updateMorphicBar()
+                self.updateSelectMorphicBarMenuItem()
             }
+        } else {
+            // update the MorphicBar
+            self.morphicBarWindow?.updateMorphicBar()
+            self.updateSelectMorphicBarMenuItem()
         }
     }
     
@@ -720,12 +613,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         return result
     }
     
-    // MARK: - Updates
-    
-    private func startCheckingForUpdates() {
-	// TODO: check for updates
-    }
-    
     //
     
     internal func resetSettings(skipResetsWithUIAutomation: Bool = false) {
@@ -822,8 +709,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     //
     
     // NOTE: we maintain a reference to the timer so that we can cancel (invalidate) it, reschedule it, etc.
-    var dailyCommunityBarRefreshTimer: Timer? = nil
-    func scheduleNextDailyMorphicCommunityBarRefresh() {
+    var dailyCustomMorphicBarsRefreshTimer: Timer? = nil
+    func scheduleNextDailyMorphicCustomMorphicBarsRefresh() {
         // NOTE: we schedule a community bar reload for 3am every morning local time (+ random 0..<3600 second offset to minimize server peak loads) so that the user gets the latest community bar updates; if their computer is sleeping at 3am then Swift should execute the timer when their computer wakes up
         
         let secondsInOneDay = 24 * 60 * 60
@@ -849,28 +736,27 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
         
         // NOTE: in our initial testing, macOS does _not_ reliably fire timers after the user's computer wakes up from sleep mode (if the timer was supposed to go off while the computer was sleeping).  So as a workaround we ask the timer to fire every 15 seconds AFTER that time as well; when the timer is fired we disable and reconfigure it to fire again the following day.
-        dailyCommunityBarRefreshTimer = Timer(fire: nextRefreshDate, interval: TimeInterval(15), repeats: true) { (timer) in
+        dailyCustomMorphicBarsRefreshTimer = Timer(fire: nextRefreshDate, interval: TimeInterval(15), repeats: true) { (timer) in
             // deactivate our timer
-            self.dailyCommunityBarRefreshTimer?.invalidate()
+            self.dailyCustomMorphicBarsRefreshTimer?.invalidate()
             
             // reload the Morphic bar
-            self.reloadMorphicCommunityBar { (success, error) in
+            self.reloadCustomMorphicBars { (success, error) in
                 // ignore results
             }
 
             // reschedule our timer for the next day as well
-            self.scheduleNextDailyMorphicCommunityBarRefresh()
+            self.scheduleNextDailyMorphicCustomMorphicBarsRefresh()
         }
-        RunLoop.main.add(dailyCommunityBarRefreshTimer!, forMode: .common)
+        RunLoop.main.add(dailyCustomMorphicBarsRefreshTimer!, forMode: .common)
     }
     
-    enum ReloadMorphicCommunityBarError : Error {
+    enum ReloadCustomMorphicBarsError : Error {
         case noUserSpecified
-        case userHasNoCommunities
         case networkOrAuthorizationOrSaveToDiskFailure
     }
     //
-    func reloadMorphicCommunityBar(completion: @escaping (_ success: Bool, _ error: ReloadMorphicCommunityBarError?) -> Void) {
+    func reloadCustomMorphicBars(completion: @escaping (_ success: Bool, _ error: ReloadCustomMorphicBarsError?) -> Void) {
         guard let user = Session.shared.user else {
             completion(false, .noUserSpecified)
             return
@@ -886,32 +772,24 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             }
 
             // capture our list of now-cached morphic user communities
-            guard let communityBarsAsJson = Session.shared.dictionary(for: .morphicBarCommunityBarsAsJson) else {
+            guard let customMorphicBarsAsJson = Session.shared.dictionary(for: .morphicCustomMorphicBarsAsJson) else {
                 completion(false, .networkOrAuthorizationOrSaveToDiskFailure)
                 return
             }
             
-            // if the user has no communities, return that error as a failure
-            if communityBarsAsJson.count == 0 {
-                // NOTE: we do not clear out any previous "selected community" the user had specified; this preserves their "last chosen community"; if desired we could erase the default here
-                completion(false, .userHasNoCommunities)
-                return
-            }
- 
             // determine if the user's previously-selected community still exists; if not, choose another community
             var userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
 
-            if userSelectedCommunityId == nil || communityBarsAsJson[userSelectedCommunityId!] == nil {
+            if userSelectedCommunityId == nil || customMorphicBarsAsJson[userSelectedCommunityId!] == nil {
                 // the user has left the previous community; choose the first community bar instead (and save our change)
-                userSelectedCommunityId = communityBarsAsJson.keys.first!
+
+                // NOTE: in this implementation, we automatically switch the user to their first custom bar (and off of the basic bar); in the future, we may want to consider syncing their "latest bar selection" to the cloud or maybe prompt the user for which bar they'd like to use
+                userSelectedCommunityId = customMorphicBarsAsJson.keys.first
                 UserDefaults.morphic.set(selectedUserCommunityIdentifier: userSelectedCommunityId, for: user.identifier)
             }
 
-            // update our list of communities (after any community re-selection has been done)
-            self.updateSelectCommunityMenuItem(selectCommunityMenuItem: self.selectCommunityMenuItem)
-            if let morphicBarWindow = self.morphicBarWindow {
-                self.updateSelectCommunityMenuItem(selectCommunityMenuItem: morphicBarWindow.morphicBarViewController.selectCommunityMenuItem)
-            }
+            // update our list of custom MorphicBars (after any 'current bar' re-selection has been done)
+            self.updateSelectMorphicBarMenuItem()
 
             // now it's time to update the morphic bar
             self.morphicBarWindow?.updateMorphicBar()
@@ -920,12 +798,25 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
-    func updateSelectCommunityMenuItem(selectCommunityMenuItem: NSMenuItem) {
+    @IBAction func selectBasicMorphicBar(_ sender: NSMenuItem) {
+        if let user = Session.shared.user {
+            UserDefaults.morphic.set(selectedUserCommunityIdentifier: nil, for: user.identifier)
+        }
+
+        // update our list of custom MorphicBars (after any 'current bar' re-selection has been done)
+        self.updateSelectMorphicBarMenuItem()
+
+        // now it's time to update the morphic bar
+        self.morphicBarWindow?.updateMorphicBar()
+    }
+    
+    func updateSelectMorphicBarMenuItem() {
         guard let user = Session.shared.user else {
-            selectCommunityMenuItem.isHidden = true
+            self.selectBasicMorphicBarMenuItem.state = .on
+            self.selectMorphicBarMenuItem.isHidden = true
             return
         }
-        selectCommunityMenuItem.isHidden = false
+        self.selectMorphicBarMenuItem.isHidden = false
         
         // capture our current-selected community id
         let userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
@@ -936,21 +827,52 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
         
         // now populate the menu with the community names...and highlight the currently-selected community (9)with a checkmark)
-        selectCommunityMenuItem.submenu?.removeAllItems()
+        //
+        // remove all the menu items before the 'Basic MorphicBar' menu item
+        for _ in 0..<indexOfBasicMorphicBarSubmenuItem() {
+            self.selectMorphicBarMenuItem.submenu?.removeItem(at: 0)
+        }
+        // set the checked state on the basic morphic bar menu item
+        if userSelectedCommunityId != nil {
+            self.selectBasicMorphicBarMenuItem.state = .off
+        } else {
+            self.selectBasicMorphicBarMenuItem.state = .on
+        }
+        // add in all the custom bar names
         for userCommunityIdAndName in userCommunityIdsAndNames {
-            let communityMenuItem = NSMenuItem(title: userCommunityIdAndName.name, action: #selector(AppDelegate.communitySelected), keyEquivalent: "")
+            let communityMenuItem = NSMenuItem(title: userCommunityIdAndName.name, action: #selector(AppDelegate.customMorphicBarSelected), keyEquivalent: "")
             if userCommunityIdAndName.id == userSelectedCommunityId {
                 communityMenuItem.state = .on
             }
             // NOTE: we tag each menu item with its id's hashValue (which is only stable during the same run of the program); we do this to help disambiguate multiple communities with the same name
             communityMenuItem.tag = userCommunityIdAndName.id.hashValue
-            selectCommunityMenuItem.submenu?.addItem(communityMenuItem)
+            let indexOfBasicMorphicBarSubmenuItem = self.indexOfBasicMorphicBarSubmenuItem()
+            self.selectMorphicBarMenuItem.submenu?.insertItem(communityMenuItem, at: indexOfBasicMorphicBarSubmenuItem)
         }
+    }
+    
+    func indexOfBasicMorphicBarSubmenuItem() -> Int {
+        guard let submenu = self.selectMorphicBarMenuItem.submenu else {
+            fatalError("Mandatory 'Select MorphicBar' submenu is missing")
+        }
+        
+        // calculate the position (index) of the "Basic MorphicBar" menu item
+        var indexOfBasicMorphicBarMenuItem: Int?
+        for index in 0..<submenu.items.count {
+            if submenu.item(at: index)!.title == "Basic MorphicBar" {
+                indexOfBasicMorphicBarMenuItem = index
+            }
+        }
+        guard let _ = indexOfBasicMorphicBarMenuItem else {
+            fatalError("Mandatory 'Basic MorphicBar' menu bar item is missing")
+        }
+        
+        return indexOfBasicMorphicBarMenuItem!
     }
     
     func createSortedArrayOfCommunityIdsAndNames() -> [(id: String, name: String)]? {
         // capture our list of cached morphic user communities
-        guard let communityBarsAsJson = Session.shared.dictionary(for: .morphicBarCommunityBarsAsJson) as? [String: String] else {
+        guard let communityBarsAsJson = Session.shared.dictionary(for: .morphicCustomMorphicBarsAsJson) as? [String: String] else {
             return nil
         }
         
@@ -981,7 +903,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     @objc
-    func communitySelected(_ sender: NSMenuItem) {
+    func customMorphicBarSelected(_ sender: NSMenuItem) {
         guard let user = Session.shared.user else {
             return
         }
@@ -1027,16 +949,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         UserDefaults.morphic.set(selectedUserCommunityIdentifier: selectedCommunityIdAndName!.id, for: user.identifier)
 
         // update our list of communities (so that we move the checkbox to the appropriate entry)
-        self.updateSelectCommunityMenuItem(selectCommunityMenuItem: self.selectCommunityMenuItem)
-        if let morphicBarWindow = morphicBarWindow {
-            self.updateSelectCommunityMenuItem(selectCommunityMenuItem: morphicBarWindow.morphicBarViewController.selectCommunityMenuItem)
-        }
+        self.updateSelectMorphicBarMenuItem()
         
         // now that the user has selected a new community bar, we switch to it using our cached data
         self.morphicBarWindow?.updateMorphicBar()
 
         // optionally, we can reload the data (asynchronously)
-        reloadMorphicCommunityBar { (success, error) in
+        reloadCustomMorphicBars { (success, error) in
             // ignore callback
         }
         
@@ -1052,30 +971,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func logout(_ sender: Any?) {
         Session.shared.signout {
-            switch Session.morphicEdition {
-            case .basic:
-                break
-            case .plus:
-                // flush out any preferences changes that may have taken effect because of logout
-                Session.shared.savePreferences(waitFiveSecondsBeforeSave: false) {
-                    success in
-                    if success == true {
-                        // now it's time to update and hide the morphic bar
-                        self.morphicBarWindow?.updateMorphicBar()
-                        self.hideMorphicBar(nil)
-                    } else {
-                        // NOTE: we may want to consider letting the user know that we could not save
-                    }
-                }
+            // flush out any preferences changes that may have taken effect because of logout
+            Session.shared.savePreferences(waitFiveSecondsBeforeSave: false) {
+                success in
+                // NOTE: if success == false, we may want to consider letting the user know that we could not save
+
+                // now it's time to update the morphic bar (and the selected MorphicBar entry)
+                self.morphicBarWindow?.updateMorphicBar()
+                self.updateSelectMorphicBarMenuItem()
             }
             
-            switch Session.morphicEdition {
-            case .basic:
-                break
-            case .plus:
-                self.loginMenuItem?.isHidden = false
-                self.selectCommunityMenuItem.isHidden = true
-            }
+            self.loginMenuItem?.isHidden = false
             self.logoutMenuItem?.isHidden = true
         }
     }
@@ -1091,28 +997,28 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         copySettingsWindowController?.window?.delegate = self
     }
     
-    @IBAction
-    func reapplyAllSettings(_ sender: Any) {
-        Session.shared.open {
-            os_log(.info, "Re-applying all settings")
-            Session.shared.applyAllPreferences {
-                
-            }
-        }
-    }
+//    @IBAction
+//    func reapplyAllSettings(_ sender: Any) {
+//        Session.shared.open {
+//            os_log(.info, "Re-applying all settings")
+//            Session.shared.applyAllPreferences {
+//
+//            }
+//        }
+//    }
     
-    @IBAction
-    func captureAllSettings(_ sender: Any) {
-        let prefs = Preferences(identifier: "")
-        let capture = CaptureSession(settingsManager: Session.shared.settings, preferences: prefs)
-        capture.captureDefaultValues = true
-        capture.addAllSolutions()
-        capture.run {
-            for pair in capture.preferences.keyValueTuples(){
-                print(pair.0, pair.1 ?? "<nil>")
-            }
-        }
-    }
+//    @IBAction
+//    func captureAllSettings(_ sender: Any) {
+//        let prefs = Preferences(identifier: "")
+//        let capture = CaptureSession(settingsManager: Session.shared.settings, preferences: prefs)
+//        capture.captureDefaultValues = true
+//        capture.addAllSolutions()
+//        capture.run {
+//            for pair in capture.preferences.keyValueTuples(){
+//                print(pair.0, pair.1 ?? "<nil>")
+//            }
+//        }
+//    }
     
     @IBAction func menuBarExtraAboutMorphicMenuItemClicked(_ sender: NSMenuItem) {
         defer {
@@ -1170,13 +1076,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         // immediately hide our MorphicBar window
         morphicBarWindow?.setIsVisible(false)
         
-        switch Session.morphicEdition {
-        case .basic:
-            // terminate our dock app (if it's running)
-            terminateDockAppIfRunning()
-        case .plus:
-            break
-        }
+        // terminate our dock app (if it's running)
+        terminateDockAppIfRunning()
 
         if Session.shared.preferencesSaveIsQueued == true {
             var saveIsComplete = false
@@ -1199,13 +1100,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        switch Session.morphicEdition {
-        case .basic:
-            break
-        case .plus:
-            return .terminateNow
-        }
-
         var computerIsLoggingOutOrShuttingDown = false
         
         if let currentAppleEvent = NSAppleEventManager.shared().currentAppleEvent {
@@ -1257,7 +1151,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func updateMorphicAutostartAtLoginMenuItems() {
         let autostartAtLogin = self.morphicAutostartAtLogin()
         automaticallyStartMorphicAtLoginMenuItem?.state = (autostartAtLogin ? .on : .off)
-        morphicBarWindow?.morphicBarViewController.automaticallyStartMorphicAtLoginMenuItem.state = (autostartAtLogin ? .on : .off)
     }
     
     func morphicAutostartAtLogin() -> Bool {
@@ -1269,23 +1162,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             return false
         }
         for userLaunchedApp in userLaunchedApps {
-            switch Session.morphicEdition {
-            case .basic:
-                switch userLaunchedApp["Program"] as? String {
-                case "org.raisingthefloor.MorphicLauncher",
-                     "org.raisingthefloor.MorphicLauncher-Debug":
-                    return true
-                default:
-                    break
-                }
-            case .plus:
-                switch userLaunchedApp["Program"] as? String {
-                case "org.raisingthefloor.MorphicCommunityLauncher",
-                     "org.raisingthefloor.MorphicCommunityLauncher-Debug":
-                    return true
-                default:
-                    break
-                }
+            switch userLaunchedApp["Program"] as? String {
+            case "org.raisingthefloor.MorphicLauncher",
+                 "org.raisingthefloor.MorphicLauncher-Debug":
+                return true
+            default:
+                break
             }
         }
 
@@ -1298,28 +1180,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     // see: https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLoginItems.html#//apple_ref/doc/uid/10000172i-SW5-SW1
     func setMorphicAutostartAtLogin(_ autostartAtLogin: Bool) -> Bool {
         let success: Bool
-        
-        switch Session.morphicEdition {
-        case .basic:
-            #if DEBUG
-                success = SMLoginItemSetEnabled("org.raisingthefloor.MorphicLauncher-Debug" as CFString, autostartAtLogin)
-            #else
-                success = SMLoginItemSetEnabled("org.raisingthefloor.MorphicLauncher" as CFString, autostartAtLogin)
-            #endif
-        case .plus:
-            #if DEBUG
-                success = SMLoginItemSetEnabled("org.raisingthefloor.MorphicCommunityLauncher-Debug" as CFString, autostartAtLogin)
-            #else
-                success = SMLoginItemSetEnabled("org.raisingthefloor.MorphicCommunityLauncher" as CFString, autostartAtLogin)
-            #endif
-        }
+        #if DEBUG
+            success = SMLoginItemSetEnabled("org.raisingthefloor.MorphicLauncher-Debug" as CFString, autostartAtLogin)
+        #else
+            success = SMLoginItemSetEnabled("org.raisingthefloor.MorphicLauncher" as CFString, autostartAtLogin)
+        #endif
         
         // NOTE: in the future, we may want to save the autostart state in UserDefaults (although perhaps not in "UserDefaults.morphic"); we'd need to store in the UserDefaults area which was specific to _this_ user and _this_ application (including differentiating between Morphic and Morphic Community if there are two apps for that
         
         // update the appropriate menu items to match
         if success == true {
             automaticallyStartMorphicAtLoginMenuItem?.state = (autostartAtLogin ? .on : .off)
-            morphicBarWindow?.morphicBarViewController.automaticallyStartMorphicAtLoginMenuItem.state = (autostartAtLogin ? .on : .off)
         }
         
         return success
@@ -1397,7 +1268,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
 
         turnOffKeyRepeatMenuItem?.state = keyRepeatIsEnabled ? .off : .on
-        morphicBarWindow?.morphicBarViewController.turnOffKeyRepeatMenuItem.state = keyRepeatIsEnabled ? .off : .on
     }
 
     //
@@ -1522,17 +1392,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         // get the currently-pressed modifier keys
         let currentModifierKeys = NSEvent.modifierFlags
 
-        switch Session.morphicEdition {
-        case .basic:
-            if currentModifierKeys.rawValue & NSEvent.ModifierFlags.option.rawValue != 0 {
-                self.hideQuickHelpMenuItem.isHidden = false
-                self.morphicBarWindow?.morphicBarViewController.hideQuickHelpMenuItem.isHidden = false
-            } else {
-                self.hideQuickHelpMenuItem.isHidden = true
-                self.morphicBarWindow?.morphicBarViewController.hideQuickHelpMenuItem.isHidden = true
-            }
-        case .plus:
-            break
+        if currentModifierKeys.rawValue & NSEvent.ModifierFlags.option.rawValue != 0 {
+            self.hideQuickHelpMenuItem.isHidden = false
+        } else {
+            self.hideQuickHelpMenuItem.isHidden = true
         }
     }
     
@@ -1551,11 +1414,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func updateHideQuickHelpMenuItems() {
         let hideQuickHelpAtLogin = self.hideQuickHelpState()
         hideQuickHelpMenuItem?.state = (hideQuickHelpAtLogin ? .on : .off)
-        morphicBarWindow?.morphicBarViewController.hideQuickHelpMenuItem.state = (hideQuickHelpAtLogin ? .on : .off)
     }
 
     func hideQuickHelpState() -> Bool {
-        let morphicBarShowsHelp = Session.shared.bool(for: .morphicBarShowsHelp) ?? MorphicBarWindow.showsHelpByDefault
+        let morphicBarShowsHelp = Session.shared.bool(for: .morphicBarShowsHelp) ?? true
         return !morphicBarShowsHelp
     }
     
@@ -1597,7 +1459,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func updateShowMorphicBarAtStartMenuItems() {
         let showMorphicBarAtStart = Session.shared.bool(for: .showMorphicBarAtStart) ?? false
         showMorphicBarAtStartMenuItem?.state = (showMorphicBarAtStart ? .on : .off)
-        morphicBarWindow?.morphicBarViewController.showMorphicBarAtStartMenuItem.state = (showMorphicBarAtStart ? .on : .off)
     }
     
     //
@@ -1672,7 +1533,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         os_log(.info, log: logger, "Creating status item")
         statusItem = NSStatusBar.system.statusItem(withLength: -1)
         // NOTE: here we use a default menu for the statusicon (which works with VoiceOver and with ^F8 a11y keyboard navigation); separately we will capture mouse enter/exit events to make the statusitem something more custom
-        statusItem.menu = menu
+        statusItem.menu = self.mainMenu
         
         // update the menu to match the proper edition of Morphic
         updateMenu()
@@ -1707,7 +1568,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             statusItem.menu = nil
         case false:
             // re-enable menu by default (for macos keyboard accessibility and voiceover compatibility
-            statusItem.menu = menu
+            statusItem.menu = mainMenu
         }
     }
     
@@ -1720,26 +1581,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         if currentEvent.type == .leftMouseDown {
             // when the left mouse button is pressed, toggle the MorphicBar's visibility (i.e. show/hide the MorphicBar)
 
-            switch Session.morphicEdition {
-            case .basic:
-                let morphicBarWindowWasVisible = morphicBarWindow != nil
-                defer {
-                    let segmentation: [String: String] = ["eventSource": "trayIconClick"]
-                    if morphicBarWindowWasVisible == true {
-                        Countly.sharedInstance().recordEvent("morphicBarHide", segmentation: segmentation)
-                    } else {
-                        Countly.sharedInstance().recordEvent("morphicBarShow", segmentation: segmentation)
-                    }
-                }
-                toggleMorphicBar(sender)
-            case .plus:
-                if (Session.shared.user == nil) {
-                    // NOTE: if we're running MorphicCommunity and there is no actively logged-in user, then show the login instead of toggling the MorphicBar
-                    self.launchConfigurator(argument: "login")
+            let morphicBarWindowWasVisible = morphicBarWindow != nil
+            defer {
+                let segmentation: [String: String] = ["eventSource": "trayIconClick"]
+                if morphicBarWindowWasVisible == true {
+                    Countly.sharedInstance().recordEvent("morphicBarHide", segmentation: segmentation)
                 } else {
-                    toggleMorphicBar(sender)
+                    Countly.sharedInstance().recordEvent("morphicBarShow", segmentation: segmentation)
                 }
             }
+            toggleMorphicBar(sender)
         } else if currentEvent.type == .rightMouseDown {
             // when the right mouse button is pressed, show the main menu
 
@@ -1757,7 +1608,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 let segmentation = AppDelegate.shared.createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
                 Countly.sharedInstance().recordEvent("showMenu", segmentation: segmentation)
             }
-            statusItem.menu = self.menu
+            statusItem.menu = self.mainMenu
             statusItemButton.performClick(sender)
             statusItem.menu = nil
 
@@ -1772,25 +1623,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     private func updateMenu() {
-        switch Session.morphicEdition {
-        case .basic:
-            if let _ = ConfigurableFeatures.shared.autorunConfig {
-                self.automaticallyStartMorphicAtLoginMenuItem.isHidden = true
-            }
-            if let _ = ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin {
-                self.showMorphicBarAtStartMenuItem.isHidden = true
-            }
-        case .plus:
-            break
+        if let _ = ConfigurableFeatures.shared.autorunConfig {
+            self.automaticallyStartMorphicAtLoginMenuItem.isHidden = true
         }
-
-        switch Session.morphicEdition {
-        case .basic:
-            // NOTE: the default menu items are already configured for Morphic Basic
-        break
-        case .plus:
-            // configure menu items to match the Morphic Community scheme
-            copySettingsBetweenComputersMenuItem?.isHidden = true
+        if let _ = ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin {
+            self.showMorphicBarAtStartMenuItem.isHidden = true
         }
     }
      
@@ -1829,12 +1666,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             self.updateMorphicAutostartAtLoginMenuItems()
             self.updateShowMorphicBarAtStartMenuItems()
             self.updateHideQuickHelpMenuItems()
-            switch Session.morphicEdition {
-            case .basic:
-                morphicBarWindow?.orientation = .horizontal
-            case .plus:
-                morphicBarWindow?.orientation = .vertical
-            }
             morphicBarWindow?.delegate = self
         }
         NSApplication.shared.activate(ignoringOtherApps: true)
@@ -1876,16 +1707,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
         self.morphicBarWindow = nil
         
-        switch Session.morphicEdition {
-        case .basic:
-            showMorphicBarMenuItem?.isHidden = false
-        case .plus:
-            if Session.shared.user != nil {
-                showMorphicBarMenuItem?.isHidden = false
-            } else {
-                showMorphicBarMenuItem?.isHidden = true
-            }
-        }
+        showMorphicBarMenuItem?.isHidden = false
         hideMorphicBarMenuItem?.isHidden = true
         QuickHelpWindow.hide()
         if Session.shared.bool(for: .morphicBarVisible) != false {
@@ -2131,13 +1953,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 //        NSWorkspace.shared.open(url)
         os_log(.info, log: logger, "launching configurator")
         
-        let morphicConfiguratorAppName: String
-        switch Session.morphicEdition {
-        case .basic:
-            morphicConfiguratorAppName = "MorphicConfigurator.app"
-        case .plus:
-            morphicConfiguratorAppName = "MorphicCommunityConfigurator.app"
-        }
+        let morphicConfiguratorAppName = "MorphicConfigurator.app"
         guard let url = Bundle.main.resourceURL?.deletingLastPathComponent().appendingPathComponent("Library").appendingPathComponent(morphicConfiguratorAppName) else {
             os_log(.error, log: logger, "Failed to construct bundled configurator app URL")
             return

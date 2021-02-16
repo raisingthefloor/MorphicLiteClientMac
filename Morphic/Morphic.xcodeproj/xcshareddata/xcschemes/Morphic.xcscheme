@@ -28,26 +28,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "31751B182444DE8B00EEDF14"
-               BuildableName = "MorphicTests.xctest"
-               BlueprintName = "MorphicTests"
-               ReferencedContainer = "container:Morphic.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "31751B232444DE8B00EEDF14"
-               BuildableName = "MorphicUITests.xctest"
-               BlueprintName = "MorphicUITests"
-               ReferencedContainer = "container:Morphic.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

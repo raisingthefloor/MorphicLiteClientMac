@@ -14,8 +14,9 @@
                 <outlet property="hideQuickHelpMenuItem" destination="v0X-Ch-Q5h" id="Xc2-0F-awk"/>
                 <outlet property="loginMenuItem" destination="S6R-h6-1Yz" id="zO2-OE-N39"/>
                 <outlet property="logoutMenuItem" destination="fdS-ef-rqr" id="2v2-vJ-y1T"/>
-                <outlet property="menu" destination="iDk-eb-5cB" id="OjZ-YL-Pes"/>
-                <outlet property="selectCommunityMenuItem" destination="qcc-Q2-sYr" id="Gm9-io-FQH"/>
+                <outlet property="mainMenu" destination="iDk-eb-5cB" id="OjZ-YL-Pes"/>
+                <outlet property="selectBasicMorphicBarMenuItem" destination="AVi-t6-lRs" id="yVx-cX-1oR"/>
+                <outlet property="selectMorphicBarMenuItem" destination="qcc-Q2-sYr" id="Gm9-io-FQH"/>
                 <outlet property="showMorphicBarAtStartMenuItem" destination="cGf-Qp-TV9" id="oUQ-4Y-1Ym"/>
                 <outlet property="showMorphicBarMenuItem" destination="4BS-cA-IvL" id="elS-Jc-raC"/>
                 <outlet property="turnOffKeyRepeatMenuItem" destination="TXI-dU-a95" id="nFk-Lo-dEI"/>
@@ -63,7 +64,16 @@
                 <menuItem isSeparatorItem="YES" id="eWu-mW-zzY"/>
                 <menuItem title="Select MorphicBar" hidden="YES" id="qcc-Q2-sYr">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="Select MorphicBar" id="l0C-IM-POV"/>
+                    <menu key="submenu" title="Select MorphicBar" id="l0C-IM-POV">
+                        <items>
+                            <menuItem title="Basic MorphicBar" id="AVi-t6-lRs">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="selectBasicMorphicBar:" target="ZNk-5q-oDb" id="zNc-o8-0Gs"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="vgQ-je-MGT"/>
                 <menuItem title="Explore everything Morphic can do..." id="DeU-ED-RwS">
