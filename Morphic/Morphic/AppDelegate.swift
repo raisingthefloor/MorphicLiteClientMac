@@ -785,13 +785,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             // determine if the user's previously-selected community still exists; if not, choose another community
             var userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
 
-            if userSelectedCommunityId == nil || customMorphicBarsAsJson[userSelectedCommunityId!] == nil {
-                // the user has left the previous community; choose the first community bar instead (and save our change)
-
-                // NOTE: in this implementation, we keep the user on the basic bar until they have intentionally switched to another bar; in the future we may want to: automatically switch them to the first custom bar in their list; sync their 'bar selection' to the cloud; and/or prompt the user as to which bar they'd like to use
-                // NOTE: as an example, if we wanted to automatically select their first bar, we would do the following:
+            if userSelectedCommunityId != nil && customMorphicBarsAsJson[userSelectedCommunityId!] == nil {
+                // the user has left the previous community; choose the basic bar instead (and save our change)
+                userSelectedCommunityId = nil
+                // NOTE: if we wanted to choose the first community bar instead, we could do so as follows:
 //                userSelectedCommunityId = customMorphicBarsAsJson.keys.first
-//                UserDefaults.morphic.set(selectedUserCommunityIdentifier: userSelectedCommunityId, for: user.identifier)
+                
+                UserDefaults.morphic.set(selectedUserCommunityIdentifier: userSelectedCommunityId, for: user.identifier)
             }
 
             // update our list of custom MorphicBars (after any 'current bar' re-selection has been done)
