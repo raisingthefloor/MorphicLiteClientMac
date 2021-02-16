@@ -60,12 +60,7 @@ public class MorphicBarWindow: NSWindow {
     
     @objc
     func userDidChange(_ notification: NSNotification) {
-        switch Session.morphicEdition {
-        case .basic:
-            break
-        case .plus:
-            updateMorphicBar()
-        }
+        updateMorphicBar()
     }
     
     var windowIsKey: Bool = false
@@ -119,8 +114,30 @@ public class MorphicBarWindow: NSWindow {
     func updateMorphicBar() {
         morphicBarViewController.showsHelp = self.showsHelp
         
-        switch Session.morphicEdition {
-        case .basic:
+        // if the user has a set of custom bars and one of them is selected, grab that community (custom bar) id now
+        var userSelectedCommunityId: String? = nil
+        //
+        let customBarsAsJson = Session.shared.dictionary(for: .morphicCustomMorphicBarsAsJson)
+        if let _ = customBarsAsJson,
+           customBarsAsJson!.count > 0 {
+            //
+            if let user = Session.shared.user {
+                userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
+            }
+        }
+        //
+        if userSelectedCommunityId != nil && customBarsAsJson![userSelectedCommunityId!] != nil {
+            // if the user has selected a community (custom bar) and it's present in the JSON, then use the elements for this bar
+            let selectedCommunityBarAsJsonString = customBarsAsJson![userSelectedCommunityId!] as! String
+            let selectedCommunityBarAsJsonData = selectedCommunityBarAsJsonString.data(using: .utf8)!
+            let selectedCommunityBar = try! JSONDecoder().decode(Service.UserCommunityDetails.self, from: selectedCommunityBarAsJsonData)
+            
+            let encodedMorphicBarItems = selectedCommunityBar.encodeAsMorphicBarItems()
+            morphicBarViewController.items = MorphicBarItem.items(from: encodedMorphicBarItems)
+            
+            morphicBarViewController.orientation = .vertical
+        } else {
+            // otherwise, show the basic bar
             if let preferredItems = Session.shared.array(for: .morphicBarItems) {
                 // convert our list of items
                 var morphicBarItems = MorphicBarItem.items(from: preferredItems)
@@ -137,23 +154,13 @@ public class MorphicBarWindow: NSWindow {
                     morphicBarItems.insert(contentsOf: extraItemsAsMorphicBarItems, at: 0)
                 }
                 morphicBarViewController.items = morphicBarItems
-            }
-        case .plus:
-            if let communityBarsAsJson = Session.shared.dictionary(for: .morphicBarCommunityBarsAsJson),
-                communityBarsAsJson.count > 0 {
-                if let user = Session.shared.user {
-                    let userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
-                    if userSelectedCommunityId != nil && communityBarsAsJson[userSelectedCommunityId!] != nil {
-                        let selectedCommunityBarAsJsonString = communityBarsAsJson[userSelectedCommunityId!] as! String
-                        let selectedCommunityBarAsJsonData = selectedCommunityBarAsJsonString.data(using: .utf8)!
-                        let selectedCommunityBar = try! JSONDecoder().decode(Service.UserCommunityDetails.self, from: selectedCommunityBarAsJsonData)
-                        
-                        let encodedMorphicBarItems = selectedCommunityBar.encodeAsMorphicBarItems()
-                        morphicBarViewController.items = MorphicBarItem.items(from: encodedMorphicBarItems)
-                    }
-                }
+                
+                morphicBarViewController.orientation = .horizontal
+            } else {
+                assertionFailure("No custom bar was selected, but no basic bar items could be found either")
             }
         }
+
         // now that we have updated the items in our bar, update the accessibility children list as well (so that left/right voiceover nav works properly)
         setAccessibilityChildren(morphicBarViewController.accessibilityChildren())
         reposition(animated: false)
