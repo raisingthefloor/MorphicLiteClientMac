@@ -96,7 +96,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             // do not run the auto-updater checks in debug mode
         #else
             if ConfigurableFeatures.shared.checkForUpdatesIsEnabled == true {
-                Autoupdater.startCheckingForUpdates(url: self.createAppCastUrl())
+                Autoupdater.startCheckingForUpdates(url: self.appCastUrl())
             }
         #endif
 
