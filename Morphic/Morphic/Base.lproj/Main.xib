@@ -79,7 +79,7 @@
                 <menuItem title="Explore everything Morphic can do..." id="DeU-ED-RwS">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="menuBarExtraLearnAboutMorphicMenuItemClicked:" target="-1" id="75R-yi-by7"/>
+                        <action selector="menuBarExtraExploreMorphicMenuItemClicked:" target="-1" id="75R-yi-by7"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Quick Morphic demo movies..." id="d81-k0-YBn">
