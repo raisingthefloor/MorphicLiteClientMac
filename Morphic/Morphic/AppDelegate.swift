@@ -1724,27 +1724,27 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     //
     
     @IBAction
-    func menuBarExtraLearnAboutMorphicMenuItemClicked(_ sender: NSMenuItem?) {
+    func menuBarExtraExploreMorphicMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
             let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            Countly.sharedInstance().recordEvent("learnAboutMorphic", segmentation: segmentation)
+            Countly.sharedInstance().recordEvent("exploreMorphic", segmentation: segmentation)
         }
 
-        learnAboutMorphicClicked()
+        exploreMorphicClicked()
     }
 
     @IBAction
-    func morphicBarIconLearnAboutMorphicMenuItemClicked(_ sender: NSMenuItem?) {
+    func morphicBarIconExploreMorphicMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
             let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-            Countly.sharedInstance().recordEvent("learnAboutMorphic", segmentation: segmentation)
+            Countly.sharedInstance().recordEvent("exploreMorphic", segmentation: segmentation)
         }
         
-        learnAboutMorphicClicked()
+        exploreMorphicClicked()
     }
     
-    func learnAboutMorphicClicked() {
-        let url = URL(string: "https://morphic.org")!
+    func exploreMorphicClicked() {
+        let url = URL(string: "https://morphic.org/exploremorphic")!
         NSWorkspace.shared.open(url)
     }
 
