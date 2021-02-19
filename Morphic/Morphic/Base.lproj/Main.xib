@@ -43,6 +43,20 @@
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="bzM-1k-508"/>
+                <menuItem title="Change MorphicBar" hidden="YES" id="qcc-Q2-sYr">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Change MorphicBar" id="l0C-IM-POV">
+                        <items>
+                            <menuItem title="Basic MorphicBar" id="AVi-t6-lRs">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="selectBasicMorphicBar:" target="ZNk-5q-oDb" id="zNc-o8-0Gs"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="vgQ-je-MGT"/>
                 <menuItem title="Sign into Morphic..." hidden="YES" id="S6R-h6-1Yz">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
@@ -62,20 +76,6 @@
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="eWu-mW-zzY"/>
-                <menuItem title="Select MorphicBar" hidden="YES" id="qcc-Q2-sYr">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="Select MorphicBar" id="l0C-IM-POV">
-                        <items>
-                            <menuItem title="Basic MorphicBar" id="AVi-t6-lRs">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="selectBasicMorphicBar:" target="ZNk-5q-oDb" id="zNc-o8-0Gs"/>
-                                </connections>
-                            </menuItem>
-                        </items>
-                    </menu>
-                </menuItem>
-                <menuItem isSeparatorItem="YES" id="vgQ-je-MGT"/>
                 <menuItem title="Explore everything Morphic can do..." id="DeU-ED-RwS">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
