@@ -154,17 +154,18 @@ class MorphicBarLinkItem: MorphicBarItem {
      
     override init(interoperable: [String : Interoperable?]) {
         // NOTE: argument 'label' should never be nil, but we use an empty string as a backup
-        label = interoperable.string(for: "label") ?? ""
+        self.label = interoperable.string(for: "label") ?? ""
         //
         if let colorAsString = interoperable.string(for: "color") {
-            color = NSColor.createFromRgbHexString(colorAsString)
+            self.color = NSColor.createFromRgbHexString(colorAsString)
         } else {
-            color = nil
+            self.color = nil
         }
         //
-        imageUrl = interoperable.string(for: "imageUrl")
+        self.imageUrl = interoperable.string(for: "imageUrl")
         //
         // NOTE: argument 'url' should never be nil, but we use an empty string as a backup
+        var url: URL?
         if let urlAsString = interoperable.string(for: "url") {
             // NOTE: if the url was malformed, that may result in a "nil" URL
             // SECURITY NOTE: we should strongly consider filtering urls by scheme (or otherwise) here
@@ -173,6 +174,20 @@ class MorphicBarLinkItem: MorphicBarItem {
             url = nil
         }
         
+        // validate the URL scheme
+        switch url?.scheme?.lowercased() {
+        case "http",
+             "https":
+            // valid
+            break
+        default:
+            // disallowed/missing scheme: reject this URL
+            url = nil
+        }
+
+        // capture the validated URL
+        self.url = url
+            
         super.init(interoperable: interoperable)
     }
 
