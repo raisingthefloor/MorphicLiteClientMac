@@ -68,21 +68,6 @@
 		31E1E188244794EF009C4092 /* MorphicBarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31E1E18A244794EF009C4092 /* MorphicBarViewController.xib */; };
 		9D1FA1CD251A317F0008559D /* MorphicLauncher.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9DD4F4D8251A2FC400ADCC25 /* MorphicLauncher.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9D1FA1CF251A31990008559D /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D1FA1CE251A31990008559D /* ServiceManagement.framework */; };
-		9D2593DF250A830100C38DA3 /* envelope-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D0250A830100C38DA3 /* envelope-solid.pdf */; };
-		9D2593E0250A830100C38DA3 /* music-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D1250A830100C38DA3 /* music-solid.pdf */; };
-		9D2593E1250A830100C38DA3 /* google-brands.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D2250A830100C38DA3 /* google-brands.pdf */; };
-		9D2593E2250A830100C38DA3 /* camera-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D3250A830100C38DA3 /* camera-solid.pdf */; };
-		9D2593E3250A830100C38DA3 /* calendar-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D4250A830100C38DA3 /* calendar-solid.pdf */; };
-		9D2593E4250A830100C38DA3 /* images-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D5250A830100C38DA3 /* images-solid.pdf */; };
-		9D2593E5250A830100C38DA3 /* link-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D6250A830100C38DA3 /* link-solid.pdf */; };
-		9D2593E6250A830100C38DA3 /* comment-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D7250A830100C38DA3 /* comment-solid.pdf */; };
-		9D2593E7250A830100C38DA3 /* video-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D8250A830100C38DA3 /* video-solid.pdf */; };
-		9D2593E8250A830100C38DA3 /* question-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593D9250A830100C38DA3 /* question-solid.pdf */; };
-		9D2593E9250A830100C38DA3 /* skype-brands.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DA250A830100C38DA3 /* skype-brands.pdf */; };
-		9D2593EA250A830100C38DA3 /* google-drive-brands.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DB250A830100C38DA3 /* google-drive-brands.pdf */; };
-		9D2593EB250A830100C38DA3 /* newspaper-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DC250A830100C38DA3 /* newspaper-solid.pdf */; };
-		9D2593EC250A830100C38DA3 /* shopping-cart-solid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DD250A830100C38DA3 /* shopping-cart-solid.pdf */; };
-		9D2593ED250A830100C38DA3 /* amazon-brands.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2593DE250A830100C38DA3 /* amazon-brands.pdf */; };
 		9D2A5AB8259B815800ECD513 /* ConfigurableFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */; };
 		9D2A5AC1259B914800ECD513 /* MorphicBarSeparatorItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */; };
 		9D3530A525C2860200F8D590 /* Countly in Frameworks */ = {isa = PBXBuildFile; productRef = 9D3530A425C2860200F8D590 /* Countly */; };
@@ -102,6 +87,13 @@
 		9DA46E7D25CA743B006BEAAC /* PermissionsGuidanceSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7425CA743B006BEAAC /* PermissionsGuidanceSystem.swift */; };
 		9DA46E8125CA743B006BEAAC /* PermissionsSuccessWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7625CA743B006BEAAC /* PermissionsSuccessWindowController.swift */; };
 		9DA46E8325CA743B006BEAAC /* PermissionsGuidanceWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7725CA743B006BEAAC /* PermissionsGuidanceWindowController.swift */; };
+		9DC0D3FB25E5EAAC00E17D9E /* globe.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DC0D3FA25E5EAAC00E17D9E /* globe.pdf */; };
+		9DC0D3FE25E5F05800E17D9E /* calendar.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DC0D3FD25E5F05800E17D9E /* calendar.pdf */; };
+		9DC0D40525E5F1FF00E17D9E /* comments.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DC0D40425E5F1FF00E17D9E /* comments.pdf */; };
+		9DC0D40825E5F2ED00E17D9E /* envelope_open_text.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DC0D40725E5F2ED00E17D9E /* envelope_open_text.pdf */; };
+		9DC0D41525E5F5F200E17D9E /* envelope_open.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DC0D41425E5F5F200E17D9E /* envelope_open.pdf */; };
+		9DC0D41825E5F6BF00E17D9E /* envelope_outline_open.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DC0D41725E5F6BF00E17D9E /* envelope_outline_open.pdf */; };
+		9DC0D41B25E5F72100E17D9E /* envelope_outline.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DC0D41A25E5F72100E17D9E /* envelope_outline.pdf */; };
 		9DCF885D257AEF23001927C1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCF885C257AEF23001927C1 /* AppDelegate.swift */; };
 		9DCF885F257AEF23001927C1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9DCF885E257AEF23001927C1 /* Assets.xcassets */; };
 		9DCF8907257AF8F2001927C1 /*  Morphic .app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9DCF885A257AEF23001927C1 /*  Morphic .app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -256,21 +248,6 @@
 		31E1E186244792D9009C4092 /* DefaultPreferences.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = DefaultPreferences.json; sourceTree = "<group>"; };
 		31E1E189244794EF009C4092 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MorphicBarViewController.xib; sourceTree = "<group>"; };
 		9D1FA1CE251A31990008559D /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
-		9D2593D0250A830100C38DA3 /* envelope-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "envelope-solid.pdf"; sourceTree = "<group>"; };
-		9D2593D1250A830100C38DA3 /* music-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "music-solid.pdf"; sourceTree = "<group>"; };
-		9D2593D2250A830100C38DA3 /* google-brands.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "google-brands.pdf"; sourceTree = "<group>"; };
-		9D2593D3250A830100C38DA3 /* camera-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "camera-solid.pdf"; sourceTree = "<group>"; };
-		9D2593D4250A830100C38DA3 /* calendar-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "calendar-solid.pdf"; sourceTree = "<group>"; };
-		9D2593D5250A830100C38DA3 /* images-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "images-solid.pdf"; sourceTree = "<group>"; };
-		9D2593D6250A830100C38DA3 /* link-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "link-solid.pdf"; sourceTree = "<group>"; };
-		9D2593D7250A830100C38DA3 /* comment-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "comment-solid.pdf"; sourceTree = "<group>"; };
-		9D2593D8250A830100C38DA3 /* video-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "video-solid.pdf"; sourceTree = "<group>"; };
-		9D2593D9250A830100C38DA3 /* question-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "question-solid.pdf"; sourceTree = "<group>"; };
-		9D2593DA250A830100C38DA3 /* skype-brands.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "skype-brands.pdf"; sourceTree = "<group>"; };
-		9D2593DB250A830100C38DA3 /* google-drive-brands.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "google-drive-brands.pdf"; sourceTree = "<group>"; };
-		9D2593DC250A830100C38DA3 /* newspaper-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "newspaper-solid.pdf"; sourceTree = "<group>"; };
-		9D2593DD250A830100C38DA3 /* shopping-cart-solid.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "shopping-cart-solid.pdf"; sourceTree = "<group>"; };
-		9D2593DE250A830100C38DA3 /* amazon-brands.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "amazon-brands.pdf"; sourceTree = "<group>"; };
 		9D2593F2250EA81000C38DA3 /* MorphicRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicRelease.entitlements; sourceTree = "<group>"; };
 		9D2593F3250EA87E00C38DA3 /* MorphicConfiguratorRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicConfiguratorRelease.entitlements; sourceTree = "<group>"; };
 		9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableFeatures.swift; sourceTree = "<group>"; };
@@ -293,6 +270,13 @@
 		9DA46E7625CA743B006BEAAC /* PermissionsSuccessWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionsSuccessWindowController.swift; path = "Permissions Guidance/PermissionsSuccessWindowController.swift"; sourceTree = "<group>"; };
 		9DA46E7725CA743B006BEAAC /* PermissionsGuidanceWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionsGuidanceWindowController.swift; path = "Permissions Guidance/PermissionsGuidanceWindowController.swift"; sourceTree = "<group>"; };
 		9DB06AD62534ADD6008AB056 /* CreatePackage.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = CreatePackage.sh; sourceTree = "<group>"; };
+		9DC0D3FA25E5EAAC00E17D9E /* globe.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = globe.pdf; sourceTree = "<group>"; };
+		9DC0D3FD25E5F05800E17D9E /* calendar.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = calendar.pdf; sourceTree = "<group>"; };
+		9DC0D40425E5F1FF00E17D9E /* comments.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = comments.pdf; sourceTree = "<group>"; };
+		9DC0D40725E5F2ED00E17D9E /* envelope_open_text.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = envelope_open_text.pdf; sourceTree = "<group>"; };
+		9DC0D41425E5F5F200E17D9E /* envelope_open.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = envelope_open.pdf; sourceTree = "<group>"; };
+		9DC0D41725E5F6BF00E17D9E /* envelope_outline_open.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = envelope_outline_open.pdf; sourceTree = "<group>"; };
+		9DC0D41A25E5F72100E17D9E /* envelope_outline.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = envelope_outline.pdf; sourceTree = "<group>"; };
 		9DCF885A257AEF23001927C1 /*  Morphic .app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = " Morphic .app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DCF885C257AEF23001927C1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9DCF885E257AEF23001927C1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -511,21 +495,13 @@
 		9D2593CF250A82DE00C38DA3 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
-				9D2593DE250A830100C38DA3 /* amazon-brands.pdf */,
-				9D2593D4250A830100C38DA3 /* calendar-solid.pdf */,
-				9D2593D3250A830100C38DA3 /* camera-solid.pdf */,
-				9D2593D7250A830100C38DA3 /* comment-solid.pdf */,
-				9D2593D0250A830100C38DA3 /* envelope-solid.pdf */,
-				9D2593D2250A830100C38DA3 /* google-brands.pdf */,
-				9D2593DB250A830100C38DA3 /* google-drive-brands.pdf */,
-				9D2593D5250A830100C38DA3 /* images-solid.pdf */,
-				9D2593D6250A830100C38DA3 /* link-solid.pdf */,
-				9D2593D1250A830100C38DA3 /* music-solid.pdf */,
-				9D2593DC250A830100C38DA3 /* newspaper-solid.pdf */,
-				9D2593D9250A830100C38DA3 /* question-solid.pdf */,
-				9D2593DD250A830100C38DA3 /* shopping-cart-solid.pdf */,
-				9D2593DA250A830100C38DA3 /* skype-brands.pdf */,
-				9D2593D8250A830100C38DA3 /* video-solid.pdf */,
+				9DC0D3FD25E5F05800E17D9E /* calendar.pdf */,
+				9DC0D40425E5F1FF00E17D9E /* comments.pdf */,
+				9DC0D41425E5F5F200E17D9E /* envelope_open.pdf */,
+				9DC0D40725E5F2ED00E17D9E /* envelope_open_text.pdf */,
+				9DC0D41A25E5F72100E17D9E /* envelope_outline.pdf */,
+				9DC0D41725E5F6BF00E17D9E /* envelope_outline_open.pdf */,
+				9DC0D3FA25E5EAAC00E17D9E /* globe.pdf */,
 			);
 			path = Icons;
 			sourceTree = "<group>";
@@ -780,36 +756,28 @@
 			buildActionMask = 2147483647;
 			files = (
 				31C12CC224B143A000B617A8 /* QuickHelpStepViewController.xib in Resources */,
-				9D2593E5250A830100C38DA3 /* link-solid.pdf in Resources */,
-				9D2593EA250A830100C38DA3 /* google-drive-brands.pdf in Resources */,
+				9DC0D41825E5F6BF00E17D9E /* envelope_outline_open.pdf in Resources */,
+				9DC0D41B25E5F72100E17D9E /* envelope_outline.pdf in Resources */,
+				9DC0D40825E5F2ED00E17D9E /* envelope_open_text.pdf in Resources */,
 				9DA46E7925CA743B006BEAAC /* PermissionsSuccessWindow.xib in Resources */,
 				31751B822444E11600EEDF14 /* Local.xcconfig in Resources */,
-				9D2593EC250A830100C38DA3 /* shopping-cart-solid.pdf in Resources */,
-				9D2593E0250A830100C38DA3 /* music-solid.pdf in Resources */,
-				9D2593E8250A830100C38DA3 /* question-solid.pdf in Resources */,
-				9D2593E9250A830100C38DA3 /* skype-brands.pdf in Resources */,
 				9DA46E7B25CA743B006BEAAC /* PermissionsGuidanceWindow.xib in Resources */,
 				9D82576F24D31C1E00F6E932 /* AboutBoxWindowController.xib in Resources */,
 				31CE56F5244A407000A52A7B /* QuickHelpViewController.xib in Resources */,
 				31751B3C2444DFAA00EEDF14 /* Main.xib in Resources */,
-				9D2593ED250A830100C38DA3 /* amazon-brands.pdf in Resources */,
-				9D2593E1250A830100C38DA3 /* google-brands.pdf in Resources */,
-				9D2593E7250A830100C38DA3 /* video-solid.pdf in Resources */,
 				9D49D4F325BBAA00001DD452 /* UpdateAvailableWindow.xib in Resources */,
 				9DE112E82522243200591E08 /* CopySettingsWindow.xib in Resources */,
 				31E1E188244794EF009C4092 /* MorphicBarViewController.xib in Resources */,
-				9D2593E3250A830100C38DA3 /* calendar-solid.pdf in Resources */,
+				9DC0D3FE25E5F05800E17D9E /* calendar.pdf in Resources */,
 				31751B842444E11600EEDF14 /* Debug.xcconfig in Resources */,
-				9D2593E2250A830100C38DA3 /* camera-solid.pdf in Resources */,
+				9DC0D3FB25E5EAAC00E17D9E /* globe.pdf in Resources */,
 				31751B0F2444DE8B00EEDF14 /* Assets.xcassets in Resources */,
+				9DC0D40525E5F1FF00E17D9E /* comments.pdf in Resources */,
 				31751B832444E11600EEDF14 /* Release.xcconfig in Resources */,
 				314EB6DB24A697C300CF3D48 /* macos.solutions.json in Resources */,
+				9DC0D41525E5F5F200E17D9E /* envelope_open.pdf in Resources */,
 				31E1E187244792D9009C4092 /* DefaultPreferences.json in Resources */,
-				9D2593E6250A830100C38DA3 /* comment-solid.pdf in Resources */,
-				9D2593EB250A830100C38DA3 /* newspaper-solid.pdf in Resources */,
 				31C12CBC24B11F5A00B617A8 /* QuickHelpVolumeViewController.xib in Resources */,
-				9D2593E4250A830100C38DA3 /* images-solid.pdf in Resources */,
-				9D2593DF250A830100C38DA3 /* envelope-solid.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -281,6 +281,27 @@
 /* Message for the help window for the screen snip button */
 "control.feature.screensnip.copy.help.message" = "Drag with your mouse to copy part of screen.  Then paste into any document.";
 
+/* Label for the buttons that control the color vision */
+"control.feature.colorvision.title" = "Color Vision";
+
+/* Label for the button that shows the color vision */
+"control.feature.colorvision.on" = "On";
+
+/* Title for the help window for the show ("on") color vision button */
+"control.feature.colorvision.on.help.title" = "Turn On Color Vision";
+
+/* Message for the help window for the show ("on") color vision button */
+"control.feature.colorvision.on.help.message" = "Changes colors to adapt for color blindness. (Right click to choose type.)";
+
+/* Label for the button that hides the color vision */
+"control.feature.colorvision.off" = "Off";
+
+/* Title for the help window for the hide ("off") color vision button */
+"control.feature.colorvision.off.help.title" = "Turn Off Color Vision";
+
+/* Message for the help window for the hide ("off") color vision button */
+"control.feature.colorvision.off.help.message" = "Changes colors to adapt for color blindness. (Right click to choose type.)";
+
 /* Label for the buttons that toggle contrast, color, dark and night */
 "control.feature.contrastcolordarknight.title" = "Contrast & Color";
 
@@ -355,3 +376,24 @@
 
 /* Message for the help window for the night shift button */
 "control.feature.contrastcolordarknight.night.help.message" = "Reduces eye strain and makes it easier to fall asleep at night.";
+
+/* Label for the buttons that control the dark mode */
+"control.feature.darkmode.title" = "Dark Mode";
+
+/* Label for the button that shows the dark mode */
+"control.feature.darkmode.on" = "On";
+
+/* Title for the help window for the show ("on") dark mode button */
+"control.feature.darkmode.on.help.title" = "Turn On Dark Mode";
+
+/* Message for the help window for the show ("on") dark mode button */
+"control.feature.darkmode.on.help.message" = "Turns Dark Mode on. (Right click to adjust.)";
+
+/* Label for the button that hides the dark mode */
+"control.feature.darkmode.off" = "Off";
+
+/* Title for the help window for the hide ("off") dark mode button */
+"control.feature.darkmode.off.help.title" = "Turn Off Dark Mode";
+
+/* Message for the help window for the hide ("off") dark mode button */
+"control.feature.darkmode.off.help.message" = "Turns Dark Mode off. (Right click to adjust.)";

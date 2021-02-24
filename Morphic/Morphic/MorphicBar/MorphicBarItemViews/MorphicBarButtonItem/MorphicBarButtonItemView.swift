@@ -201,9 +201,11 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
             pdfImageRep.draw(in: imageRect)
             return true
         }
-        let recoloredNsImage = MorphicImageUtils.colorImage(nsImage, withColor: self.iconColor ?? self.fillColor)
-        newIconLayer.contents = recoloredNsImage
-        
+        // NOTE: we have disabled the recoloring feature as the new bar editor uses full-color images
+//        let recoloredNsImage = MorphicImageUtils.colorImage(nsImage, withColor: self.iconColor ?? self.fillColor)
+//        newIconLayer.contents = recoloredNsImage
+        newIconLayer.contents = nsImage
+
         self.layer?.replaceSublayer(self.iconImageLayer, with: newIconLayer)
         self.iconImageLayer = newIconLayer
     }
@@ -565,11 +567,12 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
             if icon != nil {
                 height += self.titleTopPadding
                 //
-                let iconCircleDiameter = calculateIconCircleDiameter(usingFrameWidth: width)
+                let minimumFrameWidthForIcon = CGFloat(100.0);
+                let iconCircleDiameter = calculateIconCircleDiameter(usingFrameWidth: max(width, minimumFrameWidthForIcon))
                 height += iconCircleDiameter
                 width = max(width, iconCircleDiameter)
             } else {
-                // if there is no icon, mirro the title's bottom padding on top (since the "top padding" is really the icon-to-text vertical padding)
+                // if there is no icon, mirror the title's bottom padding on top (since the "top padding" is really the icon-to-text vertical padding)
                 height += self.titleBottomPadding
             }
             
