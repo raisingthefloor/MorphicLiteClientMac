@@ -27,9 +27,9 @@ import MorphicCore
 public class KeyboardPreferencesElement: UIElement {
     
     public func select(tabTitled title: String) throws {
-        guard let _ = try tabGroup?.select(tabTitled: title) else
-	    throw MorphicError()
-	}
+        guard let _ = try tabGroup?.select(tabTitled: title) else {
+            throw MorphicError()
+        }
     }
     
     public func select(tableRowTitled rowTitle: String, ofTableTitled tableTitle: String) throws {
