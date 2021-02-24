@@ -24,25 +24,36 @@
 import Foundation
 
 enum MorphicBarButtonItemIcon: String {
-    case amazon = "amazon-brands"
-    case calendar = "calendar-solid"
-    case camera = "camera-solid"
-    case comment = "comment-solid"
-    case envelope = "envelope-solid"
-    case google = "google-brands"
-    case googleDrive = "google-drive-brands"
-    case images = "images-solid"
-    case link = "link-solid"
-    case music = "music-solid"
-    case newspaper = "newspaper-solid"
-    case question = "question-solid"
-    case shoppingCart = "shopping-cart-solid"
-    case skype = "skype-brands"
-    case video = "video-solid"
+    case calendar = "calendar$calendar"
+    case comments = "comments"
+    case envelope_open = "email$envelopeopen"
+    case envelope_open_text = "email$envelopeopentext"
+    case envelope_outline = "email$envelopeoutline"
+    case envelope_outline_open = "email$envelopeoutlineopen"
+    case globe = "globe"
     
     var pathToImage: String {
         get {
-            return Bundle.main.path(forResource: self.rawValue, ofType: "pdf")!
+            let fileName = self.translateImageUrlToFileName(self.rawValue)
+            return Bundle.main.path(forResource: fileName, ofType: "pdf")!
+        }
+    }
+    
+    // NOTE: the image_url values we get back from the v1 API do not always represent the filename, so we need to map them here
+    func translateImageUrlToFileName(_ imageUrl: String) -> String {
+        switch imageUrl {
+        case "calendar$calendar":
+            return "calendar"
+        case "email$envelopeopen":
+            return "envelope_open"
+        case "email$envelopeopentext":
+            return "envelope_open_text"
+        case "email$envelopeoutline":
+            return "envelope_outline"
+        case "email$envelopeoutlineopen":
+            return "envelope_outline_open"
+        default:
+            return imageUrl
         }
     }
 }
