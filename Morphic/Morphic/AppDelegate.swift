@@ -421,6 +421,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         public let url: String?
         // for type: action
         public let function: String?
+        // for type: control
+        public let feature: String?
     }
     
     internal struct ConfigFileContents: Decodable
@@ -584,12 +586,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 }
 
                 // if the item is invalid, log the error and skip this item
-                if (extraItem.type == nil) || (extraItem.label == nil) || (extraItem.tooltipHeader == nil) {
+                if (extraItem.type == nil) {
                     // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
                     os_log(.error, log: logger, "Invalid MorphicBar item")
                     continue
                 }
-                
+                if (extraItem.type != "control") && ((extraItem.label == nil) || (extraItem.tooltipHeader == nil)) {
+                    // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
+                    os_log(.error, log: logger, "Invalid MorphicBar item")
+                    continue
+                }
+
                 // if the "link" is missing its url, log the error and skip this item
                 if (extraItem.type == "link") && (extraItem.url == nil) {
                     // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
@@ -603,6 +610,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     os_log(.error, log: logger, "Invalid MorphicBar item")
                     continue
                 }
+                
+                // if the "control" is missing its feature, log the error and skip this item
+                if (extraItem.type == "control") && (extraItem.feature == nil || extraItem.feature == "") {
+                    // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
+                    os_log(.error, log: logger, "Invalid MorphicBar item")
+                    continue
+                }
 
                 let extraMorphicBarItem = MorphicBarExtraItem(
                     type: extraItem.type,
@@ -610,7 +624,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     tooltipHeader: extraItem.tooltipHeader,
                     tooltipText: extraItem.tooltipText,
                     url: extraItem.url,
-                    function: extraItem.function)
+                    function: extraItem.function,
+                    feature: extraItem.feature)
                 result.extraMorphicBarItems.append(extraMorphicBarItem)
             }
         }

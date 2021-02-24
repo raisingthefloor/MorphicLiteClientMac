@@ -397,3 +397,24 @@
 
 /* Message for the help window for the hide ("off") dark mode button */
 "control.feature.darkmode.off.help.message" = "Turns Dark Mode off. (Right click to adjust.)";
+
+/* Label for the buttons that open/eject usb drives */
+"control.feature.usbdrives.title" = "USB Drives (All)";
+
+/* Label for the button that opens all usb drives */
+"control.feature.usbdrives.open" = "Open";
+
+/* Title for the help window for the "open usb drives" button */
+"control.feature.usbdrives.open.help.title" = "Open All USB Drives";
+
+/* Message for the help window for the "open usb drives" button */
+"control.feature.usbdrives.open.help.message" = "Opens and shows the files of all USB drives plugged into the computer.";
+
+/* Label for the button that safely ejects all usb drives */
+"control.feature.usbdrives.eject" = "Eject";
+
+/* Title for the help window for the "eject usb drives" button" */
+"control.feature.usbdrives.eject.help.title" = "Eject All USB Drives";
+
+/* Message for the help window for the "eject usb drives" button */
+"control.feature.usbdrives.eject.help.message" = "Safely ejects all USB drives plugging into this computer.";
