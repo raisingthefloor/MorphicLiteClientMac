@@ -65,7 +65,7 @@ public class LanguageAndRegionUIAutomation: UIAutomation {
                         return
                     }
 
-                    guard languageAndRegion.select(tabTitled: tab) else {
+                    guard let _ = try? languageAndRegion.select(tabTitled: tab) else {
                         os_log(.error, log: logger, "Failed to select tab")
                         completion(nil)
                         return

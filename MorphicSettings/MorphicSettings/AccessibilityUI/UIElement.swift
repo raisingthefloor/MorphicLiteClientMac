@@ -170,11 +170,21 @@ public class UIElement {
         switch action {
         case .check(let title, let checked):
             let checkbox = self.checkbox(titled: title)
-            let success = checkbox?.setChecked(checked) ?? false
+            let success: Bool
+            if let _ = try? checkbox?.setChecked(checked) {
+                success = true
+            } else {
+                success = false
+            }
             completion(success, self)
         case .press(let title):
             let button = self.button(titled: title)
-            let success = button?.press() ?? false
+            let success: Bool
+            if let _ = try? button?.press() {
+                success = true
+            } else {
+                success = false
+            }
             completion(success, self)
         default:
             completion(false, self)

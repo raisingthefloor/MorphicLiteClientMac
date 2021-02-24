@@ -52,13 +52,12 @@ public class AudioOutput {
         }
     }
     
-    public func setMuted(_ muted: Bool) -> Bool {
+    public func setMuted(_ muted: Bool) throws {
         do {
             try MorphicAudio.setMuteState(for: id, muteState: muted)
-            return true
         } catch {
             os_log(.error, log: logger, "Exception while setting mute state: %{public}s", error.localizedDescription)
-            return false
+            throw MorphicError()
         }
     }
     
@@ -72,13 +71,12 @@ public class AudioOutput {
         }
     }
     
-    public func setVolume(_ value: Double) -> Bool {
+    public func setVolume(_ value: Double) throws {
         do {
             try MorphicAudio.setVolume(for: id, volume: Float(value))
-            return true
         } catch {
             os_log(.error, log: logger, "Exception while setting volume: %{public}s", error.localizedDescription)
-            return false
+            throw MorphicError()
         }
     }
     

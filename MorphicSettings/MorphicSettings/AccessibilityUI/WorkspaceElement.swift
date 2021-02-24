@@ -48,14 +48,14 @@ public class WorkspaceElement: UIElement {
     
     public func closeLaunchedApplications() {
         for application in launchedApplications {
-            if !application.terminate() {
+            if (try? application.terminate()) == nil {
                 os_log(.error, log: logger, "Failed to terminate application %{public}s", application.bundleIdentifier)
             }
         }
         launchedApplications = []
     }
     
-    public func sendKey(keyCode: CGKeyCode, keyOptions: MorphicInput.KeyOptions) -> Bool {
-        return MorphicInput.sendKey(keyCode: CGKeyCode(keyCode), keyOptions: keyOptions, inputEventSource: .loginSession)
+    public func sendKey(keyCode: CGKeyCode, keyOptions: MorphicInput.KeyOptions) throws {
+        try MorphicInput.sendKey(keyCode: CGKeyCode(keyCode), keyOptions: keyOptions, inputEventSource: .loginSession)
     }
 }

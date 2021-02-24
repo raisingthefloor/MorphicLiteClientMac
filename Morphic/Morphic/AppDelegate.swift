@@ -662,7 +662,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         // NOTE: this zooms to 100% of the RECOMMENDED value, not 100% of native resolution
         if let displayCurrentPercentage = Display.main?.currentPercentage {
             if displayCurrentPercentage != defaultDisplayZoomPercentage {
-                _ = Display.main?.zoom(to: defaultDisplayZoomPercentage)
+                _ = try? Display.main?.zoom(to: defaultDisplayZoomPercentage)
             }
         }
         //

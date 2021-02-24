@@ -71,6 +71,8 @@
 		9D4B24C225143F8700F0B2E2 /* GeneralPreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */; };
 		9D59F47E24A6B3040004C35B /* CBBlueLightClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D0AF77524A4613D007E177E /* CBBlueLightClient.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */; };
+		9DC0D42A25E6587500E17D9E /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 311336532427FB3400686AF6 /* MorphicCore.framework */; };
+		9DC0D42B25E6587500E17D9E /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 311336532427FB3400686AF6 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9DC4FDE5253603AD0051BB23 /* ApplicationServices.h in Headers */ = {isa = PBXBuildFile; fileRef = 9DC4FDE42536030F0051BB23 /* ApplicationServices.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		9DCE209224CF1AAF00D3445B /* MorphicA11yAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */; };
 		9DD22FBA24DCB8B800C2FA52 /* SpeechUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */; };
@@ -101,6 +103,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				9DC0D42B25E6587500E17D9E /* MorphicCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -196,6 +199,7 @@
 			files = (
 				9D38C4EC252A33AD0064FB74 /* MediaAccessibility.framework in Frameworks */,
 				9D0AF77324A460A9007E177E /* CoreBrightness.framework in Frameworks */,
+				9DC0D42A25E6587500E17D9E /* MorphicCore.framework in Frameworks */,
 				311336542427FB3400686AF6 /* MorphicCore.framework in Frameworks */,
 				9D38C4F4252A38870064FB74 /* UniversalAccess.framework in Frameworks */,
 				9D38C4C92528F0D70064FB74 /* SkyLight.framework in Frameworks */,

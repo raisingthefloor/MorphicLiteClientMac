@@ -26,8 +26,10 @@ import MorphicCore
 
 public class DisplaysPreferencesElement: UIElement {
     
-    public func select(tabTitled title: String) -> Bool {
-        return tabGroup?.select(tabTitled: title) ?? false
+    public func select(tabTitled title: String) throws {
+        guard let _ = try tabGroup?.select(tabTitled: title) else {
+	    throw MorphicError()
+	}
     }
 
 }

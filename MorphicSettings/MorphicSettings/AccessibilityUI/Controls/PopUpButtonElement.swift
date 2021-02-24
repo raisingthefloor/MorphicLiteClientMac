@@ -33,7 +33,7 @@ public class PopUpButtonElement: UIElement {
     }
     
     public func setValue(_ value: String, completion: @escaping (_ success: Bool) -> Void) {
-        guard accessibilityElement.perform(action: .showMenu) else {
+        guard let _ = try? accessibilityElement.perform(action: .showMenu) else {
             completion(false)
             return
         }
@@ -43,7 +43,7 @@ public class PopUpButtonElement: UIElement {
                 completion(false)
                 return
             }
-            guard menu.select(itemTitled: value) else {
+            guard let _ = try? menu.select(itemTitled: value) else {
                 completion(false)
                 return
             }

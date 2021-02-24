@@ -19,6 +19,7 @@
 		31DDA6A32424130900F18A43 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DDA6A22424130900F18A43 /* Storage.swift */; };
 		31DDA6A624241CF900F18A43 /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31DDA6A524241CF900F18A43 /* Record.swift */; };
 		9D2593EF250DD63100C38DA3 /* AsyncUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2593EE250DD63100C38DA3 /* AsyncUtils.swift */; };
+		9DC0D41E25E6539A00E17D9E /* MorphicError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC0D41D25E6539A00E17D9E /* MorphicError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		31DDA6A22424130900F18A43 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		31DDA6A524241CF900F18A43 /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 		9D2593EE250DD63100C38DA3 /* AsyncUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncUtils.swift; sourceTree = "<group>"; };
+		9DC0D41D25E6539A00E17D9E /* MorphicError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 				311E88502427CD960025DCBB /* Credentials.swift */,
 				31DDA6A22424130900F18A43 /* Storage.swift */,
 				9D2593EE250DD63100C38DA3 /* AsyncUtils.swift */,
+				9DC0D41D25E6539A00E17D9E /* MorphicError.swift */,
 			);
 			path = MorphicCore;
 			sourceTree = "<group>";
@@ -225,6 +228,7 @@
 			files = (
 				31A0A5AD2405B75500166668 /* UserDefaults+Morphic.swift in Sources */,
 				31A0A59D2405986800166668 /* User.swift in Sources */,
+				9DC0D41E25E6539A00E17D9E /* MorphicError.swift in Sources */,
 				311E88512427CD960025DCBB /* Credentials.swift in Sources */,
 				31A0A5992405973E00166668 /* Preferences.swift in Sources */,
 				316CBD652422D640004BD374 /* Codable+Morphic.swift in Sources */,
