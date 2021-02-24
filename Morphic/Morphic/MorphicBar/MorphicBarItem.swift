@@ -66,6 +66,8 @@ public class MorphicBarItem {
             itemAsDictionary["url"] = extraItem.url
             // for type: action (from config.json file, not from custom bar web app schema)
             itemAsDictionary["function"] = extraItem.function
+            // for type: control (from config.json file, not from custom bar web app schema)
+            itemAsDictionary["feature"] = extraItem.feature
 
             if let item_ = item(from: itemAsDictionary) {
                 items.append(item_)
@@ -371,6 +373,7 @@ class MorphicBarControlItem: MorphicBarItem {
         case screensnip
         case signout
         case unknown
+        case usbopeneject
         case volume
         case volumewithoutmute
         
@@ -396,6 +399,7 @@ class MorphicBarControlItem: MorphicBarItem {
         case readselMac = "readsel-mac"
         case snip = "snip"
         case textsize = "textsize"
+        case usbdrives = "usbdrives"
         case volmute = "volmute"
     }
     
@@ -635,7 +639,7 @@ class MorphicBarControlItem: MorphicBarItem {
             let onHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let offHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), learnMoreTelemetryCategory: "nightMode", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), quickDemoVideoTelemetryCategory: "nightMode", settingsBlock: nil, style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), learnMoreTelemetryCategory: "nightMode", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), quickDemoVideoTelemetryCategory: "nightMode", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.displaysNightShift, category: "nightMode") }, style: style),
                 MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), learnMoreTelemetryCategory: "nightMode", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), quickDemoVideoTelemetryCategory: "nightMode", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.displaysNightShift, category: "nightMode") }, style: style)
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
@@ -694,6 +698,19 @@ class MorphicBarControlItem: MorphicBarItem {
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.screensnip)
+            return view
+        case .usbopeneject:
+            let localized = LocalizedStrings(prefix: "control.feature.usbdrives")
+            let openHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "open.help.title"), message: localized.string(for: "open.help.message")) }
+            let ejectHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "eject.help.title"), message: localized.string(for: "eject.help.message")) }
+            let segments = [
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "open"), fillColor: buttonColor, helpProvider: openHelpProvider, accessibilityLabel: localized.string(for: "open.help.title"), learnMoreUrl: nil, learnMoreTelemetryCategory: nil, quickDemoVideoUrl: nil, quickDemoVideoTelemetryCategory: nil, settingsBlock: nil, style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "eject"), fillColor: alternateButtonColor, helpProvider: ejectHelpProvider, accessibilityLabel: localized.string(for: "eject.help.title"), learnMoreUrl: nil, learnMoreTelemetryCategory: nil, quickDemoVideoUrl: nil, quickDemoVideoTelemetryCategory: nil, settingsBlock: nil, style: style)
+            ]
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(MorphicBarControlItem.usbdrives(_:))
             return view
         case .volume,
              .volumewithoutmute:
@@ -1029,6 +1046,71 @@ class MorphicBarControlItem: MorphicBarItem {
         } else {
             Session.shared.apply(false, for: .macosDisplayContrastEnabled) {
                 _ in
+            }
+        }
+    }
+    
+    @objc
+    func usbdrives(_ sender: Any?) {
+        guard let usbDriveMountingPaths = try? MorphicDisk.getAllUsbDriveMountPaths() else {
+            // TODO: once Morphic can catch and display errors, handle this error
+            // "Could not retrieve a list of all USB drive mount paths"
+            return
+        }
+        
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
+            return
+        }
+        if segment == 0 {
+            // open all USB drives
+            
+            // open directory paths using Finder
+            for path in usbDriveMountingPaths {
+                _ = try? MorphicDisk.openDirectory(path: path)
+            }
+        } else {
+            // safely eject all USB drives
+            let numberOfDisks = usbDriveMountingPaths.count
+            var numberOfDiskEjectsAttempted = 0
+            var failedMountPaths: [String] = []
+            
+            // unmount and eject disk using disk arbitration
+            for mountPath in usbDriveMountingPaths {
+                do {
+                    try MorphicDisk.ejectDisk(mountPath: mountPath) {
+                        ejectedDiskPath, success in
+                        //
+                        numberOfDiskEjectsAttempted += 1
+                        //
+                        if success == true {
+                            // we have ejected the disk at mount path: 'ejectedDiskPath'
+                        } else {
+                            // we failed to eject the disk at mount path: 'ejectedDiskPath'
+                            failedMountPaths.append(mountPath)
+                        }
+                        
+                        if numberOfDiskEjectsAttempted == numberOfDisks {
+                            // if a callback was provided, call it with success/failure (and an array of all mounting paths which failed)
+                            if failedMountPaths.count == 0 {
+                                // TODO: in the future, consider offering a callback (or an async wait of some sort) to get confirmation once the operation has completed
+//                                callback?.call(args: [true, Array<String>?(nil)])
+                                return
+                            } else {
+                                // TODO: in the future, consider offering a callback (or an async wait of some sort) to get confirmation once the operation has completed
+//                                callback?.call(args: [false, failedMountPaths])
+                                return
+                            }
+                        }
+                    }
+                } catch MorphicDisk.EjectDiskError.volumeNotFound {
+                    // TODO: once Morphic can catch and display errors, handle this error
+                    // "Failed to eject the disk at mount path: \(mountPath); volume was not found"
+                } catch MorphicDisk.EjectDiskError.otherError {
+                    // TODO: once Morphic can catch and display errors, handle this error
+                    // "Failed to eject the disk at mount path: \(mountPath); misc. error encountered"
+                } catch _ {
+                    // TODO: there should not be any other error conditions, but the compiler is warning that this switch is not exhaustive; once we have a way to catch and display errors we should determine which error is not being caught and handle it--or log and fatalError() here if this is an impossible code path
+                }
             }
         }
     }

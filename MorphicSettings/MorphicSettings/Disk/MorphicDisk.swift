@@ -1,4 +1,4 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2021 Raising the Floor - International
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
@@ -25,18 +25,15 @@ import Foundation
 //import IOKit
 import IOKit.usb
 //import IOKit.usb.IOUSBLib
-
-// NOTE: the MorphicDisk class contains the functionality used by Obj-C and Swift applications
+import MorphicCore
 
 public class MorphicDisk {
     // MARK - Open Directory functionality
     
-    public static func openDirectory(path: String) {
+    public static func openDirectory(path: String) throws {
         // open directory path in Finder
 
-        // NOTE: some of the below methods of opening up the drives may prompt the user for permission under Apple's latest (year 2019) OS security requirements; we may want to look at ways to suppress this prompt in applications consuming this library (including after such apps are updated in a way that changes their signature).  One possible option is installing a background helper app which never changes (or runs at a higher permission level that doesn't prompt for permission).
-        
-        // NOTE: NSWorkspace may not be available from node-ffi and similar, so we want to explore alternative methods too.
+        // NOTE: some of the below methods of opening up the drives may prompt the user for permission under Apple's latest (year 2019) OS security requirements
         
         // NOTE: some of the below methods of opening up the drives may not give us the finesse and control we want regarding how the Finder opens, if it's in three-pane vs. single-pane mode, etc.  More research and investigation is in order.
         
@@ -56,12 +53,12 @@ public class MorphicDisk {
 
         // METHOD 4 (AppleScript):
         let script: NSString = NSString(format: "tell application \"Finder\"\nactivate\nopen folder (\"%@\" as POSIX file)\nend tell\n", path)
-
+        //
         guard let openScript = NSAppleScript(source: script as String) else {
             NSLog("Could not create AppleScript to open folder at path: \(path)")
-            // NOTE: in the future, we could provide this information to JavaScript via a callback or promise
-            return
+            throw MorphicError()
         }
+        // TODO: determine is it's possible to capture any error and return it to our caller
         openScript.executeAndReturnError(nil)
     }
 
@@ -238,7 +235,7 @@ public class MorphicDisk {
     // MARK: - Enumerate USB drive functionality
 
     // NOTE: this function returns nil if it encounters an error; we do this to distinguish an error condition ( nil ) from an empty set ( [] ).
-    public static func getAllUsbDriveMountPaths() -> [String]? {
+    public static func getAllUsbDriveMountPaths() throws -> [String] {
         var result: [String] = []
 
         /* NOTE: to get our list of all USB Drive mount paths, we
@@ -251,7 +248,7 @@ public class MorphicDisk {
 
         // STEP 1: create a matching dictionary which filters on USB interfaces of mass storage devices
         guard let matchingDictionary = MorphicDisk.createMatchingDictionaryForUsbDriveInterfaces() else {
-            return nil
+            throw MorphicError()
         }
 
         // STEP 2: iterate through each currently-attached USB device's interfaces which match our matching dictionary's filter criteria
@@ -260,8 +257,8 @@ public class MorphicDisk {
         // STEP 2.1: obtain an iterator (to walk through the list of attached USB Mass Storage interface kernel objects in the I/O Registry)
         // NOTE: the IOServiceGetMatchingServices function automatically releases the matching dictionary (so we do not need to CFRelease in non-Swift languages)
         if IOServiceGetMatchingServices(kIOMasterPortDefault, matchingDictionary, &interfaceIterator) != KERN_SUCCESS {
-            // if we could not get an interface iterator, return nil
-            return nil
+            // if we could not get an interface iterator, throw an error
+            throw MorphicError()
         }
         //
         // iterate through each device interface in the I/O registry which matched, using our interface iterator
