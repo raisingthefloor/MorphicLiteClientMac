@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
 
 public class WindowElement: UIElement {
     
@@ -34,12 +35,12 @@ public class WindowElement: UIElement {
         }
     }
     
-    public func raise() -> Bool {
-        return accessibilityElement.perform(action: .raise)
+    public func raise() throws {
+        try accessibilityElement.perform(action: .raise)
     }
     
     public var title: String? {
-        get{
+        get {
             return accessibilityElement.value(forAttribute: .title)
         }
     }

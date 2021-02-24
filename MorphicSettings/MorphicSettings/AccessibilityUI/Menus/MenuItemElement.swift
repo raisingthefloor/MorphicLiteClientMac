@@ -29,11 +29,8 @@ public class MenuItemElement: UIElement {
         accessibilityElement.value(forAttribute: .title)
     }
     
-    public func select() -> Bool {
-        guard accessibilityElement.perform(action: .press) else {
-            return false
-        }
-        return true
+    public func select() throws {
+        try accessibilityElement.perform(action: .press)
     }
     
 }

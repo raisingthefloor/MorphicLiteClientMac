@@ -60,16 +60,16 @@ public class Keychain {
         return UsernameCredentials(username: username, password: password)
     }
     
-    public func save(usernameCredentials: UsernameCredentials, for url: URL) -> Bool {
+    public func save(usernameCredentials: UsernameCredentials, for url: URL) throws {
         let query = identifyingAttributes(for: url, username: usernameCredentials.username)
         var attributes = query
         attributes[kSecValueData] = usernameCredentials.password.data(using: .utf8)! as CFData
-        return save(attributes: attributes, matching: query)
+        try save(attributes: attributes, matching: query)
     }
     
-    public func removeUsernameCredentials(for url: URL, username: String) -> Bool {
+    public func removeUsernameCredentials(for url: URL, username: String) throws {
         let query = identifyingAttributes(for: url, username: username)
-        return remove(matching: query)
+        try remove(matching: query)
     }
     
     private func identifyingAttributes(for url: URL, username: String) -> [CFString: CFTypeRef] {
@@ -95,16 +95,16 @@ public class Keychain {
         return KeyCredentials(key: key)
     }
     
-    public func save(keyCredentials: KeyCredentials, for url: URL, userIdentifier: String) -> Bool {
+    public func save(keyCredentials: KeyCredentials, for url: URL, userIdentifier: String) throws {
         let query = identifyingAttributes(for: url, service: secretKeyService, userIdentifier: userIdentifier)
         var attributes = query
         attributes[kSecValueData] = keyCredentials.key.data(using: .utf8)! as CFData
-        return save(attributes: attributes, matching: query)
+        try save(attributes: attributes, matching: query)
     }
     
-    public func removeKeyCredentials(for url: URL, userIdentifier: String) -> Bool {
+    public func removeKeyCredentials(for url: URL, userIdentifier: String) throws {
         let query = identifyingAttributes(for: url, service: secretKeyService, userIdentifier: userIdentifier)
-        return remove(matching: query)
+        try remove(matching: query)
     }
     
     private var secretKeyService = "org.raisingthefloor.morphic.secret-key"
@@ -132,20 +132,20 @@ public class Keychain {
         return token
     }
     
-    public func save(authToken: String, for url: URL, userIdentifier: String) -> Bool {
+    public func save(authToken: String, for url: URL, userIdentifier: String) throws {
         // NOTE: sometimes overwriting a token returns success but does not overwrite it; therefore we erase any existing token beforehand
         // NOTE: if we store additional data in the keychain in the future, consider moving this "remove" code to the "save(attributes:matching:) function (and also possibly checking if it exists before removing it, to surpress intentional failures in macOS Console's logs).
-        _ = removeAuthToken(for: url, userIdentifier: userIdentifier)
+        _ = try? removeAuthToken(for: url, userIdentifier: userIdentifier)
         
         let query = identifyingAttributes(for: url, service: authTokenService, userIdentifier: userIdentifier)
         var attributes = query
         attributes[kSecValueData] = authToken.data(using: .utf8)! as CFData
-        return save(attributes: attributes, matching: query)
+        try save(attributes: attributes, matching: query)
     }
     
-    public func removeAuthToken(for url: URL, userIdentifier: String) -> Bool {
+    public func removeAuthToken(for url: URL, userIdentifier: String) throws {
         let query = identifyingAttributes(for: url, service: authTokenService, userIdentifier: userIdentifier)
-        return remove(matching: query)
+        try remove(matching: query)
     }
     
     private var authTokenService = "org.raisingthefloor.morphic.auth-token"
@@ -181,7 +181,7 @@ public class Keychain {
         return resultAttributes
     }
     
-    private func save(attributes: [CFString: CFTypeRef], matching query: [CFString: CFTypeRef]) -> Bool {
+    private func save(attributes: [CFString: CFTypeRef], matching query: [CFString: CFTypeRef]) throws {
         var attributes = attributes
         if #available(macOS 10.15, *) {
             attributes[kSecUseDataProtectionKeychain] = kCFBooleanTrue
@@ -195,24 +195,22 @@ public class Keychain {
             status = SecItemAdd(attributes as CFDictionary, nil)
             if status != errSecSuccess {
                 os_log(.error, log: logger, "Failed to add item to keychain: %d", status)
-                return false
+                throw MorphicError()
             }
-            return true
+            return
         }
         if status != errSecSuccess {
             os_log(.error, log: logger, "Failed to update item in keychain: %d", status)
-            return false
+            throw MorphicError()
         }
-        return true
     }
     
-    private func remove(matching query: [CFString: CFTypeRef]) -> Bool {
+    private func remove(matching query: [CFString: CFTypeRef]) throws {
         let status = SecItemDelete(query as CFDictionary)
         if status != errSecSuccess {
             os_log(.error, log: logger, "Failed to remove item from keychain: %d", status)
-            return false
+            throw MorphicError()
         }
-        return true
     }
     
 }

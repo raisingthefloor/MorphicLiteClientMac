@@ -26,13 +26,15 @@ import MorphicCore
 
 public class KeyboardPreferencesElement: UIElement {
     
-    public func select(tabTitled title: String) -> Bool {
-        return tabGroup?.select(tabTitled: title) ?? false
+    public func select(tabTitled title: String) throws {
+        guard let _ = try tabGroup?.select(tabTitled: title) else
+	    throw MorphicError()
+	}
     }
     
-    public func select(tableRowTitled rowTitle: String, ofTableTitled tableTitle: String) -> Bool {
+    public func select(tableRowTitled rowTitle: String, ofTableTitled tableTitle: String) throws {
         guard let table = table(titled: tableTitle) else {
-            return false
+            throw MorphicError()
         }
         var targetRow: RowElement? = nil
         for row in table.rows {
@@ -58,10 +60,10 @@ public class KeyboardPreferencesElement: UIElement {
             }
         }
         guard let _ = targetRow else {
-            return false
+            throw MorphicError()
         }
 
-        return targetRow!.select()
+        try targetRow!.select()
     }
 
 }

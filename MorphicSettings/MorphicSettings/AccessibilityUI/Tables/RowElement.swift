@@ -22,14 +22,12 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
 
 public class RowElement: UIElement {
     
-    public func select() -> Bool {
-        guard accessibilityElement.setValue(true, forAttribute: .selected) else {
-            return false
-        }
-        return true
+    public func select() throws {
+        try accessibilityElement.setValue(true, forAttribute: .selected)
     }
     
     public func cell(at index: Int) -> CellElement? {

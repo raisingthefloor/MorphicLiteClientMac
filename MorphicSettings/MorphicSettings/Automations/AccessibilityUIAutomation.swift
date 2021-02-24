@@ -103,7 +103,7 @@ public class AccessibilityUIAutomation: UIAutomation {
                             return
                         }
 
-                        guard accessibility.select(tabTitled: tab) else {
+                        guard let _ = try? accessibility.select(tabTitled: tab) else {
                             os_log(.error, log: logger, "Failed to select Display tab")
                             completion(nil)
                             return

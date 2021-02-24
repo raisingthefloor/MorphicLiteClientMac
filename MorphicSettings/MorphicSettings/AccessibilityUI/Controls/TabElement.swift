@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
 
 public class TabElement: UIElement {
     
@@ -41,17 +42,19 @@ public class TabElement: UIElement {
         return .normal
     }
     
-    public func select() -> Bool {
+    public func select() throws {
         switch state {
         case .selected:
-            return true
+            return
         case .normal:
-            if !accessibilityElement.perform(action: .press) {
-                return false
+            try accessibilityElement.perform(action: .press)
+            if state == .selected {
+                return
+            } else {
+                throw MorphicError()
             }
-            return state == .selected
         case .unknown:
-            return false
+            throw MorphicError()
         }
     }
     

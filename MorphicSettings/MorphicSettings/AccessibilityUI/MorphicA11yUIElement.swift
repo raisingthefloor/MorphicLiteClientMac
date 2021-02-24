@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Cocoa
+import MorphicCore
 
 public struct MorphicA11yUIElement {
     internal let axUiElement: AXUIElement
@@ -144,19 +145,16 @@ public struct MorphicA11yUIElement {
 
     //
 
-    public func setValue(_ value: MorphicA11yUIAttributeValueCompatible, forAttribute attribute: NSAccessibility.Attribute) -> Bool {
-        return MorphicA11yUIElement.setValue(value, forAttribute: attribute, forAXUIElement: self.axUiElement)
+    public func setValue(_ value: MorphicA11yUIAttributeValueCompatible, forAttribute attribute: NSAccessibility.Attribute) throws {
+        try MorphicA11yUIElement.setValue(value, forAttribute: attribute, forAXUIElement: self.axUiElement)
     }
 
-    private static func setValue(_ value: MorphicA11yUIAttributeValueCompatible, forAttribute attribute: NSAccessibility.Attribute, forAXUIElement axUiElement: AXUIElement) -> Bool {
-
+    private static func setValue(_ value: MorphicA11yUIAttributeValueCompatible, forAttribute attribute: NSAccessibility.Attribute, forAXUIElement axUiElement: AXUIElement) throws {
         let valueAsCFTypeRef = value.toCFTypeRef()
         let error = AXUIElementSetAttributeValue(axUiElement, attribute.rawValue as CFString, valueAsCFTypeRef)
         if error != .success {
-            return false
+            throw MorphicError()
         }
-        
-        return true
     }
     
     //
@@ -179,14 +177,11 @@ public struct MorphicA11yUIElement {
     
     //
     
-    public func perform(action: NSAccessibility.Action) -> Bool {
+    public func perform(action: NSAccessibility.Action) throws {
         let error = AXUIElementPerformAction(self.axUiElement, action.rawValue as CFString)
         if error != .success {
-            return false
+            throw MorphicError()
         }
-        
-        // success
-        return true
     }
 }
 

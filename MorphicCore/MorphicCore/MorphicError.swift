@@ -1,4 +1,4 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2021 Raising the Floor - International
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
@@ -21,28 +21,7 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Foundation
-import MorphicCore
-
-public class MenuElement: UIElement {
-    
-    public func select(itemTitled title: String) throws {
-        guard let _ = try? items.first(where: { $0.title == title })?.select() else {
-            throw MorphicError()
-        }
+public struct MorphicError: Error {
+    public init() {
     }
-    
-    public var items: [MenuItemElement] {
-        guard let children = accessibilityElement.children() else {
-            return []
-        }
-        var items = [MenuItemElement]()
-        for child in children{
-            if child.role == .menuItem {
-                items.append(MenuItemElement(accessibilityElement: child))
-            }
-        }
-        return items
-    }
-    
 }

@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
 
 public class CheckboxElement: UIElement {
     
@@ -42,39 +43,43 @@ public class CheckboxElement: UIElement {
         return .unchecked
     }
     
-    public func setChecked(_ checked: Bool) -> Bool {
+    public func setChecked(_ checked: Bool) throws {
         if checked {
-            return check()
+            try check()
         } else {
-            return uncheck()
+            try uncheck()
         }
     }
     
-    public func check() -> Bool {
+    public func check() throws {
         switch state {
         case .checked:
-            return true
+            return
         case .unchecked, .mixed:
-            if !accessibilityElement.perform(action: .press) {
-                return false
+            try accessibilityElement.perform(action: .press)
+            if state == .checked {
+                return
+            } else {
+                throw MorphicError()
             }
-            return state == .checked
         case .unknown:
-            return false
+            throw MorphicError()
         }
     }
     
-    public func uncheck() -> Bool {
+    public func uncheck() throws {
         switch state{
         case .unchecked:
-            return true
+            return
         case .checked, .mixed:
-            if !accessibilityElement.perform(action: .press) {
-                return false
+            try accessibilityElement.perform(action: .press)
+            if state == .unchecked {
+                return
+            } else {
+                throw MorphicError()
             }
-            return state == .unchecked
         case .unknown:
-            return false
+            throw MorphicError()
         }
     }
     

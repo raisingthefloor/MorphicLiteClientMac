@@ -114,14 +114,16 @@ public class ApplicationElement: UIElement {
         }
     }
     
-    public func terminate() -> Bool {
-        guard let runningApplication = runningApplication else {
-            return true
+    public func terminate() throws {
+        guard let runningApplication = self.runningApplication else {
+            return
         }
-        guard !runningApplication.isTerminated else {
-            return true
+        guard runningApplication.isTerminated == false else {
+            return
         }
-        return runningApplication.terminate()
+        if runningApplication.terminate() == false {
+            throw MorphicError()
+        }
     }
     
     public var mainWindow: WindowElement? {

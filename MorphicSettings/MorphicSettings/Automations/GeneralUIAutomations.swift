@@ -84,7 +84,7 @@ public class GeneralCheckboxUIAutomation: GeneralUIAutomation {
                 completion(false)
                 return
             }
-            guard checkbox.setChecked(checked) else {
+            guard let _ = try? checkbox.setChecked(checked) else {
                 os_log(.error, log: logger, "Failed to press checkbox")
                 completion(false)
                 return

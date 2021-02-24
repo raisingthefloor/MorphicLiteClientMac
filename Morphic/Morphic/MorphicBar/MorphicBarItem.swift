@@ -782,7 +782,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
         }
         //
-        _ = display.zoom(to: percentage)
+        _ = try? display.zoom(to: percentage)
     }
     
     @objc
@@ -796,20 +796,20 @@ class MorphicBarControlItem: MorphicBarItem {
         }
         if segment == 0 {
             if output.isMuted {
-                _ = output.setMuted(false)
+                _ = try? output.setMuted(false)
             } else {
-                _ = output.setVolume(output.volume + 0.05)
+                _ = try? output.setVolume(output.volume + 0.05)
             }
         } else if segment == 1 {
             if output.isMuted {
-                _ = output.setMuted(false)
+                _ = try? output.setMuted(false)
             } else {
-                _ = output.setVolume(output.volume - 0.05)
+                _ = try? output.setVolume(output.volume - 0.05)
             }
         } else if segment == 2 {
             let currentMuteState = output.isMuted
             let newMuteState = !currentMuteState
-            _ = output.setMuted(newMuteState)
+            _ = try? output.setMuted(newMuteState)
         }
 
         // update the state of the mute button
@@ -826,15 +826,15 @@ class MorphicBarControlItem: MorphicBarItem {
         }
         if segment == 0 {
             if output.isMuted {
-                _ = output.setMuted(false)
+                _ = try? output.setMuted(false)
             } else {
-                _ = output.setVolume(output.volume + 0.05)
+                _ = try? output.setVolume(output.volume + 0.05)
             }
         } else if segment == 1 {
             if output.isMuted {
-                _ = output.setMuted(false)
+                _ = try? output.setMuted(false)
             } else {
-                _ = output.setVolume(output.volume - 0.05)
+                _ = try? output.setVolume(output.volume - 0.05)
             }
         }
     }
@@ -890,7 +890,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
             
             // send the appropriate hotkey to the system
-            guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
+            guard let _ = try? MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) else {
                 NSLog("Could not send copy/paste hotkey to the keyboard input stream")
                 return
             }
@@ -949,7 +949,7 @@ class MorphicBarControlItem: MorphicBarItem {
         QuickHelpWindow.hide(withoutDelay: true) {
             // after we hide the QuickHelp window, send our key
             
-            guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
+            guard let _ = try? MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) else {
                 NSLog("Could not send 'screen snip' hotkey to the keyboard input stream")
                 return
             }
@@ -1307,7 +1307,7 @@ class MorphicBarControlItem: MorphicBarItem {
                 }
                 
                 // send the "speak selected text key" to the system
-                guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
+                guard let _ = try? MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) else {
                     NSLog("Could not send 'Speak selected text' hotkey to the keyboard input stream")
                     return
                 }
