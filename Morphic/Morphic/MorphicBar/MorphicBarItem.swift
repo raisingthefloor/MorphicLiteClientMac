@@ -198,6 +198,9 @@ class MorphicBarLinkItem: MorphicBarItem {
              "https":
             // valid
             break
+        case "skype":
+            // allowed for now, but in the future we may want to launch Skype directly and handle this information seperately
+            break
         default:
             // disallowed/missing scheme: reject this URL
             url = nil

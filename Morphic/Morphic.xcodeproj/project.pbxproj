@@ -70,6 +70,36 @@
 		9D1FA1CF251A31990008559D /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D1FA1CE251A31990008559D /* ServiceManagement.framework */; };
 		9D2A5AB8259B815800ECD513 /* ConfigurableFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */; };
 		9D2A5AC1259B914800ECD513 /* MorphicBarSeparatorItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */; };
+		9D2C141425EC179500D66DAD /* envelope.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C141325EC179400D66DAD /* envelope.pdf */; };
+		9D2C141725EC191700D66DAD /* newspaper.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C141625EC191700D66DAD /* newspaper.pdf */; };
+		9D2C141E25EC1AD900D66DAD /* window_maximize.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C141D25EC1AD900D66DAD /* window_maximize.pdf */; };
+		9D2C142225EC1C1C00D66DAD /* favicon_foxNews.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C142125EC1C1C00D66DAD /* favicon_foxNews.pdf */; };
+		9D2C142525EC1C9F00D66DAD /* logo_skype.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C142425EC1C9F00D66DAD /* logo_skype.pdf */; };
+		9D2C142B25EC5CD600D66DAD /* logo_nextdoor.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C142725EC5CD600D66DAD /* logo_nextdoor.pdf */; };
+		9D2C142C25EC5CD600D66DAD /* logo_twitter.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C142825EC5CD600D66DAD /* logo_twitter.pdf */; };
+		9D2C142D25EC5CD600D66DAD /* logo_pinterest.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C142925EC5CD600D66DAD /* logo_pinterest.pdf */; };
+		9D2C142E25EC5CD600D66DAD /* logo_facebook.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C142A25EC5CD600D66DAD /* logo_facebook.pdf */; };
+		9D2C143225EC5DF300D66DAD /* logo_imgur.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C143125EC5DF300D66DAD /* logo_imgur.pdf */; };
+		9D2C143525EC5E0A00D66DAD /* logo_instagram.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C143425EC5E0A00D66DAD /* logo_instagram.pdf */; };
+		9D2C143825EC5E2200D66DAD /* logo_linkedIn.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C143725EC5E2200D66DAD /* logo_linkedIn.pdf */; };
+		9D2C143B25EC5E3B00D66DAD /* logo_reddit.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C143A25EC5E3B00D66DAD /* logo_reddit.pdf */; };
+		9D2C143E25EC5E5400D66DAD /* logo_tumblr.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C143D25EC5E5400D66DAD /* logo_tumblr.pdf */; };
+		9D2C144125EC60CA00D66DAD /* logo_aolOld.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C144025EC60CA00D66DAD /* logo_aolOld.pdf */; };
+		9D2C144425EC60CF00D66DAD /* logo_gmail.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C144325EC60CF00D66DAD /* logo_gmail.pdf */; };
+		9D2C144725EC60D300D66DAD /* logo_icloud.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C144625EC60D300D66DAD /* logo_icloud.pdf */; };
+		9D2C144A25EC60DA00D66DAD /* logo_outlook.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C144925EC60DA00D66DAD /* logo_outlook.pdf */; };
+		9D2C144D25EC60DF00D66DAD /* logo_yahoomail.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C144C25EC60DF00D66DAD /* logo_yahoomail.pdf */; };
+		9D2C145025EC611B00D66DAD /* logo_mail.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C144F25EC611B00D66DAD /* logo_mail.jpg */; };
+		9D2C145325EC664100D66DAD /* logo_cnn.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C145225EC664100D66DAD /* logo_cnn.pdf */; };
+		9D2C145625EC668C00D66DAD /* logo_foxNews.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C145525EC668C00D66DAD /* logo_foxNews.pdf */; };
+		9D2C145925EC678200D66DAD /* logo_googleNews.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C145825EC678200D66DAD /* logo_googleNews.pdf */; };
+		9D2C145C25EC67BE00D66DAD /* logo_newYorkTimes.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C145B25EC67BE00D66DAD /* logo_newYorkTimes.pdf */; };
+		9D2C146025EC680E00D66DAD /* logo_washingtonPost.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C145F25EC680E00D66DAD /* logo_washingtonPost.pdf */; };
+		9D2C146325EC686400D66DAD /* logo_yahoo.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C146225EC686400D66DAD /* logo_yahoo.pdf */; };
+		9D2C146625EC68AF00D66DAD /* logo_box.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C146525EC68AF00D66DAD /* logo_box.pdf */; };
+		9D2C146925EC68F500D66DAD /* logo_dropbox.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C146825EC68F500D66DAD /* logo_dropbox.pdf */; };
+		9D2C146C25EC699C00D66DAD /* logo_googleDrive.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C146B25EC699C00D66DAD /* logo_googleDrive.pdf */; };
+		9D2C146F25EC69A500D66DAD /* logo_onedrive.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C146E25EC69A500D66DAD /* logo_onedrive.pdf */; };
 		9D3530A525C2860200F8D590 /* Countly in Frameworks */ = {isa = PBXBuildFile; productRef = 9D3530A425C2860200F8D590 /* Countly */; };
 		9D3530DD25C3101100F8D590 /* VersionUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3530DC25C3101100F8D590 /* VersionUtils.swift */; };
 		9D49D4DD25BBA93B001DD452 /* Autoupdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */; };
@@ -252,6 +282,36 @@
 		9D2593F3250EA87E00C38DA3 /* MorphicConfiguratorRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicConfiguratorRelease.entitlements; sourceTree = "<group>"; };
 		9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableFeatures.swift; sourceTree = "<group>"; };
 		9D2A5AC0259B914800ECD513 /* MorphicBarSeparatorItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarSeparatorItemView.swift; sourceTree = "<group>"; };
+		9D2C141325EC179400D66DAD /* envelope.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = envelope.pdf; sourceTree = "<group>"; };
+		9D2C141625EC191700D66DAD /* newspaper.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = newspaper.pdf; sourceTree = "<group>"; };
+		9D2C141D25EC1AD900D66DAD /* window_maximize.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = window_maximize.pdf; sourceTree = "<group>"; };
+		9D2C142125EC1C1C00D66DAD /* favicon_foxNews.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = favicon_foxNews.pdf; sourceTree = "<group>"; };
+		9D2C142425EC1C9F00D66DAD /* logo_skype.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_skype.pdf; sourceTree = "<group>"; };
+		9D2C142725EC5CD600D66DAD /* logo_nextdoor.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_nextdoor.pdf; sourceTree = "<group>"; };
+		9D2C142825EC5CD600D66DAD /* logo_twitter.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_twitter.pdf; sourceTree = "<group>"; };
+		9D2C142925EC5CD600D66DAD /* logo_pinterest.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_pinterest.pdf; sourceTree = "<group>"; };
+		9D2C142A25EC5CD600D66DAD /* logo_facebook.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_facebook.pdf; sourceTree = "<group>"; };
+		9D2C143125EC5DF300D66DAD /* logo_imgur.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_imgur.pdf; sourceTree = "<group>"; };
+		9D2C143425EC5E0A00D66DAD /* logo_instagram.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_instagram.pdf; sourceTree = "<group>"; };
+		9D2C143725EC5E2200D66DAD /* logo_linkedIn.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_linkedIn.pdf; sourceTree = "<group>"; };
+		9D2C143A25EC5E3B00D66DAD /* logo_reddit.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_reddit.pdf; sourceTree = "<group>"; };
+		9D2C143D25EC5E5400D66DAD /* logo_tumblr.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_tumblr.pdf; sourceTree = "<group>"; };
+		9D2C144025EC60CA00D66DAD /* logo_aolOld.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_aolOld.pdf; sourceTree = "<group>"; };
+		9D2C144325EC60CF00D66DAD /* logo_gmail.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_gmail.pdf; sourceTree = "<group>"; };
+		9D2C144625EC60D300D66DAD /* logo_icloud.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_icloud.pdf; sourceTree = "<group>"; };
+		9D2C144925EC60DA00D66DAD /* logo_outlook.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_outlook.pdf; sourceTree = "<group>"; };
+		9D2C144C25EC60DF00D66DAD /* logo_yahoomail.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_yahoomail.pdf; sourceTree = "<group>"; };
+		9D2C144F25EC611B00D66DAD /* logo_mail.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = logo_mail.jpg; sourceTree = "<group>"; };
+		9D2C145225EC664100D66DAD /* logo_cnn.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_cnn.pdf; sourceTree = "<group>"; };
+		9D2C145525EC668C00D66DAD /* logo_foxNews.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_foxNews.pdf; sourceTree = "<group>"; };
+		9D2C145825EC678200D66DAD /* logo_googleNews.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_googleNews.pdf; sourceTree = "<group>"; };
+		9D2C145B25EC67BE00D66DAD /* logo_newYorkTimes.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_newYorkTimes.pdf; sourceTree = "<group>"; };
+		9D2C145F25EC680E00D66DAD /* logo_washingtonPost.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_washingtonPost.pdf; sourceTree = "<group>"; };
+		9D2C146225EC686400D66DAD /* logo_yahoo.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_yahoo.pdf; sourceTree = "<group>"; };
+		9D2C146525EC68AF00D66DAD /* logo_box.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_box.pdf; sourceTree = "<group>"; };
+		9D2C146825EC68F500D66DAD /* logo_dropbox.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_dropbox.pdf; sourceTree = "<group>"; };
+		9D2C146B25EC699C00D66DAD /* logo_googleDrive.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_googleDrive.pdf; sourceTree = "<group>"; };
+		9D2C146E25EC69A500D66DAD /* logo_onedrive.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_onedrive.pdf; sourceTree = "<group>"; };
 		9D3530DC25C3101100F8D590 /* VersionUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionUtils.swift; sourceTree = "<group>"; };
 		9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Autoupdater.swift; sourceTree = "<group>"; };
 		9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAvailableWindow.swift; sourceTree = "<group>"; };
@@ -497,11 +557,41 @@
 			children = (
 				9DC0D3FD25E5F05800E17D9E /* calendar.pdf */,
 				9DC0D40425E5F1FF00E17D9E /* comments.pdf */,
+				9D2C141325EC179400D66DAD /* envelope.pdf */,
+				9D2C145825EC678200D66DAD /* logo_googleNews.pdf */,
 				9DC0D41425E5F5F200E17D9E /* envelope_open.pdf */,
 				9DC0D40725E5F2ED00E17D9E /* envelope_open_text.pdf */,
 				9DC0D41A25E5F72100E17D9E /* envelope_outline.pdf */,
 				9DC0D41725E5F6BF00E17D9E /* envelope_outline_open.pdf */,
+				9D2C142125EC1C1C00D66DAD /* favicon_foxNews.pdf */,
 				9DC0D3FA25E5EAAC00E17D9E /* globe.pdf */,
+				9D2C144025EC60CA00D66DAD /* logo_aolOld.pdf */,
+				9D2C146525EC68AF00D66DAD /* logo_box.pdf */,
+				9D2C145225EC664100D66DAD /* logo_cnn.pdf */,
+				9D2C146825EC68F500D66DAD /* logo_dropbox.pdf */,
+				9D2C142A25EC5CD600D66DAD /* logo_facebook.pdf */,
+				9D2C145525EC668C00D66DAD /* logo_foxNews.pdf */,
+				9D2C144325EC60CF00D66DAD /* logo_gmail.pdf */,
+				9D2C146B25EC699C00D66DAD /* logo_googleDrive.pdf */,
+				9D2C144625EC60D300D66DAD /* logo_icloud.pdf */,
+				9D2C143125EC5DF300D66DAD /* logo_imgur.pdf */,
+				9D2C143425EC5E0A00D66DAD /* logo_instagram.pdf */,
+				9D2C143725EC5E2200D66DAD /* logo_linkedIn.pdf */,
+				9D2C144F25EC611B00D66DAD /* logo_mail.jpg */,
+				9D2C145B25EC67BE00D66DAD /* logo_newYorkTimes.pdf */,
+				9D2C142725EC5CD600D66DAD /* logo_nextdoor.pdf */,
+				9D2C146E25EC69A500D66DAD /* logo_onedrive.pdf */,
+				9D2C144925EC60DA00D66DAD /* logo_outlook.pdf */,
+				9D2C142925EC5CD600D66DAD /* logo_pinterest.pdf */,
+				9D2C143A25EC5E3B00D66DAD /* logo_reddit.pdf */,
+				9D2C142425EC1C9F00D66DAD /* logo_skype.pdf */,
+				9D2C143D25EC5E5400D66DAD /* logo_tumblr.pdf */,
+				9D2C142825EC5CD600D66DAD /* logo_twitter.pdf */,
+				9D2C145F25EC680E00D66DAD /* logo_washingtonPost.pdf */,
+				9D2C146225EC686400D66DAD /* logo_yahoo.pdf */,
+				9D2C144C25EC60DF00D66DAD /* logo_yahoomail.pdf */,
+				9D2C141625EC191700D66DAD /* newspaper.pdf */,
+				9D2C141D25EC1AD900D66DAD /* window_maximize.pdf */,
 			);
 			path = Icons;
 			sourceTree = "<group>";
@@ -757,26 +847,56 @@
 			files = (
 				31C12CC224B143A000B617A8 /* QuickHelpStepViewController.xib in Resources */,
 				9DC0D41825E5F6BF00E17D9E /* envelope_outline_open.pdf in Resources */,
+				9D2C145625EC668C00D66DAD /* logo_foxNews.pdf in Resources */,
+				9D2C143525EC5E0A00D66DAD /* logo_instagram.pdf in Resources */,
+				9D2C145325EC664100D66DAD /* logo_cnn.pdf in Resources */,
+				9D2C144D25EC60DF00D66DAD /* logo_yahoomail.pdf in Resources */,
 				9DC0D41B25E5F72100E17D9E /* envelope_outline.pdf in Resources */,
+				9D2C142E25EC5CD600D66DAD /* logo_facebook.pdf in Resources */,
+				9D2C145C25EC67BE00D66DAD /* logo_newYorkTimes.pdf in Resources */,
 				9DC0D40825E5F2ED00E17D9E /* envelope_open_text.pdf in Resources */,
+				9D2C145025EC611B00D66DAD /* logo_mail.jpg in Resources */,
+				9D2C146625EC68AF00D66DAD /* logo_box.pdf in Resources */,
 				9DA46E7925CA743B006BEAAC /* PermissionsSuccessWindow.xib in Resources */,
+				9D2C142C25EC5CD600D66DAD /* logo_twitter.pdf in Resources */,
 				31751B822444E11600EEDF14 /* Local.xcconfig in Resources */,
 				9DA46E7B25CA743B006BEAAC /* PermissionsGuidanceWindow.xib in Resources */,
+				9D2C142225EC1C1C00D66DAD /* favicon_foxNews.pdf in Resources */,
+				9D2C143E25EC5E5400D66DAD /* logo_tumblr.pdf in Resources */,
+				9D2C143B25EC5E3B00D66DAD /* logo_reddit.pdf in Resources */,
 				9D82576F24D31C1E00F6E932 /* AboutBoxWindowController.xib in Resources */,
 				31CE56F5244A407000A52A7B /* QuickHelpViewController.xib in Resources */,
+				9D2C146925EC68F500D66DAD /* logo_dropbox.pdf in Resources */,
+				9D2C146325EC686400D66DAD /* logo_yahoo.pdf in Resources */,
+				9D2C144725EC60D300D66DAD /* logo_icloud.pdf in Resources */,
 				31751B3C2444DFAA00EEDF14 /* Main.xib in Resources */,
 				9D49D4F325BBAA00001DD452 /* UpdateAvailableWindow.xib in Resources */,
+				9D2C144425EC60CF00D66DAD /* logo_gmail.pdf in Resources */,
+				9D2C146C25EC699C00D66DAD /* logo_googleDrive.pdf in Resources */,
+				9D2C142B25EC5CD600D66DAD /* logo_nextdoor.pdf in Resources */,
+				9D2C144125EC60CA00D66DAD /* logo_aolOld.pdf in Resources */,
 				9DE112E82522243200591E08 /* CopySettingsWindow.xib in Resources */,
 				31E1E188244794EF009C4092 /* MorphicBarViewController.xib in Resources */,
+				9D2C145925EC678200D66DAD /* logo_googleNews.pdf in Resources */,
+				9D2C146F25EC69A500D66DAD /* logo_onedrive.pdf in Resources */,
+				9D2C142D25EC5CD600D66DAD /* logo_pinterest.pdf in Resources */,
 				9DC0D3FE25E5F05800E17D9E /* calendar.pdf in Resources */,
+				9D2C143225EC5DF300D66DAD /* logo_imgur.pdf in Resources */,
 				31751B842444E11600EEDF14 /* Debug.xcconfig in Resources */,
+				9D2C143825EC5E2200D66DAD /* logo_linkedIn.pdf in Resources */,
 				9DC0D3FB25E5EAAC00E17D9E /* globe.pdf in Resources */,
 				31751B0F2444DE8B00EEDF14 /* Assets.xcassets in Resources */,
+				9D2C141725EC191700D66DAD /* newspaper.pdf in Resources */,
 				9DC0D40525E5F1FF00E17D9E /* comments.pdf in Resources */,
+				9D2C141425EC179500D66DAD /* envelope.pdf in Resources */,
+				9D2C146025EC680E00D66DAD /* logo_washingtonPost.pdf in Resources */,
+				9D2C141E25EC1AD900D66DAD /* window_maximize.pdf in Resources */,
 				31751B832444E11600EEDF14 /* Release.xcconfig in Resources */,
 				314EB6DB24A697C300CF3D48 /* macos.solutions.json in Resources */,
 				9DC0D41525E5F5F200E17D9E /* envelope_open.pdf in Resources */,
 				31E1E187244792D9009C4092 /* DefaultPreferences.json in Resources */,
+				9D2C144A25EC60DA00D66DAD /* logo_outlook.pdf in Resources */,
+				9D2C142525EC1C9F00D66DAD /* logo_skype.pdf in Resources */,
 				31C12CBC24B11F5A00B617A8 /* QuickHelpVolumeViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -264,7 +264,7 @@ fileprivate extension URL{
         if let proto = keychainAttributes.string(for: kSecAttrProtocol) {
             if proto == kSecAttrProtocolHTTP as String {
                 components.scheme = "http"
-            }else if proto == kSecAttrProtocolHTTPS as String {
+            } else if proto == kSecAttrProtocolHTTPS as String {
                 components.scheme = "https"
             }
         }
@@ -293,7 +293,7 @@ fileprivate extension URL{
         if let scheme = scheme{
             if scheme == "http"{
                 attributes[kSecAttrProtocol] = kSecAttrProtocolHTTP
-            }else if scheme == "https"{
+            } else if scheme == "https" {
                 attributes[kSecAttrProtocol] = kSecAttrProtocolHTTPS
             }
             
