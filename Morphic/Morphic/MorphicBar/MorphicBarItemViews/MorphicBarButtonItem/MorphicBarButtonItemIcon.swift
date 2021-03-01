@@ -25,19 +25,25 @@ import Foundation
 
 enum MorphicBarButtonItemIcon: String {
     case abcnews = "abcnews"
+//    case aljazeera = "aljazeera"
     case amazon = "amazon"
 //    case amazonMusic = "amazonmusic"
     case aol = "aolold"
     case appleMusic = "itunes"
+    case bbc = "bbc"
     case bestBuy = "bestbuy"
+    case bloomberg = "bloomberg"
     case box = "box"
     case calendar = "calendar$calendar"
+    case cbsNews = "cbsnews"
+    case cnbc = "cnbc"
     case cnn = "cnn"
     case comments = "comments"
     case craigslist = "craigslist"
     case deezer = "deezer"
     case disneyPlus = "disneyplus"
     case dropbox = "dropbox"
+    case drudgereport = "drudgereport"
 //    case ebay = "ebay"
     case etsy = "etsy"
     case envelope = "email$envelope"
@@ -46,42 +52,52 @@ enum MorphicBarButtonItemIcon: String {
     case envelopeOutline = "email$envelopeoutline"
     case envelopeOutlineOpen = "email$envelopeoutlineopen"
     case facebook = "facebook"
+    case forbes = "forbes"
     case foxnews1 = "faviconfoxnews"
     case foxnews2 = "foxnews"
     case globe = "globe"
     case gmail = "gmail"
     case googleDrive = "googledrive"
     case googleNews = "googlenews"
+    case huffPost = "huffpost"
     case hulu = "hulu"
     case icloud = "icloud"
     case iHeartRadio = "iheartradio"
     case imgur = "imgur"
     case instagram = "instagram"
     case kohls = "kohls"
+    case latimes = "latimes"
     case linkedin = "linkedin"
     case macys = "macys"
 //    case mail = "mail"
+    case nbcNews = "nbcnews"
     case netflix = "netflix"
     case newspaper = "news$newspaper"
     case newYorkTimes = "newyorktimes"
     case nextdoor = "nextdoor"
+    case npr = "npr"
     case onedrive = "onedrive"
     case outlook = "outlook"
 //    case pandora = "pandora"
     case pinterest = "pinterest"
     case reddit = "reddit"
+    case reuters = "reuters"
     case skype = "skype"
     case spotify = "spotify"
     case soundcloud = "soundcloud"
     case target = "target"
+    case theGuardian = "theguardian"
+//    case theHill = "thehill"
 //    case tidal = "tidal"
     case tumblr = "tumblr"
     case twitter = "twitter"
+    case usaToday = "usatoday"
     case vimeo = "vimeo"
     case walmart = "walmart"
     case washingtonPost = "washingtonpost"
 //    case wayfair = "wayfair"
     case windowMaximize = "windowmaximize"
+    case wallStreetJournal = "wsj"
     case yahoo = "yahoo"
     case yahooMail = "yahoomail"
     case youtube = "youtube"
@@ -99,6 +115,8 @@ enum MorphicBarButtonItemIcon: String {
                 return pngPath
             } else if let jpgPath = Bundle.main.path(forResource: fileName, ofType: "jpg") {
                 return jpgPath
+             } else if let jpegPath = Bundle.main.path(forResource: fileName, ofType: "jpeg") {
+                 return jpegPath
             } else */ if let pdfPath = Bundle.main.path(forResource: fileName, ofType: "pdf") {
                 return pdfPath
             } else {
@@ -113,28 +131,40 @@ enum MorphicBarButtonItemIcon: String {
         switch imageUrl {
         case "abcnews":
             return "logo_abcNews"
+//        case "aljazeera":
+//            return "logo_alJazeera"
 //        case "amazonmusic":
 //            return "logo_amazonMusic"
         case "amazon":
             return "logo_amazon"
         case "aolold":
             return "logo_aolOld"
+        case "bbc":
+            return "logo_bbc"
         case "bestbuy":
             return "logo_bestBuy"
+        case "bloomberg":
+            return "logo_bloomberg"
         case "box":
             return "logo_box"
         case "calendar$calendar":
             return "calendar"
-        case "craigslist":
-            return "logo_craigslist"
+        case "cbsnews":
+            return "logo_cbsNews"
+        case "cnbc":
+            return "logo_cnbc"
         case "cnn":
             return "logo_cnn"
+        case "craigslist":
+            return "logo_craigslist"
         case "deezer":
             return "logo_deezer"
         case "disneyplus":
             return "logo_disneyPlus"
         case "dropbox":
             return "logo_dropbox"
+        case "drudgereport":
+            return "logo_drudgeReport"
 //        case "ebay":
 //            return "logo_ebay"
         case "email$envelope":
@@ -153,6 +183,8 @@ enum MorphicBarButtonItemIcon: String {
             return "logo_facebook"
         case "faviconfoxnews":
             return "favicon_foxNews"
+        case "forbes":
+            return "logo_forbes"
         case "foxnews":
             return "logo_foxNews"
         case "gmail":
@@ -161,6 +193,8 @@ enum MorphicBarButtonItemIcon: String {
             return "logo_googleDrive"
         case "googlenews":
             return "logo_googleNews"
+        case "huffpost":
+            return "logo_huffpost"
         case "hulu":
             return "logo_hulu"
         case "icloud":
@@ -175,12 +209,16 @@ enum MorphicBarButtonItemIcon: String {
             return "logo_itunes"
         case "kohls":
             return "logo_kohls"
+        case "latimes":
+            return "logo_laTimes"
         case "linkedin":
             return "logo_linkedIn"
         case "macys":
             return "logo_macys"
 //        case "mail":
 //            return "logo_mail"
+        case "nbcnews":
+            return "logo_nbcNews"
         case "netflix":
             return "logo_netflix"
         case "news$newspaper":
@@ -189,6 +227,8 @@ enum MorphicBarButtonItemIcon: String {
             return "logo_newYorkTimes"
         case "nextdoor":
             return "logo_nextdoor"
+        case "npr":
+            return "logo_npr"
         case "onedrive":
             return "logo_onedrive"
         case "outlook":
@@ -199,6 +239,8 @@ enum MorphicBarButtonItemIcon: String {
             return "logo_pinterest"
         case "reddit":
             return "logo_reddit"
+        case "reuters":
+            return "logo_reuters"
         case "skype":
             return "logo_skype"
         case "soundcloud":
@@ -207,12 +249,18 @@ enum MorphicBarButtonItemIcon: String {
             return "logo_spotify"
         case "target":
             return "logo_target"
+        case "theguardian":
+            return "logo_theGuardian"
+//        case "thehill":
+//            return "logo_theHill"
         case "tidal":
             return "logo_tidal"
         case "twitter":
             return "logo_twitter"
         case "tumblr":
             return "logo_tumblr"
+        case "usatoday":
+            return "logo_usaToday"
         case "vimeo":
             return "logo_vimeo"
         case "walmart":
@@ -221,6 +269,8 @@ enum MorphicBarButtonItemIcon: String {
             return "logo_washingtonPost"
 //        case "wayfair":
 //            return "logo_wayfair"
+        case "wsj":
+            return "logo_wsj"
         case "windowmaximize":
             return "window_maximize"
         case "yahoo":
