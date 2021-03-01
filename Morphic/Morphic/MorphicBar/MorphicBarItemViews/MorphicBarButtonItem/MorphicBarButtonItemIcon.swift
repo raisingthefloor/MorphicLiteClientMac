@@ -24,26 +24,75 @@
 import Foundation
 
 enum MorphicBarButtonItemIcon: String {
+    case aol = "aolold"
+    case box = "box"
     case calendar = "calendar$calendar"
+    case cnn = "cnn"
     case comments = "comments"
-    case envelope_open = "email$envelopeopen"
-    case envelope_open_text = "email$envelopeopentext"
-    case envelope_outline = "email$envelopeoutline"
-    case envelope_outline_open = "email$envelopeoutlineopen"
+    case dropbox = "dropbox"
+    case envelope = "email$envelope"
+    case envelopeOpen = "email$envelopeopen"
+    case envelopeOpenText = "email$envelopeopentext"
+    case envelopeOutline = "email$envelopeoutline"
+    case envelopeOutlineOpen = "email$envelopeoutlineopen"
+    case facebook = "facebook"
+    case foxnews1 = "faviconfoxnews"
+    case foxnews2 = "foxnews"
     case globe = "globe"
+    case gmail = "gmail"
+    case googleDrive = "googledrive"
+    case googleNews = "googlenews"
+    case icloud = "icloud"
+    case imgur = "imgur"
+    case instagram = "instagram"
+    case linkedin = "linkedin"
+//    case mail = "mail"
+    case newspaper = "news$newspaper"
+    case newYorkTimes = "newyorktimes"
+    case nextdoor = "nextdoor"
+    case onedrive = "onedrive"
+    case outlook = "outlook"
+    case pinterest = "pinterest"
+    case reddit = "reddit"
+    case skype = "skype"
+    case tumblr = "tumblr"
+    case twitter = "twitter"
+    case washingtonPost = "washingtonpost"
+    case window_maximize = "windowmaximize"
+    case yahoo = "yahoo"
+    case yahooMail = "yahoomail"
     
     var pathToImage: String {
         get {
             let fileName = self.translateImageUrlToFileName(self.rawValue)
-            return Bundle.main.path(forResource: fileName, ofType: "pdf")!
+            // NOTE: once we add JPG support, uncomment this section (and also the mail entry above and below)
+            
+/*            if let jpgPath = Bundle.main.path(forResource: fileName, ofType: "jpg") {
+//                return jpgPath
+//            } else */ if let pdfPath = Bundle.main.path(forResource: fileName, ofType: "pdf") {
+                return pdfPath
+            } else {
+                fatalError("File path to built-in image is invalid")
+            }
         }
     }
     
     // NOTE: the image_url values we get back from the v1 API do not always represent the filename, so we need to map them here
+    //       in the (very-near-term) future, we must standardize on URLs or another form via the API; manual mapping is not sustainable
     func translateImageUrlToFileName(_ imageUrl: String) -> String {
         switch imageUrl {
+        case "aolold":
+            return "logo_aolOld"
+        case "box":
+            return "logo_box"
         case "calendar$calendar":
             return "calendar"
+        case "cnn":
+            return "logo_cnn"
+        case "dropbox":
+            return "logo_dropbox"
+        case "email$envelope":
+            return "envelope"
         case "email$envelopeopen":
             return "envelope_open"
         case "email$envelopeopentext":
@@ -52,6 +101,56 @@ enum MorphicBarButtonItemIcon: String {
             return "envelope_outline"
         case "email$envelopeoutlineopen":
             return "envelope_outline_open"
+        case "facebook":
+            return "logo_facebook"
+        case "faviconfoxnews":
+            return "favicon_foxNews"
+        case "foxnews":
+            return "logo_foxNews"
+        case "gmail":
+            return "logo_gmail"
+        case "googledrive":
+            return "logo_googleDrive"
+        case "googlenews":
+            return "logo_googleNews"
+        case "icloud":
+            return "logo_icloud"
+        case "imgur":
+            return "logo_imgur"
+        case "instagram":
+            return "logo_instagram"
+        case "linkedin":
+            return "logo_linkedIn"
+//        case "mail":
+//            return "logo_mail"
+        case "news$newspaper":
+            return "newspaper"
+        case "newyorktimes":
+            return "logo_newYorkTimes"
+        case "nextdoor":
+            return "logo_nextdoor"
+        case "onedrive":
+            return "logo_onedrive"
+        case "outlook":
+            return "logo_outlook"
+        case "pinterest":
+            return "logo_pinterest"
+        case "reddit":
+            return "logo_reddit"
+        case "skype":
+            return "logo_skype"
+        case "twitter":
+            return "logo_twitter"
+        case "tumblr":
+            return "logo_tumblr"
+        case "washingtonpost":
+            return "logo_washingtonPost"
+        case "windowmaximize":
+            return "window_maximize"
+        case "yahoo":
+            return "logo_yahoo"
+        case "yahoomail":
+            return "logo_yahoomail"
         default:
             return imageUrl
         }
