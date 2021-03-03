@@ -119,6 +119,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
                 self.mainMenu?.delegate = self
                 
+                // update our list of custom MorphicBars
+                self.updateSelectMorphicBarMenuItem()
+
                 // show the Morphic Bar (if we have a bar to show and it's (a) our first startup or (b) the user had the bar showing when the app was last exited or (c) the user has "show MorphicBar at start" set to true
                 var showMorphicBar: Bool = false
                 switch ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin {
@@ -832,43 +835,44 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     func updateSelectMorphicBarMenuItem() {
-        guard let user = Session.shared.user else {
-            self.selectBasicMorphicBarMenuItem.state = .on
-            self.selectMorphicBarMenuItem.isHidden = true
-            return
-        }
         self.selectMorphicBarMenuItem.isHidden = false
-        
-        // capture our current-selected community id
-        let userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
-        
-        // get a sorted array of our community ids and names (sorted by name first, then by id)
-        guard let userCommunityIdsAndNames = createSortedArrayOfCommunityIdsAndNames() else {
-            return
-        }
-        
-        // now populate the menu with the community names...and highlight the currently-selected community (9)with a checkmark)
-        //
+
         // remove all the menu items before the 'Basic MorphicBar' menu item
         for _ in 0..<indexOfBasicMorphicBarSubmenuItem() {
             self.selectMorphicBarMenuItem.submenu?.removeItem(at: 0)
         }
-        // set the checked state on the basic morphic bar menu item
-        if userSelectedCommunityId != nil {
-            self.selectBasicMorphicBarMenuItem.state = .off
+        
+        if let user = Session.shared.user {
+            // capture our current-selected community id
+            let userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
+            
+            // get a sorted array of our community ids and names (sorted by name first, then by id)
+            guard let userCommunityIdsAndNames = createSortedArrayOfCommunityIdsAndNames() else {
+                return
+            }
+            
+            // set the checked state on the basic morphic bar menu item
+            if userSelectedCommunityId != nil {
+                self.selectBasicMorphicBarMenuItem.state = .off
+            } else {
+                self.selectBasicMorphicBarMenuItem.state = .on
+            }
+
+            // now populate the menu with the community names...and highlight the currently-selected community (9)with a checkmark)
+            //
+            // add in all the custom bar names
+            for userCommunityIdAndName in userCommunityIdsAndNames {
+                let communityMenuItem = NSMenuItem(title: userCommunityIdAndName.name, action: #selector(AppDelegate.customMorphicBarSelected), keyEquivalent: "")
+                if userCommunityIdAndName.id == userSelectedCommunityId {
+                    communityMenuItem.state = .on
+                }
+                // NOTE: we tag each menu item with its id's hashValue (which is only stable during the same run of the program); we do this to help disambiguate multiple communities with the same name
+                communityMenuItem.tag = userCommunityIdAndName.id.hashValue
+                let indexOfBasicMorphicBarSubmenuItem = self.indexOfBasicMorphicBarSubmenuItem()
+                self.selectMorphicBarMenuItem.submenu?.insertItem(communityMenuItem, at: indexOfBasicMorphicBarSubmenuItem)
+            }
         } else {
             self.selectBasicMorphicBarMenuItem.state = .on
-        }
-        // add in all the custom bar names
-        for userCommunityIdAndName in userCommunityIdsAndNames {
-            let communityMenuItem = NSMenuItem(title: userCommunityIdAndName.name, action: #selector(AppDelegate.customMorphicBarSelected), keyEquivalent: "")
-            if userCommunityIdAndName.id == userSelectedCommunityId {
-                communityMenuItem.state = .on
-            }
-            // NOTE: we tag each menu item with its id's hashValue (which is only stable during the same run of the program); we do this to help disambiguate multiple communities with the same name
-            communityMenuItem.tag = userCommunityIdAndName.id.hashValue
-            let indexOfBasicMorphicBarSubmenuItem = self.indexOfBasicMorphicBarSubmenuItem()
-            self.selectMorphicBarMenuItem.submenu?.insertItem(communityMenuItem, at: indexOfBasicMorphicBarSubmenuItem)
         }
     }
     
