@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AutoupdateXmlFilename</key>
+	<string>$(AUTOUPDATE_XML_FILENAME)</string>
 	<key>FrontEndURL</key>
 	<string>$(FRONT_END_URL)</string>
 	<key>CountlyAppKey</key>
