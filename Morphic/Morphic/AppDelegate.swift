@@ -59,7 +59,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         guard let frontEndUrlAsString = Bundle.main.infoDictionary?["FrontEndURL"] as? String else {
             fatalError("FRONT_END_URL (mandatory) not set in .xcconfig")
         }
-        return URL(string: frontEndUrlAsString)!.appendingPathComponent("autoupdate").appendingPathComponent("morphic-macos.appcast.xml")
+        guard let autoupdateXmlFilename = Bundle.main.infoDictionary?["AutoupdateXmlFilename"] as? String else {
+            fatalError("AUTOUPDATE_XML_FILENAME (mandatory) not set in .xcconfig")
+        }
+        return URL(string: frontEndUrlAsString)!.appendingPathComponent("autoupdate").appendingPathComponent(autoupdateXmlFilename)
     }()
 
     // MARK: - Application Lifecycle
