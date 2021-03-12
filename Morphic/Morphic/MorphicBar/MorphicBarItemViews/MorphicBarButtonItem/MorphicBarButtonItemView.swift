@@ -355,13 +355,25 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
             var whitespaceCharacter: Character? = nil
             var wordIsFollowedByNewline = false
             if let nextSpaceIndex = remainingText.firstIndex(of: " ") {
-                let nextWordEndIndex = remainingText.index(before: nextSpaceIndex)
                 whitespaceCharacter = " "
-                nextWord = String(remainingText[...nextWordEndIndex])
+                if (nextSpaceIndex > remainingText.startIndex) {
+                    // space after some characters
+                    let nextWordEndIndex = remainingText.index(before: nextSpaceIndex)
+                    nextWord = String(remainingText[...nextWordEndIndex])
+                } else {
+                    // space followed by zero or more characters
+                    nextWord = String()
+                }
             } else if let newlineIndex = remainingText.firstIndex(of: "\n") {
-                let nextWordEndIndex = remainingText.index(before: newlineIndex)
                 whitespaceCharacter = "\n"
-                nextWord = String(remainingText[...nextWordEndIndex])
+                if (newlineIndex > remainingText.startIndex) {
+                    // newline after some characters
+                    let nextWordEndIndex = remainingText.index(before: newlineIndex)
+                    nextWord = String(remainingText[...nextWordEndIndex])
+                } else {
+                    // newline followed by zero or more characters
+                    nextWord = ""
+                }
                 wordIsFollowedByNewline = true
             } else {
                 nextWord = String(remainingText[..<remainingText.endIndex])
