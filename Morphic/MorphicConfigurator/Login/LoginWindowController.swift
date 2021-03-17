@@ -42,6 +42,27 @@ class LoginWindowController: NSWindowController, NSTextFieldDelegate {
     @IBOutlet weak var errorLabel: NSTextField!
     @IBOutlet weak var forgotPasswordButton: CustomCursorButton!
     
+    // NOTE: this function handles the enter key (submitting the login credentials if the user has already entered an email address and password)
+    func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+        if control == self.usernameField || control == self.passwordField {
+            // handle the enter key
+            if commandSelector == #selector(NSResponder.insertNewline(_:)) {
+                if (self.submitButton.isEnabled == true) {
+                    DispatchQueue.main.async {
+                        self.submitButton.becomeFirstResponder()
+                        self.login(self.submitButton)
+                    }
+                }
+                
+                // return true if the action was handled
+                return true
+            }
+        }
+        
+        // return false if the action was not handled
+        return false
+    }
+    
     @IBAction
     func login(_ sender: Any?) {
         errorLabel.isHidden = true
