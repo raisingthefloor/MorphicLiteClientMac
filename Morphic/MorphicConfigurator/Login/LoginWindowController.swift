@@ -44,7 +44,7 @@ class LoginWindowController: NSWindowController, NSTextFieldDelegate {
     
     // NOTE: this function handles the enter key (submitting the login credentials if the user has already entered an email address and password)
     func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
-        if control == usernameField || control == passwordField {
+        if control == self.usernameField || control == self.passwordField {
             // handle the enter key
             if commandSelector == #selector(NSResponder.insertNewline(_:)) {
                 if (self.submitButton.isEnabled == true) {
