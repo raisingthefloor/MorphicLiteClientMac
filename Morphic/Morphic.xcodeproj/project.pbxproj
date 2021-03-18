@@ -550,6 +550,7 @@
 				31751B0E2444DE8B00EEDF14 /* Assets.xcassets */,
 				31751B3A2444DFAA00EEDF14 /* Main.xib */,
 				31751B0C2444DE8900EEDF14 /* AppDelegate.swift */,
+				9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */,
 				31751B972444F21700EEDF14 /* Session.swift */,
 				9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */,
 				31E1E184244683DC009C4092 /* Theme.swift */,
@@ -563,7 +564,6 @@
 				9D3530DB25C30FF600F8D590 /* Versioning */,
 				318744F32481A2DA00AE3954 /* CreateDiskImage.sh */,
 				9DB06AD62534ADD6008AB056 /* CreatePackage.sh */,
-				9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */,
 			);
 			path = Morphic;
 			sourceTree = "<group>";
