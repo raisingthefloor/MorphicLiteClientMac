@@ -94,7 +94,7 @@ public class MorphicBarItem {
             if let _ = interoperable["function"] {
                 // config.json (Windows-compatible) action item
                 defer {
-                    Countly.sharedInstance().recordEvent("morphicBarExtraItem")
+                    (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("morphicBarExtraItem")
                 }
                 return MorphicBarActionItem(interoperable: interoperable)
             } else {
@@ -796,9 +796,9 @@ class MorphicBarControlItem: MorphicBarItem {
                 segmentation["dotOffset"] = String(zoomToStep)
             }
             if isZoomingIn == true {
-                Countly.sharedInstance().recordEvent("textSizeIncrease", segmentation: segmentation)
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("textSizeIncrease", segmentation: segmentation)
             } else {
-                Countly.sharedInstance().recordEvent("textSizeDecrease", segmentation: segmentation)
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("textSizeDecrease", segmentation: segmentation)
             }
         }
         //
@@ -920,7 +920,7 @@ class MorphicBarControlItem: MorphicBarItem {
     @objc
     func signout(_ sender: Any?) {
         defer {
-            Countly.sharedInstance().recordEvent("signOut")
+            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("signOut")
         }
         
         MorphicProcess.logOutUserViaOsaScriptWithConfirmation()
@@ -929,7 +929,7 @@ class MorphicBarControlItem: MorphicBarItem {
     @objc
     func screensnip(_ sender: Any?) {
         defer {
-            Countly.sharedInstance().recordEvent("screenSnip")
+            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("screenSnip")
         }
 
         // verify that we have accessibility permissions (since UI automation and sendKeys will not work without them)
@@ -1020,7 +1020,7 @@ class MorphicBarControlItem: MorphicBarItem {
         }
         if segment == 0 {
             defer {
-                Countly.sharedInstance().recordEvent("colorFiltersOn")
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("colorFiltersOn")
             }
 
             self.setColorFilterState(true) {
@@ -1028,7 +1028,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
         } else {
             defer {
-                Countly.sharedInstance().recordEvent("colorFiltersOff")
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("colorFiltersOff")
             }
 
             self.setColorFilterState(false) {
@@ -1145,7 +1145,7 @@ class MorphicBarControlItem: MorphicBarItem {
                 let newIncreaseContrastEnabled = !increaseContrastEnabled
                 //
                 defer {
-                    Countly.sharedInstance().recordEvent(newIncreaseContrastEnabled ? "highContrastOn" : "highContrastOff")
+                    (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newIncreaseContrastEnabled ? "highContrastOn" : "highContrastOff")
                 }
                 // apply the inverse state
                 Session.shared.apply(newIncreaseContrastEnabled, for: .macosDisplayContrastEnabled) {
@@ -1171,7 +1171,7 @@ class MorphicBarControlItem: MorphicBarItem {
                     let newValue = !valueAsBoolean
                     
                     defer {
-                        Countly.sharedInstance().recordEvent(newValue ? "colorFiltersOn" : "colorFiltersOff")
+                        (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newValue ? "colorFiltersOn" : "colorFiltersOff")
                     }
                     
                     self.setColorFilterState(newValue) {
@@ -1205,7 +1205,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
             //
             defer {
-                Countly.sharedInstance().recordEvent(newDarkModeEnabled ? "darkModeOn" : "darkModeOff")
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newDarkModeEnabled ? "darkModeOn" : "darkModeOff")
             }
             //
             switch newDarkModeEnabled {
@@ -1258,7 +1258,7 @@ class MorphicBarControlItem: MorphicBarItem {
             let newNightShiftEnabled = !nightShiftEnabled
             //
             defer {
-                Countly.sharedInstance().recordEvent(newNightShiftEnabled ? "nightModeOn" : "nightModeOff")
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newNightShiftEnabled ? "nightModeOn" : "nightModeOff")
             }
             //
             MorphicNightShift.setEnabled(newNightShiftEnabled)
@@ -1282,13 +1282,13 @@ class MorphicBarControlItem: MorphicBarItem {
         }
         if segment == 0 {
             defer {
-                Countly.sharedInstance().recordEvent("darkModeOn")
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("darkModeOn")
             }
 
             MorphicDisplayAppearance.setCurrentAppearanceTheme(.dark)
         } else {
             defer {
-                Countly.sharedInstance().recordEvent("darkModeOff")
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("darkModeOff")
             }
 
             MorphicDisplayAppearance.setCurrentAppearanceTheme(.light)
@@ -1326,7 +1326,7 @@ class MorphicBarControlItem: MorphicBarItem {
     @objc
     func readselected(_ sender: Any?) {
         defer {
-            Countly.sharedInstance().recordEvent("readSelectedToggle")
+            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("readSelectedToggle")
         }
         
         // verify that we have accessibility permissions (since UI automation and sendKeys will not work without them)
@@ -1422,7 +1422,7 @@ class MorphicBarControlItem: MorphicBarItem {
         let session = Session.shared
         if segment == 0 {
             defer {
-                Countly.sharedInstance().recordEvent("magnifierShow")
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("magnifierShow")
             }
             
             // this is the code which will activate our magnifier once we have established that it is configured properly
@@ -1467,7 +1467,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
         } else {
             defer {
-                Countly.sharedInstance().recordEvent("magnifierHide")
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("magnifierHide")
             }
             
             session.storage.load(identifier: "__magnifier__") {

@@ -39,6 +39,7 @@ internal class ConfigurableFeatures
     public var autorunConfig: AutorunConfigOption? = nil
     public var checkForUpdatesIsEnabled: Bool = false 
     public var resetSettingsIsEnabled: Bool = false
+    public var telemetryIsEnabled: Bool = true
     
     public var morphicBarVisibilityAfterLogin: MorphicBarVisibilityAfterLoginOption? = nil
     public var morphicBarExtraItems: [AppDelegate.MorphicBarExtraItem] = []
