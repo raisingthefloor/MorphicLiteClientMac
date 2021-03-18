@@ -93,7 +93,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         Session.shared.isCaptureAndApplyEnabled = commonConfiguration.cloudSettingsTransferIsEnabled
         Session.shared.isServerPreferencesSyncEnabled = true
 
-        self.configureCountly()
+        let enableTelemetry = (self.shouldTelemetryBeDisabled() == false)
+        if enableTelemetry == true {
+            self.configureCountly()
+        }
         
         #if DEBUG
             // do not run the auto-updater checks in debug mode
@@ -457,6 +460,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         public let morphicBar: MorphicBarConfigSection?
     }
 
+    func shouldTelemetryBeDisabled() -> Bool {
+        guard let applicationSupportPath = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .localDomainMask, true).first else {
+            // if the application support path doesn't exist, there's definitely no file
+            return false
+        }
+        let morphicCommonConfigPath = NSString.path(withComponents: [applicationSupportPath, "Morphic"])
+        let disableTelemetryFilePath = NSString.path(withComponents: [morphicCommonConfigPath, "disable_telemetry.txt"])
+        
+        // if disable_telemetry.txt exists, disable telemetry
+        let disableTelemetryFileExists = FileManager.default.fileExists(atPath: disableTelemetryFilePath)
+        return disableTelemetryFileExists
+    }
+    
     struct CommonConfigurationContents {
         public var autorunConfig: ConfigurableFeatures.AutorunConfigOption? = nil
         public var checkForUpdatesIsEnabled: Bool = false
