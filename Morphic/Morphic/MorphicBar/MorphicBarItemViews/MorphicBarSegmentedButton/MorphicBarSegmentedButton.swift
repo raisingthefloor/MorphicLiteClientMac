@@ -693,7 +693,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
                 segmentation["category"] = learnMoreTelemetryCategory
             }
             segmentation["eventSource"] = "contextMenu"
-            Countly.sharedInstance().recordEvent("learnMore", segmentation: segmentation)
+            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("learnMore", segmentation: segmentation)
         }
         //
         NSWorkspace.shared.open(learnMoreUrl)
@@ -717,7 +717,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
                 segmentation["category"] = quickDemoVideoTelemetryCategory
             }
             segmentation["eventSource"] = "contextMenu"
-            Countly.sharedInstance().recordEvent("quickDemoVideo", segmentation: segmentation)
+            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("quickDemoVideo", segmentation: segmentation)
         }
         //
         NSWorkspace.shared.open(quickDemoVideoUrl)

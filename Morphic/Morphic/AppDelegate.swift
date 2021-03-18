@@ -83,6 +83,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         Storage.setApplicationSupportDirectoryName("org.raisingthefloor.MorphicBasic")
         UserDefaults.setMorphicSuiteName("org.raisingthefloor.MorphicBasic")
 
+        // determine if telemetry should be enabled
+        let telemetryShouldBeDisabled = self.shouldTelemetryBeDisabled()
+        let telemetryIsEnabled = (telemetryShouldBeDisabled == false)
+        
         // capture the common configuration (if one is present)
         let commonConfiguration = self.getCommonConfiguration()
         ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin = commonConfiguration.morphicBarVisibilityAfterLogin
@@ -90,11 +94,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         ConfigurableFeatures.shared.autorunConfig = commonConfiguration.autorunConfig
         ConfigurableFeatures.shared.checkForUpdatesIsEnabled = commonConfiguration.checkForUpdatesIsEnabled
         ConfigurableFeatures.shared.resetSettingsIsEnabled = commonConfiguration.resetSettingsIsEnabled
+        ConfigurableFeatures.shared.telemetryIsEnabled = telemetryIsEnabled
         Session.shared.isCaptureAndApplyEnabled = commonConfiguration.cloudSettingsTransferIsEnabled
         Session.shared.isServerPreferencesSyncEnabled = true
 
-        let enableTelemetry = (self.shouldTelemetryBeDisabled() == false)
-        if enableTelemetry == true {
+        if ConfigurableFeatures.shared.telemetryIsEnabled == true {
             self.configureCountly()
         }
         
@@ -218,6 +222,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
+    internal func countly_RecordEvent(_ key: String) {
+        if ConfigurableFeatures.shared.telemetryIsEnabled == true {
+            Countly.sharedInstance().recordEvent(key)
+        }
+    }
+    
+    internal func countly_RecordEvent(_ key: String, segmentation: [String: String]?) {
+        if ConfigurableFeatures.shared.telemetryIsEnabled == true {
+            Countly.sharedInstance().recordEvent(key, segmentation: segmentation)
+        }
+    }
+    
     func configureCountly() {
         guard let appKey = Bundle.main.infoDictionary?["CountlyAppKey"] as? String else {
             assertionFailure("Missing Countly app key.  Check build config files")
@@ -288,7 +304,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     func applicationWillTerminate(_ aNotification: Notification) {
-        Countly.sharedInstance().endSession()
+        if ConfigurableFeatures.shared.telemetryIsEnabled == true {
+            Countly.sharedInstance().endSession()
+        }
     }
     
     // NOTE: this function will send our primary instance a notification request to show the Morphic Bar if the user tried to relaunch Morphic (by double-clicking the application in Finder or clicking on our icon in the dock)
@@ -1067,7 +1085,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction func menuBarExtraAboutMorphicMenuItemClicked(_ sender: NSMenuItem) {
         defer {
             let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            Countly.sharedInstance().recordEvent("aboutMorphic", segmentation: segmentation)
+            self.countly_RecordEvent("aboutMorphic", segmentation: segmentation)
         }
         showAboutBox()
     }
@@ -1075,7 +1093,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction func morphicBarIconAboutMorphicMenuItemClicked(_ sender: NSMenuItem) {
         defer {
             let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-            Countly.sharedInstance().recordEvent("aboutMorphic", segmentation: segmentation)
+            self.countly_RecordEvent("aboutMorphic", segmentation: segmentation)
         }
         showAboutBox()
     }
@@ -1097,21 +1115,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     func terminateMorphicClientDueToCmdQ() {
         let segmentation = ["eventSource": "keyboardShortcut"]
-        Countly.sharedInstance().recordEvent("quit", segmentation: segmentation)
+        self.countly_RecordEvent("quit", segmentation: segmentation)
 
         quitApplication()
     }
     
     @IBAction func menuBarExtraQuitApplicationMenuItemClicked(_ sender: NSMenuItem) {
         let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-        Countly.sharedInstance().recordEvent("quit", segmentation: segmentation)
+        self.countly_RecordEvent("quit", segmentation: segmentation)
 
         quitApplication()
     }
 
     @IBAction func morphicBarIconQuitApplicationMenuItemClicked(_ sender: NSMenuItem) {
         let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-        Countly.sharedInstance().recordEvent("quit", segmentation: segmentation)
+        self.countly_RecordEvent("quit", segmentation: segmentation)
 
         quitApplication()
     }
@@ -1179,12 +1197,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         switch sender.state {
         case .on:
             defer {
-                Countly.sharedInstance().recordEvent("autorunAfterLoginDisabled")
+                self.countly_RecordEvent("autorunAfterLoginDisabled")
             }
             _ = setMorphicAutostartAtLogin(false)
         case .off:
             defer {
-                Countly.sharedInstance().recordEvent("autorunAfterLoginEnabled")
+                self.countly_RecordEvent("autorunAfterLoginEnabled")
             }
             _ = setMorphicAutostartAtLogin(true)
         default:
@@ -1272,9 +1290,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             switch newKeyRepeatEnabledState {
             case true:
-                Countly.sharedInstance().recordEvent("stopKeyRepeatOff")
+                self.countly_RecordEvent("stopKeyRepeatOff")
             case false:
-                Countly.sharedInstance().recordEvent("stopKeyRepeatOn")
+                self.countly_RecordEvent("stopKeyRepeatOn")
             }
         }
 
@@ -1483,12 +1501,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         switch sender.state {
         case .on:
             defer {
-                Countly.sharedInstance().recordEvent("showMorphicBarAfterLoginDisabled")
+                self.countly_RecordEvent("showMorphicBarAfterLoginDisabled")
             }
             showMorphicBarAtStart = false
         case .off:
             defer {
-                Countly.sharedInstance().recordEvent("showMorphicBarAfterLoginEnabled")
+                self.countly_RecordEvent("showMorphicBarAfterLoginEnabled")
             }
             showMorphicBarAtStart = true
         default:
@@ -1629,9 +1647,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             defer {
                 let segmentation: [String: String] = ["eventSource": "trayIconClick"]
                 if morphicBarWindowWasVisible == true {
-                    Countly.sharedInstance().recordEvent("morphicBarHide", segmentation: segmentation)
+                    self.countly_RecordEvent("morphicBarHide", segmentation: segmentation)
                 } else {
-                    Countly.sharedInstance().recordEvent("morphicBarShow", segmentation: segmentation)
+                    self.countly_RecordEvent("morphicBarShow", segmentation: segmentation)
                 }
             }
             toggleMorphicBar(sender)
@@ -1650,7 +1668,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             // show the menu (by assigning it to the menubar extra and re-clicking the extra; then disconnect the menu again so that our custom actions (custom left- and right-mouseDown) work properly.
             defer {
                 let segmentation = AppDelegate.shared.createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-                Countly.sharedInstance().recordEvent("showMenu", segmentation: segmentation)
+                self.countly_RecordEvent("showMenu", segmentation: segmentation)
             }
             statusItem.menu = self.mainMenu
             statusItemButton.performClick(sender)
@@ -1700,7 +1718,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func menuBarExtraShowMorphicBarMenuItemClicked(_ sender: NSMenuItem) {
         let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-        Countly.sharedInstance().recordEvent("morphicBarShow", segmentation: segmentation)
+        self.countly_RecordEvent("morphicBarShow", segmentation: segmentation)
         showMorphicBar(sender)
     }
     
@@ -1724,20 +1742,20 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func menuBarExtraHideMorphicBarMenuItemClicked(_ sender: NSMenuItem) {
         let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-        Countly.sharedInstance().recordEvent("morphicBarHide", segmentation: segmentation)
+        self.countly_RecordEvent("morphicBarHide", segmentation: segmentation)
         hideMorphicBar(sender)
     }
 
     @IBAction
     func morphicBarIconHideMorphicBarMenuItemClicked(_ sender: NSMenuItem) {
         let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-        Countly.sharedInstance().recordEvent("morphicBarHide", segmentation: segmentation)
+        self.countly_RecordEvent("morphicBarHide", segmentation: segmentation)
         hideMorphicBar(sender)
     }
 
     func morphicBarCloseButtonPressed() {
         let segmentation = ["eventSource": "closeButton"]
-        Countly.sharedInstance().recordEvent("morphicBarHide", segmentation: segmentation)
+        self.countly_RecordEvent("morphicBarHide", segmentation: segmentation)
         hideMorphicBar(nil)
     }
     
@@ -1765,7 +1783,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func menuBarExtraExploreMorphicMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
             let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            Countly.sharedInstance().recordEvent("exploreMorphic", segmentation: segmentation)
+            self.countly_RecordEvent("exploreMorphic", segmentation: segmentation)
         }
 
         exploreMorphicClicked()
@@ -1775,7 +1793,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func morphicBarIconExploreMorphicMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
             let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-            Countly.sharedInstance().recordEvent("exploreMorphic", segmentation: segmentation)
+            self.countly_RecordEvent("exploreMorphic", segmentation: segmentation)
         }
         
         exploreMorphicClicked()
@@ -1790,7 +1808,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func menuBarExtraQuickDemoMoviesMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
             let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            Countly.sharedInstance().recordEvent("quickDemoVideo", segmentation: segmentation)
+            self.countly_RecordEvent("quickDemoVideo", segmentation: segmentation)
         }
         
         quickDemoMoviesClicked()
@@ -1800,7 +1818,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func morphicBarIconQuickDemoMoviesMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
             let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-            Countly.sharedInstance().recordEvent("quickDemoVideo", segmentation: segmentation)
+            self.countly_RecordEvent("quickDemoVideo", segmentation: segmentation)
         }
 
         quickDemoMoviesClicked()
@@ -1815,7 +1833,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func menuBarExtraOtherHelpfulThingsMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
             let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            Countly.sharedInstance().recordEvent("otherHelpfulThings", segmentation: segmentation)
+            self.countly_RecordEvent("otherHelpfulThings", segmentation: segmentation)
         }
         
         otherHelpfulThingsClicked()
@@ -1825,7 +1843,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func morphicBarIconOtherHelpfulThingsMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
             let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-            Countly.sharedInstance().recordEvent("otherHelpfulThings", segmentation: segmentation)
+            self.countly_RecordEvent("otherHelpfulThings", segmentation: segmentation)
         }
 
         otherHelpfulThingsClicked()
@@ -1945,8 +1963,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         } else if tag! == 1 {
             segmentation["eventSource"] = "contextMenu"
         }
-        Countly.sharedInstance().recordEvent("systemSettings", segmentation: segmentation)
-//        Countly.sharedInstance().recordEvent("systemSettings" + settingsCategoryName)
+        self.countly_RecordEvent("systemSettings", segmentation: segmentation)
+//        self.countly_RecordEvent("systemSettings" + settingsCategoryName)
     }
     
     //

@@ -78,7 +78,7 @@ public class MorphicBarViewController: NSViewController {
     func showMainMenu(_ sender: Any?) {
         defer {
             let segmentation = AppDelegate.shared.createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-            Countly.sharedInstance().recordEvent("showMenu", segmentation: segmentation)
+            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("showMenu", segmentation: segmentation)
         }
 
         AppDelegate.shared.mainMenu.popUp(positioning: nil, at: NSPoint(x: logoButton.bounds.origin.x, y: logoButton.bounds.origin.y + logoButton.bounds.size.height), in: logoButton)
