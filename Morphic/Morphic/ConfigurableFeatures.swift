@@ -44,6 +44,8 @@ internal class ConfigurableFeatures
     public var morphicBarVisibilityAfterLogin: MorphicBarVisibilityAfterLoginOption? = nil
     public var morphicBarExtraItems: [AppDelegate.MorphicBarExtraItem] = []
 
+    public var telemetrySiteId: String?
+    
     static var shared: ConfigurableFeatures = {
         return ConfigurableFeatures()
     }()

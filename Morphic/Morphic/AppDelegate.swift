@@ -97,6 +97,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         ConfigurableFeatures.shared.telemetryIsEnabled = telemetryIsEnabled
         Session.shared.isCaptureAndApplyEnabled = commonConfiguration.cloudSettingsTransferIsEnabled
         Session.shared.isServerPreferencesSyncEnabled = true
+        ConfigurableFeatures.shared.telemetrySiteId = commonConfiguration.telemetrySiteId
 
         if ConfigurableFeatures.shared.telemetryIsEnabled == true {
             self.configureCountly()
@@ -247,7 +248,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
 
         // retrieve the telemetry device ID for this device; if it doesn't exist then create a new one
-        let telemetryDeviceUuid: String
+        var telemetryDeviceUuid: String
         let telemetryDeviceUuidAsOptional = UserDefaults.morphic.telemetryDeviceUuid()
         if let telemetryDeviceUuidAsOptional = telemetryDeviceUuidAsOptional {
             // use the existing telemetry device uuid
@@ -258,6 +259,31 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             telemetryDeviceUuid = "D_" + NSUUID().uuidString.lowercased()
             UserDefaults.morphic.set(telemetryDeviceUuid: telemetryDeviceUuid)
         }
+        
+        // if a site id is (or is not) configured, modify the telemetry device uuid accordingly
+        // NOTE: we handle cases of site ids changing, site IDs being added post-deployment, and site IDs being removed post-deployment
+        let unmodifiedTelemetryDeviceUuid = telemetryDeviceUuid
+        if let telemetrySiteId = ConfigurableFeatures.shared.telemetrySiteId {
+            // NOTE: in the future, consider reporting or throwing an error if the site id required sanitization (i.e. wasn't valid)
+            let sanitizedTelemetrySiteId = self.sanitizeSiteId(telemetrySiteId)
+            if sanitizedTelemetrySiteId != "" {
+                // we have a telemetry site id; prepend it
+                telemetryDeviceUuid = self.prependSiteIdToTelemetryUuid(telemetryDeviceUuid, telemetrySiteId: telemetrySiteId)
+            } else {
+                // the supplied site id isn't valid; strip off the site id; In the future consider logging/reporting an error
+                telemetryDeviceUuid = self.removeSiteIdFromTelemetryUuid(telemetryDeviceUuid)
+            }
+        } else {
+            // no telemetry site id is configured; strip off any site id which might have already been part of our telemetry id
+            telemetryDeviceUuid = self.removeSiteIdFromTelemetryUuid(telemetryDeviceUuid)
+        }
+        // if the telemetry uuid has changed (because of the site id), update our stored telemetry uuid now
+        if telemetryDeviceUuid != unmodifiedTelemetryDeviceUuid {
+            UserDefaults.morphic.set(telemetryDeviceUuid: telemetryDeviceUuid)
+        }
+        
+        // TODO: there is a potential scenario that our telemetry device uuid could be (incorrectly) saved as a blank entry; we should consider
+        //       how we'd want to deal with that scenario
         
         let config: CountlyConfig = CountlyConfig()
         config.appKey = appKey
@@ -282,6 +308,58 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         //
         Countly.sharedInstance().start(with: config)
         Countly.sharedInstance().beginSession()
+    }
+    
+    func prependSiteIdToTelemetryUuid(_ value: String, telemetrySiteId: String) -> String {
+        var telemetryDeviceUuid = value
+        
+        if telemetryDeviceUuid.starts(with: "S_") {
+            // if the telemetry device uuid already starts with a site id, strip it off now
+            telemetryDeviceUuid.removeFirst(2)
+            if let indexOfForwardSlash = telemetryDeviceUuid.firstIndex(of: "/") {
+                // strip the site id off the front
+                telemetryDeviceUuid = String(telemetryDeviceUuid[telemetryDeviceUuid.index(after: indexOfForwardSlash)...])
+            } else {
+                // the site ID was the only contents; return nil
+                telemetryDeviceUuid = ""
+            }
+        }
+        
+        // prepend the site id to the telemetry device uuid
+        telemetryDeviceUuid = "S_" + telemetrySiteId + "/" + telemetryDeviceUuid
+        return telemetryDeviceUuid
+    }
+    
+    func removeSiteIdFromTelemetryUuid(_ value: String) -> String {
+        var telemetryDeviceUuid = value
+        
+        if telemetryDeviceUuid.starts(with: "S_") {
+            // if the telemetry device uuid starts with a site id, strip it off now
+            telemetryDeviceUuid.removeFirst(2)
+            if let indexOfForwardSlash = telemetryDeviceUuid.firstIndex(of: "/") {
+                // strip the site id off the front
+                telemetryDeviceUuid = String(telemetryDeviceUuid[telemetryDeviceUuid.index(after: indexOfForwardSlash)...])
+            } else {
+                // the site ID is the only contents
+                telemetryDeviceUuid = ""
+            }
+        }
+
+        return telemetryDeviceUuid
+    }
+    
+    func sanitizeSiteId(_ siteId: String) -> String {
+        return siteId.filter { (character) -> Bool in
+            switch character {
+            case "a"..."z",
+                 "A"..."Z",
+                 "0"..."9",
+                 "_":
+                return true
+            default:
+                return false
+            }
+        }
     }
     
     func markUserConfiguredSettingsAsAlreadySet() {
@@ -451,7 +529,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         // for type: control
         public let feature: String?
     }
-    
+    //
+    internal struct TelemetryConfigSection: Decodable {
+        public let siteId: String?
+    }
     internal struct ConfigFileContents: Decodable
     {
         internal struct FeaturesConfigSection: Decodable
@@ -476,6 +557,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         public let version: Int?
         public let features: FeaturesConfigSection?
         public let morphicBar: MorphicBarConfigSection?
+        public let telemetry: TelemetryConfigSection?
     }
 
     func shouldTelemetryBeDisabled() -> Bool {
@@ -493,11 +575,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     struct CommonConfigurationContents {
         public var autorunConfig: ConfigurableFeatures.AutorunConfigOption? = nil
+        //
         public var checkForUpdatesIsEnabled: Bool = false
         public var cloudSettingsTransferIsEnabled: Bool = false
         public var resetSettingsIsEnabled: Bool = false
+        //
         public var morphicBarVisibilityAfterLogin: ConfigurableFeatures.MorphicBarVisibilityAfterLoginOption? = nil
         public var extraMorphicBarItems: [MorphicBarExtraItem] = []
+        //
+        public var telemetrySiteId: String? = nil
     }
     func getCommonConfiguration() -> CommonConfigurationContents {
         // set up default configuration
@@ -669,6 +755,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 result.extraMorphicBarItems.append(extraMorphicBarItem)
             }
         }
+        
+        // capture telemetry site id
+        result.telemetrySiteId = decodedConfigFile.telemetry?.siteId
         
         return result
     }
