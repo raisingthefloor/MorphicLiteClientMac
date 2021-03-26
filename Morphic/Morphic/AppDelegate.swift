@@ -407,13 +407,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         Session.shared.open {
             NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: Session.shared)
             
-//            // TODO: previously in Morphic Basic for macOS, a user's cloud preferences were applied when they logged in; this behavior has been commented out while the new prefs sets backup/apply flow is being workedo ut
-//            let userInfo = notification.userInfo ?? [:]
-//            if !(userInfo["isRegister"] as? Bool ?? false) {
-//                os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
-//                Session.shared.applyAllPreferences {
-//                }
-//            }
+            // TODO: previously in Morphic Basic for macOS, a user's cloud preferences were applied when they logged in; this behavior may need to be split (based on whether they're logging in to get their morphicbars...or logging in to get their preferences)
+            let userInfo = notification.userInfo ?? [:]
+            if !(userInfo["isRegister"] as? Bool ?? false) {
+                os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
+                Session.shared.applyAllPreferences {
+                }
+            }
         }
     }
     
