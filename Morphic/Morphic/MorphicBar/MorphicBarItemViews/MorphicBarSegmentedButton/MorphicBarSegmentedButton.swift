@@ -418,10 +418,10 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             switch style {
             case .autoWidth:
                 size.width += contentInsets.left + contentInsets.right
-                size.height += contentInsets.top + contentInsets.bottom
             case .fixedWidth(let width):
                 size.width = width
             }
+            size.height += contentInsets.top + contentInsets.bottom
             return size
         }
         
