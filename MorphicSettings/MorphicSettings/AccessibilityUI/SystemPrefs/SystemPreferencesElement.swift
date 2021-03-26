@@ -136,7 +136,7 @@ public class SystemPreferencesElement: ApplicationElement {
 
             // raise the sole System Preferences window (so it becomes the mainWindow)
             // NOTE: if desired, in the future we could requery for the "mainWindow"
-            guard window.raise() else {
+            guard let _ = try? window.raise() else {
                 completion(false, nil)
                 return
             }
@@ -160,7 +160,7 @@ public class SystemPreferencesElement: ApplicationElement {
             completion(false, nil)
             return
         }
-        guard showAllButton.press() else {
+        guard let _ = try? showAllButton.press() else {
             completion(false, nil)
             return
         }
@@ -174,7 +174,7 @@ public class SystemPreferencesElement: ApplicationElement {
                 completion(false, nil)
                 return
             }
-            guard paneButton.press() else {
+            guard let _ = try? paneButton.press() else {
                 completion(false, nil)
                 return
             }

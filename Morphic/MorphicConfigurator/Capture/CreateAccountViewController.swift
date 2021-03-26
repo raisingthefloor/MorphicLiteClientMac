@@ -51,6 +51,27 @@ class CreateAccountViewController: NSViewController, NSTextFieldDelegate, Presen
         view.window?.makeFirstResponder(emailField)
     }
     
+    // NOTE: this function handles the enter key (submitting the registration info if the user has already entered an email address and matching passwords)
+    func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+        if control == self.emailField || control == self.passwordField || control == self.confirmPasswordField {
+            // handle the enter key
+            if commandSelector == #selector(NSResponder.insertNewline(_:)) {
+                if (self.submitButton.isEnabled == true) {
+                    DispatchQueue.main.async {
+                        self.submitButton.becomeFirstResponder()
+                        self.createAccount(self.submitButton)
+                    }
+                }
+                
+                // return true if the action was handled
+                return true
+            }
+        }
+        
+        // return false if the action was not handled
+        return false
+    }
+
     @IBAction
     func createAccount(_ sender: Any?) {
         hideError()

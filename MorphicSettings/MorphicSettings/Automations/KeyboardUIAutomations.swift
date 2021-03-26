@@ -65,7 +65,7 @@ public class KeyboardUIAutomation: UIAutomation {
                         return
                     }
 
-                    guard keyboard.select(tabTitled: tab) else {
+                    guard let _ = try? keyboard.select(tabTitled: tab) else {
                         os_log(.error, log: logger, "Failed to select tab")
                         completion(nil)
                         return
@@ -83,7 +83,7 @@ public class KeyboardUIAutomation: UIAutomation {
                 completion(nil)
                 return
             }
-            guard keyboard.select(tableRowTitled: categoryTitled, ofTableTitled: "Shortcuts categories") else {
+            guard let _ = try? keyboard.select(tableRowTitled: categoryTitled, ofTableTitled: "Shortcuts categories") else {
                 os_log(.error, log: logger, "Failed to select category (row)")
                 completion(nil)
                 return

@@ -31,21 +31,6 @@ private let logger = OSLog(subsystem: "MorphicService", category: "Session")
 
 /// Manage a user's session with Morphic
 public class Session {
-    public enum MorphicEdition {
-        case basic
-        case plus
-    }
-    private static var _morphicEdition: MorphicEdition!
-    public static var morphicEdition: MorphicEdition {
-        get {
-            // NOTE: this will _intentionally_ crash if the edition has not yet been set
-            return Session._morphicEdition!
-        }
-        set {
-            Session._morphicEdition = newValue
-        }
-    }
-
     /// Create a new session that talks to the given endpoint
     public init(endpoint: URL) {
         urlSession = URLSession(configuration: .ephemeral)
@@ -309,11 +294,11 @@ public class Session {
                 return
             }
             if let token = newValue {
-                if !keychain.save(authToken: token, for: service.endpoint, userIdentifier: identifier) {
+                if (try? keychain.save(authToken: token, for: service.endpoint, userIdentifier: identifier)) == nil {
                     os_log(.fault, log: logger, "Failed to save token to keychain")
                 }
             } else {
-                if !keychain.removeAuthToken(for: service.endpoint, userIdentifier: identifier) {
+                if (try? keychain.removeAuthToken(for: service.endpoint, userIdentifier: identifier)) == nil {
                     os_log(.fault, log: logger, "Failed to remove secret to keychain")
                 }
             }
@@ -326,7 +311,7 @@ public class Session {
             let task = service.authenticate(credentials: creds) {
                 auth in
                 if let auth = auth {
-                    _ = self.keychain.save(authToken: auth.token, for: self.service.endpoint, userIdentifier: identifier)
+                    _ = try? self.keychain.save(authToken: auth.token, for: self.service.endpoint, userIdentifier: identifier)
                     completion(true)
                 } else {
                     completion(false)
@@ -357,7 +342,7 @@ public class Session {
         let task = service.authenticate(username: credentials.username, password: credentials.password) {
             auth in
             if let auth = auth {
-                _ = self.keychain.save(usernameCredentials: credentials, for: self.service.endpoint)
+                _ = try? self.keychain.save(usernameCredentials: credentials, for: self.service.endpoint)
                 UserDefaults.morphic.set(morphicUsername: credentials.username, for: auth.user.identifier)
                 self.user = auth.user
                 self.authToken = auth.token
@@ -502,10 +487,10 @@ public class Session {
             result in
             switch result {
             case .success(let auth):
-                if !self.keychain.save(usernameCredentials: credentials, for: self.service.endpoint) {
+                if (try? self.keychain.save(usernameCredentials: credentials, for: self.service.endpoint)) == nil {
                     os_log(.error, log: logger, "Failed to save newly registered username credentials")
                 }
-                if !self.keychain.save(authToken: auth.token, for: self.service.endpoint, userIdentifier: auth.user.identifier) {
+                if (try? self.keychain.save(authToken: auth.token, for: self.service.endpoint, userIdentifier: auth.user.identifier)) == nil {
                     os_log(.error, log: logger, "Failed to save newly registered auth token")
                 }
                 var createdUser = auth.user
@@ -597,7 +582,7 @@ public class Session {
                         communityBarsItems[userCommunityId] = userCommunityDetailsAsJsonString
                     }
 
-                    self.set(communityBarsItems, for: .morphicBarCommunityBarsAsJson)
+                    self.set(communityBarsItems, for: .morphicCustomMorphicBarsAsJson)
                     self.savePreferences(waitFiveSecondsBeforeSave: false) {
                         success in
                         
@@ -932,7 +917,7 @@ public extension NSNotification.Name {
 
 public extension Preferences.Key {
     /// The preference key that stores which items appear in each community on the MorphicBar (Morphic Community managed community bar)
-    static var morphicBarCommunityBarsAsJson = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicbarcommunity", preference: "communityBarsAsJson")
+    static var morphicCustomMorphicBarsAsJson = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicBars", preference: "customMorphicBarsAsJson")
 }
 
 // preferences which indicate that we have changed the default values for a setting once.

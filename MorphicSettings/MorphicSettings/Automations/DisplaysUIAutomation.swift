@@ -65,7 +65,7 @@ public class DisplaysUIAutomation: UIAutomation {
                         return
                     }
 
-                    guard displays.select(tabTitled: tab) else {
+                    guard let _ = try? displays.select(tabTitled: tab) else {
                         os_log(.error, log: logger, "Failed to select tab")
                         completion(nil)
                         return

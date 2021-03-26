@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
 
 public class SliderElement: UIElement {
     
@@ -31,10 +32,9 @@ public class SliderElement: UIElement {
         }
     }
     
-    public func setValue(_ value: Double) -> Bool {
-        guard accessibilityElement.setValue(value, forAttribute: .value) else {
-            return false
+    public func setValue(_ value: Double) throws {
+        guard let _ = try? accessibilityElement.setValue(value, forAttribute: .value) else {
+            throw MorphicError()
         }
-        return true
     }
 }

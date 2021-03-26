@@ -48,7 +48,7 @@ public class SpeechCheckboxUIAutomation: AccessibilityUIAutomation {
                 completion(false)
                 return
             }
-            guard checkbox.setChecked(checked) else {
+            guard let _ = try? checkbox.setChecked(checked) else {
                 os_log(.error, log: logger, "Failed to check checkbox")
                 completion(false)
                 return

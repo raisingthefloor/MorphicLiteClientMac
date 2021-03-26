@@ -22,14 +22,14 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
 
 public class MenuElement: UIElement {
     
-    public func select(itemTitled title: String) -> Bool {
-        guard items.first(where: { $0.title == title })?.select() ?? false else {
-            return false
+    public func select(itemTitled title: String) throws {
+        guard let _ = try? items.first(where: { $0.title == title })?.select() else {
+            throw MorphicError()
         }
-        return true
     }
     
     public var items: [MenuItemElement] {

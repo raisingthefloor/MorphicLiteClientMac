@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
 
 public class ButtonElement: UIElement {
     
@@ -31,11 +32,11 @@ public class ButtonElement: UIElement {
         }
     }
     
-    public func press() -> Bool {
+    public func press() throws {
         guard enabled else {
-            return false
+            throw MorphicError()
         }
-        return accessibilityElement.perform(action: .press)
+        try accessibilityElement.perform(action: .press)
     }
     
 }

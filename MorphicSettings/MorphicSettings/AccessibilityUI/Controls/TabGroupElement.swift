@@ -22,14 +22,15 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
 
 public class TabGroupElement: UIElement {
     
-    public func select(tabTitled title: String) -> Bool {
+    public func select(tabTitled title: String) throws {
         guard let tab = self.tab(titled: title) else {
-            return false
+            throw MorphicError()
         }
-        return tab.select()
+        try tab.select()
     }
     
     public func tab(titled: String) -> TabElement? {

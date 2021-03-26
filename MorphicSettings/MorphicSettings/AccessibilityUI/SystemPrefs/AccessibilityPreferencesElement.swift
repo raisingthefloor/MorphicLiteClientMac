@@ -176,13 +176,20 @@ public class AccessibilityPreferencesElement: UIElement {
                 completion(false)
                 return
             }
-            let selected = row.select()
+            let selected: Bool
+            if let _ = try? row.select() {
+                selected = true
+            } else {
+                selected = false
+            }
             completion(selected)
         }
     }
     
-    public func select(tabTitled title: String) -> Bool {
-        return tabGroup?.select(tabTitled: title) ?? false
+    public func select(tabTitled title: String) throws {
+        guard let _ = try tabGroup?.select(tabTitled: title) else {
+	    throw MorphicError()
+	}
     }
     
 }

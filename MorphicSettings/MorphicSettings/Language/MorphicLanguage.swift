@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
 
 // NOTE: the MorphicLanguage class contains the functionality used by Obj-C and Swift applications
 
@@ -45,14 +46,15 @@ public class MorphicLanguage {
     }
 
     // NOTE: this function sets the property in the global domain (AnyApplication), but only for the current user
-    public static func setAppleLanguagesInGlobalDomain(_ languages: [String]) -> Bool {
+    public static func setAppleLanguagesInGlobalDomain(_ languages: [String]) throws {
         CFPreferencesSetValue("AppleLanguages" as CFString, languages as CFArray, kCFPreferencesAnyApplication, kCFPreferencesCurrentUser, kCFPreferencesAnyHost)
         let success = CFPreferencesSynchronize(kCFPreferencesAnyApplication, kCFPreferencesCurrentUser, kCFPreferencesAnyHost)
-        
-        return success
+        if success == false {
+            throw MorphicError()
+        }
     }
     
-    public static func setPrimaryAppleLanguageInGlobalDomain(_ primaryLanguage: String) -> Bool {
+    public static func setPrimaryAppleLanguageInGlobalDomain(_ primaryLanguage: String) throws {
 //        // implementation option 1: get our current list of Apple Languages from the global domain (scoped to the current host)
 //        guard var appleLanguages = MorphicLanguage.getAppleLanguagesFromGlobalDomain() else {
 //            return false
@@ -65,12 +67,12 @@ public class MorphicLanguage {
         
         // implementation option 2: get our current list of Apple Languages from Core Foundation; this is the preferred method
         guard var appleLanguages = MorphicLanguage.getPreferredLanguages() else {
-            return false
+            throw MorphicError()
         }
         
         // verify that the specified 'primaryLanguage' is contained within the list of installed languages
         guard appleLanguages.contains(primaryLanguage) == true else {
-            return false
+            throw MorphicError()
         }
         
         // remove the desired primary language from the list of apple languages (since we want to push it to the top of the list)
@@ -82,8 +84,7 @@ public class MorphicLanguage {
         appleLanguages.insert(primaryLanguage, at: 0)
 
         // re-set the apple languages list (with the desired primary language now at the top of the list)
-        let success = MorphicLanguage.setAppleLanguagesInGlobalDomain(appleLanguages)
-        return success
+        try MorphicLanguage.setAppleLanguagesInGlobalDomain(appleLanguages)
     }
     
     // MARK: - functions to translate locale/language/country codes to human-readable format

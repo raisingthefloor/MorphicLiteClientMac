@@ -49,7 +49,7 @@ public class ZoomCheckboxUIAutomation: AccessibilityUIAutomation {
                 completion(false)
                 return
             }
-            guard checkbox.setChecked(checked) else {
+            guard let _ = try? checkbox.setChecked(checked) else {
                 os_log(.error, log: logger, "Failed to check checkbox")
                 completion(false)
                 return
@@ -124,7 +124,7 @@ public class ZoomEnabledUIAutomation: AccessibilityUIAutomation {
                 completion(false)
                 return
             }
-            guard checkbox.check() else {
+            guard let _ = try? checkbox.check() else {
                 os_log(.error, log: logger, "Failed to enable zoom keyboard shortcuts checkbox")
                 completion(false)
                 return
@@ -153,7 +153,7 @@ public class ZoomEnabledUIAutomation: AccessibilityUIAutomation {
                     }
                 }
             }
-            guard WorkspaceElement.shared.sendKey(keyCode: CGKeyCode(kVK_ANSI_8), keyOptions: [.withCommandKey, .withAlternateKey]) else {
+            guard let _ = try? WorkspaceElement.shared.sendKey(keyCode: CGKeyCode(kVK_ANSI_8), keyOptions: [.withCommandKey, .withAlternateKey]) else {
                 os_log(.error, log: logger, "Failed to send key shortcut")
                 completion(false)
                 return

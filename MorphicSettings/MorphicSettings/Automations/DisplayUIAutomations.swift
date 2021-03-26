@@ -49,7 +49,7 @@ public class DisplayCheckboxUIAutomation: AccessibilityUIAutomation {
                 completion(false)
                 return
             }
-            guard checkbox.setChecked(checked) else {
+            guard let _ = try? checkbox.setChecked(checked) else {
                 os_log(.error, log: logger, "Failed to press checkbox")
                 completion(false)
                 return
@@ -86,7 +86,7 @@ public class DisplaySliderUIAutomation: AccessibilityUIAutomation {
                 completion(false)
                 return
             }
-            guard slider.setValue(value) else {
+            guard let _ = try? slider.setValue(value) else {
                 os_log(.error, log: logger, "Failed to update slider value")
                 completion(false)
                 return
@@ -116,14 +116,14 @@ public class ContrastUIAutomation: AccessibilityUIAutomation {
                 completion(false)
                 return
             }
-            guard checkbox.setChecked(checked) else {
+            guard let _ = try? checkbox.setChecked(checked) else {
                 os_log(.error, log: logger, "Failed to press contrast checkbox")
                 completion(false)
                 return
             }
             if !checked {
                 if let transparencyCheckbox = accessibility.checkbox(titled: "Reduce transparency") {
-                    if !transparencyCheckbox.uncheck() {
+                    if (try? transparencyCheckbox.uncheck()) == nil {
                         os_log(.info, log: logger, "Failed to uncheck reduce transparency when turning off high contrast")
                     }
                 }
@@ -308,7 +308,7 @@ class ColorFilterIntensityUIAutomation: AccessibilityUIAutomation {
                 completion(false)
                 return
             }
-            guard slider.setValue(value) else {
+            guard let _ = try? slider.setValue(value) else {
                 os_log(.error, log: logger, "Failed to update slider value")
                 completion(false)
                 return

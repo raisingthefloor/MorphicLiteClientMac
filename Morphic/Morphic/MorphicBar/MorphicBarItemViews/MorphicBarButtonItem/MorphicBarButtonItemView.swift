@@ -201,9 +201,11 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
             pdfImageRep.draw(in: imageRect)
             return true
         }
-        let recoloredNsImage = MorphicImageUtils.colorImage(nsImage, withColor: self.iconColor ?? self.fillColor)
-        newIconLayer.contents = recoloredNsImage
-        
+        // NOTE: we have disabled the recoloring feature as the new bar editor uses full-color images
+//        let recoloredNsImage = MorphicImageUtils.colorImage(nsImage, withColor: self.iconColor ?? self.fillColor)
+//        newIconLayer.contents = recoloredNsImage
+        newIconLayer.contents = nsImage
+
         self.layer?.replaceSublayer(self.iconImageLayer, with: newIconLayer)
         self.iconImageLayer = newIconLayer
     }
@@ -353,13 +355,25 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
             var whitespaceCharacter: Character? = nil
             var wordIsFollowedByNewline = false
             if let nextSpaceIndex = remainingText.firstIndex(of: " ") {
-                let nextWordEndIndex = remainingText.index(before: nextSpaceIndex)
                 whitespaceCharacter = " "
-                nextWord = String(remainingText[...nextWordEndIndex])
+                if (nextSpaceIndex > remainingText.startIndex) {
+                    // space after some characters
+                    let nextWordEndIndex = remainingText.index(before: nextSpaceIndex)
+                    nextWord = String(remainingText[...nextWordEndIndex])
+                } else {
+                    // space followed by zero or more characters
+                    nextWord = String()
+                }
             } else if let newlineIndex = remainingText.firstIndex(of: "\n") {
-                let nextWordEndIndex = remainingText.index(before: newlineIndex)
                 whitespaceCharacter = "\n"
-                nextWord = String(remainingText[...nextWordEndIndex])
+                if (newlineIndex > remainingText.startIndex) {
+                    // newline after some characters
+                    let nextWordEndIndex = remainingText.index(before: newlineIndex)
+                    nextWord = String(remainingText[...nextWordEndIndex])
+                } else {
+                    // newline followed by zero or more characters
+                    nextWord = ""
+                }
                 wordIsFollowedByNewline = true
             } else {
                 nextWord = String(remainingText[..<remainingText.endIndex])
@@ -565,11 +579,12 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
             if icon != nil {
                 height += self.titleTopPadding
                 //
-                let iconCircleDiameter = calculateIconCircleDiameter(usingFrameWidth: width)
+                let minimumFrameWidthForIcon = CGFloat(100.0);
+                let iconCircleDiameter = calculateIconCircleDiameter(usingFrameWidth: max(width, minimumFrameWidthForIcon))
                 height += iconCircleDiameter
                 width = max(width, iconCircleDiameter)
             } else {
-                // if there is no icon, mirro the title's bottom padding on top (since the "top padding" is really the icon-to-text vertical padding)
+                // if there is no icon, mirror the title's bottom padding on top (since the "top padding" is really the icon-to-text vertical padding)
                 height += self.titleBottomPadding
             }
             

@@ -47,15 +47,14 @@ public class Display {
         return nil
     }()
     
-    public func zoom(to percentage: Double) -> Bool {
+    public func zoom(to percentage: Double) throws {
         guard let mode = self.mode(for: percentage) else {
-            return false
+            throw MorphicError()
         }
         do {
             try MorphicDisplay.setCurrentDisplayMode(for: id, to: mode)
-            return true
         } catch {
-            return false
+            throw MorphicError()
         }
     }
     
@@ -353,7 +352,12 @@ public class DisplayZoomHandler: ClientSettingHandler {
             completion(false)
             return
         }
-        let success = Display.main?.zoom(to: percentage) ?? false
+        let success: Bool
+        if let _ = try? Display.main?.zoom(to: percentage) {
+            success = true
+        } else {
+            success = false
+        }
         completion(success)
     }
     

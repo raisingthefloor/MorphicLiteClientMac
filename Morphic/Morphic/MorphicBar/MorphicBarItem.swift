@@ -66,6 +66,8 @@ public class MorphicBarItem {
             itemAsDictionary["url"] = extraItem.url
             // for type: action (from config.json file, not from custom bar web app schema)
             itemAsDictionary["function"] = extraItem.function
+            // for type: control (from config.json file, not from custom bar web app schema)
+            itemAsDictionary["feature"] = extraItem.feature
 
             if let item_ = item(from: itemAsDictionary) {
                 items.append(item_)
@@ -92,7 +94,7 @@ public class MorphicBarItem {
             if let _ = interoperable["function"] {
                 // config.json (Windows-compatible) action item
                 defer {
-                    Countly.sharedInstance().recordEvent("morphicBarExtraItem")
+                    (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("morphicBarExtraItem")
                 }
                 return MorphicBarActionItem(interoperable: interoperable)
             } else {
@@ -118,10 +120,22 @@ public class MorphicBarItem {
         transformedInteroperable["color"] = interoperable["color"] as? String
 
         switch identifier {
+        case "color-vision":
+            transformedInteroperable["feature"] = "colorvisiononoff"
         case "copy-paste":
             transformedInteroperable["feature"] = "copypaste"
+        case "dark-mode":
+            transformedInteroperable["feature"] = "darkmodeonoff"
+        case "high-contrast":
+            transformedInteroperable["feature"] = "contrast"
+        case "log-off":
+            transformedInteroperable["feature"] = "signout"
         case "magnify":
             transformedInteroperable["feature"] = "magnifieronoff"
+        case "night-mode":
+            transformedInteroperable["feature"] = "nightshift"
+        case "read-aloud":
+            transformedInteroperable["feature"] = "readselected"
         case "screen-zoom":
             transformedInteroperable["feature"] = "resolution"
         case "volume":
@@ -130,6 +144,10 @@ public class MorphicBarItem {
             // no other action items are supported
             break
         }
+        
+        // NOTE: for special features like signout, label and image are configurable
+        transformedInteroperable["label"] = interoperable["label"] as? String
+        transformedInteroperable["imageUrl"] = interoperable["imageUrl"] as? String
 
         let morphicBarControlItem = MorphicBarControlItem(interoperable: transformedInteroperable)
         morphicBarControlItem.style = .fixedWidth(segmentWidth: 49.25)
@@ -154,17 +172,18 @@ class MorphicBarLinkItem: MorphicBarItem {
      
     override init(interoperable: [String : Interoperable?]) {
         // NOTE: argument 'label' should never be nil, but we use an empty string as a backup
-        label = interoperable.string(for: "label") ?? ""
+        self.label = interoperable.string(for: "label") ?? ""
         //
         if let colorAsString = interoperable.string(for: "color") {
-            color = NSColor.createFromRgbHexString(colorAsString)
+            self.color = NSColor.createFromRgbHexString(colorAsString)
         } else {
-            color = nil
+            self.color = nil
         }
         //
-        imageUrl = interoperable.string(for: "imageUrl")
+        self.imageUrl = interoperable.string(for: "imageUrl")
         //
         // NOTE: argument 'url' should never be nil, but we use an empty string as a backup
+        var url: URL?
         if let urlAsString = interoperable.string(for: "url") {
             // NOTE: if the url was malformed, that may result in a "nil" URL
             // SECURITY NOTE: we should strongly consider filtering urls by scheme (or otherwise) here
@@ -173,6 +192,23 @@ class MorphicBarLinkItem: MorphicBarItem {
             url = nil
         }
         
+        // validate the URL scheme
+        switch url?.scheme?.lowercased() {
+        case "http",
+             "https":
+            // valid
+            break
+        case "skype":
+            // allowed for now, but in the future we may want to launch Skype directly and handle this information seperately
+            break
+        default:
+            // disallowed/missing scheme: reject this URL
+            url = nil
+        }
+
+        // capture the validated URL
+        self.url = url
+            
         super.init(interoperable: interoperable)
     }
 
@@ -326,19 +362,23 @@ enum MorphicBarControlItemStyle {
 class MorphicBarControlItem: MorphicBarItem {
     
     enum Feature: String {
-        case resolution
-        case magnifier
-        case magnifieronoff
-        case reader
-        case readselected
-        case volume
-        case volumewithoutmute
+        case colorvisiononoff
         case contrast
         case contrastcolordarknight
-        case nightshift
         case copypaste
+        case darkmodeonoff
+        case magnifier
+        case magnifieronoff
+        case nightshift
+        case reader
+        case readselected
+        case resolution
         case screensnip
+        case signout
         case unknown
+        case usbopeneject
+        case volume
+        case volumewithoutmute
         
         init(string: String?) {
             if let known = Feature(rawValue: string ?? "") {
@@ -362,6 +402,7 @@ class MorphicBarControlItem: MorphicBarItem {
         case readselMac = "readsel-mac"
         case snip = "snip"
         case textsize = "textsize"
+        case usbdrives = "usbdrives"
         case volmute = "volmute"
     }
     
@@ -380,16 +421,29 @@ class MorphicBarControlItem: MorphicBarItem {
     
     var feature: Feature
     var fillColor: NSColor? = nil 
-    
+
+    // NOTE: these values are for special buttons like "signoff" which have user-customizable labels and images
+    var label: String
+    var imageUrl: String?
+
     var style: MorphicBarControlItemStyle = .autoWidth
     
     override init(interoperable: [String : Interoperable?]) {
-        feature = Feature(string: interoperable.string(for: "feature"))
+        // NOTE: for buttons with user-definable labels, argument 'label' should never be nil, but we use an empty string as a backup
+        // NOTE: label is used for buttons like the "sign-off" button; for most other features this is not customizable
+        self.label = interoperable.string(for: "label") ?? ""
+        //
+        self.feature = Feature(string: interoperable.string(for: "feature"))
+        //
         if let colorAsString = interoperable.string(for: "color") {
-            fillColor = NSColor.createFromRgbHexString(colorAsString)
+            self.fillColor = NSColor.createFromRgbHexString(colorAsString)
         } else {
-            fillColor = nil
+            self.fillColor = nil
         }
+        //
+        // NOTE: imageUrl is used for buttons like the "sign-off" button; for most other features this is not customizable
+        self.imageUrl = interoperable.string(for: "imageUrl")
+
         super.init(interoperable: interoperable)
     }
     
@@ -398,105 +452,30 @@ class MorphicBarControlItem: MorphicBarItem {
         let alternateButtonColor: NSColor = fillColor ?? .morphicPrimaryColor
         // NOTE: to alternate the color of button segments, uncomment the following line instead
         //let alternateButtonColor: NSColor = fillColor ?? .morphicPrimaryColorLightend
+        
+        // NOTE: icons are only used on user-definable buttons which have imageUrl properties (like the "signout" button)
+        var icon: MorphicBarButtonItemIcon? = nil
+        if let imageUrl = self.imageUrl {
+            icon = MorphicBarButtonItemIcon(rawValue: imageUrl)
+        }
 
         switch feature {
-        case .resolution:
-            let localized = LocalizedStrings(prefix: "control.feature.resolution")
-            let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "bigger"), fillColor: buttonColor, helpProvider:  QuickHelpTextSizeBiggerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "bigger.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize), learnMoreTelemetryCategory: "textSize", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize), quickDemoVideoTelemetryCategory: "textSize", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31)),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "smaller"), fillColor: alternateButtonColor, helpProvider: QuickHelpTextSizeSmallerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "smaller.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize), learnMoreTelemetryCategory: "textSize", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize), quickDemoVideoTelemetryCategory: "textSize", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31))
-            ]
-            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
-            view.segmentedButton.target = self
-            view.segmentedButton.action = #selector(MorphicBarControlItem.zoom(_:))
-            return view
-        case .magnifier,
-             .magnifieronoff:
-            // NOTE: magnifieronoff is identical to magnifier but shows "on/off" buttons instead of "show/hide" buttons
-            let isOnOff = (feature == .magnifieronoff)
+        case .colorvisiononoff:
+            let localized = LocalizedStrings(prefix: "control.feature.colorvision")
+            let showHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
+            let hideHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             //
-            let localized = LocalizedStrings(prefix: "control.feature.magnifier")
-            let showHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: isOnOff ? "on.help.title" : "show.help.title"), message: localized.string(for: isOnOff ? "on.help.message" : "show.help.message")) }
-            let hideHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: isOnOff ? "off.help.title" : "hide.help.title"), message: localized.string(for: isOnOff ? "off.help.message" : "hide.help.message")) }
+            let colorVisionOnSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: showHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .colorvision), learnMoreTelemetryCategory: "colorFilter", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .colorvision), quickDemoVideoTelemetryCategory: "colorFilter", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilityDisplayColorFilters, category: "colorFilter") }, style: style)
+            let colorVisionOffSemgent = MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: hideHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .colorvision), learnMoreTelemetryCategory: "colorFilter", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .colorvision), quickDemoVideoTelemetryCategory: "colorFilter", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilityDisplayColorFilters, category: "colorFilter") }, style: style)
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: isOnOff ? "on" : "show"), fillColor: buttonColor, helpProvider: showHelpProvider, accessibilityLabel: localized.string(for: isOnOff ? "on.help.title" : "show.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .magnifier), learnMoreTelemetryCategory: "magnifier", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .magnifier), quickDemoVideoTelemetryCategory: "magnifier", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilityZoom, category: "magnifier") }, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: isOnOff ? "off" : "hide"), fillColor: alternateButtonColor, helpProvider: hideHelpProvider, accessibilityLabel: localized.string(for: isOnOff ? "off.help.title" : "hide.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .magnifier), learnMoreTelemetryCategory: "magnifier", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .magnifier), quickDemoVideoTelemetryCategory: "magnifier", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilityZoom, category: "magnifier") }, style: style)
+                colorVisionOnSegment,
+                colorVisionOffSemgent
             ]
+            //
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
             view.segmentedButton.target = self
-            view.segmentedButton.action = #selector(MorphicBarControlItem.magnifier(_:))
-            return view
-        case .reader:
-            let localized = LocalizedStrings(prefix: "control.feature.reader")
-            let onHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
-            let offHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
-            let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.tts"), learnMoreUrl: nil, learnMoreTelemetryCategory: nil, quickDemoVideoUrl: nil, quickDemoVideoTelemetryCategory: nil, settingsBlock: nil, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.tts"), learnMoreUrl: nil, learnMoreTelemetryCategory: nil, quickDemoVideoUrl: nil, quickDemoVideoTelemetryCategory: nil, settingsBlock: nil, style: style)
-            ]
-            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
-            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
-            view.segmentedButton.target = self
-            view.segmentedButton.action = #selector(MorphicBarControlItem.reader(_:))
-            return view
-        case .readselected:
-            let localized = LocalizedStrings(prefix: "control.feature.readselected")
-            let playStopHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "playstop.help.title"), message: localized.string(for: "playstop.help.message")) }
-            let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "playstop"), fillColor: buttonColor, helpProvider: playStopHelpProvider, accessibilityLabel: localized.string(for: "playstop.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .readselMac), learnMoreTelemetryCategory: "readAloud", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .readselMac), quickDemoVideoTelemetryCategory: "readAloud", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilitySpeech, category: "readAloud") }, style: style)
-            ]
-            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
-            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
-            view.segmentedButton.target = self
-            view.segmentedButton.action = #selector(MorphicBarControlItem.readselected)
-            return view
-        case .volume,
-             .volumewithoutmute:
-            let localized = LocalizedStrings(prefix: "control.feature.volume")
-            var segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "up"), fillColor: buttonColor, helpProvider: QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "up.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), learnMoreTelemetryCategory: "volume", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), quickDemoVideoTelemetryCategory: "volume", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31)),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "down"), fillColor: alternateButtonColor, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "down.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), learnMoreTelemetryCategory: "volume", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), quickDemoVideoTelemetryCategory: "volume", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31))
-            ]
-            if feature == .volume {
-                // create and add mute segment
-                var muteSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "mute"), fillColor: buttonColor, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "mute.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), learnMoreTelemetryCategory: "volume", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), quickDemoVideoTelemetryCategory: "volume", settingsBlock: nil, style: style)
-                muteSegment.getStateBlock = {
-                    guard let defaultAudioDeviceId = MorphicAudio.getDefaultAudioDeviceId() else {
-                        // default: return false
-                        return false
-                    }
-                    guard let muteState = MorphicAudio.getMuteState(for: defaultAudioDeviceId) else {
-                        // default: return false
-                        return false
-                    }
-                    return muteState
-                }
-                muteSegment.stateUpdatedNotification = MorphicBarSegmentedButton.Segment.StateUpdateNotificationInfo(
-                    notificationName: NSNotification.Name.morphicAudioMuteStateChanged,
-                    stateKey: "muteState"
-                )
-                muteSegment.accessibilityLabelByState = [
-                    .on: localized.string(for: "mute.tts.muted"),
-                    .off: localized.string(for: "mute.tts.unmuted")
-                ]
-                //
-                // enable muteState change notifications
-                if let defaultAudioDeviceId = MorphicAudio.getDefaultAudioDeviceId() {
-                    do {
-                        try MorphicAudio.enableMuteStateChangeNotifications(for: defaultAudioDeviceId)
-                    } catch {
-                        NSLog("Could not subscribe to mute state change notifications")
-                    }
-                }
-                //
-                segments.append(
-                    muteSegment
-                )
-            }
-            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
-            view.segmentedButton.target = self
-            view.segmentedButton.action = #selector(MorphicBarControlItem.volume(_:))
+            view.segmentedButton.action = #selector(MorphicBarControlItem.colorvision(_:))
             return view
         case .contrast:
             let localized = LocalizedStrings(prefix: "control.feature.contrast")
@@ -611,19 +590,6 @@ class MorphicBarControlItem: MorphicBarItem {
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.contrastcolordarknight(_:))
             return view
-        case .nightshift:
-            let localized = LocalizedStrings(prefix: "control.feature.nightshift")
-            let onHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
-            let offHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
-            let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), learnMoreTelemetryCategory: "nightMode", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), quickDemoVideoTelemetryCategory: "nightMode", settingsBlock: nil, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), learnMoreTelemetryCategory: "nightMode", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), quickDemoVideoTelemetryCategory: "nightMode", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.displaysNightShift, category: "nightMode") }, style: style)
-            ]
-            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
-            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
-            view.segmentedButton.target = self
-            view.segmentedButton.action = #selector(MorphicBarControlItem.nightShift(_:))
-            return view
         case .copypaste:
             let localized = LocalizedStrings(prefix: "control.feature.copypaste")
             let copyHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
@@ -637,6 +603,92 @@ class MorphicBarControlItem: MorphicBarItem {
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.copyPaste(_:))
             return view
+        case .darkmodeonoff:
+            let localized = LocalizedStrings(prefix: "control.feature.darkmode")
+            let showHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
+            let hideHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
+            //
+            let darkModeOnSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: showHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .darkmode), learnMoreTelemetryCategory: "darkMode", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .darkmode), quickDemoVideoTelemetryCategory: "darkMode", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.general, category: "darkMode") }, style: style)
+            let darkModeOffSemgent = MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: hideHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .darkmode), learnMoreTelemetryCategory: "darkMode", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .darkmode), quickDemoVideoTelemetryCategory: "darkMode", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.general, category: "darkMode") }, style: style)
+            let segments = [
+                darkModeOnSegment,
+                darkModeOffSemgent
+            ]
+            //
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(MorphicBarControlItem.darkmode(_:))
+            return view
+        case .magnifier,
+             .magnifieronoff:
+            // NOTE: magnifieronoff is identical to magnifier but shows "on/off" buttons instead of "show/hide" buttons
+            let isOnOff = (feature == .magnifieronoff)
+            //
+            let localized = LocalizedStrings(prefix: "control.feature.magnifier")
+            let showHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: isOnOff ? "on.help.title" : "show.help.title"), message: localized.string(for: isOnOff ? "on.help.message" : "show.help.message")) }
+            let hideHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: isOnOff ? "off.help.title" : "hide.help.title"), message: localized.string(for: isOnOff ? "off.help.message" : "hide.help.message")) }
+            let segments = [
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: isOnOff ? "on" : "show"), fillColor: buttonColor, helpProvider: showHelpProvider, accessibilityLabel: localized.string(for: isOnOff ? "on.help.title" : "show.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .magnifier), learnMoreTelemetryCategory: "magnifier", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .magnifier), quickDemoVideoTelemetryCategory: "magnifier", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilityZoom, category: "magnifier") }, style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: isOnOff ? "off" : "hide"), fillColor: alternateButtonColor, helpProvider: hideHelpProvider, accessibilityLabel: localized.string(for: isOnOff ? "off.help.title" : "hide.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .magnifier), learnMoreTelemetryCategory: "magnifier", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .magnifier), quickDemoVideoTelemetryCategory: "magnifier", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilityZoom, category: "magnifier") }, style: style)
+            ]
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(MorphicBarControlItem.magnifier(_:))
+            return view
+        case .nightshift:
+            let localized = LocalizedStrings(prefix: "control.feature.nightshift")
+            let onHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
+            let offHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
+            let segments = [
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), learnMoreTelemetryCategory: "nightMode", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), quickDemoVideoTelemetryCategory: "nightMode", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.displaysNightShift, category: "nightMode") }, style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), learnMoreTelemetryCategory: "nightMode", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), quickDemoVideoTelemetryCategory: "nightMode", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.displaysNightShift, category: "nightMode") }, style: style)
+            ]
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(MorphicBarControlItem.nightShift(_:))
+            return view
+        case .reader:
+            let localized = LocalizedStrings(prefix: "control.feature.reader")
+            let onHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
+            let offHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
+            let segments = [
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.tts"), learnMoreUrl: nil, learnMoreTelemetryCategory: nil, quickDemoVideoUrl: nil, quickDemoVideoTelemetryCategory: nil, settingsBlock: nil, style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.tts"), learnMoreUrl: nil, learnMoreTelemetryCategory: nil, quickDemoVideoUrl: nil, quickDemoVideoTelemetryCategory: nil, settingsBlock: nil, style: style)
+            ]
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(MorphicBarControlItem.reader(_:))
+            return view
+        case .readselected:
+            let localized = LocalizedStrings(prefix: "control.feature.readselected")
+            let playStopHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "playstop.help.title"), message: localized.string(for: "playstop.help.message")) }
+            let segments = [
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "playstop"), fillColor: buttonColor, helpProvider: playStopHelpProvider, accessibilityLabel: localized.string(for: "playstop.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .readselMac), learnMoreTelemetryCategory: "readAloud", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .readselMac), quickDemoVideoTelemetryCategory: "readAloud", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilitySpeech, category: "readAloud") }, style: style)
+            ]
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(MorphicBarControlItem.readselected)
+            return view
+        case .resolution:
+            let localized = LocalizedStrings(prefix: "control.feature.resolution")
+            let segments = [
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "bigger"), fillColor: buttonColor, helpProvider:  QuickHelpTextSizeBiggerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "bigger.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize), learnMoreTelemetryCategory: "textSize", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize), quickDemoVideoTelemetryCategory: "textSize", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31)),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "smaller"), fillColor: alternateButtonColor, helpProvider: QuickHelpTextSizeSmallerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "smaller.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize), learnMoreTelemetryCategory: "textSize", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize), quickDemoVideoTelemetryCategory: "textSize", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31))
+            ]
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(MorphicBarControlItem.zoom(_:))
+            return view
+        case .signout:
+            let view = MorphicBarButtonItemView(label: self.label, labelColor: nil, fillColor: self.fillColor, icon: icon, iconColor: nil)
+            view.target = self
+            view.action = #selector(MorphicBarControlItem.signout(_:))
+            return view
         case .screensnip:
             let localized = LocalizedStrings(prefix: "control.feature.screensnip")
             let copyHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
@@ -649,6 +701,66 @@ class MorphicBarControlItem: MorphicBarItem {
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
             view.segmentedButton.target = self
             view.segmentedButton.action = #selector(MorphicBarControlItem.screensnip)
+            return view
+        case .usbopeneject:
+            let localized = LocalizedStrings(prefix: "control.feature.usbdrives")
+            let openHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "open.help.title"), message: localized.string(for: "open.help.message")) }
+            let ejectHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "eject.help.title"), message: localized.string(for: "eject.help.message")) }
+            let segments = [
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "open"), fillColor: buttonColor, helpProvider: openHelpProvider, accessibilityLabel: localized.string(for: "open.help.title"), learnMoreUrl: nil, learnMoreTelemetryCategory: nil, quickDemoVideoUrl: nil, quickDemoVideoTelemetryCategory: nil, settingsBlock: nil, style: style),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "eject"), fillColor: alternateButtonColor, helpProvider: ejectHelpProvider, accessibilityLabel: localized.string(for: "eject.help.title"), learnMoreUrl: nil, learnMoreTelemetryCategory: nil, quickDemoVideoUrl: nil, quickDemoVideoTelemetryCategory: nil, settingsBlock: nil, style: style)
+            ]
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
+            view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(MorphicBarControlItem.usbdrives(_:))
+            return view
+        case .volume,
+             .volumewithoutmute:
+            let localized = LocalizedStrings(prefix: "control.feature.volume")
+            var segments = [
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "up"), fillColor: buttonColor, helpProvider: QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "up.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), learnMoreTelemetryCategory: "volume", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), quickDemoVideoTelemetryCategory: "volume", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31)),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "down"), fillColor: alternateButtonColor, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "down.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), learnMoreTelemetryCategory: "volume", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), quickDemoVideoTelemetryCategory: "volume", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31))
+            ]
+            if feature == .volume {
+                // create and add mute segment
+                var muteSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "mute"), fillColor: buttonColor, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "mute.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), learnMoreTelemetryCategory: "volume", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), quickDemoVideoTelemetryCategory: "volume", settingsBlock: nil, style: style)
+                muteSegment.getStateBlock = {
+                    guard let defaultAudioDeviceId = MorphicAudio.getDefaultAudioDeviceId() else {
+                        // default: return false
+                        return false
+                    }
+                    guard let muteState = MorphicAudio.getMuteState(for: defaultAudioDeviceId) else {
+                        // default: return false
+                        return false
+                    }
+                    return muteState
+                }
+                muteSegment.stateUpdatedNotification = MorphicBarSegmentedButton.Segment.StateUpdateNotificationInfo(
+                    notificationName: NSNotification.Name.morphicAudioMuteStateChanged,
+                    stateKey: "muteState"
+                )
+                muteSegment.accessibilityLabelByState = [
+                    .on: localized.string(for: "mute.tts.muted"),
+                    .off: localized.string(for: "mute.tts.unmuted")
+                ]
+                //
+                // enable muteState change notifications
+                if let defaultAudioDeviceId = MorphicAudio.getDefaultAudioDeviceId() {
+                    do {
+                        try MorphicAudio.enableMuteStateChangeNotifications(for: defaultAudioDeviceId)
+                    } catch {
+                        NSLog("Could not subscribe to mute state change notifications")
+                    }
+                }
+                //
+                segments.append(
+                    muteSegment
+                )
+            }
+            let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
+            view.segmentedButton.target = self
+            view.segmentedButton.action = #selector(MorphicBarControlItem.volume(_:))
             return view
         default:
             return nil
@@ -684,13 +796,13 @@ class MorphicBarControlItem: MorphicBarItem {
                 segmentation["dotOffset"] = String(zoomToStep)
             }
             if isZoomingIn == true {
-                Countly.sharedInstance().recordEvent("textSizeIncrease", segmentation: segmentation)
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("textSizeIncrease", segmentation: segmentation)
             } else {
-                Countly.sharedInstance().recordEvent("textSizeDecrease", segmentation: segmentation)
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("textSizeDecrease", segmentation: segmentation)
             }
         }
         //
-        _ = display.zoom(to: percentage)
+        _ = try? display.zoom(to: percentage)
     }
     
     @objc
@@ -704,20 +816,20 @@ class MorphicBarControlItem: MorphicBarItem {
         }
         if segment == 0 {
             if output.isMuted {
-                _ = output.setMuted(false)
+                _ = try? output.setMuted(false)
             } else {
-                _ = output.setVolume(output.volume + 0.05)
+                _ = try? output.setVolume(output.volume + 0.05)
             }
         } else if segment == 1 {
             if output.isMuted {
-                _ = output.setMuted(false)
+                _ = try? output.setMuted(false)
             } else {
-                _ = output.setVolume(output.volume - 0.05)
+                _ = try? output.setVolume(output.volume - 0.05)
             }
         } else if segment == 2 {
             let currentMuteState = output.isMuted
             let newMuteState = !currentMuteState
-            _ = output.setMuted(newMuteState)
+            _ = try? output.setMuted(newMuteState)
         }
 
         // update the state of the mute button
@@ -734,15 +846,15 @@ class MorphicBarControlItem: MorphicBarItem {
         }
         if segment == 0 {
             if output.isMuted {
-                _ = output.setMuted(false)
+                _ = try? output.setMuted(false)
             } else {
-                _ = output.setVolume(output.volume + 0.05)
+                _ = try? output.setVolume(output.volume + 0.05)
             }
         } else if segment == 1 {
             if output.isMuted {
-                _ = output.setMuted(false)
+                _ = try? output.setMuted(false)
             } else {
-                _ = output.setVolume(output.volume - 0.05)
+                _ = try? output.setVolume(output.volume - 0.05)
             }
         }
     }
@@ -798,7 +910,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
             
             // send the appropriate hotkey to the system
-            guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
+            guard let _ = try? MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) else {
                 NSLog("Could not send copy/paste hotkey to the keyboard input stream")
                 return
             }
@@ -806,9 +918,18 @@ class MorphicBarControlItem: MorphicBarItem {
     }
 
     @objc
+    func signout(_ sender: Any?) {
+        defer {
+            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("signOut")
+        }
+        
+        MorphicProcess.logOutUserViaOsaScriptWithConfirmation()
+    }
+    
+    @objc
     func screensnip(_ sender: Any?) {
         defer {
-            Countly.sharedInstance().recordEvent("screenSnip")
+            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("screenSnip")
         }
 
         // verify that we have accessibility permissions (since UI automation and sendKeys will not work without them)
@@ -848,13 +969,74 @@ class MorphicBarControlItem: MorphicBarItem {
         QuickHelpWindow.hide(withoutDelay: true) {
             // after we hide the QuickHelp window, send our key
             
-            guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
+            guard let _ = try? MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) else {
                 NSLog("Could not send 'screen snip' hotkey to the keyboard input stream")
                 return
             }
         }
     }
+
+    private func setColorFilterState(_ state: Bool, completion: @escaping (Bool) -> Void) {
+        if #available(macOS 10.15, *) {
+            // if the inverse state is "enabled", then make sure we've set the initial color filter type
+            if state == true {
+                // set the default color filter type (if it hasn't already been set)
+                let didSetInitialColorFilterType = Session.shared.bool(for: .morphicDidSetInitialColorFilterType) ?? false
+                if didSetInitialColorFilterType == false {
+                    // NOTE: we get no "success/failure" from the following function, so we just have to assume success
+                    AppDelegate.shared.setInitialColorFilterType()
+                }
+            }
+            
+            // apply the inverse state
+            //
+            // NOTE: due to current limitations in our implementation, we are unable to disable "invert colors" (which is the desired effect when enabling color filters); this is unlikely to be a common scenario, but if we run into it then we need to use the backup UI automation mechanism
+            // NOTE: in the future, we should rework the settings handlers so that they can call native code which can launch a UI automation (instead of being either/or)...and then move this logic to the settings handler code
+            if state == true && MorphicDisplayAccessibilitySettings.invertColorsEnabled == true {
+                Session.shared.apply(state, for: .macosColorFilterEnabled, completion: completion)
+            } else {
+                MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(state)
+                completion(true)
+            }
+        } else {
+            // macOS 10.14
+            self.warnColorVisionFiltersNotAvailableOnMacOS10_14()
+        }
+    }
+     
+    private func warnColorVisionFiltersNotAvailableOnMacOS10_14() {
+        let alert = NSAlert()
+        alert.messageText = "Color Vision filters not available."
+        alert.informativeText = "Color Vision filters (including color blindness filters) are not available in this older version of macOS.\n\nPlease upgrade to macOS 10.15 (Catalina) or newer to use this feature."
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "OK")
+        _ = alert.runModal()
+    }
     
+    @objc
+    func colorvision(_ sender: Any?) {
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
+            return
+        }
+        if segment == 0 {
+            defer {
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("colorFiltersOn")
+            }
+
+            self.setColorFilterState(true) {
+                _ in
+            }
+        } else {
+            defer {
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("colorFiltersOff")
+            }
+
+            self.setColorFilterState(false) {
+                _ in
+            }
+        }
+    }
+
     @objc
     func contrast(_ sender: Any?) {
         guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
@@ -867,6 +1049,71 @@ class MorphicBarControlItem: MorphicBarItem {
         } else {
             Session.shared.apply(false, for: .macosDisplayContrastEnabled) {
                 _ in
+            }
+        }
+    }
+    
+    @objc
+    func usbdrives(_ sender: Any?) {
+        guard let usbDriveMountingPaths = try? MorphicDisk.getAllUsbDriveMountPaths() else {
+            // TODO: once Morphic can catch and display errors, handle this error
+            // "Could not retrieve a list of all USB drive mount paths"
+            return
+        }
+        
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
+            return
+        }
+        if segment == 0 {
+            // open all USB drives
+            
+            // open directory paths using Finder
+            for path in usbDriveMountingPaths {
+                _ = try? MorphicDisk.openDirectory(path: path)
+            }
+        } else {
+            // safely eject all USB drives
+            let numberOfDisks = usbDriveMountingPaths.count
+            var numberOfDiskEjectsAttempted = 0
+            var failedMountPaths: [String] = []
+            
+            // unmount and eject disk using disk arbitration
+            for mountPath in usbDriveMountingPaths {
+                do {
+                    try MorphicDisk.ejectDisk(mountPath: mountPath) {
+                        ejectedDiskPath, success in
+                        //
+                        numberOfDiskEjectsAttempted += 1
+                        //
+                        if success == true {
+                            // we have ejected the disk at mount path: 'ejectedDiskPath'
+                        } else {
+                            // we failed to eject the disk at mount path: 'ejectedDiskPath'
+                            failedMountPaths.append(mountPath)
+                        }
+                        
+                        if numberOfDiskEjectsAttempted == numberOfDisks {
+                            // if a callback was provided, call it with success/failure (and an array of all mounting paths which failed)
+                            if failedMountPaths.count == 0 {
+                                // TODO: in the future, consider offering a callback (or an async wait of some sort) to get confirmation once the operation has completed
+//                                callback?.call(args: [true, Array<String>?(nil)])
+                                return
+                            } else {
+                                // TODO: in the future, consider offering a callback (or an async wait of some sort) to get confirmation once the operation has completed
+//                                callback?.call(args: [false, failedMountPaths])
+                                return
+                            }
+                        }
+                    }
+                } catch MorphicDisk.EjectDiskError.volumeNotFound {
+                    // TODO: once Morphic can catch and display errors, handle this error
+                    // "Failed to eject the disk at mount path: \(mountPath); volume was not found"
+                } catch MorphicDisk.EjectDiskError.otherError {
+                    // TODO: once Morphic can catch and display errors, handle this error
+                    // "Failed to eject the disk at mount path: \(mountPath); misc. error encountered"
+                } catch _ {
+                    // TODO: there should not be any other error conditions, but the compiler is warning that this switch is not exhaustive; once we have a way to catch and display errors we should determine which error is not being caught and handle it--or log and fatalError() here if this is an impossible code path
+                }
             }
         }
     }
@@ -898,7 +1145,7 @@ class MorphicBarControlItem: MorphicBarItem {
                 let newIncreaseContrastEnabled = !increaseContrastEnabled
                 //
                 defer {
-                    Countly.sharedInstance().recordEvent(newIncreaseContrastEnabled ? "highContrastOn" : "highContrastOff")
+                    (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newIncreaseContrastEnabled ? "highContrastOn" : "highContrastOff")
                 }
                 // apply the inverse state
                 Session.shared.apply(newIncreaseContrastEnabled, for: .macosDisplayContrastEnabled) {
@@ -924,53 +1171,26 @@ class MorphicBarControlItem: MorphicBarItem {
                     let newValue = !valueAsBoolean
                     
                     defer {
-                        Countly.sharedInstance().recordEvent(newValue ? "colorFiltersOn" : "colorFiltersOff")
+                        (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newValue ? "colorFiltersOn" : "colorFiltersOff")
                     }
                     
-                    // if the inverse state is "enabled", then make sure we've set the initial color filter type
-                    if newValue == true {
-                        // set the default color filter type (if it hasn't already been set)
-                        let didSetInitialColorFilterType = Session.shared.bool(for: .morphicDidSetInitialColorFilterType) ?? false
-                        if didSetInitialColorFilterType == false {
-                            // NOTE: we get no "success/failure" from the following function, so we just have to assume success
-                            AppDelegate.shared.setInitialColorFilterType()
-                        }
-                    }
-                    
-                    // apply the inverse state
-                    //
-                    // NOTE: due to current limitations in our implementation, we are unable to disable "invert colors" (which is the desired effect when enabling color filters); this is unlikely to be a common scenario, but if we run into it then we need to use the backup UI automation mechanism
-                    // NOTE: in the future, we should rework the settings handlers so that they can call native code which can launch a UI automation (instead of being either/or)...and then move this logic to the settings handler code
-                    if newValue == true && MorphicDisplayAccessibilitySettings.invertColorsEnabled == true {
-                        Session.shared.apply(newValue, for: .macosColorFilterEnabled) {
-                            success in
-                            
-                            // we do not currently have a mechanism to report success/failure
-                            SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
-                                verifyValue in
-                                guard let verifyValueAsBoolean = verifyValue as? Bool else {
-                                    // could not get current setting
-                                    return
-                                }
-                                senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyValueAsBoolean)
+                    self.setColorFilterState(newValue) {
+                        success in
+                        
+                        // NOTE: we do not currently have a mechanism to report success/failure
+                        SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+                            verifyValue in
+                            guard let verifyValueAsBoolean = verifyValue as? Bool else {
+                                // could not get current setting
+                                return
                             }
+                            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyValueAsBoolean)
                         }
-                    } else {
-                        MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(newValue)
-                        //
-                        let verifyColorFiltersEnabled = MorphicDisplayAccessibilitySettings.colorFiltersEnabled
-                        senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyColorFiltersEnabled)
                     }
                 }
             } else {
                 // macOS 10.14
-                
-                let alert = NSAlert()
-                alert.messageText = "Color Vision filters not available."
-                alert.informativeText = "Color Vision filters (including color blindness filters) are not available in this older version of macOS.\n\nPlease upgrade to macOS 10.15 (Catalina) or newer to use this feature."
-                alert.alertStyle = .informational
-                alert.addButton(withTitle: "OK")
-                _ = alert.runModal()
+                self.warnColorVisionFiltersNotAvailableOnMacOS10_14()
             }
         case 2:
             // dark
@@ -985,7 +1205,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
             //
             defer {
-                Countly.sharedInstance().recordEvent(newDarkModeEnabled ? "darkModeOn" : "darkModeOff")
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newDarkModeEnabled ? "darkModeOn" : "darkModeOff")
             }
             //
             switch newDarkModeEnabled {
@@ -1038,7 +1258,7 @@ class MorphicBarControlItem: MorphicBarItem {
             let newNightShiftEnabled = !nightShiftEnabled
             //
             defer {
-                Countly.sharedInstance().recordEvent(newNightShiftEnabled ? "nightModeOn" : "nightModeOff")
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newNightShiftEnabled ? "nightModeOn" : "nightModeOff")
             }
             //
             MorphicNightShift.setEnabled(newNightShiftEnabled)
@@ -1047,6 +1267,31 @@ class MorphicBarControlItem: MorphicBarItem {
             senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyNightShiftEnabled)
         default:
             fatalError("impossible code branch")
+        }
+    }
+    
+    private func setDarkModeState(_ state: Bool, completion: @escaping (Bool) -> Void) {
+        
+    }
+    
+    @objc
+    func darkmode(_ sender: Any?) {
+        // NOTE: if we ever have problems with our reverse-engineered implementation, see the slow automation code in function "contrastcolordarknight"'s dark mode code
+        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
+            return
+        }
+        if segment == 0 {
+            defer {
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("darkModeOn")
+            }
+
+            MorphicDisplayAppearance.setCurrentAppearanceTheme(.dark)
+        } else {
+            defer {
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("darkModeOff")
+            }
+
+            MorphicDisplayAppearance.setCurrentAppearanceTheme(.light)
         }
     }
     
@@ -1081,7 +1326,7 @@ class MorphicBarControlItem: MorphicBarItem {
     @objc
     func readselected(_ sender: Any?) {
         defer {
-            Countly.sharedInstance().recordEvent("readSelectedToggle")
+            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("readSelectedToggle")
         }
         
         // verify that we have accessibility permissions (since UI automation and sendKeys will not work without them)
@@ -1147,7 +1392,7 @@ class MorphicBarControlItem: MorphicBarItem {
                 }
                 
                 // send the "speak selected text key" to the system
-                guard MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) == true else {
+                guard let _ = try? MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) else {
                     NSLog("Could not send 'Speak selected text' hotkey to the keyboard input stream")
                     return
                 }
@@ -1177,7 +1422,7 @@ class MorphicBarControlItem: MorphicBarItem {
         let session = Session.shared
         if segment == 0 {
             defer {
-                Countly.sharedInstance().recordEvent("magnifierShow")
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("magnifierShow")
             }
             
             // this is the code which will activate our magnifier once we have established that it is configured properly
@@ -1222,7 +1467,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
         } else {
             defer {
-                Countly.sharedInstance().recordEvent("magnifierHide")
+                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("magnifierHide")
             }
             
             session.storage.load(identifier: "__magnifier__") {

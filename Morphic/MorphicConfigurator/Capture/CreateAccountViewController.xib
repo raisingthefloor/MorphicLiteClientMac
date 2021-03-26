@@ -43,7 +43,7 @@
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dw9-da-TxY">
                     <rect key="frame" x="78" y="148" width="123" height="16"/>
-                    <textFieldCell key="cell" lineBreakMode="clipping" title="Your Email Adress" id="g3O-a3-XMK">
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="Your Email Address" id="g3O-a3-XMK">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
