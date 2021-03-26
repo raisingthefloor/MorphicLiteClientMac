@@ -1137,17 +1137,27 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
-    var copySettingsWindowController: NSWindowController?
-    
+    var copySettingsWindowController: NSWindowController? = nil
+
+//    @IBAction
+//    func showCopySettingsWindow(_ sender: Any?) {
+//        if copySettingsWindowController == nil {
+//            copySettingsWindowController = CopySettingsWindowController(windowNibName: "CopySettingsWindow")
+//        }
+//        copySettingsWindowController?.window?.makeKeyAndOrderFront(sender)
+//        copySettingsWindowController?.window?.delegate = self
+//    }
+
     @IBAction
-    func showCopySettingsWindow(_ sender: Any?) {
-        if copySettingsWindowController == nil {
-            copySettingsWindowController = CopySettingsWindowController(windowNibName: "CopySettingsWindow")
-        }
-        copySettingsWindowController?.window?.makeKeyAndOrderFront(sender)
-        copySettingsWindowController?.window?.delegate = self
+    func showApplySettingsWindow(_ sender: Any?) {
+        self.launchApplyFromCloudVault(sender)
     }
-    
+
+    @IBAction
+    func showCaptureSettingsWindow(_ sender: Any?) {
+        self.launchCaptureToCloudVault(sender)
+    }
+
 //    @IBAction
 //    func reapplyAllSettings(_ sender: Any) {
 //        Session.shared.open {
@@ -1868,6 +1878,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     //
     
+    @IBAction
+    func menuBarExtraHowToCopySetupsMenuItemClicked(_ sender: NSMenuItem?) {
+        defer {
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
+            self.countly_RecordEvent("howToCopySetups", segmentation: segmentation)
+        }
+
+        transferSetupsClicked()
+    }
+
+    func transferSetupsClicked() {
+        let url = URL(string: "https://morphic.org/xfersetups")!
+        NSWorkspace.shared.open(url)
+    }
+
     @IBAction
     func menuBarExtraExploreMorphicMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
