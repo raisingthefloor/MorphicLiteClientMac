@@ -353,8 +353,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             switch character {
             case "a"..."z",
                  "A"..."Z",
-                 "0"..."9",
-                 "_":
+                 "0"..."9":
+//                 "_":
                 return true
             default:
                 return false
