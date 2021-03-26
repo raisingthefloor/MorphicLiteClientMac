@@ -407,13 +407,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         Session.shared.open {
             NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: Session.shared)
             
-//            // TODO: previously in Morphic Basic for macOS, a user's cloud preferences were applied when they logged in; this behavior has been commented out while the new prefs sets backup/apply flow is being workedo ut
-//            let userInfo = notification.userInfo ?? [:]
-//            if !(userInfo["isRegister"] as? Bool ?? false) {
-//                os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
-//                Session.shared.applyAllPreferences {
-//                }
-//            }
+            // TODO: previously in Morphic Basic for macOS, a user's cloud preferences were applied when they logged in; this behavior may need to be split (based on whether they're logging in to get their morphicbars...or logging in to get their preferences)
+            let userInfo = notification.userInfo ?? [:]
+            if !(userInfo["isRegister"] as? Bool ?? false) {
+                os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
+                Session.shared.applyAllPreferences {
+                }
+            }
         }
     }
     
@@ -1137,17 +1137,27 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
-    var copySettingsWindowController: NSWindowController?
-    
+    var copySettingsWindowController: NSWindowController? = nil
+
+//    @IBAction
+//    func showCopySettingsWindow(_ sender: Any?) {
+//        if copySettingsWindowController == nil {
+//            copySettingsWindowController = CopySettingsWindowController(windowNibName: "CopySettingsWindow")
+//        }
+//        copySettingsWindowController?.window?.makeKeyAndOrderFront(sender)
+//        copySettingsWindowController?.window?.delegate = self
+//    }
+
     @IBAction
-    func showCopySettingsWindow(_ sender: Any?) {
-        if copySettingsWindowController == nil {
-            copySettingsWindowController = CopySettingsWindowController(windowNibName: "CopySettingsWindow")
-        }
-        copySettingsWindowController?.window?.makeKeyAndOrderFront(sender)
-        copySettingsWindowController?.window?.delegate = self
+    func showApplySettingsWindow(_ sender: Any?) {
+        self.launchApplyFromCloudVault(sender)
     }
-    
+
+    @IBAction
+    func showCaptureSettingsWindow(_ sender: Any?) {
+        self.launchCaptureToCloudVault(sender)
+    }
+
 //    @IBAction
 //    func reapplyAllSettings(_ sender: Any) {
 //        Session.shared.open {
@@ -1868,6 +1878,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     //
     
+    @IBAction
+    func menuBarExtraHowToCopySetupsMenuItemClicked(_ sender: NSMenuItem?) {
+        defer {
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
+            self.countly_RecordEvent("howToCopySetups", segmentation: segmentation)
+        }
+
+        transferSetupsClicked()
+    }
+
+    func transferSetupsClicked() {
+        let url = URL(string: "https://morphic.org/xfersetups")!
+        NSWorkspace.shared.open(url)
+    }
+
     @IBAction
     func menuBarExtraExploreMorphicMenuItemClicked(_ sender: NSMenuItem?) {
         defer {

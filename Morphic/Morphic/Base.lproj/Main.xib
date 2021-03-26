@@ -56,6 +56,18 @@
                         </items>
                     </menu>
                 </menuItem>
+                <menuItem title="Apply or Change Setup..." id="WUC-ZR-CdM">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showApplySettingsWindow:" target="ZNk-5q-oDb" id="yPz-td-8oU"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Save my Setup..." id="VF9-cs-dFo">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showCaptureSettingsWindow:" target="ZNk-5q-oDb" id="DuM-HT-1MR"/>
+                    </connections>
+                </menuItem>
                 <menuItem isSeparatorItem="YES" id="vgQ-je-MGT"/>
                 <menuItem title="Sign into Morphic..." hidden="YES" id="S6R-h6-1Yz">
                     <modifierMask key="keyEquivalentModifierMask"/>
@@ -69,17 +81,17 @@
                         <action selector="logout:" target="ZNk-5q-oDb" id="VNp-5s-w1f"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Copy settings to or from Morphic account..." id="WUC-ZR-CdM">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <connections>
-                        <action selector="showCopySettingsWindow:" target="-1" id="61Q-i7-Rtt"/>
-                    </connections>
-                </menuItem>
                 <menuItem isSeparatorItem="YES" id="eWu-mW-zzY"/>
                 <menuItem title="Explore everything Morphic can do..." id="DeU-ED-RwS">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="menuBarExtraExploreMorphicMenuItemClicked:" target="-1" id="75R-yi-by7"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="How to copy setups between computers..." id="pnf-1u-KLS">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="menuBarExtraHowToCopySetupsMenuItemClicked:" target="ZNk-5q-oDb" id="duw-iF-pXZ"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Quick Morphic demo movies..." id="d81-k0-YBn">
