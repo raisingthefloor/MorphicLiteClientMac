@@ -34,6 +34,7 @@ enum MorphicBarButtonItemIcon: String {
     case bestBuy = "bestbuy"
     case bloomberg = "bloomberg"
     case box = "box"
+    case calculator = "calculator"
     case calendar = "calendar$calendar"
     case cbsNews = "cbsnews"
     case cnbc = "cnbc"
@@ -147,6 +148,8 @@ enum MorphicBarButtonItemIcon: String {
             return "logo_bloomberg"
         case "box":
             return "logo_box"
+        case "calculator":
+            return "logo_calculator"
         case "calendar$calendar":
             return "calendar"
         case "cbsnews":
