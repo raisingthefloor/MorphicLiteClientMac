@@ -84,8 +84,8 @@ public class MorphicBarItem {
             return MorphicBarLinkItem(interoperable: interoperable)
         case "application":
             let morphicBarApplicationItem = MorphicBarApplicationItem(interoperable: interoperable)
-            // NOTE: we do not support "EXE" buttons on macOS, so only show items with a supported 'default' application
-            if morphicBarApplicationItem.default != nil {
+            // only show items with a supported 'default' (application category) or exeLaunchDetails
+            if (morphicBarApplicationItem.default != nil) || (morphicBarApplicationItem.exeLaunchDetails != nil) {
                 return morphicBarApplicationItem
             } else {
                 return nil
@@ -282,12 +282,16 @@ enum MorphicBarApplicationDefaultOption: String {
     case email
 }
 //
+public enum ExecutableLaunchDetails {
+    case bundleIdentifier(bundleIdentifier: String)
+}
 class MorphicBarApplicationItem: MorphicBarItem {
     var label: String
     var color: NSColor?
     var imageUrl: String?
     var `default`: MorphicBarApplicationDefaultOption?
-    var exe: String?
+    private var exe: String?
+    var exeLaunchDetails: ExecutableLaunchDetails?
 
     override init(interoperable: [String : Interoperable?]) {
         // NOTE: argument 'label' should never be nil, but we use an empty string as a backup
@@ -302,6 +306,7 @@ class MorphicBarApplicationItem: MorphicBarItem {
         imageUrl = interoperable.string(for: "imageUrl")
         //
         // NOTE: either argument "default" (application type) or "exe" should always be populated, but we assign a nil application and exe as a backup
+        // NOTE: 'default' designates a category (e.g. "browser", "email") for which the OS lets the user select a default application
         if let `default` = interoperable.string(for: "default") {
             // NOTE: this function call will either return a known 'default' application option...or it will return nil (if the application isn't supported on macOS)
             self.default = MorphicBarApplicationDefaultOption(rawValue: `default`)
@@ -309,12 +314,13 @@ class MorphicBarApplicationItem: MorphicBarItem {
             self.default = nil
         }
         //
-        // NOTE: we do not currently support EXE on macOS, so ignore this option
-//        if let exe = interoperable.string(for: "exe") {
-//            self.exe = exe
-//        } else {
+        // NOTE: 'exe' designates the identifier of the EXE to run (e.g. "calendar", "calculator", "word", "adobeReader")
+        if let exe = interoperable.string(for: "exe") {
+            self.exe = exe
+            self.exeLaunchDetails = MorphicBarApplicationItem.convertExeIdentifierToExecutableLaunchDetails(exe: exe)
+        } else {
             self.exe = nil
-//        }
+        }
         
         super.init(interoperable: interoperable)
     }
@@ -348,8 +354,37 @@ class MorphicBarApplicationItem: MorphicBarItem {
     
     @objc
     func openExe(_ sender: Any?) {
-        if let _ = self.exe {
-            fatalError("Opening EXEs is not supported on macOS")
+        if let exeLaunchDetails = self.exeLaunchDetails {
+            switch exeLaunchDetails {
+            case .bundleIdentifier(let bundleIdentifier):
+                guard let applicationUrl = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleIdentifier) else {
+                    // FUTURE: return an error condition (i.e. could not find application)
+                    return
+                }
+                
+                if #available(macOS 10.15, *) {
+                    // macOS 10.15+
+                    let openConfiguration = NSWorkspace.OpenConfiguration()
+                    openConfiguration.activates = true
+                    NSWorkspace.shared.openApplication(at: applicationUrl, configuration: openConfiguration, completionHandler: { (application, error) in
+                        // FUTURE: return an error condition (presumably via callback) if this call results in an error
+                    })
+                } else {
+                    // macOS 10.14
+                    // FUTURE: return an error condition if this call throws an exception
+                    // NOTE: this function has been deprecated (but was still available as of macOS 11.0)
+                    let _ = try? NSWorkspace.shared.launchApplication(at: applicationUrl, options: [], configuration: [:])
+                }
+            }
+        }
+    }
+
+    private static func convertExeIdentifierToExecutableLaunchDetails(exe: String) -> ExecutableLaunchDetails? {
+        switch exe {
+        case "calculator":
+            return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.apple.calculator")
+        default:
+            return nil
         }
     }
 }
