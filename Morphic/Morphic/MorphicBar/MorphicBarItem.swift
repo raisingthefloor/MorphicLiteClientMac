@@ -279,6 +279,7 @@ class MorphicBarActionItem: MorphicBarItem {
     }
 }
 enum MorphicBarApplicationDefaultOption: String {
+    case browser
     case email
 }
 //
@@ -346,6 +347,13 @@ class MorphicBarApplicationItem: MorphicBarItem {
     func openDefault(_ sender: Any?) {
         if let `default` = self.default {
             switch `default` {
+            case .browser:
+                // get the default browser (i.e. the default application used to open a default url)
+                guard let applicationUrl = NSWorkspace.shared.urlForApplication(toOpen: URL(string: "https://www.example.com")!) else {
+                    // FUTURE: return an error condition (i.e. could not find application)
+                    return
+                }
+                self.openApplicationUrl(applicationUrl)
             case .email:
                 NSWorkspace.shared.open(URL(string: "mailto:")!)
             }
@@ -362,20 +370,24 @@ class MorphicBarApplicationItem: MorphicBarItem {
                     return
                 }
                 
-                if #available(macOS 10.15, *) {
-                    // macOS 10.15+
-                    let openConfiguration = NSWorkspace.OpenConfiguration()
-                    openConfiguration.activates = true
-                    NSWorkspace.shared.openApplication(at: applicationUrl, configuration: openConfiguration, completionHandler: { (application, error) in
-                        // FUTURE: return an error condition (presumably via callback) if this call results in an error
-                    })
-                } else {
-                    // macOS 10.14
-                    // FUTURE: return an error condition if this call throws an exception
-                    // NOTE: this function has been deprecated (but was still available as of macOS 11.0)
-                    let _ = try? NSWorkspace.shared.launchApplication(at: applicationUrl, options: [], configuration: [:])
-                }
+                openApplicationUrl(applicationUrl)
             }
+        }
+    }
+    
+    private func openApplicationUrl(_ applicationUrl: URL) {
+        if #available(macOS 10.15, *) {
+            // macOS 10.15+
+            let openConfiguration = NSWorkspace.OpenConfiguration()
+            openConfiguration.activates = true
+            NSWorkspace.shared.openApplication(at: applicationUrl, configuration: openConfiguration, completionHandler: { (application, error) in
+                // FUTURE: return an error condition (presumably via callback) if this call results in an error
+            })
+        } else {
+            // macOS 10.14
+            // FUTURE: return an error condition if this call throws an exception
+            // NOTE: this function has been deprecated (but was still available as of macOS 11.0)
+            let _ = try? NSWorkspace.shared.launchApplication(at: applicationUrl, options: [], configuration: [:])
         }
     }
 
