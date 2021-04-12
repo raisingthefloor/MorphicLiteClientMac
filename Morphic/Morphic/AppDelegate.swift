@@ -246,10 +246,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             os_log(.fault, log: logger, "Missing Countly server url.  Check build config files")
             return
         }
-
+        
         // retrieve the telemetry device ID for this device; if it doesn't exist then create a new one
         var telemetryDeviceUuid: String
-        let telemetryDeviceUuidAsOptional = UserDefaults.morphic.telemetryDeviceUuid()
+        var telemetryDeviceUuidAsOptional = UserDefaults.morphic.telemetryDeviceUuid()
+        if telemetryDeviceUuidAsOptional == "" {
+            // if the telemetry device uuid is empty (which it should _not_ be), it's invalid...so ignore it
+            telemetryDeviceUuidAsOptional = nil
+        }
+        //
         if let telemetryDeviceUuidAsOptional = telemetryDeviceUuidAsOptional {
             // use the existing telemetry device uuid
             telemetryDeviceUuid = telemetryDeviceUuidAsOptional
@@ -263,7 +268,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         // if a site id is (or is not) configured, modify the telemetry device uuid accordingly
         // NOTE: we handle cases of site ids changing, site IDs being added post-deployment, and site IDs being removed post-deployment
         let unmodifiedTelemetryDeviceUuid = telemetryDeviceUuid
-        if let telemetrySiteId = ConfigurableFeatures.shared.telemetrySiteId {
+        var telemetrySiteIdAsOptional = ConfigurableFeatures.shared.telemetrySiteId
+        if telemetrySiteIdAsOptional == "" {
+            // if the telemetry site id is empty (white it should _not_ be), it's invalid...so ignore it
+            telemetrySiteIdAsOptional = nil
+        }
+        //
+        if let telemetrySiteId = telemetrySiteIdAsOptional {
             // NOTE: in the future, consider reporting or throwing an error if the site id required sanitization (i.e. wasn't valid)
             let sanitizedTelemetrySiteId = self.sanitizeSiteId(telemetrySiteId)
             if sanitizedTelemetrySiteId != "" {
