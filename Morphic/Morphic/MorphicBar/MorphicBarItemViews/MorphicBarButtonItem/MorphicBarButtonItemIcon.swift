@@ -37,6 +37,7 @@ enum MorphicBarButtonItemIcon: String {
     case calculator = "calculator"
     case calendar = "calendar$calendar"
     case cbsNews = "cbsnews"
+    case chrome = "chrome"
     case cnbc = "cnbc"
     case cnn = "cnn"
     case comments = "comments"
@@ -53,6 +54,7 @@ enum MorphicBarButtonItemIcon: String {
     case envelopeOutline = "email$envelopeoutline"
     case envelopeOutlineOpen = "email$envelopeoutlineopen"
     case facebook = "facebook"
+    case firefox = "firefox"
     case forbes = "forbes"
     case foxnews1 = "faviconfoxnews"
     case foxnews2 = "foxnews"
@@ -79,6 +81,7 @@ enum MorphicBarButtonItemIcon: String {
     case nextdoor = "nextdoor"
     case npr = "npr"
     case onedrive = "onedrive"
+    case opera = "opera"
     case outlook = "outlook"
 //    case pandora = "pandora"
     case pinterest = "pinterest"
@@ -155,6 +158,8 @@ enum MorphicBarButtonItemIcon: String {
             return "calendar"
         case "cbsnews":
             return "logo_cbsNews"
+        case "chrome":
+            return "logo_chrome"
         case "cnbc":
             return "logo_cnbc"
         case "cnn":
@@ -187,6 +192,8 @@ enum MorphicBarButtonItemIcon: String {
             return "logo_facebook"
         case "faviconfoxnews":
             return "favicon_foxNews"
+        case "firefox":
+            return "logo_firefox"
         case "forbes":
             return "logo_forbes"
         case "foxnews":
@@ -237,6 +244,8 @@ enum MorphicBarButtonItemIcon: String {
             return "logo_npr"
         case "onedrive":
             return "logo_onedrive"
+        case "opera":
+            return "logo_opera"
         case "outlook":
             return "logo_outlook"
 //        case "pandora":
