@@ -999,7 +999,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             //
             // add in all the custom bar names
             for userCommunityIdAndName in userCommunityIdsAndNames {
-                let communityMenuItem = NSMenuItem(title: "Bar from " + userCommunityIdAndName.name, action: #selector(AppDelegate.customMorphicBarSelected), keyEquivalent: "")
+                let communityMenuItem = NSMenuItem(title: self.prependedBarNameText + userCommunityIdAndName.name, action: #selector(AppDelegate.customMorphicBarSelected), keyEquivalent: "")
                 if userCommunityIdAndName.id == userSelectedCommunityId {
                     communityMenuItem.state = .on
                 }
@@ -1064,6 +1064,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         return userCommunityIdsAndNames
     }
     
+    private let prependedBarNameText = "Bar from "
+
     @objc
     func customMorphicBarSelected(_ sender: NSMenuItem) {
         guard let user = Session.shared.user else {
@@ -1072,7 +1074,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         
         // save the newly-selected community id
         
-        let communityName = sender.title
+        var communityName = sender.title
+        if communityName.starts(with: prependedBarNameText) == true {
+            communityName.removeFirst(prependedBarNameText.count)
+        }
         let communityIdHashValue = sender.tag
         
         // get a sorted array of our community ids and names (sorted by name first, then by id)

@@ -395,6 +395,10 @@ class MorphicBarApplicationItem: MorphicBarItem {
         switch exe {
         case "calculator":
             return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.apple.calculator")
+        case "microsoftEdge":
+            return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.microsoft.edgemac")
+        case "microsoftSkype":
+            return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.skype.skype")
         default:
             return nil
         }

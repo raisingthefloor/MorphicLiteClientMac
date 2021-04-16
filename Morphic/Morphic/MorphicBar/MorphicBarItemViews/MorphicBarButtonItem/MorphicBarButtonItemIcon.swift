@@ -71,6 +71,7 @@ enum MorphicBarButtonItemIcon: String {
     case linkedin = "linkedin"
     case macys = "macys"
 //    case mail = "mail"
+    case msedge = "msedge"
     case nbcNews = "nbcnews"
     case netflix = "netflix"
     case newspaper = "news$newspaper"
@@ -220,6 +221,8 @@ enum MorphicBarButtonItemIcon: String {
             return "logo_macys"
 //        case "mail":
 //            return "logo_mail"
+        case "msedge":
+            return "logo_msedge"
         case "nbcnews":
             return "logo_nbcNews"
         case "netflix":
