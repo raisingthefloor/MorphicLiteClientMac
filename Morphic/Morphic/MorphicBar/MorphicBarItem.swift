@@ -319,6 +319,15 @@ class MorphicBarApplicationItem: MorphicBarItem {
         if let exe = interoperable.string(for: "exe") {
             self.exe = exe
             self.exeLaunchDetails = MorphicBarApplicationItem.convertExeIdentifierToExecutableLaunchDetails(exe: exe)
+            
+            // make sure that the application is installed; if it isn't, then clear out the exe info
+            if case let .bundleIdentifier(bundleIdentifier) = self.exeLaunchDetails {
+                let urlForApplication = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleIdentifier)
+                if (urlForApplication == nil) {
+                    self.exe = nil
+                    self.exeLaunchDetails = nil
+                }
+            }
         } else {
             self.exe = nil
         }
@@ -395,10 +404,16 @@ class MorphicBarApplicationItem: MorphicBarItem {
         switch exe {
         case "calculator":
             return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.apple.calculator")
+        case "firefox":
+            return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "org.mozilla.firefox")
+        case "googleChrome":
+            return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.google.Chrome")
         case "microsoftEdge":
             return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.microsoft.edgemac")
         case "microsoftSkype":
             return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.skype.skype")
+        case "opera":
+            return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.operasoftware.Opera")
         default:
             return nil
         }

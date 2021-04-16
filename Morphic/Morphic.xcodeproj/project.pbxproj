@@ -153,6 +153,9 @@
 		9D82577124D353C800F6E932 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82577024D353C800F6E932 /* HyperlinkTextField.swift */; };
 		9D8CEB132507AECF001276E4 /* MorphicBarButtonItemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */; };
 		9D8CEB152507AED7001276E4 /* MorphicBarButtonItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */; };
+		9D94BB22262A046400BF4992 /* logo_opera.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB21262A046400BF4992 /* logo_opera.pdf */; };
+		9D94BB25262A046A00BF4992 /* logo_firefox.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB24262A046A00BF4992 /* logo_firefox.pdf */; };
+		9D94BB28262A047100BF4992 /* logo_chrome.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB27262A047100BF4992 /* logo_chrome.pdf */; };
 		9DA46E7925CA743B006BEAAC /* PermissionsSuccessWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DA46E7225CA743B006BEAAC /* PermissionsSuccessWindow.xib */; };
 		9DA46E7B25CA743B006BEAAC /* PermissionsGuidanceWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DA46E7325CA743B006BEAAC /* PermissionsGuidanceWindow.xib */; };
 		9DA46E7D25CA743B006BEAAC /* PermissionsGuidanceSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7425CA743B006BEAAC /* PermissionsGuidanceSystem.swift */; };
@@ -407,6 +410,9 @@
 		9D82577024D353C800F6E932 /* HyperlinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperlinkTextField.swift; sourceTree = "<group>"; };
 		9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemIcon.swift; sourceTree = "<group>"; };
 		9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemView.swift; sourceTree = "<group>"; };
+		9D94BB21262A046400BF4992 /* logo_opera.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_opera.pdf; sourceTree = "<group>"; };
+		9D94BB24262A046A00BF4992 /* logo_firefox.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_firefox.pdf; sourceTree = "<group>"; };
+		9D94BB27262A047100BF4992 /* logo_chrome.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_chrome.pdf; sourceTree = "<group>"; };
 		9D9DF072251DAE460073F8FB /* MorphicLauncherRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = MorphicLauncherRelease.entitlements; sourceTree = "<group>"; };
 		9DA46E7225CA743B006BEAAC /* PermissionsSuccessWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PermissionsSuccessWindow.xib; path = "Permissions Guidance/PermissionsSuccessWindow.xib"; sourceTree = "<group>"; };
 		9DA46E7325CA743B006BEAAC /* PermissionsGuidanceWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PermissionsGuidanceWindow.xib; path = "Permissions Guidance/PermissionsGuidanceWindow.xib"; sourceTree = "<group>"; };
@@ -661,6 +667,7 @@
 				9D2C146525EC68AF00D66DAD /* logo_box.pdf */,
 				9DFB6E002624B7E500AD39D1 /* logo_calculator.pdf */,
 				9D3A34D325ED696900C26902 /* logo_cbsNews.pdf */,
+				9D94BB27262A047100BF4992 /* logo_chrome.pdf */,
 				9D3A34D625ED697300C26902 /* logo_cnbc.pdf */,
 				9D2C145225EC664100D66DAD /* logo_cnn.pdf */,
 				9D3A34A925ED595900C26902 /* logo_craigslist.pdf */,
@@ -671,6 +678,7 @@
 				9D3A34AC25ED59BB00C26902 /* logo_ebay.png */,
 				9D3A34AF25ED5A1D00C26902 /* logo_etsy.pdf */,
 				9D2C142A25EC5CD600D66DAD /* logo_facebook.pdf */,
+				9D94BB24262A046A00BF4992 /* logo_firefox.pdf */,
 				9D3A34DC25ED6A9D00C26902 /* logo_forbes.pdf */,
 				9D2C145525EC668C00D66DAD /* logo_foxNews.pdf */,
 				9D2C144325EC60CF00D66DAD /* logo_gmail.pdf */,
@@ -696,6 +704,7 @@
 				9D3A34E825ED6FE200C26902 /* logo_npr.pdf */,
 				9D2C146E25EC69A500D66DAD /* logo_onedrive.pdf */,
 				9D2C144925EC60DA00D66DAD /* logo_outlook.pdf */,
+				9D94BB21262A046400BF4992 /* logo_opera.pdf */,
 				9D3A34CA25ED679100C26902 /* logo_pandora.jpg */,
 				9D2C142925EC5CD600D66DAD /* logo_pinterest.pdf */,
 				9D2C143A25EC5E3B00D66DAD /* logo_reddit.pdf */,
@@ -1025,6 +1034,7 @@
 				9DE112E82522243200591E08 /* CopySettingsWindow.xib in Resources */,
 				9D3A34DD25ED6A9D00C26902 /* logo_forbes.pdf in Resources */,
 				31E1E188244794EF009C4092 /* MorphicBarViewController.xib in Resources */,
+				9D94BB28262A047100BF4992 /* logo_chrome.pdf in Resources */,
 				9D3A34F825ED720400C26902 /* logo_usaToday.pdf in Resources */,
 				9D3A34B625ED5AD300C26902 /* logo_kohls.pdf in Resources */,
 				9D3A34F225ED70F300C26902 /* logo_theHill.jpeg in Resources */,
@@ -1045,6 +1055,7 @@
 				9D2C141725EC191700D66DAD /* newspaper.pdf in Resources */,
 				9DC0D40525E5F1FF00E17D9E /* comments.pdf in Resources */,
 				9D3A34A125ED566100C26902 /* logo_vimeo.pdf in Resources */,
+				9D94BB25262A046A00BF4992 /* logo_firefox.pdf in Resources */,
 				9D3A34C825ED65EB00C26902 /* logo_alJazeera.jpg in Resources */,
 				9DFB6E012624B7E500AD39D1 /* logo_calculator.pdf in Resources */,
 				9D2C141425EC179500D66DAD /* envelope.pdf in Resources */,
@@ -1053,6 +1064,7 @@
 				9D3A34EF25ED707900C26902 /* logo_theGuardian.pdf in Resources */,
 				9D2C141E25EC1AD900D66DAD /* window_maximize.pdf in Resources */,
 				31751B832444E11600EEDF14 /* Release.xcconfig in Resources */,
+				9D94BB22262A046400BF4992 /* logo_opera.pdf in Resources */,
 				9D3A34AA25ED595900C26902 /* logo_craigslist.pdf in Resources */,
 				9D3A34D425ED696900C26902 /* logo_cbsNews.pdf in Resources */,
 				9D3A34A725ED58FB00C26902 /* logo_amazon.pdf in Resources */,
