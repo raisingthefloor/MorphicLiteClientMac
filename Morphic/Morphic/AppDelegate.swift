@@ -999,7 +999,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             //
             // add in all the custom bar names
             for userCommunityIdAndName in userCommunityIdsAndNames {
-                let communityMenuItem = NSMenuItem(title: userCommunityIdAndName.name, action: #selector(AppDelegate.customMorphicBarSelected), keyEquivalent: "")
+                let communityMenuItem = NSMenuItem(title: "Bar from " + userCommunityIdAndName.name, action: #selector(AppDelegate.customMorphicBarSelected), keyEquivalent: "")
                 if userCommunityIdAndName.id == userSelectedCommunityId {
                     communityMenuItem.state = .on
                 }
