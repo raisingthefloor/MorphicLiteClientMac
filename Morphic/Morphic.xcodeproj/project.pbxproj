@@ -165,6 +165,7 @@
 		9DC0D41525E5F5F200E17D9E /* envelope_open.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DC0D41425E5F5F200E17D9E /* envelope_open.pdf */; };
 		9DC0D41825E5F6BF00E17D9E /* envelope_outline_open.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DC0D41725E5F6BF00E17D9E /* envelope_outline_open.pdf */; };
 		9DC0D41B25E5F72100E17D9E /* envelope_outline.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DC0D41A25E5F72100E17D9E /* envelope_outline.pdf */; };
+		9DC66E4726294EB20049AAEC /* logo_msedge.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DC66E4626294EB20049AAEC /* logo_msedge.pdf */; };
 		9DCF885D257AEF23001927C1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCF885C257AEF23001927C1 /* AppDelegate.swift */; };
 		9DCF885F257AEF23001927C1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9DCF885E257AEF23001927C1 /* Assets.xcassets */; };
 		9DCF8907257AF8F2001927C1 /*  Morphic .app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9DCF885A257AEF23001927C1 /*  Morphic .app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -420,6 +421,7 @@
 		9DC0D41425E5F5F200E17D9E /* envelope_open.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = envelope_open.pdf; sourceTree = "<group>"; };
 		9DC0D41725E5F6BF00E17D9E /* envelope_outline_open.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = envelope_outline_open.pdf; sourceTree = "<group>"; };
 		9DC0D41A25E5F72100E17D9E /* envelope_outline.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = envelope_outline.pdf; sourceTree = "<group>"; };
+		9DC66E4626294EB20049AAEC /* logo_msedge.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_msedge.pdf; sourceTree = "<group>"; };
 		9DCF885A257AEF23001927C1 /*  Morphic .app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = " Morphic .app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DCF885C257AEF23001927C1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9DCF885E257AEF23001927C1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -686,6 +688,7 @@
 				9D2C143725EC5E2200D66DAD /* logo_linkedIn.pdf */,
 				9D3A34B825ED5B1300C26902 /* logo_macys.pdf */,
 				9D2C144F25EC611B00D66DAD /* logo_mail.jpg */,
+				9DC66E4626294EB20049AAEC /* logo_msedge.pdf */,
 				9D3A34E525ED6FD800C26902 /* logo_nbcNews.pdf */,
 				9D3A347D25ED4FD400C26902 /* logo_netflix.pdf */,
 				9D2C145B25EC67BE00D66DAD /* logo_newYorkTimes.pdf */,
@@ -1031,6 +1034,7 @@
 				9D2C146F25EC69A500D66DAD /* logo_onedrive.pdf in Resources */,
 				9D2C142D25EC5CD600D66DAD /* logo_pinterest.pdf in Resources */,
 				9D3A349B25ED554000C26902 /* logo_soundcloud.pdf in Resources */,
+				9DC66E4726294EB20049AAEC /* logo_msedge.pdf in Resources */,
 				9D3A34AD25ED59BB00C26902 /* logo_ebay.png in Resources */,
 				9DC0D3FE25E5F05800E17D9E /* calendar.pdf in Resources */,
 				9D2C143225EC5DF300D66DAD /* logo_imgur.pdf in Resources */,
