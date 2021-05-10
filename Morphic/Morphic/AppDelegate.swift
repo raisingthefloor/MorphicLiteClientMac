@@ -515,6 +515,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 success, error in
                 // NOTE: we may want to consider telling the user of the error if we can't reload the bars
 
+                // determine if the user has a bar selected; if not, then select the first custom bar (if one is available)
+                if self.currentlySelectedMorphicBarCommunityId() == nil {
+                    self.selectFirstCustomBarIfAvailable()
+                }
+                
                 // update the morphic bar (and the selected MorphicBar entry)
                 self.morphicBarWindow?.updateMorphicBar()
                 self.updateSelectMorphicBarMenuItem()
@@ -524,6 +529,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             self.morphicBarWindow?.updateMorphicBar()
             self.updateSelectMorphicBarMenuItem()
         }
+    }
+    
+    func currentlySelectedMorphicBarCommunityId() -> String? {
+        guard let user = Session.shared.user else {
+            return nil
+        }
+        return UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
     }
     
     //
@@ -941,10 +953,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             var userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
 
             if userSelectedCommunityId != nil && customMorphicBarsAsJson[userSelectedCommunityId!] == nil {
-                // the user has left the previous community; choose the basic bar instead (and save our change)
-                userSelectedCommunityId = nil
-                // NOTE: if we wanted to choose the first community bar instead, we could do so as follows:
-//                userSelectedCommunityId = customMorphicBarsAsJson.keys.first
+                // the user has left the previous community; choose the first custom bar instead [or basic, if no custom bars exist]...and then save our change
+                userSelectedCommunityId = self.firstCustomMorphicBarIdIfAvailable()
                 
                 UserDefaults.morphic.set(selectedUserCommunityIdentifier: userSelectedCommunityId, for: user.identifier)
             }
@@ -956,6 +966,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             self.morphicBarWindow?.updateMorphicBar()
             
             completion(true, nil)
+        }
+    }
+    
+    func firstCustomMorphicBarIdIfAvailable() -> String? {
+        // capture our list of cached morphic user communities
+        guard let customMorphicBarsAsJson = Session.shared.dictionary(for: .morphicCustomMorphicBarsAsJson) else {
+            return nil
+        }
+        
+        // find the first custom bar
+        return customMorphicBarsAsJson.keys.first
+    }
+    
+    func selectFirstCustomBarIfAvailable() {
+        guard let user = Session.shared.user else {
+            return
+        }
+
+        // select the first custom bar
+        let newUserSelectedCommunityId = self.firstCustomMorphicBarIdIfAvailable()
+        if newUserSelectedCommunityId != nil {
+            // select the first custom bar in the list
+            UserDefaults.morphic.set(selectedUserCommunityIdentifier: newUserSelectedCommunityId, for: user.identifier)
+            
+            // update our list of custom MorphicBars (after any 'current bar' re-selection has been done)
+            self.updateSelectMorphicBarMenuItem()
+
+            // now it's time to update the morphic bar
+            self.morphicBarWindow?.updateMorphicBar()
         }
     }
     
@@ -973,6 +1012,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     func updateSelectMorphicBarMenuItem() {
         self.selectMorphicBarMenuItem.isHidden = false
+
+        // TODO: we should determine if the user has a subscription; if so we should display the "Edit my MorphicBars..." item in the menu as well
 
         // remove all the menu items before the 'Basic MorphicBar' menu item
         for _ in 0..<indexOfBasicMorphicBarSubmenuItem() {
