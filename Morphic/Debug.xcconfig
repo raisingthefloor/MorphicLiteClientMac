@@ -57,10 +57,10 @@ COUNTLY_SERVER_URL=https:/$()/countly.morphic.org
 //
 
 // preview
-AUTOUPDATE_XML_FILENAME=morphic-macos-preview.appcast.xml
+//AUTOUPDATE_XML_FILENAME=morphic-macos-preview.appcast.xml
 //
 // development and production
-//AUTOUPDATE_XML_FILENAME=morphic-macos.appcast.xml
+AUTOUPDATE_XML_FILENAME=morphic-macos.appcast.xml
 
 //
 
