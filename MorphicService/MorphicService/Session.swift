@@ -573,6 +573,8 @@ public class Session {
                         return
                     }
                     
+                    // TODO: reorder the communities alphabetically (after we switch to the /v2/morphicbars API)
+                    
                     var communityBarsItems: [String: String] = [:]
                     
                     // encode each community bar's items into JSON and then store them all

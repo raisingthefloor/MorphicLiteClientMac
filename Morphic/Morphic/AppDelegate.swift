@@ -246,10 +246,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             os_log(.fault, log: logger, "Missing Countly server url.  Check build config files")
             return
         }
-
+        
         // retrieve the telemetry device ID for this device; if it doesn't exist then create a new one
         var telemetryDeviceUuid: String
-        let telemetryDeviceUuidAsOptional = UserDefaults.morphic.telemetryDeviceUuid()
+        var telemetryDeviceUuidAsOptional = UserDefaults.morphic.telemetryDeviceUuid()
+        if telemetryDeviceUuidAsOptional == "" {
+            // if the telemetry device uuid is empty (which it should _not_ be), it's invalid...so ignore it
+            telemetryDeviceUuidAsOptional = nil
+        }
+        //
         if let telemetryDeviceUuidAsOptional = telemetryDeviceUuidAsOptional {
             // use the existing telemetry device uuid
             telemetryDeviceUuid = telemetryDeviceUuidAsOptional
@@ -263,7 +268,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         // if a site id is (or is not) configured, modify the telemetry device uuid accordingly
         // NOTE: we handle cases of site ids changing, site IDs being added post-deployment, and site IDs being removed post-deployment
         let unmodifiedTelemetryDeviceUuid = telemetryDeviceUuid
-        if let telemetrySiteId = ConfigurableFeatures.shared.telemetrySiteId {
+        var telemetrySiteIdAsOptional = ConfigurableFeatures.shared.telemetrySiteId
+        if telemetrySiteIdAsOptional == "" {
+            // if the telemetry site id is empty (white it should _not_ be), it's invalid...so ignore it
+            telemetrySiteIdAsOptional = nil
+        }
+        //
+        if let telemetrySiteId = telemetrySiteIdAsOptional {
             // NOTE: in the future, consider reporting or throwing an error if the site id required sanitization (i.e. wasn't valid)
             let sanitizedTelemetrySiteId = self.sanitizeSiteId(telemetrySiteId)
             if sanitizedTelemetrySiteId != "" {
@@ -353,8 +364,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             switch character {
             case "a"..."z",
                  "A"..."Z",
-                 "0"..."9",
-                 "_":
+                 "0"..."9":
+//                 "_":
                 return true
             default:
                 return false
@@ -504,6 +515,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 success, error in
                 // NOTE: we may want to consider telling the user of the error if we can't reload the bars
 
+                // determine if the user has a bar selected; if not, then select the first custom bar (if one is available)
+                if self.currentlySelectedMorphicBarCommunityId() == nil {
+                    self.selectFirstCustomBarIfAvailable()
+                }
+                
                 // update the morphic bar (and the selected MorphicBar entry)
                 self.morphicBarWindow?.updateMorphicBar()
                 self.updateSelectMorphicBarMenuItem()
@@ -513,6 +529,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             self.morphicBarWindow?.updateMorphicBar()
             self.updateSelectMorphicBarMenuItem()
         }
+    }
+    
+    func currentlySelectedMorphicBarCommunityId() -> String? {
+        guard let user = Session.shared.user else {
+            return nil
+        }
+        return UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
     }
     
     //
@@ -930,10 +953,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             var userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
 
             if userSelectedCommunityId != nil && customMorphicBarsAsJson[userSelectedCommunityId!] == nil {
-                // the user has left the previous community; choose the basic bar instead (and save our change)
-                userSelectedCommunityId = nil
-                // NOTE: if we wanted to choose the first community bar instead, we could do so as follows:
-//                userSelectedCommunityId = customMorphicBarsAsJson.keys.first
+                // the user has left the previous community; choose the first custom bar instead [or basic, if no custom bars exist]...and then save our change
+                userSelectedCommunityId = self.firstCustomMorphicBarIdIfAvailable()
                 
                 UserDefaults.morphic.set(selectedUserCommunityIdentifier: userSelectedCommunityId, for: user.identifier)
             }
@@ -945,6 +966,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             self.morphicBarWindow?.updateMorphicBar()
             
             completion(true, nil)
+        }
+    }
+    
+    func firstCustomMorphicBarIdIfAvailable() -> String? {
+        // capture our list of cached morphic user communities
+        guard let customMorphicBarsAsJson = Session.shared.dictionary(for: .morphicCustomMorphicBarsAsJson) else {
+            return nil
+        }
+        
+        // find the first custom bar
+        return customMorphicBarsAsJson.keys.first
+    }
+    
+    func selectFirstCustomBarIfAvailable() {
+        guard let user = Session.shared.user else {
+            return
+        }
+
+        // select the first custom bar
+        let newUserSelectedCommunityId = self.firstCustomMorphicBarIdIfAvailable()
+        if newUserSelectedCommunityId != nil {
+            // select the first custom bar in the list
+            UserDefaults.morphic.set(selectedUserCommunityIdentifier: newUserSelectedCommunityId, for: user.identifier)
+            
+            // update our list of custom MorphicBars (after any 'current bar' re-selection has been done)
+            self.updateSelectMorphicBarMenuItem()
+
+            // now it's time to update the morphic bar
+            self.morphicBarWindow?.updateMorphicBar()
         }
     }
     
@@ -962,6 +1012,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     func updateSelectMorphicBarMenuItem() {
         self.selectMorphicBarMenuItem.isHidden = false
+
+        // TODO: we should determine if the user has a subscription; if so we should display the "Edit my MorphicBars..." item in the menu as well
 
         // remove all the menu items before the 'Basic MorphicBar' menu item
         for _ in 0..<indexOfBasicMorphicBarSubmenuItem() {
@@ -988,7 +1040,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             //
             // add in all the custom bar names
             for userCommunityIdAndName in userCommunityIdsAndNames {
-                let communityMenuItem = NSMenuItem(title: userCommunityIdAndName.name, action: #selector(AppDelegate.customMorphicBarSelected), keyEquivalent: "")
+                let communityMenuItem = NSMenuItem(title: self.prependedBarNameText + userCommunityIdAndName.name, action: #selector(AppDelegate.customMorphicBarSelected), keyEquivalent: "")
                 if userCommunityIdAndName.id == userSelectedCommunityId {
                     communityMenuItem.state = .on
                 }
@@ -1053,6 +1105,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         return userCommunityIdsAndNames
     }
     
+    private let prependedBarNameText = "Bar from "
+
     @objc
     func customMorphicBarSelected(_ sender: NSMenuItem) {
         guard let user = Session.shared.user else {
@@ -1061,7 +1115,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         
         // save the newly-selected community id
         
-        let communityName = sender.title
+        var communityName = sender.title
+        if communityName.starts(with: prependedBarNameText) == true {
+            communityName.removeFirst(prependedBarNameText.count)
+        }
         let communityIdHashValue = sender.tag
         
         // get a sorted array of our community ids and names (sorted by name first, then by id)
@@ -1137,17 +1194,27 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
-    var copySettingsWindowController: NSWindowController?
-    
+    var copySettingsWindowController: NSWindowController? = nil
+
+//    @IBAction
+//    func showCopySettingsWindow(_ sender: Any?) {
+//        if copySettingsWindowController == nil {
+//            copySettingsWindowController = CopySettingsWindowController(windowNibName: "CopySettingsWindow")
+//        }
+//        copySettingsWindowController?.window?.makeKeyAndOrderFront(sender)
+//        copySettingsWindowController?.window?.delegate = self
+//    }
+
     @IBAction
-    func showCopySettingsWindow(_ sender: Any?) {
-        if copySettingsWindowController == nil {
-            copySettingsWindowController = CopySettingsWindowController(windowNibName: "CopySettingsWindow")
-        }
-        copySettingsWindowController?.window?.makeKeyAndOrderFront(sender)
-        copySettingsWindowController?.window?.delegate = self
+    func showApplySettingsWindow(_ sender: Any?) {
+        self.launchApplyFromCloudVault(sender)
     }
-    
+
+    @IBAction
+    func showCaptureSettingsWindow(_ sender: Any?) {
+        self.launchCaptureToCloudVault(sender)
+    }
+
 //    @IBAction
 //    func reapplyAllSettings(_ sender: Any) {
 //        Session.shared.open {
@@ -1868,6 +1935,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     //
     
+    @IBAction
+    func menuBarExtraHowToCopySetupsMenuItemClicked(_ sender: NSMenuItem?) {
+        defer {
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
+            self.countly_RecordEvent("howToCopySetups", segmentation: segmentation)
+        }
+
+        transferSetupsClicked()
+    }
+
+    func transferSetupsClicked() {
+        let url = URL(string: "https://morphic.org/xfersetups")!
+        NSWorkspace.shared.open(url)
+    }
+
     @IBAction
     func menuBarExtraExploreMorphicMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
