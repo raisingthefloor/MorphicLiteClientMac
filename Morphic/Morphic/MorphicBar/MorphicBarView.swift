@@ -39,15 +39,15 @@ public class MorphicBarView: NSView, MorphicBarWindowChildViewDelegate {
     /// - parameters:
     ///   - itemView: The item view to add
     public func add(itemView: MorphicBarItemViewProtocol) {
+        itemView.morphicBarView = self
+
         if itemView.intrinsicContentSize.height <= freeSpace {
             freeSpace -= itemView.intrinsicContentSize.height + itemSpacing
             tray?.maxSpace += itemView.intrinsicContentSize.height + itemSpacing
             itemViews.append(itemView)
-            itemView.morphicBarView = self
             addSubview(itemView)
             invalidateIntrinsicContentSize()
-        }
-        else {
+        } else {
             tray?.add(itemView: itemView)
         }
     }
@@ -60,10 +60,11 @@ public class MorphicBarView: NSView, MorphicBarWindowChildViewDelegate {
         let itemView = itemViews[index]
         itemViews.remove(at: index)
         itemView.removeFromSuperview()
-        itemView.morphicBarView = nil
         freeSpace += itemView.intrinsicContentSize.height + itemSpacing
         tray?.maxSpace -= itemView.intrinsicContentSize.height + itemSpacing
         invalidateIntrinsicContentSize()
+
+        itemView.morphicBarView = nil
     }
     
     /// Remove all item views from the MorphicBar

@@ -563,7 +563,7 @@ class MorphicBarButtonItemView: NSButton, MorphicBarItemViewProtocol {
     
     override var intrinsicContentSize: NSSize {
         get {
-            let orientation = self.morphicBarView?.orientation ?? .vertical
+            let orientation = self.morphicBarView?.orientation ?? .horizontal
 
             var width: CGFloat = 0
             var height: CGFloat = 0

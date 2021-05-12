@@ -132,14 +132,18 @@ public class MorphicBarWindow: NSWindow {
             let selectedCommunityBarAsJsonString = customBarsAsJson![userSelectedCommunityId!] as! String
             let selectedCommunityBarAsJsonData = selectedCommunityBarAsJsonString.data(using: .utf8)!
             let selectedCommunityBar = try! JSONDecoder().decode(Service.UserCommunityDetails.self, from: selectedCommunityBarAsJsonData)
-            
+
+            // set the orientation before adding the items; this is a requirement of our layout engine
+            morphicBarViewController.orientation = .vertical
+
             let encodedMorphicBarItems = selectedCommunityBar.encodeAsMorphicBarItems()
             morphicBarViewController.items = MorphicBarItem.items(from: encodedMorphicBarItems)
-            
-            morphicBarViewController.orientation = .vertical
         } else {
             // otherwise, show the basic bar
             if let preferredItems = Session.shared.array(for: .morphicBarItems) {
+                // set the orientation before adding the items; this is a requirement of our layout engine
+                morphicBarViewController.orientation = .horizontal
+
                 // convert our list of items
                 var morphicBarItems = MorphicBarItem.items(from: preferredItems)
                 
@@ -155,8 +159,6 @@ public class MorphicBarWindow: NSWindow {
                     morphicBarItems.insert(contentsOf: extraItemsAsMorphicBarItems, at: 0)
                 }
                 morphicBarViewController.items = morphicBarItems
-                
-                morphicBarViewController.orientation = .horizontal
             } else {
                 assertionFailure("No custom bar was selected, but no basic bar items could be found either")
             }
