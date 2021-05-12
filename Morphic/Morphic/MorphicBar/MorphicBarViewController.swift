@@ -132,7 +132,9 @@ public class MorphicBarViewController: NSViewController {
         var frame: NSRect = NSRect(x: 0, y: 0, width: 0, height: 0)
         switch orientation {
         case .horizontal:
-            frame.size.width += morphicBarView.intrinsicContentSize.width + 44 + 14 + 25 + 18
+            var newFrameSize = frame.size.width + morphicBarView.intrinsicContentSize.width
+            newFrameSize += 44 + 14 + 25 + 18
+            frame.size.width = newFrameSize
             if closeButtonVisible {
                 frame.size.width += 7 + 24
             }
@@ -153,15 +155,6 @@ public class MorphicBarViewController: NSViewController {
         }
     }
     
-    private func updateMainMenu() {
-        #if EDITION_BASIC
-            // NOTE: the default menu items are already configured for Morphic Basic
-        #elseif EDITION_COMMUNITY
-            // configure menu items to match the Morphic Community scheme
-            copySettingsBetweenComputersMenuItem?.isHidden = true
-        #endif
-    }
-
     // MARK: - Orientation and orientation-related constraints
     
     public var orientation: MorphicBarOrientation = .horizontal {
