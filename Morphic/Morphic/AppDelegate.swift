@@ -97,6 +97,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         ConfigurableFeatures.shared.telemetryIsEnabled = telemetryIsEnabled
         Session.shared.isCaptureAndApplyEnabled = commonConfiguration.cloudSettingsTransferIsEnabled
         Session.shared.isServerPreferencesSyncEnabled = true
+        ConfigurableFeatures.shared.telemetrySiteId = commonConfiguration.telemetrySiteId
 
         if ConfigurableFeatures.shared.telemetryIsEnabled == true {
             self.configureCountly()
@@ -245,10 +246,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             os_log(.fault, log: logger, "Missing Countly server url.  Check build config files")
             return
         }
-
+        
         // retrieve the telemetry device ID for this device; if it doesn't exist then create a new one
-        let telemetryDeviceUuid: String
-        let telemetryDeviceUuidAsOptional = UserDefaults.morphic.telemetryDeviceUuid()
+        var telemetryDeviceUuid: String
+        var telemetryDeviceUuidAsOptional = UserDefaults.morphic.telemetryDeviceUuid()
+        if telemetryDeviceUuidAsOptional == "" {
+            // if the telemetry device uuid is empty (which it should _not_ be), it's invalid...so ignore it
+            telemetryDeviceUuidAsOptional = nil
+        }
+        //
         if let telemetryDeviceUuidAsOptional = telemetryDeviceUuidAsOptional {
             // use the existing telemetry device uuid
             telemetryDeviceUuid = telemetryDeviceUuidAsOptional
@@ -258,6 +264,37 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             telemetryDeviceUuid = "D_" + NSUUID().uuidString.lowercased()
             UserDefaults.morphic.set(telemetryDeviceUuid: telemetryDeviceUuid)
         }
+        
+        // if a site id is (or is not) configured, modify the telemetry device uuid accordingly
+        // NOTE: we handle cases of site ids changing, site IDs being added post-deployment, and site IDs being removed post-deployment
+        let unmodifiedTelemetryDeviceUuid = telemetryDeviceUuid
+        var telemetrySiteIdAsOptional = ConfigurableFeatures.shared.telemetrySiteId
+        if telemetrySiteIdAsOptional == "" {
+            // if the telemetry site id is empty (white it should _not_ be), it's invalid...so ignore it
+            telemetrySiteIdAsOptional = nil
+        }
+        //
+        if let telemetrySiteId = telemetrySiteIdAsOptional {
+            // NOTE: in the future, consider reporting or throwing an error if the site id required sanitization (i.e. wasn't valid)
+            let sanitizedTelemetrySiteId = self.sanitizeSiteId(telemetrySiteId)
+            if sanitizedTelemetrySiteId != "" {
+                // we have a telemetry site id; prepend it
+                telemetryDeviceUuid = self.prependSiteIdToTelemetryUuid(telemetryDeviceUuid, telemetrySiteId: telemetrySiteId)
+            } else {
+                // the supplied site id isn't valid; strip off the site id; In the future consider logging/reporting an error
+                telemetryDeviceUuid = self.removeSiteIdFromTelemetryUuid(telemetryDeviceUuid)
+            }
+        } else {
+            // no telemetry site id is configured; strip off any site id which might have already been part of our telemetry id
+            telemetryDeviceUuid = self.removeSiteIdFromTelemetryUuid(telemetryDeviceUuid)
+        }
+        // if the telemetry uuid has changed (because of the site id), update our stored telemetry uuid now
+        if telemetryDeviceUuid != unmodifiedTelemetryDeviceUuid {
+            UserDefaults.morphic.set(telemetryDeviceUuid: telemetryDeviceUuid)
+        }
+        
+        // TODO: there is a potential scenario that our telemetry device uuid could be (incorrectly) saved as a blank entry; we should consider
+        //       how we'd want to deal with that scenario
         
         let config: CountlyConfig = CountlyConfig()
         config.appKey = appKey
@@ -282,6 +319,58 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         //
         Countly.sharedInstance().start(with: config)
         Countly.sharedInstance().beginSession()
+    }
+    
+    func prependSiteIdToTelemetryUuid(_ value: String, telemetrySiteId: String) -> String {
+        var telemetryDeviceUuid = value
+        
+        if telemetryDeviceUuid.starts(with: "S_") {
+            // if the telemetry device uuid already starts with a site id, strip it off now
+            telemetryDeviceUuid.removeFirst(2)
+            if let indexOfForwardSlash = telemetryDeviceUuid.firstIndex(of: "/") {
+                // strip the site id off the front
+                telemetryDeviceUuid = String(telemetryDeviceUuid[telemetryDeviceUuid.index(after: indexOfForwardSlash)...])
+            } else {
+                // the site ID was the only contents; return nil
+                telemetryDeviceUuid = ""
+            }
+        }
+        
+        // prepend the site id to the telemetry device uuid
+        telemetryDeviceUuid = "S_" + telemetrySiteId + "/" + telemetryDeviceUuid
+        return telemetryDeviceUuid
+    }
+    
+    func removeSiteIdFromTelemetryUuid(_ value: String) -> String {
+        var telemetryDeviceUuid = value
+        
+        if telemetryDeviceUuid.starts(with: "S_") {
+            // if the telemetry device uuid starts with a site id, strip it off now
+            telemetryDeviceUuid.removeFirst(2)
+            if let indexOfForwardSlash = telemetryDeviceUuid.firstIndex(of: "/") {
+                // strip the site id off the front
+                telemetryDeviceUuid = String(telemetryDeviceUuid[telemetryDeviceUuid.index(after: indexOfForwardSlash)...])
+            } else {
+                // the site ID is the only contents
+                telemetryDeviceUuid = ""
+            }
+        }
+
+        return telemetryDeviceUuid
+    }
+    
+    func sanitizeSiteId(_ siteId: String) -> String {
+        return siteId.filter { (character) -> Bool in
+            switch character {
+            case "a"..."z",
+                 "A"..."Z",
+                 "0"..."9":
+//                 "_":
+                return true
+            default:
+                return false
+            }
+        }
     }
     
     func markUserConfiguredSettingsAsAlreadySet() {
@@ -329,13 +418,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         Session.shared.open {
             NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: Session.shared)
             
-//            // TODO: previously in Morphic Basic for macOS, a user's cloud preferences were applied when they logged in; this behavior has been commented out while the new prefs sets backup/apply flow is being workedo ut
-//            let userInfo = notification.userInfo ?? [:]
-//            if !(userInfo["isRegister"] as? Bool ?? false) {
-//                os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
-//                Session.shared.applyAllPreferences {
-//                }
-//            }
+            // TODO: previously in Morphic Basic for macOS, a user's cloud preferences were applied when they logged in; this behavior may need to be split (based on whether they're logging in to get their morphicbars...or logging in to get their preferences)
+            let userInfo = notification.userInfo ?? [:]
+            if !(userInfo["isRegister"] as? Bool ?? false) {
+                os_log(.info, log: logger, "Is not a registration signin, applying all preferences")
+                Session.shared.applyAllPreferences {
+                }
+            }
         }
     }
     
@@ -426,6 +515,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 success, error in
                 // NOTE: we may want to consider telling the user of the error if we can't reload the bars
 
+                // determine if the user has a bar selected; if not, then select the first custom bar (if one is available)
+                if self.currentlySelectedMorphicBarCommunityId() == nil {
+                    self.selectFirstCustomBarIfAvailable()
+                }
+                
                 // update the morphic bar (and the selected MorphicBar entry)
                 self.morphicBarWindow?.updateMorphicBar()
                 self.updateSelectMorphicBarMenuItem()
@@ -435,6 +529,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             self.morphicBarWindow?.updateMorphicBar()
             self.updateSelectMorphicBarMenuItem()
         }
+    }
+    
+    func currentlySelectedMorphicBarCommunityId() -> String? {
+        guard let user = Session.shared.user else {
+            return nil
+        }
+        return UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
     }
     
     //
@@ -451,7 +552,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         // for type: control
         public let feature: String?
     }
-    
+    //
+    internal struct TelemetryConfigSection: Decodable {
+        public let siteId: String?
+    }
     internal struct ConfigFileContents: Decodable
     {
         internal struct FeaturesConfigSection: Decodable
@@ -476,6 +580,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         public let version: Int?
         public let features: FeaturesConfigSection?
         public let morphicBar: MorphicBarConfigSection?
+        public let telemetry: TelemetryConfigSection?
     }
 
     func shouldTelemetryBeDisabled() -> Bool {
@@ -493,11 +598,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     struct CommonConfigurationContents {
         public var autorunConfig: ConfigurableFeatures.AutorunConfigOption? = nil
+        //
         public var checkForUpdatesIsEnabled: Bool = false
         public var cloudSettingsTransferIsEnabled: Bool = false
         public var resetSettingsIsEnabled: Bool = false
+        //
         public var morphicBarVisibilityAfterLogin: ConfigurableFeatures.MorphicBarVisibilityAfterLoginOption? = nil
         public var extraMorphicBarItems: [MorphicBarExtraItem] = []
+        //
+        public var telemetrySiteId: String? = nil
     }
     func getCommonConfiguration() -> CommonConfigurationContents {
         // set up default configuration
@@ -670,6 +779,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             }
         }
         
+        // capture telemetry site id
+        result.telemetrySiteId = decodedConfigFile.telemetry?.siteId
+        
         return result
     }
     
@@ -841,10 +953,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             var userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
 
             if userSelectedCommunityId != nil && customMorphicBarsAsJson[userSelectedCommunityId!] == nil {
-                // the user has left the previous community; choose the basic bar instead (and save our change)
-                userSelectedCommunityId = nil
-                // NOTE: if we wanted to choose the first community bar instead, we could do so as follows:
-//                userSelectedCommunityId = customMorphicBarsAsJson.keys.first
+                // the user has left the previous community; choose the first custom bar instead [or basic, if no custom bars exist]...and then save our change
+                userSelectedCommunityId = self.firstCustomMorphicBarIdIfAvailable()
                 
                 UserDefaults.morphic.set(selectedUserCommunityIdentifier: userSelectedCommunityId, for: user.identifier)
             }
@@ -856,6 +966,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             self.morphicBarWindow?.updateMorphicBar()
             
             completion(true, nil)
+        }
+    }
+    
+    func firstCustomMorphicBarIdIfAvailable() -> String? {
+        // capture our list of cached morphic user communities
+        guard let customMorphicBarsAsJson = Session.shared.dictionary(for: .morphicCustomMorphicBarsAsJson) else {
+            return nil
+        }
+        
+        // find the first custom bar
+        return customMorphicBarsAsJson.keys.first
+    }
+    
+    func selectFirstCustomBarIfAvailable() {
+        guard let user = Session.shared.user else {
+            return
+        }
+
+        // select the first custom bar
+        let newUserSelectedCommunityId = self.firstCustomMorphicBarIdIfAvailable()
+        if newUserSelectedCommunityId != nil {
+            // select the first custom bar in the list
+            UserDefaults.morphic.set(selectedUserCommunityIdentifier: newUserSelectedCommunityId, for: user.identifier)
+            
+            // update our list of custom MorphicBars (after any 'current bar' re-selection has been done)
+            self.updateSelectMorphicBarMenuItem()
+
+            // now it's time to update the morphic bar
+            self.morphicBarWindow?.updateMorphicBar()
         }
     }
     
@@ -873,6 +1012,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     func updateSelectMorphicBarMenuItem() {
         self.selectMorphicBarMenuItem.isHidden = false
+
+        // TODO: we should determine if the user has a subscription; if so we should display the "Edit my MorphicBars..." item in the menu as well
 
         // remove all the menu items before the 'Basic MorphicBar' menu item
         for _ in 0..<indexOfBasicMorphicBarSubmenuItem() {
@@ -899,7 +1040,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             //
             // add in all the custom bar names
             for userCommunityIdAndName in userCommunityIdsAndNames {
-                let communityMenuItem = NSMenuItem(title: userCommunityIdAndName.name, action: #selector(AppDelegate.customMorphicBarSelected), keyEquivalent: "")
+                let communityMenuItem = NSMenuItem(title: self.prependedBarNameText + userCommunityIdAndName.name, action: #selector(AppDelegate.customMorphicBarSelected), keyEquivalent: "")
                 if userCommunityIdAndName.id == userSelectedCommunityId {
                     communityMenuItem.state = .on
                 }
@@ -964,6 +1105,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         return userCommunityIdsAndNames
     }
     
+    private let prependedBarNameText = "Bar from "
+
     @objc
     func customMorphicBarSelected(_ sender: NSMenuItem) {
         guard let user = Session.shared.user else {
@@ -972,7 +1115,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         
         // save the newly-selected community id
         
-        let communityName = sender.title
+        var communityName = sender.title
+        if communityName.starts(with: prependedBarNameText) == true {
+            communityName.removeFirst(prependedBarNameText.count)
+        }
         let communityIdHashValue = sender.tag
         
         // get a sorted array of our community ids and names (sorted by name first, then by id)
@@ -1048,17 +1194,27 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
-    var copySettingsWindowController: NSWindowController?
-    
+    var copySettingsWindowController: NSWindowController? = nil
+
+//    @IBAction
+//    func showCopySettingsWindow(_ sender: Any?) {
+//        if copySettingsWindowController == nil {
+//            copySettingsWindowController = CopySettingsWindowController(windowNibName: "CopySettingsWindow")
+//        }
+//        copySettingsWindowController?.window?.makeKeyAndOrderFront(sender)
+//        copySettingsWindowController?.window?.delegate = self
+//    }
+
     @IBAction
-    func showCopySettingsWindow(_ sender: Any?) {
-        if copySettingsWindowController == nil {
-            copySettingsWindowController = CopySettingsWindowController(windowNibName: "CopySettingsWindow")
-        }
-        copySettingsWindowController?.window?.makeKeyAndOrderFront(sender)
-        copySettingsWindowController?.window?.delegate = self
+    func showApplySettingsWindow(_ sender: Any?) {
+        self.launchApplyFromCloudVault(sender)
     }
-    
+
+    @IBAction
+    func showCaptureSettingsWindow(_ sender: Any?) {
+        self.launchCaptureToCloudVault(sender)
+    }
+
 //    @IBAction
 //    func reapplyAllSettings(_ sender: Any) {
 //        Session.shared.open {
@@ -1779,6 +1935,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     //
     
+    @IBAction
+    func menuBarExtraHowToCopySetupsMenuItemClicked(_ sender: NSMenuItem?) {
+        defer {
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
+            self.countly_RecordEvent("howToCopySetups", segmentation: segmentation)
+        }
+
+        transferSetupsClicked()
+    }
+
+    func transferSetupsClicked() {
+        let url = URL(string: "https://morphic.org/xfersetups")!
+        NSWorkspace.shared.open(url)
+    }
+
     @IBAction
     func menuBarExtraExploreMorphicMenuItemClicked(_ sender: NSMenuItem?) {
         defer {

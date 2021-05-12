@@ -284,14 +284,14 @@ fileprivate extension URL{
         var attributes: [CFString : CFTypeRef] = [
             kSecAttrPath: path as CFString
         ]
-        if let host = host{
+        if let host = host {
             attributes[kSecAttrServer] = host as CFString
         }
-        if let port = port{
+        if let port = port {
             attributes[kSecAttrPort] = port as CFNumber
         }
-        if let scheme = scheme{
-            if scheme == "http"{
+        if let scheme = scheme {
+            if scheme == "http" {
                 attributes[kSecAttrProtocol] = kSecAttrProtocolHTTP
             } else if scheme == "https" {
                 attributes[kSecAttrProtocol] = kSecAttrProtocolHTTPS

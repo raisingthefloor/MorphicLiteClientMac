@@ -257,6 +257,11 @@ public class MorphicBarWindow: NSWindow {
     
     /// Move the window to its position
     func reposition(animated: Bool) {
+        // do an initial layout (so that controls can all resize themselves)
+        layoutIfNeeded()
+        // invalidate the morphicBarView's intrinsic content size (so that layout can be re-calculated based on the final sizes)
+        self.morphicBarViewController.morphicBarView.invalidateIntrinsicContentSize()
+        // re-trigger layout with the updated sizes/spacing
         layoutIfNeeded()
         morphicBarViewController.position = position
         let origin = position.origin(for: self)

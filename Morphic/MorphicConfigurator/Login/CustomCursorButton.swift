@@ -26,7 +26,7 @@ import Cocoa
 class CustomCursorButton: NSButton {
 
     public var cursor: NSCursor? {
-        didSet{
+        didSet {
             window?.invalidateCursorRects(for: self)
         }
     }
