@@ -138,6 +138,8 @@ public class MorphicBarItem {
             transformedInteroperable["feature"] = "readselected"
         case "screen-zoom":
             transformedInteroperable["feature"] = "resolution"
+        case "snip":
+            transformedInteroperable["feature"] = "screensnip"
         case "volume":
             transformedInteroperable["feature"] = "volumewithoutmute"
         default:
