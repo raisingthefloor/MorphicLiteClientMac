@@ -36,22 +36,32 @@ public class MorphicBarViewController: NSViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        updateConstraints()
+        updateOrientationConstraints()
         morphicBarView.orientation = self.orientation
-        view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
+        morphicTrayView.orientation = .vertical
+        morphicTrayView.controller = self
+        BarBox.fillColor = self.getThemeBackgroundColor() ?? NSColor.black
+        TrayBox.fillColor = self.getThemeBackgroundColor() ?? NSColor.black
         view.layer?.cornerRadius = 6
         NotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.sessionUserDidChange(_:)), name: .morphicSessionUserDidChange, object: Session.shared)
         DistributedNotificationCenter.default.addObserver(self, selector: #selector(MorphicBarViewController.appleInterfaceThemeDidChange(_:)), name: .appleInterfaceThemeChanged, object: nil)
 
+        morphicBarView.tray = morphicTrayView
+        TrayBox.isHidden = true
+        expandTrayButton.isHidden = true
+        collapseTrayButton.isHidden = true
+
         logoButton.setAccessibilityRole(.menuButton)
         logoButton.setAccessibilityLabel(logoButton.helpTitle)
+        updatePositionConstraints()
     }
     
     // MARK: - Notifications
     
     @objc
     func appleInterfaceThemeDidChange(_ notification: NSNotification) {
-        self.view.layer?.backgroundColor = self.getThemeBackgroundColor()?.cgColor
+        BarBox.fillColor = self.getThemeBackgroundColor() ?? NSColor.black
+        TrayBox.fillColor = self.getThemeBackgroundColor() ?? NSColor.black
     }
     
     private func getThemeBackgroundColor() -> NSColor? {
@@ -70,8 +80,19 @@ public class MorphicBarViewController: NSViewController {
     
     // MARK: - Logo Button & Main Menu
     
+    /// The MorphicBar's main menu, accessible via the Logo image button
+    @IBOutlet var mainMenu: NSMenu!
+    
+    /// The boxes containing the MorphicBar and tray
+    @IBOutlet weak var BarBox: NSBox!
+    @IBOutlet weak var TrayBox: NSBox!
+    
     /// The button that displays the Morphic logo
     @IBOutlet weak var logoButton: LogoButton!
+    
+    /// the tray expand collapse buttons
+    @IBOutlet weak var expandTrayButton: NSButton!
+    @IBOutlet weak var collapseTrayButton: NSButton!
     
     /// Action to show the main menu from the logo button
     @IBAction
@@ -84,18 +105,68 @@ public class MorphicBarViewController: NSViewController {
         AppDelegate.shared.mainMenu.popUp(positioning: nil, at: NSPoint(x: logoButton.bounds.origin.x, y: logoButton.bounds.origin.y + logoButton.bounds.size.height), in: logoButton)
     }
     
+    /// Action to open the icon tray
+    @IBAction
+    func openTray(_ sender: Any?) {
+        if morphicTrayView.isEmpty() {
+            return
+        }
+        expandTrayButton.isHidden = true
+        TrayBox.isHidden = false
+        collapseTrayButton.isHidden = false
+        morphicTrayView.collapsed = false
+    }
+    
+    /// action to close the icon tray
+    @IBAction
+    func closeTray(_ sender: Any?) {
+        collapseTrayButton.isHidden = true
+        TrayBox.isHidden = true
+        expandTrayButton.isHidden = morphicTrayView.isEmpty()
+        morphicTrayView.collapsed = true
+    }
+    
+    /// shrinks the window to fit the smallest box around the expanded bar
+    public func shrinkFitWindow() {
+        view.layoutSubtreeIfNeeded()
+        var frame: NSRect = NSRect(x: 0, y: 0, width: 0, height: 0)
+        switch orientation {
+        case .horizontal:
+            var newFrameSize = frame.size.width + morphicBarView.intrinsicContentSize.width
+            newFrameSize += 44 + 14 + 25 + 18
+            frame.size.width = newFrameSize
+            if closeButtonVisible {
+                frame.size.width += 7 + 24
+            }
+            frame.size.height += morphicBarView.intrinsicContentSize.height + 7 + 7
+        case .vertical:
+            frame.size.width += morphicBarView.intrinsicContentSize.width + 7 + 7
+            frame.size.width += morphicTrayView.intrinsicContentSize.width + 7 + 7 + 30
+            frame.size.height += morphicBarView.intrinsicContentSize.height
+        }
+        let oframe = view.window?.frame
+        if oframe != nil {
+            frame.origin.x = (oframe?.origin.x)!
+            frame.origin.y = (oframe?.origin.y)!
+            if position == .bottomRight || position == .topRight {
+                frame.origin.x += (oframe?.size.width)! - frame.size.width
+            }
+            view.window?.setFrame(frame, display: true)
+        }
+    }
+    
     // MARK: - Orientation and orientation-related constraints
     
     public var orientation: MorphicBarOrientation = .horizontal {
         didSet {
-            updateConstraints()
+            updateOrientationConstraints()
             morphicBarView?.orientation = self.orientation
         }
     }
     
     private let closeButtonVisible = true
 
-    private func updateConstraints() {
+    private func updateOrientationConstraints() {
         // first, configure the close button (on or off); we'll add it to the constraint list in the orientation switch logic below
         closeButtonWidthConstraint?.isActive = false
         if closeButtonVisible == true {
@@ -153,10 +224,10 @@ public class MorphicBarViewController: NSViewController {
             morphicBarViewToCloseButtonVerticalTopConstraint?.isActive = false 
             
             logoButtonToMorphicBarViewVerticalTopConstraint = NSLayoutConstraint(item: logoButton!, attribute: .top, relatedBy: .equal, toItem: morphicBarView!, attribute: .bottom, multiplier: 1, constant: 18)
-            logoButtonToViewVerticalCenterXConstraint = NSLayoutConstraint(item: logoButton!, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
-            viewToMorphicBarViewVerticalTrailingConstraint = NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: morphicBarView!, attribute: .trailing, multiplier: 1, constant: 7)
-            viewToLogoButtonVerticalBottomConstraint = NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: logoButton!, attribute: .bottom, multiplier: 1, constant: 7)
             morphicBarViewToCloseButtonVerticalTopConstraint = NSLayoutConstraint(item: morphicBarView!, attribute: .top, relatedBy: .equal, toItem: closeButton!, attribute: .bottom, multiplier: 1, constant: 7)
+            logoButtonToViewVerticalCenterXConstraint = NSLayoutConstraint(item: logoButton!, attribute: .centerX, relatedBy: .equal, toItem: morphicBarView!, attribute: .centerX, multiplier: 1, constant: 0)
+            viewToMorphicBarViewVerticalTrailingConstraint = NSLayoutConstraint(item: BarBox!, attribute: .trailing, relatedBy: .equal, toItem: morphicBarView!, attribute: .trailing, multiplier: 1, constant: 7)
+            viewToLogoButtonVerticalBottomConstraint = NSLayoutConstraint(item: BarBox!, attribute: .bottom, relatedBy: .equal, toItem: logoButton!, attribute: .bottom, multiplier: 1, constant: 7)
 
             self.view.addConstraints([
                 logoButtonToMorphicBarViewVerticalTopConstraint!,
@@ -168,14 +239,58 @@ public class MorphicBarViewController: NSViewController {
                 closeButtonHeightConstraint!
             ])
         }
+        updatePositionConstraints()
+    }
+    
+    // MARK: - Position and position-related constraints
+    
+    public var position: MorphicBarWindow.Position = .topRight {
+        didSet {
+            updatePositionConstraints()
+            morphicTrayView.position = position
+        }
+    }
+    
+    private func updatePositionConstraints() {
+        barToViewHorizontalConstraint?.isActive = false
+        expandButtonToMorphicBarHorizontalConstraint?.isActive = false
+        collapseButtonToMorphicBarHorizontalConstraint?.isActive = false
+        trayToMorphicBarViewHorizontalConstraint?.isActive = false
+        switch position {
+        case .topLeft, .bottomLeft:
+            barToViewHorizontalConstraint = NSLayoutConstraint(item: view, attribute: .leading, relatedBy: .equal, toItem: BarBox!, attribute: .leading, multiplier: 1, constant: 0)
+            expandButtonToMorphicBarHorizontalConstraint = NSLayoutConstraint(item: expandTrayButton!, attribute: .centerX, relatedBy: .equal, toItem: BarBox!, attribute: .trailing, multiplier: 1, constant: 0)
+            collapseButtonToMorphicBarHorizontalConstraint = NSLayoutConstraint(item: collapseTrayButton!, attribute: .centerX, relatedBy: .equal, toItem: TrayBox!, attribute: .trailing, multiplier: 1, constant: 0)
+            trayToMorphicBarViewHorizontalConstraint = NSLayoutConstraint(item: TrayBox!, attribute: .leading, relatedBy: .equal, toItem: BarBox!, attribute: .trailing, multiplier: 1, constant: 0)
+            expandTrayButton.image = NSImage(named: "ExpandRight")!
+            collapseTrayButton.image = NSImage(named: "ExpandLeft")!
+        case .topRight, .bottomRight:
+            barToViewHorizontalConstraint = NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: BarBox!, attribute: .trailing, multiplier: 1, constant: 0)
+            expandButtonToMorphicBarHorizontalConstraint = NSLayoutConstraint(item: expandTrayButton!, attribute: .centerX, relatedBy: .equal, toItem: BarBox!, attribute: .leading, multiplier: 1, constant: 0)
+            collapseButtonToMorphicBarHorizontalConstraint = NSLayoutConstraint(item: collapseTrayButton!, attribute: .centerX, relatedBy: .equal, toItem: TrayBox!, attribute: .leading, multiplier: 1, constant: 0)
+            trayToMorphicBarViewHorizontalConstraint = NSLayoutConstraint(item: TrayBox!, attribute: .trailing, relatedBy: .equal, toItem: BarBox!, attribute: .leading, multiplier: 1, constant: 0)
+            expandTrayButton.image = NSImage(named: "ExpandLeft")!
+            collapseTrayButton.image = NSImage(named: "ExpandRight")!
+        }
+        self.view.addConstraints([
+            trayToMorphicBarViewHorizontalConstraint!,
+            expandButtonToMorphicBarHorizontalConstraint!,
+            collapseButtonToMorphicBarHorizontalConstraint!,
+            barToViewHorizontalConstraint!
+        ])
+        BarBox.invalidateIntrinsicContentSize()
+        TrayBox.invalidateIntrinsicContentSize()
+        view.invalidateIntrinsicContentSize()
+        view.needsLayout = true
     }
     
     // MARK: - Items
     
-    /// The MorphicBar view managed by this controller
+    /// The MorphicBar view and Tray view managed by this controller
     @IBOutlet weak var morphicBarView: MorphicBarView!
+    @IBOutlet weak var morphicTrayView: MorphicBarTrayView!
     
-    /// View constraints
+    /// Orientation constraints (horizontal or vertical)
     var logoButtonToMorphicBarViewHorizontalLeadingConstraint: NSLayoutConstraint?
     var logoButtonToMorphicBarViewVerticalTopConstraint : NSLayoutConstraint?
     var logoButtonToViewHorizontalTopConstraint : NSLayoutConstraint?
@@ -190,6 +305,12 @@ public class MorphicBarViewController: NSViewController {
     //
     var closeButtonWidthConstraint: NSLayoutConstraint?
     var closeButtonHeightConstraint: NSLayoutConstraint?
+    
+    /// Position constraints (left or right)
+    var barToViewHorizontalConstraint: NSLayoutConstraint?
+    var expandButtonToMorphicBarHorizontalConstraint: NSLayoutConstraint?
+    var collapseButtonToMorphicBarHorizontalConstraint: NSLayoutConstraint?
+    var trayToMorphicBarViewHorizontalConstraint: NSLayoutConstraint?
 
     /// The items that should be shown on the MorphicBar
     public var items = [MorphicBarItem]() {
@@ -202,6 +323,10 @@ public class MorphicBarViewController: NSViewController {
                     morphicBarView.add(itemView: itemView)
                 }
             }
+            TrayBox.isHidden = true
+            collapseTrayButton.isHidden = true
+            expandTrayButton.isHidden = morphicTrayView.isEmpty()
+            morphicTrayView.collapsed = true
         }
     }
     
@@ -226,6 +351,15 @@ public class MorphicBarViewController: NSViewController {
         }
         if let logoButton = self.logoButton {
             result.append(logoButton)
+        }
+        for column in morphicTrayView.itemViewGrid {
+            for itemView in column {
+                if let children = itemView.accessibilityChildren() {
+                    for child in children {
+                        result.append(child)
+                    }
+                }
+            }
         }
         // NOTE: we intentionally do _not_ add the closeButton to our list of accessibility children (as cmd+w will close the window)
         return result
