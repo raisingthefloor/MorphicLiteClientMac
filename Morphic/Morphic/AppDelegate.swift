@@ -537,6 +537,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
         return UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
     }
+
+    func currentlySelectedMorphicbarId() -> String? {
+        guard let user = Session.shared.user else {
+            return nil
+        }
+        return UserDefaults.morphic.selectedMorphicbarId(for: user.identifier)
+    }
     
     //
     
@@ -944,19 +951,23 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             }
 
             // capture our list of now-cached morphic user communities
-            guard let customMorphicBarsAsJson = Session.shared.dictionary(for: .morphicCustomMorphicBarsAsJson) else {
+            guard let customMorphicBarsAsJson = Session.shared.dictionary(for: .morphicCustomMorphicBarsAsJson) as? [String: String] else {
                 completion(false, .networkOrAuthorizationOrSaveToDiskFailure)
                 return
             }
             
             // determine if the user's previously-selected community still exists; if not, choose another community
             var userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
+            var userSelectedMorphicbarId = UserDefaults.morphic.selectedMorphicbarId(for: user.identifier)
 
             if userSelectedCommunityId != nil && customMorphicBarsAsJson[userSelectedCommunityId!] == nil {
                 // the user has left the previous community; choose the first custom bar instead [or basic, if no custom bars exist]...and then save our change
-                userSelectedCommunityId = self.firstCustomMorphicBarIdIfAvailable()
+                let userSelectedIds = self.firstCustomMorphicBarIdIfAvailable()
+                userSelectedCommunityId = userSelectedIds?.communityId
+                userSelectedMorphicbarId = userSelectedIds?.morphicbarId
                 
                 UserDefaults.morphic.set(selectedUserCommunityIdentifier: userSelectedCommunityId, for: user.identifier)
+                UserDefaults.morphic.set(selectedMorphicbarIdentifier: userSelectedMorphicbarId, for: user.identifier)
             }
 
             // update our list of custom MorphicBars (after any 'current bar' re-selection has been done)
@@ -969,14 +980,27 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
-    func firstCustomMorphicBarIdIfAvailable() -> String? {
+    func firstCustomMorphicBarIdIfAvailable() -> (communityId: String, morphicbarId: String)? {
         // capture our list of cached morphic user communities
-        guard let customMorphicBarsAsJson = Session.shared.dictionary(for: .morphicCustomMorphicBarsAsJson) else {
+        guard let customMorphicBarsAsJson = Session.shared.dictionary(for: .morphicCustomMorphicBarsAsJson) as? [String: String] else {
             return nil
         }
         
         // find the first custom bar
-        return customMorphicBarsAsJson.keys.first
+        for (_ /* communityId */, communityDetailsAsJsonString) in customMorphicBarsAsJson {
+            let communityDetailsAsJsonData = communityDetailsAsJsonString.data(using: .utf8)!
+            let communityDetails = try! JSONDecoder().decode(Service.UserCommunityDetails.self, from: communityDetailsAsJsonData)
+            
+            let communityId = communityDetails.id
+            if communityDetails.bars != nil && communityDetails.bars!.count > 0 {
+                return (communityId, communityDetails.bars!.first!.id)
+            } else {
+                return (communityId, communityDetails.bar.id)
+            }
+        }
+        
+        // if no custom bar was available, return nil
+        return nil
     }
     
     func selectFirstCustomBarIfAvailable() {
@@ -985,10 +1009,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
 
         // select the first custom bar
-        let newUserSelectedCommunityId = self.firstCustomMorphicBarIdIfAvailable()
-        if newUserSelectedCommunityId != nil {
+        let newUserSelectedIds = self.firstCustomMorphicBarIdIfAvailable()
+        if newUserSelectedIds != nil {
+            let newUserSelectedCommunityId = newUserSelectedIds?.communityId
+            let newUserSelectedMorphicbarId = newUserSelectedIds?.morphicbarId
+
             // select the first custom bar in the list
             UserDefaults.morphic.set(selectedUserCommunityIdentifier: newUserSelectedCommunityId, for: user.identifier)
+            UserDefaults.morphic.set(selectedMorphicbarIdentifier: newUserSelectedMorphicbarId, for: user.identifier)
             
             // update our list of custom MorphicBars (after any 'current bar' re-selection has been done)
             self.updateSelectMorphicBarMenuItem()
@@ -1001,6 +1029,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction func selectBasicMorphicBar(_ sender: NSMenuItem) {
         if let user = Session.shared.user {
             UserDefaults.morphic.set(selectedUserCommunityIdentifier: nil, for: user.identifier)
+            UserDefaults.morphic.set(selectedMorphicbarIdentifier: nil, for: user.identifier)
         }
 
         // update our list of custom MorphicBars (after any 'current bar' re-selection has been done)
@@ -1023,9 +1052,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         if let user = Session.shared.user {
             // capture our current-selected community id
             let userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
-            
-            // get a sorted array of our community ids and names (sorted by name first, then by id)
-            guard let userCommunityIdsAndNames = createSortedArrayOfCommunityIdsAndNames() else {
+            let userSelectedMorphicbarId = UserDefaults.morphic.selectedMorphicbarId(for: user.identifier)
+
+            // get a sorted array of our community/morphicbar ids and names (sorted by name first, then by id)
+            guard let morphicbarIdsAndNames = createSortedArrayOfMorphicBarIdAndCommunityIdsAndNames() else {
                 return
             }
             
@@ -1039,13 +1069,20 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             // now populate the menu with the community names...and highlight the currently-selected community (9)with a checkmark)
             //
             // add in all the custom bar names
-            for userCommunityIdAndName in userCommunityIdsAndNames {
-                let communityMenuItem = NSMenuItem(title: self.prependedBarNameText + userCommunityIdAndName.name, action: #selector(AppDelegate.customMorphicBarSelected), keyEquivalent: "")
-                if userCommunityIdAndName.id == userSelectedCommunityId {
+            var menuItemChecked = false
+            for morphicbarIdAndName in morphicbarIdsAndNames {
+                let communityMenuItem = NSMenuItem(title: morphicbarIdAndName.compositeName, action: #selector(AppDelegate.customMorphicBarSelected), keyEquivalent: "")
+                if morphicbarIdAndName.communityId == userSelectedCommunityId && morphicbarIdAndName.morphicbarId == userSelectedMorphicbarId {
                     communityMenuItem.state = .on
+                    menuItemChecked = true
+                } else if morphicbarIdAndName.communityId == userSelectedCommunityId && userSelectedMorphicbarId == nil && menuItemChecked == false {
+                    communityMenuItem.state = .on
+                    menuItemChecked = true
                 }
-                // NOTE: we tag each menu item with its id's hashValue (which is only stable during the same run of the program); we do this to help disambiguate multiple communities with the same name
-                communityMenuItem.tag = userCommunityIdAndName.id.hashValue
+
+                // NOTE: we tag each menu item with its morphicbarId's hashValue (which is only stable during the same run of the program); we do this to help disambiguate multiple communities with the same name
+                // NOTE: ideally we can find another manner to match these up, to deal with the edge case of a hash collision
+                communityMenuItem.tag = morphicbarIdAndName.morphicbarId.hashValue
                 let indexOfBasicMorphicBarSubmenuItem = self.indexOfBasicMorphicBarSubmenuItem()
                 self.selectMorphicBarMenuItem.submenu?.insertItem(communityMenuItem, at: indexOfBasicMorphicBarSubmenuItem)
             }
@@ -1073,28 +1110,43 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         return indexOfBasicMorphicBarMenuItem!
     }
     
-    func createSortedArrayOfCommunityIdsAndNames() -> [(id: String, name: String)]? {
+    func combineCommunityNameAndMorphicbarName(communityName: String, morphicbarName: String) -> String {
+        return morphicbarName + " (from " + communityName + ")"
+    }
+    
+    typealias MorphicbarIdsAndNames = (communityId: String, communityName: String, morphicbarId: String, morphicbarName: String, compositeName: String)
+
+    func createSortedArrayOfMorphicBarIdAndCommunityIdsAndNames() -> [MorphicbarIdsAndNames]? {
         // capture our list of cached morphic user communities
         guard let communityBarsAsJson = Session.shared.dictionary(for: .morphicCustomMorphicBarsAsJson) as? [String: String] else {
             return nil
         }
-        
-        // populate a dictionary of community ids and names
-        var userCommunityIdsAndNames: [(id: String, name: String)] = []
+                
+        // populate a dictionary of community ids and names (with morphicbar ids and names)
+        var userCommunityIdsAndNames: [MorphicbarIdsAndNames] = []
         for (communityId, communityBarAsJsonString) in communityBarsAsJson {
-            let communityBarAsJsonData = communityBarAsJsonString.data(using: .utf8)!
-            let communityBar = try! JSONDecoder().decode(Service.UserCommunityDetails.self, from: communityBarAsJsonData)
+            let communityDetailsAsJsonData = communityBarAsJsonString.data(using: .utf8)!
+            let communityDetails = try! JSONDecoder().decode(Service.UserCommunityDetails.self, from: communityDetailsAsJsonData)
             
-            let communityName = communityBar.name
-            userCommunityIdsAndNames.append((communityId, communityName))
+            let communityName = communityDetails.name
+            
+            if let communityBars = communityDetails.bars {
+                for legacyBar in communityBars {
+                    userCommunityIdsAndNames.append((communityId, communityName, legacyBar.id, legacyBar.name, combineCommunityNameAndMorphicbarName(communityName: communityName, morphicbarName: legacyBar.name)))
+                }
+            } else {
+                // for backwards-compatibility with stored JSON, we fallback to the ".bar" property if ".bars" is not populated
+                let legacyBar = communityDetails.bar
+                userCommunityIdsAndNames.append((communityId, communityName, legacyBar.id, legacyBar.name, combineCommunityNameAndMorphicbarName(communityName: communityName, morphicbarName: legacyBar.name)))
+            }
         }
         
         // sort the communities by name (and then secondarily by id, in case two have the same name)
-        userCommunityIdsAndNames.sort { (arg0: (id: String, name: String), arg1: (id: String, name: String)) -> Bool in
-            if arg0.name.lowercased() < arg1.name.lowercased() {
+        userCommunityIdsAndNames.sort { (arg0: MorphicbarIdsAndNames, arg1: MorphicbarIdsAndNames) -> Bool in
+            if arg0.compositeName.lowercased() < arg1.compositeName.lowercased() {
                 return true
-            } else if arg0.name.lowercased() == arg1.name.lowercased() {
-                if arg0.id.lowercased() < arg1.id.lowercased() {
+            } else if arg0.compositeName.lowercased() == arg1.compositeName.lowercased() {
+                if arg0.morphicbarId.lowercased() < arg1.morphicbarId.lowercased() {
                     return true
                 }
             }
@@ -1104,8 +1156,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
         return userCommunityIdsAndNames
     }
-    
-    private let prependedBarNameText = "Bar from "
 
     @objc
     func customMorphicBarSelected(_ sender: NSMenuItem) {
@@ -1113,22 +1163,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             return
         }
         
-        // save the newly-selected community id
+        // save the newly-selected community+morphicbar id
         
-        var communityName = sender.title
-        if communityName.starts(with: prependedBarNameText) == true {
-            communityName.removeFirst(prependedBarNameText.count)
-        }
-        let communityIdHashValue = sender.tag
+        let morphicbarCompositeName = sender.title
+        let morphicbarIdHashValue = sender.tag
         
-        // get a sorted array of our community ids and names (sorted by name first, then by id)
-        guard let userCommunityIdsAndNames = createSortedArrayOfCommunityIdsAndNames() else {
+        // get a sorted array of our community/morphicbar ids and names (sorted by name first, then by id)
+        guard let morphicbarIdsAndNames = createSortedArrayOfMorphicBarIdAndCommunityIdsAndNames() else {
             return
         }
 
         // calculate the community id of the selected community
-        var selectedCommunityIdAndName = userCommunityIdsAndNames.first { (arg0) -> Bool in
-            if arg0.id.hashValue == communityIdHashValue {
+        var selectedCommunityIdAndName = morphicbarIdsAndNames.first { (arg0) -> Bool in
+            if arg0.morphicbarId.hashValue == morphicbarIdHashValue {
                 return true
             } else {
                 return false
@@ -1136,10 +1183,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
         
         // if the selected community's tag doesn't match the name (i.e. there are multiple entries with the same name)
-        if selectedCommunityIdAndName == nil || (selectedCommunityIdAndName!.name != communityName) {
+        if selectedCommunityIdAndName == nil || (selectedCommunityIdAndName!.compositeName != morphicbarCompositeName) {
             // if the hash value didn't work (which shouldn't be possible), gracefully degrade by finding the first entry with this name
-            selectedCommunityIdAndName = userCommunityIdsAndNames.first { (arg0) -> Bool in
-                if arg0.name == communityName {
+            selectedCommunityIdAndName = morphicbarIdsAndNames.first { (arg0) -> Bool in
+                if arg0.compositeName == morphicbarCompositeName {
                     return true
                 } else {
                     return false
@@ -1154,7 +1201,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
 
         // save the newly-selected community id
-        UserDefaults.morphic.set(selectedUserCommunityIdentifier: selectedCommunityIdAndName!.id, for: user.identifier)
+        UserDefaults.morphic.set(selectedUserCommunityIdentifier: selectedCommunityIdAndName!.communityId, for: user.identifier)
+        UserDefaults.morphic.set(selectedMorphicbarIdentifier: selectedCommunityIdAndName!.morphicbarId, for: user.identifier)
 
         // update our list of communities (so that we move the checkbox to the appropriate entry)
         self.updateSelectMorphicBarMenuItem()
