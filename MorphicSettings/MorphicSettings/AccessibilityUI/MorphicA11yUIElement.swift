@@ -34,6 +34,10 @@ public struct MorphicA11yUIElement {
     // role
     // https://developer.apple.com/documentation/appkit/nsaccessibility/role
     public let role: NSAccessibility.Role
+    //
+    // subrole
+    // https://develpoer.apple.com/documentation/appkit/nsaccessibility/subrole
+    public let subrole: NSAccessibility.Subrole
     
     internal init?(axUiElement: AXUIElement) {
         // axUiElement
@@ -57,11 +61,21 @@ public struct MorphicA11yUIElement {
         // role
         if self.supportedAttributes.contains(.role) == true {
             guard let roleAsString: String = MorphicA11yUIElement.value(forAttribute: .role, forAXUIElement: self.axUiElement) else {
-                return nil 
+                return nil
             }
             self.role = NSAccessibility.Role(rawValue: roleAsString)
         } else {
             self.role = .unknown
+        }
+        //
+        // role
+        if self.supportedAttributes.contains(.subrole) == true {
+            guard let subroleAsString: String = MorphicA11yUIElement.value(forAttribute: .subrole, forAXUIElement: self.axUiElement) else {
+                return nil
+            }
+            self.subrole = NSAccessibility.Subrole(rawValue: subroleAsString)
+        } else {
+            self.subrole = .unknown
         }
     }
     

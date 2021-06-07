@@ -43,6 +43,10 @@ public class UIElement {
         return descendant(role: .checkBox, title: titled)
     }
     
+    public func firstCheckbox() -> CheckboxElement? {
+        return descendant(role: .checkBox)
+    }
+    
     public func table(titled: String) -> TableElement? {
         return descendant(role: .table, title: titled)
     }
@@ -80,7 +84,7 @@ public class UIElement {
     }
     
     private func descendant<ElementType: UIElement>(role: NSAccessibility.Role, title: String) -> ElementType? {
-        guard let accessibilityElement = accessibilityDescendant(role: role, title: title) else {
+    guard let accessibilityElement = accessibilityDescendant(role: role, title: title) else {
             return nil
         }
         return ElementType(accessibilityElement: accessibilityElement)
@@ -156,6 +160,25 @@ public class UIElement {
         while i < stack.count {
             let candidate = stack[i]
             if candidate.role == role {
+                return candidate
+            }
+            if let children = candidate.children() {
+                stack.append(contentsOf: children)
+            }
+            i += 1
+        }
+        return nil
+    }
+    
+    public func closeButton() -> MorphicA11yUIElement? {
+        guard let children = accessibilityElement.children() else {
+            return nil
+        }
+        var stack = children
+        var i = 0
+        while i < stack.count {
+            let candidate = stack[i]
+            if candidate.subrole == NSAccessibility.Subrole.closeButton {
                 return candidate
             }
             if let children = candidate.children() {
