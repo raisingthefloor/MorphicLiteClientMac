@@ -116,6 +116,7 @@ public class MorphicBarWindow: NSWindow {
         
         // if the user has a set of custom bars and one of them is selected, grab that community (custom bar) id now
         var userSelectedCommunityId: String? = nil
+        var userSelectedMorphicbarId: String? = nil
         //
         let customBarsAsJson = Session.shared.dictionary(for: .morphicCustomMorphicBarsAsJson)
         if let _ = customBarsAsJson,
@@ -123,20 +124,44 @@ public class MorphicBarWindow: NSWindow {
             //
             if let user = Session.shared.user {
                 userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
+                userSelectedMorphicbarId = UserDefaults.morphic.selectedMorphicbarId(for: user.identifier)
             }
         }
         //
+        var customBarFound = false
         if userSelectedCommunityId != nil && customBarsAsJson![userSelectedCommunityId!] != nil {
             // if the user has selected a community (custom bar) and it's present in the JSON, then use the elements for this bar
-            let selectedCommunityBarAsJsonString = customBarsAsJson![userSelectedCommunityId!] as! String
-            let selectedCommunityBarAsJsonData = selectedCommunityBarAsJsonString.data(using: .utf8)!
-            let selectedCommunityBar = try! JSONDecoder().decode(Service.UserCommunityDetails.self, from: selectedCommunityBarAsJsonData)
+            let selectedCommunityDetailsAsJsonString = customBarsAsJson![userSelectedCommunityId!] as! String
+            let selectedCommunityDetailsAsJsonData = selectedCommunityDetailsAsJsonString.data(using: .utf8)!
+            let selectedCommunityDetails = try! JSONDecoder().decode(Service.UserCommunityDetails.self, from: selectedCommunityDetailsAsJsonData)
             
-            let encodedMorphicBarItems = selectedCommunityBar.encodeAsMorphicBarItems()
-            morphicBarViewController.items = MorphicBarItem.items(from: encodedMorphicBarItems)
-            
-            morphicBarViewController.orientation = .vertical
-        } else {
+            var encodedMorphicBarItems: [[String: Interoperable?]]?
+            if selectedCommunityDetails.bars != nil && selectedCommunityDetails.bars!.count > 0 {
+                for legacyBar in selectedCommunityDetails.bars! {
+                    if legacyBar.id == userSelectedMorphicbarId || userSelectedMorphicbarId == nil {
+                        encodedMorphicBarItems = legacyBar.encodeAsMorphicBarItems()
+                        break
+                    } else {
+                        // skip to the next bar
+                        continue
+                    }
+                }
+            } else {
+                // NOTE: for BACKWARDS-COMPATIBILITY we must use "bars" but fall-back to "bar" if "bars" is empty
+                let legacyBar = selectedCommunityDetails.bar
+                encodedMorphicBarItems = legacyBar.encodeAsMorphicBarItems()
+            }
+
+            if let encodedMorphicBarItems = encodedMorphicBarItems {
+                morphicBarViewController.items = MorphicBarItem.items(from: encodedMorphicBarItems)
+                
+                morphicBarViewController.orientation = .vertical
+                    
+                customBarFound = true
+            }
+        }
+        
+        if customBarFound == false {
             // otherwise, show the basic bar
             if let preferredItems = Session.shared.array(for: .morphicBarItems) {
                 // convert our list of items

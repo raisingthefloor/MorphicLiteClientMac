@@ -86,12 +86,53 @@ public extension Service {
     struct UserCommunityDetails: Codable {
         public var id: String
         public var name: String
+        // NOTE: for legacy reasons, we need to still have the "bar" property for cached data (and we need to fall-back to it if bars is not populated)
         public var bar: Bar
+        public var bars: [Bar]?
         
         public struct Bar: Codable {
             public var id: String
             public var name: String
             public var items: [BarItem]
+            
+            public func encodeAsMorphicBarItems() -> [[String: Interoperable?]] {
+                var morphicbarItems: [[String: Interoperable?]] = []
+                
+                for item in self.items {
+                    let itemConfiguration = item.configuration
+                    var morphicBarItem: [String: Interoperable?] = [:]
+
+                    switch item.kind {
+                    case .action:
+                        morphicBarItem["type"] = "action"
+                        morphicBarItem["label"] = itemConfiguration.label
+                        morphicBarItem["color"] = itemConfiguration.color
+                        morphicBarItem["imageUrl"] = itemConfiguration.image_url
+                        morphicBarItem["identifier"] = itemConfiguration.identifier
+                        //
+                        morphicbarItems.append(morphicBarItem)
+                    case .application:
+                        morphicBarItem["type"] = "application"
+                        morphicBarItem["label"] = itemConfiguration.label
+                        morphicBarItem["color"] = itemConfiguration.color
+                        morphicBarItem["imageUrl"] = itemConfiguration.image_url
+                        morphicBarItem["default"] = itemConfiguration.default
+                        morphicBarItem["exe"] = itemConfiguration.exe
+                        //
+                        morphicbarItems.append(morphicBarItem)
+                    case .link:
+                        morphicBarItem["type"] = "link"
+                        morphicBarItem["label"] = itemConfiguration.label
+                        morphicBarItem["color"] = itemConfiguration.color
+                        morphicBarItem["imageUrl"] = itemConfiguration.image_url
+                        morphicBarItem["url"] = itemConfiguration.url
+                        //
+                        morphicbarItems.append(morphicBarItem)
+                    }
+                }
+                
+                return morphicbarItems
+            }
         }
         
         // NOTE: we intentionally do not convert snake casing to lower camel case here; we may want to reconsider that in the future
@@ -119,45 +160,6 @@ public extension Service {
             public var label: String?
             public var subkind: String?
             public var url: String?
-        }
-        
-        public func encodeAsMorphicBarItems() -> [[String: Interoperable?]] {
-            var morphicbarItems: [[String: Interoperable?]] = []
-            
-            for item in self.bar.items {
-                let itemConfiguration = item.configuration
-                var morphicBarItem: [String: Interoperable?] = [:]
-
-                switch item.kind {
-                case .action:
-                    morphicBarItem["type"] = "action"
-                    morphicBarItem["label"] = itemConfiguration.label
-                    morphicBarItem["color"] = itemConfiguration.color
-                    morphicBarItem["imageUrl"] = itemConfiguration.image_url
-                    morphicBarItem["identifier"] = itemConfiguration.identifier
-                    //
-                    morphicbarItems.append(morphicBarItem)
-                case .application:
-                    morphicBarItem["type"] = "application"
-                    morphicBarItem["label"] = itemConfiguration.label
-                    morphicBarItem["color"] = itemConfiguration.color
-                    morphicBarItem["imageUrl"] = itemConfiguration.image_url
-                    morphicBarItem["default"] = itemConfiguration.default
-                    morphicBarItem["exe"] = itemConfiguration.exe
-                    //
-                    morphicbarItems.append(morphicBarItem)
-                case .link:
-                    morphicBarItem["type"] = "link"
-                    morphicBarItem["label"] = itemConfiguration.label
-                    morphicBarItem["color"] = itemConfiguration.color
-                    morphicBarItem["imageUrl"] = itemConfiguration.image_url
-                    morphicBarItem["url"] = itemConfiguration.url
-                    //
-                    morphicbarItems.append(morphicBarItem)
-                }
-            }
-            
-            return morphicbarItems
         }
     }
 }
