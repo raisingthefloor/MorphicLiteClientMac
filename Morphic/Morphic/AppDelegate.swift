@@ -1982,7 +1982,26 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     //
-    
+
+    @IBAction
+    func menuBarExtraCustomizeMorphicbarMenuItemClicked(_ sender: NSMenuItem?) {
+        defer {
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
+            self.countly_RecordEvent("customizeMorphicbar", segmentation: segmentation)
+        }
+
+        customizeMorphicbarClicked()
+    }
+
+    func customizeMorphicbarClicked() {
+        guard let morphicbarEditorUrlAsString = Bundle.main.infoDictionary?["MorphicbarEditorURL"] as? String else {
+            fatalError("MORPHICBAR_EDITOR_URL (mandatory) not set in .xcconfig")
+        }
+
+        let url = URL(string: morphicbarEditorUrlAsString)!
+        NSWorkspace.shared.open(url)
+    }
+
     @IBAction
     func menuBarExtraHowToCopySetupsMenuItemClicked(_ sender: NSMenuItem?) {
         defer {

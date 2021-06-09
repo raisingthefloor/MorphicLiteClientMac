@@ -32,10 +32,12 @@
 // development
 //MORPHIC_SERVICE_ENDPOINT=https:/$()/api.morphic.dev/
 //FRONT_END_URL=https:/$()/app.morphic.dev/
+//MORPHICBAR_EDITOR_URL=https:/$()/custom.morphic.dev/
 //
 // preview and production
 MORPHIC_SERVICE_ENDPOINT=https:/$()/api.morphic.org/
 FRONT_END_URL=https:/$()/app.morphic.org/
+MORPHICBAR_EDITOR_URL=https:/$()/custom.morphic.org/
 
 //
 
