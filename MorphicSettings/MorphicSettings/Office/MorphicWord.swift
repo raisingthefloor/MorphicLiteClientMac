@@ -27,27 +27,38 @@ import MorphicCore
 public class MorphicWord {
     public init() {
         path = (NSSearchPathForDirectoriesInDomains(.allLibrariesDirectory, .userDomainMask, true).first ?? "") + "/Containers/com.microsoft.Word/Data/Library/Preferences/Word.officeUI"
+        backupPath = path + ".bak"
         _filemanager = FileManager()
-        if(_filemanager.fileExists(atPath: path)) {
-            do {
-                try originalSettings = String(contentsOfFile: path, encoding: .utf8)
-            } catch {
-                originalSettings = UIFile_EmptyTemplate
-            }
-        } else {
-            originalSettings = UIFile_EmptyTemplate
-            do {
-                try "".write(toFile: path + ".bak", atomically: false, encoding: .utf8)
-            } catch {}
-        }
-        currentSettings = originalSettings
+        originalSettings = ""
+        currentSettings = ""
+        CapturePrefs(original: true)
     }
     
-    deinit {
-        restoreOriginal()
+    public func CapturePrefs(original: Bool = false) {
+        var capture: String
+        if(_filemanager.fileExists(atPath: path)) {
+            do {
+                try capture = String(contentsOfFile: path, encoding: .utf8)
+                if(!capture.contains("<mso:tabs>")) {
+                    try "".write(toFile: backupPath, atomically: false, encoding: .utf8)
+                }
+            } catch {
+                capture = UIFile_EmptyTemplate
+            }
+        } else {
+            capture = UIFile_EmptyTemplate
+            do {
+                try "".write(toFile: backupPath, atomically: false, encoding: .utf8)
+            } catch {}
+        }
+        currentSettings = capture
+        if(original) {
+            originalSettings = capture
+        }
     }
     
     public func enableBasicsRibbon() {
+        CapturePrefs()
         if(!currentSettings.contains(UIFile_BasicToolbar)) {
             guard let tabIndex = currentSettings.range(of: "<mso:tabs>")?.upperBound else { return }
             currentSettings.insert(contentsOf: UIFile_BasicToolbar, at: tabIndex)
@@ -56,6 +67,7 @@ public class MorphicWord {
     }
     
     public func disableBasicsRibbon() {
+        CapturePrefs()
         if(currentSettings.contains(UIFile_BasicToolbar)) {
             guard let range = currentSettings.range(of: UIFile_BasicToolbar) else { return }
             currentSettings.removeSubrange(range)
@@ -64,6 +76,7 @@ public class MorphicWord {
     }
     
     public func enableEssentialsRibbon() {
+        CapturePrefs()
         if(!currentSettings.contains(UIFile_EssentialsToolbar)) {
             if(currentSettings.contains(UIFile_BasicToolbar)) {
                 guard let basicIndex = currentSettings.range(of: UIFile_BasicToolbar)?.upperBound else { return }
@@ -78,6 +91,7 @@ public class MorphicWord {
     }
     
     public func disableEssentialsRibbon() {
+        CapturePrefs()
         if(currentSettings.contains(UIFile_EssentialsToolbar)) {
             guard let range = currentSettings.range(of: UIFile_EssentialsToolbar) else { return }
             currentSettings.removeSubrange(range)
@@ -87,8 +101,8 @@ public class MorphicWord {
     
     public func savePrefs() {
         do {
-            if(_filemanager.fileExists(atPath: path) && !_filemanager.fileExists(atPath: path + ".bak")) {
-                try _filemanager.copyItem(atPath: path, toPath: path + ".bak")
+            if(_filemanager.fileExists(atPath: path) && !_filemanager.fileExists(atPath: backupPath)) {
+                try _filemanager.copyItem(atPath: path, toPath: backupPath)
             }
             if(_filemanager.fileExists(atPath: path)) {
                 try _filemanager.removeItem(atPath: path)
@@ -102,12 +116,12 @@ public class MorphicWord {
     
     public func restoreOriginal() {
         do {
-            if(_filemanager.fileExists(atPath: path + ".bak")) {
+            if(_filemanager.fileExists(atPath: backupPath)) {
                 if(_filemanager.fileExists(atPath: path)) {
                     try _filemanager.removeItem(atPath: path)
                 }
-                try _filemanager.copyItem(atPath: path + ".bak", toPath: path)
-                try _filemanager.removeItem(atPath: path + ".bak")
+                try _filemanager.copyItem(atPath: backupPath, toPath: path)
+                try _filemanager.removeItem(atPath: backupPath)
             }
             else {
                 try _filemanager.removeItem(atPath: path)
@@ -120,6 +134,7 @@ public class MorphicWord {
     }
     
     private let path: String
+    private let backupPath: String
     private let _filemanager: FileManager
     private var originalSettings: String
     private var currentSettings: String
