@@ -34,7 +34,7 @@
 //FRONT_END_URL=https:/$()/app.morphic.dev/
 //MORPHICBAR_EDITOR_URL=https:/$()/custom.morphic.dev/
 //
-// preview and production
+// canary, preview and production
 MORPHIC_SERVICE_ENDPOINT=https:/$()/api.morphic.org/
 FRONT_END_URL=https:/$()/app.morphic.org/
 MORPHICBAR_EDITOR_URL=https:/$()/custom.morphic.org/
@@ -45,14 +45,20 @@ MORPHICBAR_EDITOR_URL=https:/$()/custom.morphic.org/
 //COUNTLY_APP_KEY=b518ed6ca13aae3f60197dc5fdda2a0e649a54b3
 //COUNTLY_SERVER_URL=https:/$()/countly.morphic.dev
 //
-// preview and production
+// canary, preview and production
 COUNTLY_APP_KEY=809a28e3be9fbc1e7e178cf99186af799fa87048
 COUNTLY_SERVER_URL=https:/$()/countly.morphic.org
 
 //
 
-// preview
-AUTOUPDATE_XML_FILENAME=morphic-macos-preview.appcast.xml
+// development
+//AUTOUPDATE_XML_FILENAME=morphic-macos.appcast.xml
 //
-// development and production
+// canary
+AUTOUPDATE_XML_FILENAME=morphic-macos-canary.appcast.xml
+//
+// preview
+//AUTOUPDATE_XML_FILENAME=morphic-macos-preview.appcast.xml
+//
+// production
 //AUTOUPDATE_XML_FILENAME=morphic-macos.appcast.xml
