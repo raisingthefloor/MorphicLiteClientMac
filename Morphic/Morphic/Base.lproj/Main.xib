@@ -63,13 +63,13 @@
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="G4o-Ru-w4d"/>
-                <menuItem title="Apply the Saved Setup..." id="WUC-ZR-CdM">
+                <menuItem title="Apply a Saved Setup..." id="WUC-ZR-CdM">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="showApplySettingsWindow:" target="ZNk-5q-oDb" id="yPz-td-8oU"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Save Current Setup..." id="VF9-cs-dFo">
+                <menuItem title="Save Current Setup as..." id="VF9-cs-dFo">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="showCaptureSettingsWindow:" target="ZNk-5q-oDb" id="DuM-HT-1MR"/>
