@@ -37,7 +37,7 @@ class QuickHelpStepViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.layer?.backgroundColor = CGColor(gray: 0, alpha: 0.8)
+        view.layer?.backgroundColor = CGColor(gray: 0, alpha: 1.0)
         view.layer?.cornerRadius = 6
         percentageFormatter.numberStyle = .percent
         updateTitleLabel()
