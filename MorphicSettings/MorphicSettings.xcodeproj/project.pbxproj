@@ -84,6 +84,8 @@
 		9DD4F4A42517B0F200ADCC25 /* LanguageAndRegionPreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F4A32517B0F200ADCC25 /* LanguageAndRegionPreferencesElement.swift */; };
 		9DE45B962517114100209421 /* DisplaysUIAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE45B952517114100209421 /* DisplaysUIAutomation.swift */; };
 		9DE45B9F251712EB00209421 /* DisplaysPreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE45B9E251712EB00209421 /* DisplaysPreferencesElement.swift */; };
+		DF98E14D267D79D0000D730A /* EmptyTemplate.xml in Resources */ = {isa = PBXBuildFile; fileRef = DF98E14B267D79D0000D730A /* EmptyTemplate.xml */; };
+		DF98E14E267D79D0000D730A /* ComponentTemplate.xml in Resources */ = {isa = PBXBuildFile; fileRef = DF98E14C267D79D0000D730A /* ComponentTemplate.xml */; };
 		DFF3F9F7265DEA52001F0430 /* WordRibbonUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF3F9F6265DEA52001F0430 /* WordRibbonUIAutomations.swift */; };
 		DFF3F9FE265F4EC8001F0430 /* WordApplicationElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF3F9FD265F4EC8001F0430 /* WordApplicationElement.swift */; };
 		DFF3FA042669D8F3001F0430 /* MorphicWord.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF3FA032669D8F3001F0430 /* MorphicWord.swift */; };
@@ -193,6 +195,8 @@
 		9DD4F4A32517B0F200ADCC25 /* LanguageAndRegionPreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageAndRegionPreferencesElement.swift; sourceTree = "<group>"; };
 		9DE45B952517114100209421 /* DisplaysUIAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaysUIAutomation.swift; sourceTree = "<group>"; };
 		9DE45B9E251712EB00209421 /* DisplaysPreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaysPreferencesElement.swift; sourceTree = "<group>"; };
+		DF98E14B267D79D0000D730A /* EmptyTemplate.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = EmptyTemplate.xml; sourceTree = "<group>"; };
+		DF98E14C267D79D0000D730A /* ComponentTemplate.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ComponentTemplate.xml; sourceTree = "<group>"; };
 		DFF3F9F6265DEA52001F0430 /* WordRibbonUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordRibbonUIAutomations.swift; sourceTree = "<group>"; };
 		DFF3F9FD265F4EC8001F0430 /* WordApplicationElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordApplicationElement.swift; sourceTree = "<group>"; };
 		DFF3FA032669D8F3001F0430 /* MorphicWord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicWord.swift; sourceTree = "<group>"; };
@@ -482,6 +486,8 @@
 		DFF3FA022669D8CE001F0430 /* Office */ = {
 			isa = PBXGroup;
 			children = (
+				DF98E14C267D79D0000D730A /* ComponentTemplate.xml */,
+				DF98E14B267D79D0000D730A /* EmptyTemplate.xml */,
 				DFF3FA032669D8F3001F0430 /* MorphicWord.swift */,
 			);
 			path = Office;
@@ -586,6 +592,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF98E14D267D79D0000D730A /* EmptyTemplate.xml in Resources */,
+				DF98E14E267D79D0000D730A /* ComponentTemplate.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

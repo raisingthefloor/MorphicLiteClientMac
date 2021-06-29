@@ -224,19 +224,19 @@ class RegistryManager: ObservableObject
     }
     
     func testWordEBasic() {
-        word.enableBasicsRibbon()
+        word.enableBasicsTab()
     }
     
     func testWordDBasic() {
-        word.disableBasicsRibbon()
+        word.disableBasicsTab()
     }
     
     func testWordEEssentials() {
-        word.enableEssentialsRibbon()
+        word.enableEssentialsTab()
     }
     
     func testWordDEssentials() {
-        word.disableEssentialsRibbon()
+        word.disableEssentialsTab()
     }
     
     func loadSolution() {

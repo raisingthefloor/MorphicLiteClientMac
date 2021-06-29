@@ -29,85 +29,139 @@ public class MorphicWord {
         path = (NSSearchPathForDirectoriesInDomains(.allLibrariesDirectory, .userDomainMask, true).first ?? "") + "/Containers/com.microsoft.Word/Data/Library/Preferences/Word.officeUI"
         backupPath = path + ".bak"
         _filemanager = FileManager()
-        originalSettings = ""
-        currentSettings = ""
+        originalString = ""
+        currentSettings = XMLDocument()
         CapturePrefs(original: true)
+        
     }
     
     public func CapturePrefs(original: Bool = false) {
-        var capture: String
-        if(_filemanager.fileExists(atPath: path)) {
-            do {
+        var capture: String = ""
+        do {
+            if _filemanager.fileExists(atPath: path) {
                 try capture = String(contentsOfFile: path, encoding: .utf8)
-                if(!capture.contains("<mso:tabs>")) {
-                    try "".write(toFile: backupPath, atomically: false, encoding: .utf8)
+                if capture == "" {
+                    throw NSError()
                 }
-            } catch {
-                capture = UIFile_EmptyTemplate
+            } else {
+                if !_filemanager.fileExists(atPath: backupPath) {
+                    try "".write(toFile: backupPath, atomically: false, encoding: .utf8)    //writes an empty backup file to stop the backup on the write phase
+                }
+                currentSettings = LoadEmptyTemplate()
+                return
             }
-        } else {
-            capture = UIFile_EmptyTemplate
+            if original {   //takes the captured string down as a secondary backup
+                originalString = capture
+            }
+            currentSettings = try XMLDocument(xmlString: capture, options: .nodePreserveNamespaceOrder)
+            let tabs: XMLElement? = currentSettings.rootElement()?.elements(forName: "mso:ribbon").first?.elements(forName: "mso:tabs").first
+            if tabs == nil {    //anything missing the tabs element will break all functionality
+                throw NSError()
+            }
+        } catch {   //responds to any error by just going forward with no customizations and backing up whatever is currently there
+            currentSettings = LoadEmptyTemplate()
             do {
-                try "".write(toFile: backupPath, atomically: false, encoding: .utf8)
+                if _filemanager.fileExists(atPath: backupPath) {
+                    try _filemanager.copyItem(atPath: path, toPath: backupPath)
+                }
             } catch {}
         }
-        currentSettings = capture
-        if(original) {
-            originalSettings = capture
-        }
     }
     
-    public func enableBasicsRibbon() {
+    public func enableBasicsTab() {
         CapturePrefs()
-        if(!currentSettings.contains(UIFile_BasicToolbar)) {
-            guard let tabIndex = currentSettings.range(of: "<mso:tabs>")?.upperBound else { return }
-            currentSettings.insert(contentsOf: UIFile_BasicToolbar, at: tabIndex)
-            savePrefs()
-        }
-    }
-    
-    public func disableBasicsRibbon() {
-        CapturePrefs()
-        if(currentSettings.contains(UIFile_BasicToolbar)) {
-            guard let range = currentSettings.range(of: UIFile_BasicToolbar) else { return }
-            currentSettings.removeSubrange(range)
-            savePrefs()
-        }
-    }
-    
-    public func enableEssentialsRibbon() {
-        CapturePrefs()
-        if(!currentSettings.contains(UIFile_EssentialsToolbar)) {
-            if(currentSettings.contains(UIFile_BasicToolbar)) {
-                guard let basicIndex = currentSettings.range(of: UIFile_BasicToolbar)?.upperBound else { return }
-                currentSettings.insert(contentsOf: UIFile_EssentialsToolbar, at: basicIndex)
+        let template = LoadComponentTemplate()
+        let tabparent: XMLElement? = (currentSettings.rootElement()?.elements(forName: "mso:ribbon").first?.elements(forName: "mso:tabs").first)
+        if tabparent != nil {
+            let cstabs = tabparent!.elements(forName: "mso:tab")
+            let tptabs = template.rootElement()?.elements(forName: "mso:ribbon").first?.elements(forName: "mso:tabs").first?.elements(forName: "mso:tab")
+            if tptabs != nil {
+                for tab in cstabs {
+                    if tab.attribute(forName: "id")?.stringValue == "mso_c5.30BBE710" {
+                        tab.detach()
+                    }
+                }
+                for tab in tptabs! {
+                    if tab.attribute(forName: "id")?.stringValue == "mso_c5.30BBE710" {
+                        tab.detach()
+                        tabparent!.insertChild(tab, at: 0)
+                        savePrefs()
+                        return
+                    }
+                }
             }
-            else {
-                guard let tabIndex = currentSettings.range(of: "<mso:tabs>")?.upperBound else { return }
-                currentSettings.insert(contentsOf: UIFile_EssentialsToolbar, at: tabIndex)
-            }
-            savePrefs()
         }
     }
     
-    public func disableEssentialsRibbon() {
+    public func disableBasicsTab() {
         CapturePrefs()
-        if(currentSettings.contains(UIFile_EssentialsToolbar)) {
-            guard let range = currentSettings.range(of: UIFile_EssentialsToolbar) else { return }
-            currentSettings.removeSubrange(range)
-            savePrefs()
+        let cstabs = currentSettings.rootElement()?.elements(forName: "mso:ribbon").first?.elements(forName: "mso:tabs").first?.elements(forName: "mso:tab")
+        if cstabs != nil {
+            for tab in cstabs! {
+                if tab.attribute(forName: "id")?.stringValue == "mso_c5.30BBE710" {
+                    tab.detach()
+                    savePrefs()
+                    return
+                }
+            }
+        }
+    }
+    
+    public func enableEssentialsTab() {
+        CapturePrefs()
+        let template = LoadComponentTemplate()
+        let tabparent: XMLElement? = (currentSettings.rootElement()?.elements(forName: "mso:ribbon").first?.elements(forName: "mso:tabs").first)
+        if tabparent != nil {
+            let cstabs = tabparent!.elements(forName: "mso:tab")
+            let tptabs = template.rootElement()?.elements(forName: "mso:ribbon").first?.elements(forName: "mso:tabs").first?.elements(forName: "mso:tab")
+            if tptabs != nil {
+                for tab in cstabs {
+                    if tab.attribute(forName: "id")?.stringValue == "mso_c13.30C490B2" {
+                        tab.detach()
+                    }
+                }
+                for tab in tptabs! {
+                    if tab.attribute(forName: "id")?.stringValue == "mso_c13.30C490B2" {
+                        tab.detach()
+                        var index = 0
+                        for tab2 in cstabs {    //inserts first unless it sees morphic basics, then it goes immediately after it
+                            if tab2.attribute(forName: "id")?.stringValue == "mso_c5.30BBE710" {
+                                index = tab2.index + 1
+                                break
+                            }
+                        }
+                        tabparent!.insertChild(tab, at: index)
+                        savePrefs()
+                        return
+                    }
+                }
+            }
+        }
+    }
+    
+    public func disableEssentialsTab() {
+        CapturePrefs()
+        let cstabs = currentSettings.rootElement()?.elements(forName: "mso:ribbon").first?.elements(forName: "mso:tabs").first?.elements(forName: "mso:tab")
+        if cstabs != nil {
+            for tab in cstabs! {
+                if(tab.attribute(forName: "id")?.stringValue == "mso_c13.30C490B2") {
+                    tab.detach()
+                    savePrefs()
+                    return
+                }
+            }
         }
     }
     
     public func savePrefs() {
         do {
-            if(_filemanager.fileExists(atPath: path) && !_filemanager.fileExists(atPath: backupPath)) {
+            if _filemanager.fileExists(atPath: path) && !_filemanager.fileExists(atPath: backupPath) {
                 try _filemanager.copyItem(atPath: path, toPath: backupPath)
             }
-            if(_filemanager.fileExists(atPath: path)) {
+            if _filemanager.fileExists(atPath: path) {
                 try _filemanager.removeItem(atPath: path)
             }
-            try currentSettings.write(toFile: path, atomically: false, encoding: .utf8)
+            try currentSettings.xmlString.write(toFile: path, atomically: false, encoding: .utf8)
             WordRibbonUIAutomation.RefreshRibbon()
         } catch {
             return
@@ -116,8 +170,8 @@ public class MorphicWord {
     
     public func restoreOriginal() {
         do {
-            if(_filemanager.fileExists(atPath: backupPath)) {
-                if(_filemanager.fileExists(atPath: path)) {
+            if _filemanager.fileExists(atPath: backupPath) {
+                if _filemanager.fileExists(atPath: path) {
                     try _filemanager.removeItem(atPath: path)
                 }
                 try _filemanager.copyItem(atPath: backupPath, toPath: path)
@@ -125,7 +179,7 @@ public class MorphicWord {
             }
             else {
                 try _filemanager.removeItem(atPath: path)
-                try originalSettings.write(toFile: path, atomically: false, encoding: .utf8)
+                try originalString.write(toFile: path, atomically: false, encoding: .utf8)
             }
             WordRibbonUIAutomation.RefreshRibbon()
         } catch {
@@ -133,12 +187,25 @@ public class MorphicWord {
         }
     }
     
+    private func LoadEmptyTemplate() -> XMLDocument {
+        var reply: XMLDocument = XMLDocument()
+        do {
+            reply = try XMLDocument(contentsOf: Bundle(for: type(of: self)).url(forResource: "EmptyTemplate", withExtension: "xml")!, options: .nodePreserveNamespaceOrder)
+        } catch {}
+        return reply
+    }
+    
+    private func LoadComponentTemplate() -> XMLDocument {
+        var reply: XMLDocument = XMLDocument()
+        do {
+            reply = try XMLDocument(contentsOf: Bundle(for: type(of: self)).url(forResource: "ComponentTemplate", withExtension: "xml")!, options: .nodePreserveNamespaceOrder)
+        } catch {}
+        return reply
+    }
+    
     private let path: String
     private let backupPath: String
     private let _filemanager: FileManager
-    private var originalSettings: String
-    private var currentSettings: String
-    private let UIFile_EmptyTemplate: String = "<mso:customUI xmlns:mso=\"http://schemas.microsoft.com/office/2009/07/customui\"><mso:ribbon><mso:qat/><mso:tabs></mso:tabs></mso:ribbon></mso:customUI>"
-    private let UIFile_BasicToolbar: String = "<mso:tab id=\"mso_c5.30BBE710\" label=\"Basics (Morphic)\" insertBeforeQ=\"mso:TabOutlining\"><mso:group id=\"mso_c6.30BBE713\" label=\"                           File                                   .\" autoScale=\"true\"><mso:control idQ=\"mso:FileNewBlankDocument\" visible=\"true\"/><mso:control idQ=\"mso:FileSave\" visible=\"true\"/><mso:control idQ=\"mso:MailMergeMergeToPrinter\" visible=\"true\"/><mso:control idQ=\"mso:FilePrintQuick\" visible=\"true\"/></mso:group><mso:group id=\"mso_c7.30C0260D\" label=\" \" autoScale=\"true\"><mso:control idQ=\"mso:Copy\" visible=\"true\"/><mso:control idQ=\"mso:Cut\" visible=\"true\"/><mso:gallery idQ=\"mso:PasteGallery\" showInRibbon=\"false\" visible=\"true\"/></mso:group><mso:group id=\"mso_c8.30C0ACBC\" label=\" \" autoScale=\"true\"><mso:control idQ=\"mso:TableSelectMenu\" visible=\"true\"/><mso:control idQ=\"mso:Font\" visible=\"true\"/><mso:control idQ=\"mso:FontSizeIncreaseWord\" visible=\"true\"/><mso:control idQ=\"mso:FontSizeDecreaseWord\" visible=\"true\"/><mso:control idQ=\"mso:Bold\" visible=\"true\"/><mso:control idQ=\"mso:Italic\" visible=\"true\"/><mso:gallery idQ=\"mso:TextHighlightColorPicker\" showInRibbon=\"false\" visible=\"true\"/></mso:group><mso:group id=\"mso_c15.30C8B6EF\" label=\" \" autoScale=\"true\"><mso:control idQ=\"mso:ZoomDialog\" visible=\"true\"/><mso:control idQ=\"mso:ReadAloud\" visible=\"true\"/><mso:control idQ=\"mso:TranslateMenu\" visible=\"true\"/></mso:group><mso:group id=\"mso_c16.30C994DF\" label=\" \" autoScale=\"true\"><mso:control idQ=\"mso:ToggleLearningTools\" visible=\"true\"/></mso:group></mso:tab>"
-    private let UIFile_EssentialsToolbar: String = "<mso:tab id=\"mso_c13.30C490B2\" label=\"Essentials (Morphic)\" insertBeforeQ=\"mso:TabOutlining\"><mso:group id=\"mso_c17.30CB83CB\" label=\"FILE     PRINT     FORMAT\" autoScale=\"true\"><mso:control idQ=\"mso:FileNewBlankDocument\" visible=\"true\"/><mso:gallery idQ=\"mso:PageMarginsGallery\" showInRibbon=\"false\" visible=\"true\"/><mso:gallery idQ=\"mso:PageOrientationGallery\" showInRibbon=\"false\" visible=\"true\"/><mso:control idQ=\"mso:FileSave\" visible=\"true\"/><mso:control idQ=\"mso:FileSaveAs\" visible=\"true\"/><mso:control idQ=\"mso:MailMergeMergeToPrinter\" visible=\"true\"/><mso:control idQ=\"mso:NavigationPaneFind\" visible=\"true\"/><mso:control idQ=\"mso:PasteSpecialDialog\" visible=\"true\"/><mso:control idQ=\"mso:FormatPainter\" visible=\"true\"/></mso:group><mso:group id=\"mso_c18.30D0F612\" label=\"TEXT\" autoScale=\"true\"><mso:control idQ=\"mso:StyleGalleryClassic\" visible=\"true\"/><mso:control idQ=\"mso:Font\" visible=\"true\"/><mso:control idQ=\"mso:FontSize\" visible=\"true\"/><mso:gallery idQ=\"mso:FontColorPicker\" showInRibbon=\"false\" visible=\"true\"/><mso:gallery idQ=\"mso:QuickStylesGallery\" showInRibbon=\"false\" visible=\"true\"/><mso:control idQ=\"mso:Bold\" visible=\"true\"/><mso:control idQ=\"mso:Italic\" visible=\"true\"/><mso:control idQ=\"mso:Underline\" visible=\"true\"/><mso:control idQ=\"mso:Strikethrough\" visible=\"true\"/><mso:control idQ=\"mso:Superscript\" visible=\"true\"/></mso:group><mso:group id=\"mso_c19.30D11D4E\" label=\"PARAGRAPH\" autoScale=\"true\"><mso:control idQ=\"mso:AlignLeft\" visible=\"true\"/><mso:control idQ=\"mso:AlignCenter\" visible=\"true\"/><mso:control idQ=\"mso:AlignRight\" visible=\"true\"/><mso:control idQ=\"mso:AlignJustifyMenu\" visible=\"true\"/><mso:gallery idQ=\"mso:BulletsGalleryWord\" showInRibbon=\"false\" visible=\"true\"/><mso:gallery idQ=\"mso:NumberingGalleryWord\" showInRibbon=\"false\" visible=\"true\"/><mso:control idQ=\"mso:OutdentClassic\" visible=\"true\"/><mso:gallery idQ=\"mso:LineSpacingGallery\" showInRibbon=\"false\" visible=\"true\"/><mso:control idQ=\"mso:IndentIncreaseWord\" visible=\"true\"/><mso:control idQ=\"mso:ParagraphMarks\" visible=\"true\"/><mso:gallery idQ=\"mso:ShadingColorPicker\" showInRibbon=\"false\" visible=\"true\"/><mso:gallery idQ=\"mso:BordersSelectionGallery\" showInRibbon=\"false\" visible=\"true\"/></mso:group><mso:group id=\"mso_c20.30D1230E\" label=\"INSERT\" autoScale=\"true\"><mso:gallery idQ=\"mso:TableInsertGallery\" showInRibbon=\"false\" visible=\"true\"/><mso:gallery idQ=\"mso:HeaderInsertGallery\" showInRibbon=\"false\" visible=\"true\"/><mso:gallery idQ=\"mso:FooterInsertGallery\" showInRibbon=\"false\" visible=\"true\"/><mso:control idQ=\"mso:TextPictureFill\" visible=\"true\"/><mso:gallery idQ=\"mso:ShapesInsertGallery\" showInRibbon=\"false\" visible=\"true\"/><mso:control idQ=\"mso:HyperlinkInsert\" visible=\"true\"/><mso:control idQ=\"mso:SymbolInsert\" visible=\"true\"/><mso:gallery idQ=\"mso:EquationInsertGallery\" showInRibbon=\"false\" visible=\"true\"/></mso:group><mso:group id=\"mso_c21.30D129BA\" label=\"EDITING\" autoScale=\"true\"><mso:control idQ=\"mso:InsertNewComment\" visible=\"true\"/><mso:control idQ=\"mso:ReviewTrackChanges\" visible=\"true\"/><mso:control idQ=\"mso:ReviewAcceptOrRejectChangeDialog\" visible=\"true\"/><mso:control idQ=\"mso:AccessibilityChecker\" visible=\"true\"/><mso:gallery idQ=\"mso:Undo\" showInRibbon=\"false\" visible=\"true\"/><mso:control idQ=\"mso:SpellingAndGrammar\" visible=\"true\"/></mso:group><mso:group id=\"mso_c22.30D13DF5\" label=\"EASIER TO READ\" autoScale=\"true\"><mso:control idQ=\"mso:ToggleLearningTools\" visible=\"true\"/><mso:control idQ=\"mso:ReadAloud\" visible=\"true\"/><mso:control idQ=\"mso:TranslateMenu\" visible=\"true\"/><mso:control idQ=\"mso:ZoomDialog\" visible=\"true\"/></mso:group></mso:tab>"
+    private var originalString: String
+    private var currentSettings: XMLDocument
 }

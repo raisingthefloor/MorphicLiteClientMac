@@ -1,0 +1,100 @@
+<mso:customUI xmlns:mso="http://schemas.microsoft.com/office/2009/07/customui">
+    <mso:ribbon>
+        <mso:qat/>
+        <mso:tabs>
+            <mso:tab id="mso_c5.30BBE710" label="Basics (Morphic)" insertBeforeQ="mso:TabOutlining">
+                <mso:group id="mso_c6.30BBE713" label="                           File                                   ." autoScale="true">
+                    <mso:control idQ="mso:FileNewBlankDocument" visible="true"/>
+                    <mso:control idQ="mso:FileSave" visible="true"/>
+                    <mso:control idQ="mso:MailMergeMergeToPrinter" visible="true"/>
+                    <mso:control idQ="mso:FilePrintQuick" visible="true"/>
+                </mso:group>
+                <mso:group id="mso_c7.30C0260D" label=" " autoScale="true">
+                    <mso:control idQ="mso:Copy" visible="true"/>
+                    <mso:control idQ="mso:Cut" visible="true"/>
+                    <mso:gallery idQ="mso:PasteGallery" showInRibbon="false" visible="true"/>
+                </mso:group>
+                <mso:group id="mso_c8.30C0ACBC" label=" " autoScale="true">
+                    <mso:control idQ="mso:TableSelectMenu" visible="true"/>
+                    <mso:control idQ="mso:Font" visible="true"/>
+                    <mso:control idQ="mso:FontSizeIncreaseWord" visible="true"/>
+                    <mso:control idQ="mso:FontSizeDecreaseWord" visible="true"/>
+                    <mso:control idQ="mso:Bold" visible="true"/>
+                    <mso:control idQ="mso:Italic" visible="true"/>
+                    <mso:gallery idQ="mso:TextHighlightColorPicker" showInRibbon="false" visible="true"/>
+                </mso:group>
+                <mso:group id="mso_c15.30C8B6EF" label=" " autoScale="true">
+                    <mso:control idQ="mso:ZoomDialog" visible="true"/>
+                    <mso:control idQ="mso:ReadAloud" visible="true"/>
+                    <mso:control idQ="mso:TranslateMenu" visible="true"/>
+                </mso:group>
+                <mso:group id="mso_c16.30C994DF" label=" " autoScale="true">
+                    <mso:control idQ="mso:ToggleLearningTools" visible="true"/>
+                </mso:group>
+            </mso:tab>
+            <mso:tab id="mso_c13.30C490B2" label="Essentials (Morphic)" insertBeforeQ="mso:TabOutlining">
+                <mso:group id="mso_c17.30CB83CB" label="FILE     PRINT     FORMAT" autoScale="true">
+                    <mso:control idQ="mso:FileNewBlankDocument" visible="true"/>
+                    <mso:gallery idQ="mso:PageMarginsGallery" showInRibbon="false" visible="true"/>
+                    <mso:gallery idQ="mso:PageOrientationGallery" showInRibbon="false" visible="true"/>
+                    <mso:control idQ="mso:FileSave" visible="true"/>
+                    <mso:control idQ="mso:FileSaveAs" visible="true"/>
+                    <mso:control idQ="mso:MailMergeMergeToPrinter" visible="true"/>
+                    <mso:control idQ="mso:NavigationPaneFind" visible="true"/>
+                    <mso:control idQ="mso:PasteSpecialDialog" visible="true"/>
+                    <mso:control idQ="mso:FormatPainter" visible="true"/>
+                </mso:group>
+                <mso:group id="mso_c18.30D0F612" label="TEXT" autoScale="true">
+                    <mso:control idQ="mso:StyleGalleryClassic" visible="true"/>
+                    <mso:control idQ="mso:Font" visible="true"/>
+                    <mso:control idQ="mso:FontSize" visible="true"/>
+                    <mso:gallery idQ="mso:FontColorPicker" showInRibbon="false" visible="true"/>
+                    <mso:gallery idQ="mso:QuickStylesGallery" showInRibbon="false" visible="true"/>
+                    <mso:control idQ="mso:Bold" visible="true"/>
+                    <mso:control idQ="mso:Italic" visible="true"/>
+                    <mso:control idQ="mso:Underline" visible="true"/>
+                    <mso:control idQ="mso:Strikethrough" visible="true"/>
+                    <mso:control idQ="mso:Superscript" visible="true"/>
+                </mso:group>
+                <mso:group id="mso_c19.30D11D4E" label="PARAGRAPH" autoScale="true">
+                    <mso:control idQ="mso:AlignLeft" visible="true"/>
+                    <mso:control idQ="mso:AlignCenter" visible="true"/>
+                    <mso:control idQ="mso:AlignRight" visible="true"/>
+                    <mso:control idQ="mso:AlignJustifyMenu" visible="true"/>
+                    <mso:gallery idQ="mso:BulletsGalleryWord" showInRibbon="false" visible="true"/>
+                    <mso:gallery idQ="mso:NumberingGalleryWord" showInRibbon="false" visible="true"/>
+                    <mso:control idQ="mso:OutdentClassic" visible="true"/>
+                    <mso:gallery idQ="mso:LineSpacingGallery" showInRibbon="false" visible="true"/>
+                    <mso:control idQ="mso:IndentIncreaseWord" visible="true"/>
+                    <mso:control idQ="mso:ParagraphMarks" visible="true"/>
+                    <mso:gallery idQ="mso:ShadingColorPicker" showInRibbon="false" visible="true"/>
+                    <mso:gallery idQ="mso:BordersSelectionGallery" showInRibbon="false" visible="true"/>
+                </mso:group>
+                <mso:group id="mso_c20.30D1230E" label="INSERT" autoScale="true">
+                    <mso:gallery idQ="mso:TableInsertGallery" showInRibbon="false" visible="true"/>
+                    <mso:gallery idQ="mso:HeaderInsertGallery" showInRibbon="false" visible="true"/>
+                    <mso:gallery idQ="mso:FooterInsertGallery" showInRibbon="false" visible="true"/>
+                    <mso:control idQ="mso:TextPictureFill" visible="true"/>
+                    <mso:gallery idQ="mso:ShapesInsertGallery" showInRibbon="false" visible="true"/>
+                    <mso:control idQ="mso:HyperlinkInsert" visible="true"/>
+                    <mso:control idQ="mso:SymbolInsert" visible="true"/>
+                    <mso:gallery idQ="mso:EquationInsertGallery" showInRibbon="false" visible="true"/>
+                </mso:group>
+                <mso:group id="mso_c21.30D129BA" label="EDITING" autoScale="true">
+                    <mso:control idQ="mso:InsertNewComment" visible="true"/>
+                    <mso:control idQ="mso:ReviewTrackChanges" visible="true"/>
+                    <mso:control idQ="mso:ReviewAcceptOrRejectChangeDialog" visible="true"/>
+                    <mso:control idQ="mso:AccessibilityChecker" visible="true"/>
+                    <mso:gallery idQ="mso:Undo" showInRibbon="false" visible="true"/>
+                    <mso:control idQ="mso:SpellingAndGrammar" visible="true"/>
+                </mso:group>
+                <mso:group id="mso_c22.30D13DF5" label="EASIER TO READ" autoScale="true">
+                    <mso:control idQ="mso:ToggleLearningTools" visible="true"/>
+                    <mso:control idQ="mso:ReadAloud" visible="true"/>
+                    <mso:control idQ="mso:TranslateMenu" visible="true"/>
+                    <mso:control idQ="mso:ZoomDialog" visible="true"/>
+                </mso:group>
+            </mso:tab>
+        </mso:tabs>
+    </mso:ribbon>
+</mso:customUI>
