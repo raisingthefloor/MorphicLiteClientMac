@@ -65,6 +65,9 @@ public class WordRibbonUIAutomation: UIAutomation {
             for window: WindowElement in app.windows! {
                 let windowTitle: String = window.title!
                 if(windowTitle == "Word Preferences") {
+                    do{ //sends preferences window offscreen for duration
+                        try window.accessibilityElement.setValue(CGPoint(x: 0, y: 100000), forAttribute: .position)
+                    } catch {}
                     window.perform(action: .press(buttonTitle: "Ribbon & Toolbar")) { (success, _) in
                         if(!success) {
             	                os_log("Error switching to Ribbon tab")
