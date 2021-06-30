@@ -55,10 +55,10 @@ COUNTLY_SERVER_URL=https:/$()/countly.morphic.org
 //AUTOUPDATE_XML_FILENAME=morphic-macos.appcast.xml
 //
 // canary
-AUTOUPDATE_XML_FILENAME=morphic-macos-canary.appcast.xml
+//AUTOUPDATE_XML_FILENAME=morphic-macos-canary.appcast.xml
 //
 // preview
-//AUTOUPDATE_XML_FILENAME=morphic-macos-preview.appcast.xml
+AUTOUPDATE_XML_FILENAME=morphic-macos-preview.appcast.xml
 //
 // production
 //AUTOUPDATE_XML_FILENAME=morphic-macos.appcast.xml
