@@ -60,6 +60,17 @@ public extension UserDefaults {
         setValue(userCommunityIdentifiersByUserIdentifier, forKey: .morphicDefaultsKeyUserCommunityIdentifiersByUserIdentifier)
     }
     
+    func selectedMorphicbarId(for userIdentifier: String) -> String? {
+        let morphicbarIdentifiersByUserIdentifier = dictionary(forKey: .morphicDefaultsKeyMorphicbarIdentifiersByUserIdentifier)
+        return morphicbarIdentifiersByUserIdentifier?[userIdentifier] as? String
+    }
+
+    func set(selectedMorphicbarIdentifier: String?, for userIdentifier: String) {
+        var morphicbarIdentifiersByUserIdentifier = dictionary(forKey: .morphicDefaultsKeyMorphicbarIdentifiersByUserIdentifier) ?? [String : Any]()
+        morphicbarIdentifiersByUserIdentifier[userIdentifier] = selectedMorphicbarIdentifier
+        setValue(morphicbarIdentifiersByUserIdentifier, forKey: .morphicDefaultsKeyMorphicbarIdentifiersByUserIdentifier)
+    }
+
     func telemetryDeviceUuid() -> String? {
         return string(forKey: .morphicDefaultsKeyTelemetryDeviceUuid)
     }
@@ -70,6 +81,7 @@ public extension UserDefaults {
 }
 
 public extension String {
+    static var morphicDefaultsKeyMorphicbarIdentifiersByUserIdentifier = "morphicbarIdentifiersByUserIdentifier"
     static var morphicDefaultsKeyUserIdentifier = "userIdentifier"
     static var morphicDefaultsKeyUsernamesByIdentifier = "usernamesByIdentifier"
     static var morphicDefaultsKeyUserCommunityIdentifiersByUserIdentifier = "userCommunityIdentifiersByUserIdentifier"

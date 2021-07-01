@@ -31,15 +31,25 @@ public class MorphicBarView: NSView, MorphicBarWindowChildViewDelegate {
     /// The item views in order of appearance
     public private(set) var itemViews = [MorphicBarItemViewProtocol]()
     
+    public var tray: MorphicBarTrayView?
+    
+    private var freeSpace: CGFloat = 0
     /// Add an item view to the end of the MorphicBar
     ///
     /// - parameters:
     ///   - itemView: The item view to add
     public func add(itemView: MorphicBarItemViewProtocol) {
-        itemViews.append(itemView)
         itemView.morphicBarView = self
-        addSubview(itemView)
-        invalidateIntrinsicContentSize()
+
+        if itemView.intrinsicContentSize.height <= freeSpace {
+            freeSpace -= itemView.intrinsicContentSize.height + itemSpacing
+            tray?.maxSpace += itemView.intrinsicContentSize.height + itemSpacing
+            itemViews.append(itemView)
+            addSubview(itemView)
+            invalidateIntrinsicContentSize()
+        } else {
+            tray?.add(itemView: itemView)
+        }
     }
     
     /// Remove the item view at the given index
@@ -50,8 +60,11 @@ public class MorphicBarView: NSView, MorphicBarWindowChildViewDelegate {
         let itemView = itemViews[index]
         itemViews.remove(at: index)
         itemView.removeFromSuperview()
-        itemView.morphicBarView = nil
+        freeSpace += itemView.intrinsicContentSize.height + itemSpacing
+        tray?.maxSpace -= itemView.intrinsicContentSize.height + itemSpacing
         invalidateIntrinsicContentSize()
+
+        itemView.morphicBarView = nil
     }
     
     /// Remove all item views from the MorphicBar
@@ -59,6 +72,10 @@ public class MorphicBarView: NSView, MorphicBarWindowChildViewDelegate {
         for i in (0..<itemViews.count).reversed() {
             removeItemView(at: i)
         }
+        freeSpace = (window?.screen?.frame.height)!
+        freeSpace -= (18 + 44 + 7 + 20 + 7 + 19)    //subtract space for logobutton, buffers, and closebutton
+        tray?.removeAllItemViews()
+        tray?.maxSpace = (18 + 44 + 7 + 7 + 19)
     }
     
     // MARK: - Layout
@@ -192,6 +209,7 @@ public class MorphicBarView: NSView, MorphicBarWindowChildViewDelegate {
         didSet {
             needsLayout = true
             invalidateIntrinsicContentSize()
+            tray?.orientation = orientation
         }
     }
 

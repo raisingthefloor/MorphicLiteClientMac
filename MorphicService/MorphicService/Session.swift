@@ -382,7 +382,22 @@ public class Session {
             UserDefaults.morphic.set(selectedUserCommunityIdentifier: newValue, for: currentUserIdentifier)
         }
     }
-    
+
+    var selectedMorphicbarIdentifier: String? {
+        get {
+            guard let currentUserIdentifier = self.currentUserIdentifier else {
+                return nil
+            }
+            return UserDefaults.morphic.selectedMorphicbarId(for: currentUserIdentifier)
+        }
+        set {
+            guard let currentUserIdentifier = self.currentUserIdentifier else {
+                return
+            }
+            UserDefaults.morphic.set(selectedMorphicbarIdentifier: newValue, for: currentUserIdentifier)
+        }
+    }
+
     /// The current user
     public var user: User? {
         didSet {
