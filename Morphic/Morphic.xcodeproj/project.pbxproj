@@ -183,6 +183,9 @@
 		9DDAE61025094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DDAE60F25094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift */; };
 		9DE112E72522243200591E08 /* CopySettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE112E52522243100591E08 /* CopySettingsWindowController.swift */; };
 		9DE112E82522243200591E08 /* CopySettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DE112E62522243200591E08 /* CopySettingsWindow.xib */; };
+		9DE45BAA25171C6000209421 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
+		DF35CECA2541BCD200C3FF77 /* MorphicBarTrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */; };
+		DF35CED12541BF3C00C3FF77 /* MorphicBarTrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */; };
 		9DFB6E012624B7E500AD39D1 /* logo_calculator.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DFB6E002624B7E500AD39D1 /* logo_calculator.pdf */; };
 /* End PBXBuildFile section */
 
@@ -444,6 +447,7 @@
 		9DDAE60F25094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarSegmentedButtonItemView.swift; sourceTree = "<group>"; };
 		9DE112E52522243100591E08 /* CopySettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopySettingsWindowController.swift; sourceTree = "<group>"; };
 		9DE112E62522243200591E08 /* CopySettingsWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CopySettingsWindow.xib; sourceTree = "<group>"; };
+		DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarTrayView.swift; sourceTree = "<group>"; };
 		9DFB6E002624B7E500AD39D1 /* logo_calculator.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_calculator.pdf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -588,6 +592,7 @@
 				31E1E18A244794EF009C4092 /* MorphicBarViewController.xib */,
 				31751B9B2444F22900EEDF14 /* MorphicBarViewController.swift */,
 				31E1E17C24466E7C009C4092 /* MorphicBarView.swift */,
+				DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */,
 			);
 			path = MorphicBar;
 			sourceTree = "<group>";
@@ -1189,6 +1194,7 @@
 				9DE112E72522243200591E08 /* CopySettingsWindowController.swift in Sources */,
 				31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */,
 				9D2A5AB8259B815800ECD513 /* ConfigurableFeatures.swift in Sources */,
+				DF35CECA2541BCD200C3FF77 /* MorphicBarTrayView.swift in Sources */,
 				31C12CBE24B138D000B617A8 /* ProgressIndicator.swift in Sources */,
 				31C12CC424B1441E00B617A8 /* PageControl.swift in Sources */,
 				9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */,
@@ -1408,7 +1414,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.Morphic-Debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1433,7 +1439,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.Morphic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1457,7 +1463,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.MorphicConfigurator-Debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1481,7 +1487,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
 				PRODUCT_NAME = "$(TARGET_NAME)";

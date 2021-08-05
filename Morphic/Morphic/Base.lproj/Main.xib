@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner"/>
@@ -43,9 +43,9 @@
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="bzM-1k-508"/>
-                <menuItem title="Change MorphicBar" hidden="YES" id="qcc-Q2-sYr">
+                <menuItem title="Switch MorphicBar" hidden="YES" id="qcc-Q2-sYr">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="Change MorphicBar" id="l0C-IM-POV">
+                    <menu key="submenu" title="Switch MorphicBar" id="l0C-IM-POV">
                         <items>
                             <menuItem title="Basic MorphicBar" id="AVi-t6-lRs">
                                 <modifierMask key="keyEquivalentModifierMask"/>
@@ -56,13 +56,20 @@
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="Apply or Change Setup..." id="WUC-ZR-CdM">
+                <menuItem title="Customize MorphicBar..." id="ZaP-ZB-1RU">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="menuBarExtraCustomizeMorphicbarMenuItemClicked:" target="ZNk-5q-oDb" id="lZi-Wd-QQP"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="G4o-Ru-w4d"/>
+                <menuItem title="Apply a Saved Setup..." id="WUC-ZR-CdM">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="showApplySettingsWindow:" target="ZNk-5q-oDb" id="yPz-td-8oU"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Save my Setup..." id="VF9-cs-dFo">
+                <menuItem title="Save Current Setup as..." id="VF9-cs-dFo">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="showCaptureSettingsWindow:" target="ZNk-5q-oDb" id="DuM-HT-1MR"/>

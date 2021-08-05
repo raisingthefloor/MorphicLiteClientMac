@@ -46,6 +46,7 @@ public class MorphicBarWindow: NSWindow {
         hasShadow = true
         isReleasedWhenClosed = false
         level = .floating
+        isOpaque = false
         backgroundColor = .clear
         isMovableByWindowBackground = true
         collectionBehavior = [.canJoinAllSpaces]
@@ -116,6 +117,7 @@ public class MorphicBarWindow: NSWindow {
         
         // if the user has a set of custom bars and one of them is selected, grab that community (custom bar) id now
         var userSelectedCommunityId: String? = nil
+        var userSelectedMorphicbarId: String? = nil
         //
         let customBarsAsJson = Session.shared.dictionary(for: .morphicCustomMorphicBarsAsJson)
         if let _ = customBarsAsJson,
@@ -123,22 +125,50 @@ public class MorphicBarWindow: NSWindow {
             //
             if let user = Session.shared.user {
                 userSelectedCommunityId = UserDefaults.morphic.selectedUserCommunityId(for: user.identifier)
+                userSelectedMorphicbarId = UserDefaults.morphic.selectedMorphicbarId(for: user.identifier)
             }
         }
         //
+        var customBarFound = false
         if userSelectedCommunityId != nil && customBarsAsJson![userSelectedCommunityId!] != nil {
             // if the user has selected a community (custom bar) and it's present in the JSON, then use the elements for this bar
-            let selectedCommunityBarAsJsonString = customBarsAsJson![userSelectedCommunityId!] as! String
-            let selectedCommunityBarAsJsonData = selectedCommunityBarAsJsonString.data(using: .utf8)!
-            let selectedCommunityBar = try! JSONDecoder().decode(Service.UserCommunityDetails.self, from: selectedCommunityBarAsJsonData)
+            let selectedCommunityDetailsAsJsonString = customBarsAsJson![userSelectedCommunityId!] as! String
+            let selectedCommunityDetailsAsJsonData = selectedCommunityDetailsAsJsonString.data(using: .utf8)!
+            let selectedCommunityDetails = try! JSONDecoder().decode(Service.UserCommunityDetails.self, from: selectedCommunityDetailsAsJsonData)
             
-            let encodedMorphicBarItems = selectedCommunityBar.encodeAsMorphicBarItems()
-            morphicBarViewController.items = MorphicBarItem.items(from: encodedMorphicBarItems)
-            
-            morphicBarViewController.orientation = .vertical
-        } else {
+            var encodedMorphicBarItems: [[String: Interoperable?]]?
+            if selectedCommunityDetails.bars != nil && selectedCommunityDetails.bars!.count > 0 {
+                for legacyBar in selectedCommunityDetails.bars! {
+                    if legacyBar.id == userSelectedMorphicbarId || userSelectedMorphicbarId == nil {
+                        encodedMorphicBarItems = legacyBar.encodeAsMorphicBarItems()
+                        break
+                    } else {
+                        // skip to the next bar
+                        continue
+                    }
+                }
+            } else {
+                // NOTE: for BACKWARDS-COMPATIBILITY we must use "bars" but fall-back to "bar" if "bars" is empty
+                let legacyBar = selectedCommunityDetails.bar
+                encodedMorphicBarItems = legacyBar.encodeAsMorphicBarItems()
+            }
+
+            if let encodedMorphicBarItems = encodedMorphicBarItems {
+                morphicBarViewController.items = MorphicBarItem.items(from: encodedMorphicBarItems)
+                
+                morphicBarViewController.orientation = .vertical
+                    
+                customBarFound = true
+            }
+        }
+        
+        if customBarFound == false {
+
             // otherwise, show the basic bar
             if let preferredItems = Session.shared.array(for: .morphicBarItems) {
+                // set the orientation before adding the items; this is a requirement of our layout engine
+                morphicBarViewController.orientation = .horizontal
+
                 // convert our list of items
                 var morphicBarItems = MorphicBarItem.items(from: preferredItems)
                 
@@ -154,13 +184,12 @@ public class MorphicBarWindow: NSWindow {
                     morphicBarItems.insert(contentsOf: extraItemsAsMorphicBarItems, at: 0)
                 }
                 morphicBarViewController.items = morphicBarItems
-                
-                morphicBarViewController.orientation = .horizontal
             } else {
                 assertionFailure("No custom bar was selected, but no basic bar items could be found either")
             }
         }
 
+        morphicBarViewController.shrinkFitWindow()
         // now that we have updated the items in our bar, update the accessibility children list as well (so that left/right voiceover nav works properly)
         setAccessibilityChildren(morphicBarViewController.accessibilityChildren())
         reposition(animated: false)
@@ -261,6 +290,7 @@ public class MorphicBarWindow: NSWindow {
         self.morphicBarViewController.morphicBarView.invalidateIntrinsicContentSize()
         // re-trigger layout with the updated sizes/spacing
         layoutIfNeeded()
+        morphicBarViewController.position = position
         let origin = position.origin(for: self)
         let frame = NSRect(origin: origin, size: self.frame.size)
         setFrame(frame, display: true, animate: animated)
@@ -277,6 +307,15 @@ public class MorphicBarWindow: NSWindow {
         super.mouseUp(with: event)
         setPosition(nearestPosition, animated: true)
     }
+    
+    /*uncomment to have tray close when you drag the bar
+    public override func mouseDragged(with event: NSEvent) {
+        super.mouseDragged(with: event)
+        if(orientation == .vertical && !morphicBarViewController.morphicTrayView.collapsed) {
+            morphicBarViewController.closeTray(nil)
+        }
+    }
+    */
 
 }
 
