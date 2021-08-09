@@ -2113,6 +2113,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         NSWorkspace.shared.open(url)
     }
 
+    
+    @IBAction func menuBarExtraContactUsMenuItemClicked(_ sender: Any) {
+        defer {
+            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
+            self.countly_RecordEvent("contactUs", segmentation: segmentation)
+        }
+        
+        contactUsClicked()
+    }
+    
+    func contactUsClicked() {
+        let url = URL(string: "https://morphic.org/contact-us")!
+        NSWorkspace.shared.open(url)
+    }
+
     @IBAction
     func menuBarExtraExploreMorphicMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
