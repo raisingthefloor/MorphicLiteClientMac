@@ -27,6 +27,7 @@ import OSLog
 import MorphicCore
 import MorphicService
 import MorphicSettings
+import MorphicTelemetry
 import ServiceManagement
 
 private let logger = OSLog(subsystem: "app", category: "delegate")
@@ -54,6 +55,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     private var voiceOverEnabledObservation: NSKeyValueObservation?
     private var appleKeyboardUIModeObservation: NSKeyValueObservation?
+    
+    private var telemetryClient: MorphicTelemetryClient?
 
     private let appCastUrl: URL = {
         guard let frontEndUrlAsString = Bundle.main.infoDictionary?["FrontEndURL"] as? String else {
@@ -101,6 +104,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
         if ConfigurableFeatures.shared.telemetryIsEnabled == true {
             self.configureCountly()
+            self.configureTelemetry()
         }
         
         #if DEBUG
@@ -226,13 +230,81 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     internal func countly_RecordEvent(_ key: String) {
         if ConfigurableFeatures.shared.telemetryIsEnabled == true {
             Countly.sharedInstance().recordEvent(key)
+            
+            self.telemetryClient?.enqueueActionMessage(eventName: key)
         }
     }
     
     internal func countly_RecordEvent(_ key: String, segmentation: [String: String]?) {
         if ConfigurableFeatures.shared.telemetryIsEnabled == true {
             Countly.sharedInstance().recordEvent(key, segmentation: segmentation)
+            
+            self.telemetryClient?.enqueueActionMessage(eventName: key)
         }
+    }
+    
+    private struct TelemetryIdComponents
+    {
+        public var compositeId: String
+        public var siteId: String?
+        public var deviceUuid: String
+    }
+    //
+    private func getOrCreateTelemetryIdComponents() -> TelemetryIdComponents {
+        // retrieve the telemetry device ID for this device; if it doesn't exist then create a new one
+        var telemetryCompositeId: String
+        var telemetryCompositeIdAsOptional = UserDefaults.morphic.telemetryDeviceUuid()
+        if telemetryCompositeIdAsOptional == "" {
+            // if the telemetry device uuid is empty (which it should _not_ be), it's invalid...so ignore it
+            telemetryCompositeIdAsOptional = nil
+        }
+        //
+        if let telemetryCompositeIdAsOptional = telemetryCompositeIdAsOptional {
+            // use the existing telemetry device uuid
+            telemetryCompositeId = telemetryCompositeIdAsOptional
+        } else {
+            // create a new device uuid for purposes of telemetry
+            // NOTE: GUIDs should be lowercase; macOS outputs UUIDs as uppercase; therefore we manually lowercase them
+            telemetryCompositeId = "D_" + NSUUID().uuidString.lowercased()
+            UserDefaults.morphic.set(telemetryDeviceUuid: telemetryCompositeId)
+        }
+        
+        // if a site id is (or is not) configured, modify the telemetry device uuid accordingly
+        // NOTE: we handle cases of site ids changing, site IDs being added post-deployment, and site IDs being removed post-deployment
+        let unmodifiedTelemetryDeviceCompositeId = telemetryCompositeId
+        var telemetrySiteIdAsOptional = ConfigurableFeatures.shared.telemetrySiteId
+        if telemetrySiteIdAsOptional == "" {
+            // if the telemetry site id is empty (white it should _not_ be), it's invalid...so ignore it
+            telemetrySiteIdAsOptional = nil
+        }
+        //
+        if let telemetrySiteId = telemetrySiteIdAsOptional {
+            // NOTE: in the future, consider reporting or throwing an error if the site id required sanitization (i.e. wasn't valid)
+            let sanitizedTelemetrySiteId = self.sanitizeSiteId(telemetrySiteId)
+            if sanitizedTelemetrySiteId != "" {
+                // we have a telemetry site id; prepend it
+                telemetryCompositeId = self.prependSiteIdToTelemetryUuid(telemetryCompositeId, telemetrySiteId: sanitizedTelemetrySiteId)
+            } else {
+                // the supplied site id isn't valid; strip off the site id; In the future consider logging/reporting an error
+                telemetryCompositeId = self.removeSiteIdFromTelemetryUuid(telemetryCompositeId)
+            }
+        } else {
+            // no telemetry site id is configured; strip off any site id which might have already been part of our telemetry id
+            telemetryCompositeId = self.removeSiteIdFromTelemetryUuid(telemetryCompositeId)
+        }
+        // if the telemetry uuid has changed (because of the site id), update our stored telemetry uuid now
+        if telemetryCompositeId != unmodifiedTelemetryDeviceCompositeId {
+            UserDefaults.morphic.set(telemetryDeviceUuid: telemetryCompositeId)
+        }
+
+        // TODO: there is a potential scenario that our telemetry device uuid could be (incorrectly) saved as a blank entry; we should consider
+        //       how we'd want to deal with that scenario; NOTE: this _might_ just pertain to countly--or it might pertain to MorphicTelemetry as well
+
+        // capture the raw device UUID
+        let rangeOfTelemetryDeviceUuidPrefix = telemetryCompositeId.range(of: "D_")!
+        let telemetryDeviceUuid = String(telemetryCompositeId.suffix(from: rangeOfTelemetryDeviceUuidPrefix.upperBound))
+
+        return TelemetryIdComponents(compositeId: telemetryCompositeId, siteId: telemetrySiteIdAsOptional, deviceUuid: telemetryDeviceUuid)
     }
     
     func configureCountly() {
@@ -247,55 +319,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             return
         }
         
-        // retrieve the telemetry device ID for this device; if it doesn't exist then create a new one
-        var telemetryDeviceUuid: String
-        var telemetryDeviceUuidAsOptional = UserDefaults.morphic.telemetryDeviceUuid()
-        if telemetryDeviceUuidAsOptional == "" {
-            // if the telemetry device uuid is empty (which it should _not_ be), it's invalid...so ignore it
-            telemetryDeviceUuidAsOptional = nil
-        }
-        //
-        if let telemetryDeviceUuidAsOptional = telemetryDeviceUuidAsOptional {
-            // use the existing telemetry device uuid
-            telemetryDeviceUuid = telemetryDeviceUuidAsOptional
-        } else {
-            // create a new device uuid for purposes of telemetry
-            // NOTE: GUIDs should be lowercase; macOS outputs UUIDs as uppercase; therefore we manually lowercase them
-            telemetryDeviceUuid = "D_" + NSUUID().uuidString.lowercased()
-            UserDefaults.morphic.set(telemetryDeviceUuid: telemetryDeviceUuid)
-        }
-        
-        // if a site id is (or is not) configured, modify the telemetry device uuid accordingly
-        // NOTE: we handle cases of site ids changing, site IDs being added post-deployment, and site IDs being removed post-deployment
-        let unmodifiedTelemetryDeviceUuid = telemetryDeviceUuid
-        var telemetrySiteIdAsOptional = ConfigurableFeatures.shared.telemetrySiteId
-        if telemetrySiteIdAsOptional == "" {
-            // if the telemetry site id is empty (white it should _not_ be), it's invalid...so ignore it
-            telemetrySiteIdAsOptional = nil
-        }
-        //
-        if let telemetrySiteId = telemetrySiteIdAsOptional {
-            // NOTE: in the future, consider reporting or throwing an error if the site id required sanitization (i.e. wasn't valid)
-            let sanitizedTelemetrySiteId = self.sanitizeSiteId(telemetrySiteId)
-            if sanitizedTelemetrySiteId != "" {
-                // we have a telemetry site id; prepend it
-                telemetryDeviceUuid = self.prependSiteIdToTelemetryUuid(telemetryDeviceUuid, telemetrySiteId: telemetrySiteId)
-            } else {
-                // the supplied site id isn't valid; strip off the site id; In the future consider logging/reporting an error
-                telemetryDeviceUuid = self.removeSiteIdFromTelemetryUuid(telemetryDeviceUuid)
-            }
-        } else {
-            // no telemetry site id is configured; strip off any site id which might have already been part of our telemetry id
-            telemetryDeviceUuid = self.removeSiteIdFromTelemetryUuid(telemetryDeviceUuid)
-        }
-        // if the telemetry uuid has changed (because of the site id), update our stored telemetry uuid now
-        if telemetryDeviceUuid != unmodifiedTelemetryDeviceUuid {
-            UserDefaults.morphic.set(telemetryDeviceUuid: telemetryDeviceUuid)
-        }
-        
-        // TODO: there is a potential scenario that our telemetry device uuid could be (incorrectly) saved as a blank entry; we should consider
-        //       how we'd want to deal with that scenario
-        
+        // retrieve the telemetry composite ID for this device; if it doesn't exist then create a new one
+        let telemetryDeviceCompositeId = self.getOrCreateTelemetryIdComponents().compositeId;
+
         let config: CountlyConfig = CountlyConfig()
         config.appKey = appKey
         config.host = serverUrl
@@ -311,10 +337,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         //
         // if Countly is using another telemetry ID, reset the stored device ID and specify the new telemetry ID
         // NOTE: There is also a 'setNewDeviceID' method on Countly.sharedInstance() which would let us change the session ID _after_ starting up the session...which has additional features like being able to update older records to the new telemetry ID...but this method is simpler and less error-prone for our current needs (and we can supplement our use with the function call method if needed in the future)
-        if Countly.sharedInstance().deviceID() != telemetryDeviceUuid {
+        if Countly.sharedInstance().deviceID() != telemetryDeviceCompositeId {
             // NOTE: changing the deviceID via config takes no effect if an existing "deviceID" is already in use; therefore we reset it here out of an abundance of caution (and to handle situations where we might change the "deviceID" to another telemetry ID instead)
             config.resetStoredDeviceID = true
-            config.deviceID = telemetryDeviceUuid
+            config.deviceID = telemetryDeviceCompositeId
         }
         //
         Countly.sharedInstance().start(with: config)
@@ -373,6 +399,74 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
+    // MARK: - Telemetry
+    
+    func configureTelemetry() {
+        // retrieve the telemetry device ID for this device; if it doesn't exist then create a new one
+        let telemetryIds = self.getOrCreateTelemetryIdComponents();
+        //let telemetryCompositeId = telemetryIds.compositeId
+        let telemetrySiteId = telemetryIds.siteId
+        let telemetryDeviceUuid = telemetryIds.deviceUuid
+        
+        // configure our telemetry uplink
+        //
+        guard let mqttHostname = Bundle.main.infoDictionary?["TelemetryServerHostname"] as? String else {
+            assertionFailure("Missing telemetry server url.  Check build config files")
+            os_log(.fault, log: logger, "Missing telemetry server url.  Check build config files")
+            return
+        }
+        //
+        let mqttClientId = telemetryDeviceUuid
+        //
+        guard let mqttUsername = Bundle.main.infoDictionary?["TelemetryAppName"] as? String else {
+            assertionFailure("Missing telemetry app name.  Check build config files")
+            os_log(.fault, log: logger, "Missing telemetry app name.  Check build config files")
+            return
+        }
+        //
+        guard let mqttAnonymousPassword = Bundle.main.infoDictionary?["TelemetryAppKey"] as? String else {
+            assertionFailure("Missing telemetry app key.  Check build config files")
+            os_log(.fault, log: logger, "Missing telemetry app key.  Check build config files")
+            return
+        }
+        //
+        let mqttConfig = MorphicTelemetryClient.WebsocketTelemetryClientConfig(
+            clientId: mqttClientId,
+            username: mqttUsername,
+            password: mqttAnonymousPassword,
+            hostname: mqttHostname,
+            port: 443,
+            path: "/ws",
+            useTls: true)
+        var telemetryClient = MorphicTelemetryClient(config: mqttConfig, softwareVersion: self.getApplicationVersion())
+        telemetryClient.siteId = telemetrySiteId
+        self.telemetryClient = telemetryClient
+
+        telemetryClient.startSession()
+    }
+    
+    func getApplicationVersion() -> String {
+        var result: String = ""
+        
+        // populate the version and build # in our labels
+        if let shortVersionAsString = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+            result = shortVersionAsString
+        } else {
+            // NOTE: this is not an expected result, but may be necessary for dev-time
+            result = "0.0"
+        }
+        //
+        if let buildAsString = Bundle.main.infoDictionary?["CFBundleVersion" as String] as? String {
+            result += "." + buildAsString
+        } else {
+            // if we cannot find a build number, omit it
+        }
+
+        return result
+    }
+    
+    // MARK -
+    
     func markUserConfiguredSettingsAsAlreadySet() {
         // if the user is already using features which Morphic does one-time setup for (such as default magnifier zoom style or color filter type), make sure we don't change those settings later.  In other words: mark the settings as "already set"
         //
@@ -395,6 +489,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     func applicationWillTerminate(_ aNotification: Notification) {
         if ConfigurableFeatures.shared.telemetryIsEnabled == true {
             Countly.sharedInstance().endSession()
+            
+            self.telemetryClient?.endSession()
         }
     }
     
