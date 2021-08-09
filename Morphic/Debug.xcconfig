@@ -58,17 +58,24 @@ COUNTLY_SERVER_URL=https:/$()/countly.morphic.org
 
 //
 
+// development, canary, preview and production
+TELEMETRY_SERVER_HOSTNAME=telemetrymqtt.morphic.org
+TELEMETRY_APP_NAME=morphic-macos
+TELEMETRY_APP_KEY=rZ182EvGNH20DsoI
+
+//
+
 // development
 //AUTOUPDATE_XML_FILENAME=morphic-macos.appcast.xml
 //
 // canary
-//AUTOUPDATE_XML_FILENAME=morphic-macos-canary.appcast.xml
+AUTOUPDATE_XML_FILENAME=morphic-macos-canary.appcast.xml
 //
 // preview
 //AUTOUPDATE_XML_FILENAME=morphic-macos-preview.appcast.xml
 //
 // production
-AUTOUPDATE_XML_FILENAME=morphic-macos.appcast.xml
+//AUTOUPDATE_XML_FILENAME=morphic-macos.appcast.xml
 
 //
 

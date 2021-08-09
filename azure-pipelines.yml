@@ -72,6 +72,18 @@ stages:
             signingOption: '$(signingOption)'
             args: '$(extraArgs)'
         - task: Xcode@5
+          displayName: Build MorphicTelemetry
+          inputs:
+            actions: 'build'
+            sdk: $(sdk)
+            scheme: 'MorphicTelemetry'
+            configuration: '$(configuration)'
+            xcWorkspacePath: '$(workspacePath)'
+            xcodeVersion: $(xcodeVersionNum)
+            useXcpretty: false
+            signingOption: '$(signingOption)'
+            args: '$(extraArgs)'
+        - task: Xcode@5
           displayName: Build MorphicService
           inputs:
             actions: 'build'

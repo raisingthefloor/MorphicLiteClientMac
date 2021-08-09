@@ -143,6 +143,8 @@
 		9D3A34F225ED70F300C26902 /* logo_theHill.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 9D3A34F125ED70F300C26902 /* logo_theHill.jpeg */; };
 		9D3A34F525ED716500C26902 /* logo_wsj.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D3A34F425ED716400C26902 /* logo_wsj.pdf */; };
 		9D3A34F825ED720400C26902 /* logo_usaToday.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D3A34F725ED720400C26902 /* logo_usaToday.pdf */; };
+		9D3B9EDE26BC7BEB00C9F174 /* MorphicTelemetry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D3B9EDD26BC7BEB00C9F174 /* MorphicTelemetry.framework */; };
+		9D3B9EDF26BC7BEB00C9F174 /* MorphicTelemetry.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D3B9EDD26BC7BEB00C9F174 /* MorphicTelemetry.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9D49D4DD25BBA93B001DD452 /* Autoupdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */; };
 		9D49D4F225BBAA00001DD452 /* UpdateAvailableWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */; };
 		9D49D4F325BBAA00001DD452 /* UpdateAvailableWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */; };
@@ -183,10 +185,9 @@
 		9DDAE61025094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DDAE60F25094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift */; };
 		9DE112E72522243200591E08 /* CopySettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE112E52522243100591E08 /* CopySettingsWindowController.swift */; };
 		9DE112E82522243200591E08 /* CopySettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DE112E62522243200591E08 /* CopySettingsWindow.xib */; };
+		9DFB6E012624B7E500AD39D1 /* logo_calculator.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DFB6E002624B7E500AD39D1 /* logo_calculator.pdf */; };
 		9DE45BAA25171C6000209421 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
 		DF35CECA2541BCD200C3FF77 /* MorphicBarTrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */; };
-		DF35CED12541BF3C00C3FF77 /* MorphicBarTrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */; };
-		9DFB6E012624B7E500AD39D1 /* logo_calculator.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DFB6E002624B7E500AD39D1 /* logo_calculator.pdf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -209,6 +210,7 @@
 				31751B4B2444E04300EEDF14 /* MorphicCore.framework in Embed Frameworks */,
 				31751B4F2444E04300EEDF14 /* MorphicSettings.framework in Embed Frameworks */,
 				31751B4D2444E04300EEDF14 /* MorphicService.framework in Embed Frameworks */,
+				9D3B9EDF26BC7BEB00C9F174 /* MorphicTelemetry.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -403,6 +405,7 @@
 		9D3A34F125ED70F300C26902 /* logo_theHill.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = logo_theHill.jpeg; sourceTree = "<group>"; };
 		9D3A34F425ED716400C26902 /* logo_wsj.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_wsj.pdf; sourceTree = "<group>"; };
 		9D3A34F725ED720400C26902 /* logo_usaToday.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_usaToday.pdf; sourceTree = "<group>"; };
+		9D3B9EDD26BC7BEB00C9F174 /* MorphicTelemetry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicTelemetry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Autoupdater.swift; sourceTree = "<group>"; };
 		9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAvailableWindow.swift; sourceTree = "<group>"; };
 		9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpdateAvailableWindow.xib; sourceTree = "<group>"; };
@@ -447,8 +450,8 @@
 		9DDAE60F25094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarSegmentedButtonItemView.swift; sourceTree = "<group>"; };
 		9DE112E52522243100591E08 /* CopySettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopySettingsWindowController.swift; sourceTree = "<group>"; };
 		9DE112E62522243200591E08 /* CopySettingsWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CopySettingsWindow.xib; sourceTree = "<group>"; };
-		DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarTrayView.swift; sourceTree = "<group>"; };
 		9DFB6E002624B7E500AD39D1 /* logo_calculator.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_calculator.pdf; sourceTree = "<group>"; };
+		DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarTrayView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -459,6 +462,7 @@
 				31751B4A2444E04300EEDF14 /* MorphicCore.framework in Frameworks */,
 				9D1FA1CF251A31990008559D /* ServiceManagement.framework in Frameworks */,
 				9D3530A525C2860200F8D590 /* Countly in Frameworks */,
+				9D3B9EDE26BC7BEB00C9F174 /* MorphicTelemetry.framework in Frameworks */,
 				31751B4E2444E04300EEDF14 /* MorphicSettings.framework in Frameworks */,
 				31751B4C2444E04300EEDF14 /* MorphicService.framework in Frameworks */,
 			);
@@ -600,6 +604,7 @@
 		31751B462444E04300EEDF14 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9D3B9EDD26BC7BEB00C9F174 /* MorphicTelemetry.framework */,
 				9D1FA1CE251A31990008559D /* ServiceManagement.framework */,
 				31751B472444E04300EEDF14 /* MorphicCore.framework */,
 				31751B482444E04300EEDF14 /* MorphicService.framework */,
