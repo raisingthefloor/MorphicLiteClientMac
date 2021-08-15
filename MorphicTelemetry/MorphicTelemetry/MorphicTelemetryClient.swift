@@ -25,7 +25,7 @@ import Foundation
 import MQTTNIO
 import NIO
 
-public struct MorphicTelemetryClient {
+public class MorphicTelemetryClient {
 
     private var mqttClient: MQTTClient
     private var mqttClientConfig: TelemetryClientConfig
@@ -33,6 +33,9 @@ public struct MorphicTelemetryClient {
     private let clientId: String
     private let softwareVersion: String
 
+    private var messagesToSend: [MqttEventMessage]
+    private var messagesToSendQueue: DispatchQueue
+    
     private enum SessionState
     {
         case stopped
@@ -95,6 +98,9 @@ public struct MorphicTelemetryClient {
         self.mqttClientConfig = config
         self.softwareVersion = softwareVersion
         
+        self.messagesToSend = []
+        self.messagesToSendQueue = DispatchQueue(label: "telemetry_message_queue")
+
         // initialize and capture our MQTT client and its configuration options
 
         var hostname: String
@@ -155,65 +161,64 @@ public struct MorphicTelemetryClient {
         )
         self.mqttClient = mqttClient
         
+        self.clientId = self.mqttClientConfig.clientId
+
         // set up disconnect handler (to handle automatic reconnection)
         mqttClient.addCloseListener(named: "closed") { result in
-            MorphicTelemetryClient.mqttClientDisconnected(mqttClient: mqttClient)
+            self.mqttClientDisconnected()
         }
-        
-        self.clientId = self.mqttClientConfig.clientId
     }
     
-    public mutating func startSession() {
+    public func startSession() {
         switch self.sessionState {
         case .started,
              .starting:
             // if our session is already started (or is starting), just return
             return
         case .stopping:
-            // if our session is stopping, wait until the session is stopped
-            while self.sessionState == .stopping
-            {
-                if (self.isPermanentlyClosed == true)
-                {
-                    return
-                }
-                // TODO: we should consider waiting _asynchronously_ since this could block an important thread otherwise
-                Thread.sleep(forTimeInterval: TimeInterval(0.1))
-            }
-            // re-call this function with the updated state
-            // NOTE: alternatively we could put this sessionstate check in a loop (refactored out into another function); that would avoid potential but extremely unlikely deep recursion
-            self.startSession()
-            return
+            // if our session is stopping, fail
+            fatalError("Cannot re-start a session after the object has been disposed");
         case .stopped:
-            // if our session is stopped, continue; this is the appropriate state to call this function
+            // if our session is stopped, continue; if it's a permanent closure then we'll fail below
             break
         }
 
-        if (self.isPermanentlyClosed == true) {
+        if self.isPermanentlyClosed == true {
             fatalError("Cannot re-start a session after the object has been disposed");
         }
         
         self.sessionState = .starting
         
-        // connect to the telemetry server in the background
-        let mqttClient = self.mqttClient
-        let _ = mqttClient.connect(cleanSession: true, will: nil).always({ result in
-            switch result {
-            case .success(_):
-                // connected
-                MorphicTelemetryClient.mqttClientConnected(mqttClient: mqttClient)
-                // TODO: we might want to consider letting our caller know that we are connected
-            case .failure:
-                // could not connect; call our disconnected callback to try again (after a waiting period)
-                MorphicTelemetryClient.mqttClientDisconnected(mqttClient: mqttClient)
-                // TODO: we might want to consider letting our caller know that we are in a "connecting" or "failure" state
-            }
-        })
+        // connect to the telemetry server asynchronously
+        self.connect()
 
         self.sessionState = .started
     }
 
-    public mutating func endSession() {
+    public func endSession() {
+        switch self.sessionState {
+        case .started:
+            // this is the proper state from which to call this function
+            break
+        case .starting:
+            // wait until the connection is started
+            DispatchQueue.main.async {
+                Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { timer in
+                    // if the state has moved on, re-call this function; otherwise just wait for the next timer callback
+                    if self.sessionState != .starting {
+                        timer.invalidate()
+                        self.endSession()
+                    }
+                }
+            }
+        case .stopping,
+             .stopped:
+            // if our session is already stopping/stopped, just return
+            return
+        }
+
+        self.sessionState = .stopping
+        
         let mqttClient = self.mqttClient
 
         // attempt to shut down the mqttClient gracefully
@@ -228,13 +233,64 @@ public struct MorphicTelemetryClient {
         mqttClient.removeCloseListener(named: "disconnected")
         
         _ = mqttClient.disconnect()
+        self.sessionState = .stopped
     }
     
-    private static func mqttClientConnected(mqttClient: MQTTClient) {
+    private func mqttClientConnected() {
+        if self.isPermanentlyClosed == true {
+            return
+        }
+        
+        self.isConnected = true
+        
+        // start the action message queue (in case there are messages already queued to be sent)
+        self.dequeueAndSendActionMessages()
     }
 
     // NOTE: this callback handles both disconnections (post-successful-connection) and connection attempt failures
-    private static func mqttClientDisconnected(mqttClient: MQTTClient) {
+    private func mqttClientDisconnected() {
+        self.isConnected = false
+
+        if self.isPermanentlyClosed == true {
+            // if our object instance's connection is permanently closed, do not attempt to reconnect
+            return
+        }
+
+        // could not connect; call our disconnected callback to try again (after a waiting period)
+        self.connect(afterInterval: TimeInterval(30.0))
+    }
+    
+    private func connect(afterInterval waitTime: TimeInterval = 0.0) {
+        if self.isPermanentlyClosed == true {
+            // if our object instance's connection is permanently closed, do nothing
+            return
+        }
+        
+        if waitTime > 0 {
+            // re-call our function every 250ms (or so) until the full wait time has elapsed
+            // NOTE: ideally we would measure the elapsed time against "ms since boot" as the Timer fires _at or after_ the specified time
+            DispatchQueue.main.async {
+                Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false) { timer in
+                    let callAgainAfterInterval = waitTime - 0.25
+                    self.connect(afterInterval: callAgainAfterInterval)
+                }
+            }
+            return
+        }
+        
+        // connect after the specified wait interval
+        let _ = mqttClient.connect(cleanSession: true, will: nil).always({ result in
+            switch result {
+            case .success(_):
+                // connected
+                self.mqttClientConnected()
+                // TODO: we might want to consider letting our caller know that we are connected
+            case .failure:
+                // could not connect; call our disconnected callback to try again (after a waiting period)
+                self.connect(afterInterval: TimeInterval(30.0))
+                // TODO: we might want to consider letting our caller know that we are in a "connecting" or "failure" state
+            }
+        })
     }
     
     private struct MqttEventMessage: Codable
@@ -283,19 +339,52 @@ public struct MorphicTelemetryClient {
             osVersion: osVersionAsString,
             eventName: eventName)
 
-        let jsonEncoder = JSONEncoder()
-        jsonEncoder.dateEncodingStrategy = .iso8601
-        
-        let jsonAsData = try! jsonEncoder.encode(actionMessage)
-        let jsonAsString = String(data: jsonAsData, encoding: .utf8)!
-        let payload = ByteBufferAllocator().buffer(string: jsonAsString)
-        
-        // NOTE: we're firing off this message asynchronously; ideally if this were in a queue we would be doing a ".wait()" and watching for errors...and handling each one synchronously!
-        _ = self.mqttClient.publish(
-            to: "telemetry",
-            payload: payload,
-            qos: .atLeastOnce
-        )
+        // add the actionMessage to our outgoing message queue; do this via the same DispatchQueue which dequeues messages from the queue
+        messagesToSendQueue.async {
+            self.messagesToSend.append(actionMessage)
+        }
+
+        // dequeue and send the action message (via the dispatch queue)
+        self.dequeueAndSendActionMessages()
+    }
+    
+    public func dequeueAndSendActionMessages() {
+        messagesToSendQueue.async {
+            if self.isPermanentlyClosed == true {
+                return
+            }
+            if self.isConnected == false {
+                return
+            }
+            
+            while true {
+                // dequeue a message; note that we do this in a dispatch queue so that another message isn't added at the same time
+                if self.messagesToSend.count == 0 {
+                    // if there are no messages to send, exit now
+                    return
+                }
+                let actionMessage = self.messagesToSend.removeFirst()
+                
+                let jsonEncoder = JSONEncoder()
+                jsonEncoder.dateEncodingStrategy = .iso8601
+                
+                let jsonAsData = try! jsonEncoder.encode(actionMessage)
+                let jsonAsString = String(data: jsonAsData, encoding: .utf8)!
+                let payload = ByteBufferAllocator().buffer(string: jsonAsString)
+                
+                do {
+                    _ = try self.mqttClient.publish(
+                        to: "telemetry",
+                        payload: payload,
+                        qos: .atLeastOnce
+                    ).wait()
+                } catch {
+                    // if the message could not be send, re-queue it and exit for now; we'll retry the send at the next connection or with the next telemetry message
+                    self.messagesToSend.insert(actionMessage, at: 0)
+                    return
+                }
+            }
+        }
     }
 
 }
