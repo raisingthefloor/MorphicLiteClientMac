@@ -1,8 +1,6 @@
 #
 # Your Crowdin credentials
 #
-"project_id" : "379797"
-"api_token" : "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJ3UUVxdmhVM3ZMT2EyWGljbVV5VCIsImp0aSI6ImQyOGMyNGMyZThiYThhOGM2Yjc1NzNiZTZlNDEzMTk3MmYxNzU0OWJhMmVjNmJhMGFhODRjMTlkNWM5NTEzNDM1ZWMzZWI1ZjhiNDQ5ZTBlIiwiaWF0IjoxNjMxNDgyMDM2LCJuYmYiOjE2MzE0ODIwMzYsImV4cCI6MTYzNDA3NDAzNiwic3ViIjoiMTQwMzc1MjkiLCJkb21haW4iOm51bGwsInNjb3BlcyI6WyJwcm9qZWN0Il0sImFzc29jaWF0aW9ucyI6WyIqIl0sInNlc3Npb24iOjB9.YObgxc2NnqD9VcFW68abCD4xjl4aCF9AX_IZQuMp12RqUBtRwbKBj0gzm411PnntWzh3Nvl3EfMUXLfIpF4kf_ih2J81fhsDJuHG1VgbraWzlqKBrQF1DzS3N6-pdGhCkXi7opPDg-eocL7XaPGthPJnKHP73WgjfdrTu5nkw3zNk375_7cKjsjflcbKa4pg0M9h0qu1NJQa074jd_PWJ2ETlMKfvfduWe9G5AjgdloBE9jp9zynmds31qD1bgU0Gnx0liY6wXM3kJfpSUnVY46dps3QAzKi1gnnf_7OUmL8iXoztqA63vo2ZGyDl4YMc5FNnjRoCHV1eSzf7QlnQkv9BCb7Nrxq1BdA47g97_72k77-mUpQdaRrqIX0RSQmweJWar6rtDVpiaeTHC7U7BxfUutYwtnsREt4dm7FvxSfY1wQ3l8zJBjkHYaUlikRlrEKct_a7PNHe7umj-sMKk6kVRT7FcyJ_TIaeHT542AIr7B227gh7qzjq9Qyc6CNhHnNzUniobr-cHgDJJ2T6lCXJb_tlpYFt319Akz4yzBvVb9X4YbapQtpA3eGy__KI-6HdJp0YIJQQ0ueOFAupbnVe141yVNpkRaxHmmbazdxdP-0GPGY3EFeBs-hZ8Rji7_XzQHlSWiXCTrytnO4-UU56py3F3RtvxraYduJugE"
 "base_path" : "."
 "base_url" : "https://api.crowdin.com"
 
@@ -17,111 +15,10 @@
 #
 files: [
  {
-  #
-  # Source files filter
-  # e.g. "/resources/en/*.json"
-  #
-  "source" : "*.strings",
-
-  #
-  # Where translations will be placed
-  # e.g. "/resources/%two_letters_code%/%original_file_name%"
-  #
-  "translation" : "",
-
-  #
-  # Files or directories for ignore
-  # e.g. ["/**/?.txt", "/**/[0-9].txt", "/**/*\?*.txt"]
-  #
-  #"ignore" : [],
-
-  #
-  # The dest allows you to specify a file name in Crowdin
-  # e.g. "/messages.json"
-  #
-  #"dest" : "",
-
-  #
-  # File type
-  # e.g. "json"
-  #
-  #"type" : "",
-
-  #
-  # The parameter "update_option" is optional. If it is not set, after the files update the translations for changed strings will be removed. Use to fix typos and for minor changes in the source strings
-  # e.g. "update_as_unapproved" or "update_without_changes"
-  #
-  #"update_option" : "",
-
-  #
-  # Start block (for XML only)
-  #
-
-  #
-  # Defines whether to translate tags attributes.
-  # e.g. 0 or 1  (Default is 1)
-  #
-  # "translate_attributes" : 1,
-
-  #
-  # Defines whether to translate texts placed inside the tags.
-  # e.g. 0 or 1 (Default is 1)
-  #
-  # "translate_content" : 1,
-
-  #
-  # This is an array of strings, where each item is the XPaths to DOM element that should be imported
-  # e.g. ["/content/text", "/content/text[@value]"]
-  #
-  # "translatable_elements" : [],
-
-  #
-  # Defines whether to split long texts into smaller text segments
-  # e.g. 0 or 1 (Default is 1)
-  #
-  # "content_segmentation" : 1,
-
-  #
-  # End block (for XML only)
-  #
-
-  #
-  # Start .properties block
-  #
-
-  #
-  # Defines whether single quote should be escaped by another single quote or backslash in exported translations
-  # e.g. 0 or 1 or 2 or 3 (Default is 3)
-  # 0 - do not escape single quote;
-  # 1 - escape single quote by another single quote;
-  # 2 - escape single quote by backslash;
-  # 3 - escape single quote by another single quote only in strings containing variables ( {0} ).
-  #
-  # "escape_quotes" : 3,
-
-  #
-  # Defines whether any special characters (=, :, ! and #) should be escaped by backslash in exported translations.
-  # e.g. 0 or 1 (Default is 0)
-  # 0 - do not escape special characters
-  # 1 - escape special characters by a backslash
-  #
-  # "escape_special_characters": 0
-  #
-
-  #
-  # End .properties block
-  #
-
-  #
-  # Does the first line contain header?
-  # e.g. true or false
-  #
-  #"first_line_contains_header" : true,
-
-  #
-  # for spreadsheets
-  # e.g. "identifier,source_phrase,context,uk,ru,fr"
-  #
-  # "scheme" : "",
+  "source" : "Morphic/en.lproj/Localizable.strings",
+  "translation" : "Morphic/%two_letters_code%.lproj/%original_file_name%",
+  "dest" : "morphic-macos/Morphic/en.lproj/Localizable.strings",
+  "update_option" : "update_as_unapproved",
+  "first_line_contains_header" : true
  }
 ]
