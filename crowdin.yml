@@ -19,6 +19,5 @@ files: [
   "translation" : "Morphic/%two_letters_code%.lproj/%original_file_name%",
   "dest" : "morphic-macos/Morphic/en.lproj/Localizable.strings",
   "update_option" : "update_as_unapproved",
-  "first_line_contains_header" : true
  }
 ]
