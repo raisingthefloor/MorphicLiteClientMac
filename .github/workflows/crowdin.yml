@@ -18,7 +18,7 @@ jobs:
     - name: crowdin action
       uses: crowdin/github-action@1.3.3
       with:
-        crowdin_branch_name: morphic_macos
+        crowdin_branch_name: morphic-macos
 
         upload_sources: true
         
@@ -27,9 +27,6 @@ jobs:
         
         upload_translations: true
         download_translations: false
-
-        token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
-        project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
