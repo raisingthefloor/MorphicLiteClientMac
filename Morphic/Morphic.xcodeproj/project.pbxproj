@@ -149,6 +149,7 @@
 		9D49D4F225BBAA00001DD452 /* UpdateAvailableWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */; };
 		9D49D4F325BBAA00001DD452 /* UpdateAvailableWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */; };
 		9D4B24E72517068200F0B2E2 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
+		9D4D47C326CBFE2500AC6E3D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9D4D47C526CBFE2500AC6E3D /* Localizable.strings */; };
 		9D77209E252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
 		9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */; };
 		9D82576F24D31C1E00F6E932 /* AboutBoxWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D82576D24D31C1E00F6E932 /* AboutBoxWindowController.xib */; };
@@ -410,6 +411,8 @@
 		9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAvailableWindow.swift; sourceTree = "<group>"; };
 		9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpdateAvailableWindow.xib; sourceTree = "<group>"; };
 		9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsLinkActions.swift; sourceTree = "<group>"; };
+		9D4D47C426CBFE2500AC6E3D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		9D4D47CA26CBFE5400AC6E3D /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicImageUtils.swift; sourceTree = "<group>"; };
 		9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutBoxWindowController.swift; sourceTree = "<group>"; };
 		9D82576D24D31C1E00F6E932 /* AboutBoxWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutBoxWindowController.xib; sourceTree = "<group>"; };
@@ -535,6 +538,7 @@
 		31751B002444DE8900EEDF14 = {
 			isa = PBXGroup;
 			children = (
+				9D4D47C526CBFE2500AC6E3D /* Localizable.strings */,
 				31751B7F2444E11500EEDF14 /* Local.xcconfig */,
 				31751B812444E11600EEDF14 /* Debug.xcconfig */,
 				31751B802444E11600EEDF14 /* Release.xcconfig */,
@@ -971,6 +975,7 @@
 			knownRegions = (
 				en,
 				Base,
+				es,
 			);
 			mainGroup = 31751B002444DE8900EEDF14;
 			packageReferences = (
@@ -1078,6 +1083,7 @@
 				9D3A34AA25ED595900C26902 /* logo_craigslist.pdf in Resources */,
 				9D3A34D425ED696900C26902 /* logo_cbsNews.pdf in Resources */,
 				9D3A34A725ED58FB00C26902 /* logo_amazon.pdf in Resources */,
+				9D4D47C326CBFE2500AC6E3D /* Localizable.strings in Resources */,
 				9D3A34E925ED6FE200C26902 /* logo_npr.pdf in Resources */,
 				314EB6DB24A697C300CF3D48 /* macos.solutions.json in Resources */,
 				9DC0D41525E5F5F200E17D9E /* envelope_open.pdf in Resources */,
@@ -1278,6 +1284,15 @@
 			name = MorphicBarViewController.xib;
 			sourceTree = "<group>";
 		};
+		9D4D47C526CBFE2500AC6E3D /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9D4D47C426CBFE2500AC6E3D /* en */,
+				9D4D47CA26CBFE5400AC6E3D /* es */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		9DD4F4DE251A2FC500ADCC25 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1294,6 +1309,7 @@
 			baseConfigurationReference = 31751B812444E11600EEDF14 /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1355,6 +1371,7 @@
 			baseConfigurationReference = 31751B802444E11600EEDF14 /* Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1419,7 +1436,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.Morphic-Debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1444,7 +1461,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.Morphic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1468,7 +1485,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.MorphicConfigurator-Debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1492,7 +1509,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
