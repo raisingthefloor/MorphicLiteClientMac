@@ -214,6 +214,29 @@ class RegistryManager: ObservableObject
         load = "NO REGISTRY LOADED"
         autoApply = true
         solutions = [SolutionCollection]()
+        word = MorphicWord()
+    }
+    
+    private var word: MorphicWord
+    
+    func testWordRefresh() {
+        WordRibbonUIAutomation.RefreshRibbon()
+    }
+    
+    func testWordEBasic() {
+        word.enableBasicsTab()
+    }
+    
+    func testWordDBasic() {
+        word.disableBasicsTab()
+    }
+    
+    func testWordEEssentials() {
+        word.enableEssentialsTab()
+    }
+    
+    func testWordDEssentials() {
+        word.disableEssentialsTab()
     }
     
     func loadSolution() {

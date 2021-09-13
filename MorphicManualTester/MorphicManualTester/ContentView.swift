@@ -40,6 +40,18 @@ struct ContentView: View {
                     Button(action: registry.loadSolution) {
                         Text("Load a Different Registry")
                     }
+                    Button(action: registry.testWordEBasic) {
+                        Text("EBasic")
+                    }
+                    Button(action: registry.testWordDBasic) {
+                        Text("DBasic")
+                    }
+                    Button(action: registry.testWordEEssentials) {
+                        Text("EEssen")
+                    }
+                    Button(action: registry.testWordDEssentials) {
+                        Text("DEssen")
+                    }
                     .padding([.top, .bottom, .trailing])
                 }
                 .padding(.vertical, 0.0)

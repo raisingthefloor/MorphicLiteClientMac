@@ -56,7 +56,7 @@ public class ApplicationElement: UIElement {
         open(hide: true, completion: completion)
     }
     
-    public func open(hide: Bool, completion: @escaping (_ success: Bool) -> Void) {
+    public func open(hide: Bool, attachOnly: Bool = false, completion: @escaping (_ success: Bool) -> Void) {
         guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleIdentifier) else {
             os_log(.error, log: logger, "Failed to find url for application %{public}s", bundleIdentifier)
             completion(false)
@@ -96,6 +96,10 @@ public class ApplicationElement: UIElement {
         }
         runningApplication = NSRunningApplication.runningApplications(withBundleIdentifier: bundleIdentifier).first
         if runningApplication == nil {
+            if(attachOnly) {
+                completion(false)
+                return
+            }
             MorphicProcess.openProcess(at: url, arguments: [], activate: false, hide: hide) {
                 (runningApplication, error) in
                 DispatchQueue.main.async {

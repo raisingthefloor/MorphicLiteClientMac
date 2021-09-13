@@ -84,6 +84,11 @@
 		9DD4F4A42517B0F200ADCC25 /* LanguageAndRegionPreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F4A32517B0F200ADCC25 /* LanguageAndRegionPreferencesElement.swift */; };
 		9DE45B962517114100209421 /* DisplaysUIAutomation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE45B952517114100209421 /* DisplaysUIAutomation.swift */; };
 		9DE45B9F251712EB00209421 /* DisplaysPreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE45B9E251712EB00209421 /* DisplaysPreferencesElement.swift */; };
+		DF98E14D267D79D0000D730A /* EmptyTemplate.xml in Resources */ = {isa = PBXBuildFile; fileRef = DF98E14B267D79D0000D730A /* EmptyTemplate.xml */; };
+		DF98E14E267D79D0000D730A /* ComponentTemplate.xml in Resources */ = {isa = PBXBuildFile; fileRef = DF98E14C267D79D0000D730A /* ComponentTemplate.xml */; };
+		DFF3F9F7265DEA52001F0430 /* WordRibbonUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF3F9F6265DEA52001F0430 /* WordRibbonUIAutomations.swift */; };
+		DFF3F9FE265F4EC8001F0430 /* WordApplicationElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF3F9FD265F4EC8001F0430 /* WordApplicationElement.swift */; };
+		DFF3FA042669D8F3001F0430 /* MorphicWord.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF3FA032669D8F3001F0430 /* MorphicWord.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -190,6 +195,11 @@
 		9DD4F4A32517B0F200ADCC25 /* LanguageAndRegionPreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageAndRegionPreferencesElement.swift; sourceTree = "<group>"; };
 		9DE45B952517114100209421 /* DisplaysUIAutomation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaysUIAutomation.swift; sourceTree = "<group>"; };
 		9DE45B9E251712EB00209421 /* DisplaysPreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaysPreferencesElement.swift; sourceTree = "<group>"; };
+		DF98E14B267D79D0000D730A /* EmptyTemplate.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = EmptyTemplate.xml; sourceTree = "<group>"; };
+		DF98E14C267D79D0000D730A /* ComponentTemplate.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ComponentTemplate.xml; sourceTree = "<group>"; };
+		DFF3F9F6265DEA52001F0430 /* WordRibbonUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordRibbonUIAutomations.swift; sourceTree = "<group>"; };
+		DFF3F9FD265F4EC8001F0430 /* WordApplicationElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordApplicationElement.swift; sourceTree = "<group>"; };
+		DFF3FA032669D8F3001F0430 /* MorphicWord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicWord.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -252,6 +262,7 @@
 				9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */,
 				31F9AEE224A7F7EA0026EBDA /* VoiceOverUIAutomations.swift */,
 				31F9AEE424A803B90026EBDA /* ZoomUIAutomations.swift */,
+				DFF3F9F6265DEA52001F0430 /* WordRibbonUIAutomations.swift */,
 			);
 			path = Automations;
 			sourceTree = "<group>";
@@ -325,6 +336,7 @@
 		31A0A5792405967600166668 /* MorphicSettings */ = {
 			isa = PBXGroup;
 			children = (
+				DFF3FA022669D8CE001F0430 /* Office */,
 				9D0AF73524A0FB49007E177E /* AccessibilityUI */,
 				314EB6DC24A6A65F00CF3D48 /* Automations */,
 				31A16BC72423E86C0081A72C /* Audio */,
@@ -438,6 +450,7 @@
 				3137AC4524B0FC0D00CE3808 /* Menus */,
 				315EECA024A5839F0039C61D /* Tables */,
 				315EECA324A583C00039C61D /* SystemPrefs */,
+				DFF3F9FC265F4E98001F0430 /* OtherApps */,
 			);
 			path = AccessibilityUI;
 			sourceTree = "<group>";
@@ -460,6 +473,24 @@
 				9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */,
 			);
 			path = PropertyList;
+			sourceTree = "<group>";
+		};
+		DFF3F9FC265F4E98001F0430 /* OtherApps */ = {
+			isa = PBXGroup;
+			children = (
+				DFF3F9FD265F4EC8001F0430 /* WordApplicationElement.swift */,
+			);
+			path = OtherApps;
+			sourceTree = "<group>";
+		};
+		DFF3FA022669D8CE001F0430 /* Office */ = {
+			isa = PBXGroup;
+			children = (
+				DF98E14C267D79D0000D730A /* ComponentTemplate.xml */,
+				DF98E14B267D79D0000D730A /* EmptyTemplate.xml */,
+				DFF3FA032669D8F3001F0430 /* MorphicWord.swift */,
+			);
+			path = Office;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -561,6 +592,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF98E14D267D79D0000D730A /* EmptyTemplate.xml in Resources */,
+				DF98E14E267D79D0000D730A /* ComponentTemplate.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -595,6 +628,7 @@
 				31F9AEEC24AA54BF0026EBDA /* PopUpButtonElement.swift in Sources */,
 				31F9AEE524A803B90026EBDA /* ZoomUIAutomations.swift in Sources */,
 				9DD4F4A42517B0F200ADCC25 /* LanguageAndRegionPreferencesElement.swift in Sources */,
+				DFF3F9FE265F4EC8001F0430 /* WordApplicationElement.swift in Sources */,
 				312DBFF024A27BCF002FB951 /* Solution.swift in Sources */,
 				31A16BCB2423E86C0081A72C /* MorphicLaunchDaemonsAndAgents.swift in Sources */,
 				314EB6E224A6B34300CF3D48 /* TabElement.swift in Sources */,
@@ -626,6 +660,7 @@
 				9DD4F49A2517AF1600ADCC25 /* KeyboardPreferencesElement.swift in Sources */,
 				9D4B24BF25143D0000F0B2E2 /* GeneralUIAutomations.swift in Sources */,
 				31CE56E22448C8F700A52A7B /* SettingHandler.swift in Sources */,
+				DFF3FA042669D8F3001F0430 /* MorphicWord.swift in Sources */,
 				315EEC8724A536A60039C61D /* TabGroupElement.swift in Sources */,
 				9DD22FBA24DCB8B800C2FA52 /* SpeechUIAutomations.swift in Sources */,
 				9DE45B962517114100209421 /* DisplaysUIAutomation.swift in Sources */,
@@ -639,6 +674,7 @@
 				312DBFFB24A2C66A002FB951 /* ApplySession.swift in Sources */,
 				314EB6DE24A6A67700CF3D48 /* UIAutomation.swift in Sources */,
 				9DE45B9F251712EB00209421 /* DisplaysPreferencesElement.swift in Sources */,
+				DFF3F9F7265DEA52001F0430 /* WordRibbonUIAutomations.swift in Sources */,
 				312DBFF324A28556002FB951 /* DefaultsReadUIWriteSettingHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
