@@ -1,4 +1,4 @@
-name: Upload to Crowdin
+name: Download from Crowdin
 
 on: [ workflow_dispatch ]
 
