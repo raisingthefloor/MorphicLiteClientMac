@@ -3,7 +3,8 @@ name: Download from Crowdin
 on: [ workflow_dispatch ]
 
 permissions:
-  pull-requests: none
+  contents: read
+  pull-requests: read|write
 
 jobs:
   synchronize-with-crowdin:
