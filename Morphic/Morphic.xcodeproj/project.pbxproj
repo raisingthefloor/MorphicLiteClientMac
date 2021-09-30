@@ -66,6 +66,12 @@
 		31E1E185244683DC009C4092 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E1E184244683DC009C4092 /* Theme.swift */; };
 		31E1E187244792D9009C4092 /* DefaultPreferences.json in Resources */ = {isa = PBXBuildFile; fileRef = 31E1E186244792D9009C4092 /* DefaultPreferences.json */; };
 		31E1E188244794EF009C4092 /* MorphicBarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31E1E18A244794EF009C4092 /* MorphicBarViewController.xib */; };
+		9D194DE327041D7C00D4BC36 /* logo_msoutlook.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D194DDD27041D7C00D4BC36 /* logo_msoutlook.pdf */; };
+		9D194DE427041D7C00D4BC36 /* logo_mspowerpoint.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D194DDE27041D7C00D4BC36 /* logo_mspowerpoint.pdf */; };
+		9D194DE527041D7C00D4BC36 /* logo_msonenote.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D194DDF27041D7C00D4BC36 /* logo_msonenote.pdf */; };
+		9D194DE627041D7C00D4BC36 /* logo_msword.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D194DE027041D7C00D4BC36 /* logo_msword.pdf */; };
+		9D194DE727041D7C00D4BC36 /* logo_msexcel.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D194DE127041D7C00D4BC36 /* logo_msexcel.pdf */; };
+		9D194DE827041D7C00D4BC36 /* logo_msteams.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D194DE227041D7C00D4BC36 /* logo_msteams.pdf */; };
 		9D1FA1CD251A317F0008559D /* MorphicLauncher.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9DD4F4D8251A2FC400ADCC25 /* MorphicLauncher.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9D1FA1CF251A31990008559D /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D1FA1CE251A31990008559D /* ServiceManagement.framework */; };
 		9D2A5AB8259B815800ECD513 /* ConfigurableFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */; };
@@ -329,6 +335,12 @@
 		31E1E184244683DC009C4092 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		31E1E186244792D9009C4092 /* DefaultPreferences.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = DefaultPreferences.json; sourceTree = "<group>"; };
 		31E1E189244794EF009C4092 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MorphicBarViewController.xib; sourceTree = "<group>"; };
+		9D194DDD27041D7C00D4BC36 /* logo_msoutlook.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_msoutlook.pdf; sourceTree = "<group>"; };
+		9D194DDE27041D7C00D4BC36 /* logo_mspowerpoint.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_mspowerpoint.pdf; sourceTree = "<group>"; };
+		9D194DDF27041D7C00D4BC36 /* logo_msonenote.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_msonenote.pdf; sourceTree = "<group>"; };
+		9D194DE027041D7C00D4BC36 /* logo_msword.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_msword.pdf; sourceTree = "<group>"; };
+		9D194DE127041D7C00D4BC36 /* logo_msexcel.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_msexcel.pdf; sourceTree = "<group>"; };
+		9D194DE227041D7C00D4BC36 /* logo_msteams.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_msteams.pdf; sourceTree = "<group>"; };
 		9D1FA1CE251A31990008559D /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
 		9D2593F2250EA81000C38DA3 /* MorphicRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicRelease.entitlements; sourceTree = "<group>"; };
 		9D2593F3250EA87E00C38DA3 /* MorphicConfiguratorRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicConfiguratorRelease.entitlements; sourceTree = "<group>"; };
@@ -711,6 +723,12 @@
 				9D3A34B825ED5B1300C26902 /* logo_macys.pdf */,
 				9D2C144F25EC611B00D66DAD /* logo_mail.jpg */,
 				9DC66E4626294EB20049AAEC /* logo_msedge.pdf */,
+				9D194DE127041D7C00D4BC36 /* logo_msexcel.pdf */,
+				9D194DDF27041D7C00D4BC36 /* logo_msonenote.pdf */,
+				9D194DDD27041D7C00D4BC36 /* logo_msoutlook.pdf */,
+				9D194DDE27041D7C00D4BC36 /* logo_mspowerpoint.pdf */,
+				9D194DE227041D7C00D4BC36 /* logo_msteams.pdf */,
+				9D194DE027041D7C00D4BC36 /* logo_msword.pdf */,
 				9D3A34E525ED6FD800C26902 /* logo_nbcNews.pdf */,
 				9D3A347D25ED4FD400C26902 /* logo_netflix.pdf */,
 				9D2C145B25EC67BE00D66DAD /* logo_newYorkTimes.pdf */,
@@ -1005,6 +1023,7 @@
 				9D2C143525EC5E0A00D66DAD /* logo_instagram.pdf in Resources */,
 				9D2C145325EC664100D66DAD /* logo_cnn.pdf in Resources */,
 				9D2C144D25EC60DF00D66DAD /* logo_yahoomail.pdf in Resources */,
+				9D194DE527041D7C00D4BC36 /* logo_msonenote.pdf in Resources */,
 				9D3A34BC25ED5B6D00C26902 /* logo_target.pdf in Resources */,
 				9D3A347E25ED4FD400C26902 /* logo_netflix.pdf in Resources */,
 				9DC0D41B25E5F72100E17D9E /* envelope_outline.pdf in Resources */,
@@ -1020,6 +1039,7 @@
 				31751B822444E11600EEDF14 /* Local.xcconfig in Resources */,
 				9DA46E7B25CA743B006BEAAC /* PermissionsGuidanceWindow.xib in Resources */,
 				9D2C142225EC1C1C00D66DAD /* favicon_foxNews.pdf in Resources */,
+				9D194DE327041D7C00D4BC36 /* logo_msoutlook.pdf in Resources */,
 				9D2C143E25EC5E5400D66DAD /* logo_tumblr.pdf in Resources */,
 				9D3A34F525ED716500C26902 /* logo_wsj.pdf in Resources */,
 				9D3A34D725ED697300C26902 /* logo_cnbc.pdf in Resources */,
@@ -1036,6 +1056,7 @@
 				9D2C146325EC686400D66DAD /* logo_yahoo.pdf in Resources */,
 				9D2C144725EC60D300D66DAD /* logo_icloud.pdf in Resources */,
 				31751B3C2444DFAA00EEDF14 /* Main.xib in Resources */,
+				9D194DE827041D7C00D4BC36 /* logo_msteams.pdf in Resources */,
 				9D49D4F325BBAA00001DD452 /* UpdateAvailableWindow.xib in Resources */,
 				9D2C144425EC60CF00D66DAD /* logo_gmail.pdf in Resources */,
 				9D3A34C525ED5DB300C26902 /* logo_abcNews.pdf in Resources */,
@@ -1055,6 +1076,7 @@
 				9D3A34F225ED70F300C26902 /* logo_theHill.jpeg in Resources */,
 				9D3A349525ED548900C26902 /* logo_hulu.pdf in Resources */,
 				9D2C145925EC678200D66DAD /* logo_googleNews.pdf in Resources */,
+				9D194DE427041D7C00D4BC36 /* logo_mspowerpoint.pdf in Resources */,
 				9D3A348F25ED53EA00C26902 /* logo_deezer.pdf in Resources */,
 				9D2C146F25EC69A500D66DAD /* logo_onedrive.pdf in Resources */,
 				9D2C142D25EC5CD600D66DAD /* logo_pinterest.pdf in Resources */,
@@ -1083,9 +1105,11 @@
 				9D3A34AA25ED595900C26902 /* logo_craigslist.pdf in Resources */,
 				9D3A34D425ED696900C26902 /* logo_cbsNews.pdf in Resources */,
 				9D3A34A725ED58FB00C26902 /* logo_amazon.pdf in Resources */,
+				9D194DE727041D7C00D4BC36 /* logo_msexcel.pdf in Resources */,
 				9D4D47C326CBFE2500AC6E3D /* Localizable.strings in Resources */,
 				9D3A34E925ED6FE200C26902 /* logo_npr.pdf in Resources */,
 				314EB6DB24A697C300CF3D48 /* macos.solutions.json in Resources */,
+				9D194DE627041D7C00D4BC36 /* logo_msword.pdf in Resources */,
 				9DC0D41525E5F5F200E17D9E /* envelope_open.pdf in Resources */,
 				9D3A348125ED515900C26902 /* logo_spotify.pdf in Resources */,
 				9D3A34BF25ED5BB900C26902 /* logo_walmart.pdf in Resources */,
