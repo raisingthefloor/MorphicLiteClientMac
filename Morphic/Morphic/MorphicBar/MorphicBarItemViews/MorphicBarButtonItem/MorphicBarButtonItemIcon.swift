@@ -74,6 +74,12 @@ enum MorphicBarButtonItemIcon: String {
     case macys = "macys"
 //    case mail = "mail"
     case msedge = "msedge"
+    case msexcel = "msexcel"
+    case msonenote = "msonenote"
+    case msoutlook = "msoutlook"
+    case mspowerpoint = "mspowerpoint"
+    case msteams = "msteams"
+    case msword = "msword"
     case nbcNews = "nbcnews"
     case netflix = "netflix"
     case newspaper = "news$newspaper"
@@ -230,6 +236,18 @@ enum MorphicBarButtonItemIcon: String {
 //            return "logo_mail"
         case "msedge":
             return "logo_msedge"
+        case "msexcel":
+            return "logo_msexcel"
+        case "msonenote":
+            return "logo_msonenote"
+        case "msoutlook":
+            return "logo_msoutlook"
+        case "mspowerpoint":
+            return "logo_mspowerpoint"
+        case "msteams":
+            return "logo_msteams"
+        case "msword":
+            return "logo_msword"
         case "nbcnews":
             return "logo_nbcNews"
         case "netflix":
