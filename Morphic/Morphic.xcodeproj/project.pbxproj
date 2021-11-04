@@ -153,7 +153,6 @@
 		9D3B9EDF26BC7BEB00C9F174 /* MorphicTelemetry.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D3B9EDD26BC7BEB00C9F174 /* MorphicTelemetry.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9D49D4DD25BBA93B001DD452 /* Autoupdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */; };
 		9D49D4F225BBAA00001DD452 /* UpdateAvailableWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */; };
-		9D49D4F325BBAA00001DD452 /* UpdateAvailableWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */; };
 		9D4B24E72517068200F0B2E2 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
 		9D4D47C326CBFE2500AC6E3D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9D4D47C526CBFE2500AC6E3D /* Localizable.strings */; };
 		9D77209E252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
@@ -164,8 +163,6 @@
 		9D94BB22262A046400BF4992 /* logo_opera.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB21262A046400BF4992 /* logo_opera.pdf */; };
 		9D94BB25262A046A00BF4992 /* logo_firefox.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB24262A046A00BF4992 /* logo_firefox.pdf */; };
 		9D94BB28262A047100BF4992 /* logo_chrome.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB27262A047100BF4992 /* logo_chrome.pdf */; };
-		9DA46E7925CA743B006BEAAC /* PermissionsSuccessWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DA46E7225CA743B006BEAAC /* PermissionsSuccessWindow.xib */; };
-		9DA46E7B25CA743B006BEAAC /* PermissionsGuidanceWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DA46E7325CA743B006BEAAC /* PermissionsGuidanceWindow.xib */; };
 		9DA46E7D25CA743B006BEAAC /* PermissionsGuidanceSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7425CA743B006BEAAC /* PermissionsGuidanceSystem.swift */; };
 		9DA46E8125CA743B006BEAAC /* PermissionsSuccessWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7625CA743B006BEAAC /* PermissionsSuccessWindowController.swift */; };
 		9DA46E8325CA743B006BEAAC /* PermissionsGuidanceWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7725CA743B006BEAAC /* PermissionsGuidanceWindowController.swift */; };
@@ -190,9 +187,12 @@
 		9DD4F4E0251A2FC500ADCC25 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DD4F4DE251A2FC500ADCC25 /* MainMenu.xib */; };
 		9DDAE61025094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DDAE60F25094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift */; };
 		9DE112E72522243200591E08 /* CopySettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE112E52522243100591E08 /* CopySettingsWindowController.swift */; };
-		9DE112E82522243200591E08 /* CopySettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DE112E62522243200591E08 /* CopySettingsWindow.xib */; };
 		9DFB6E012624B7E500AD39D1 /* logo_calculator.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DFB6E002624B7E500AD39D1 /* logo_calculator.pdf */; };
 		CEB8708F273369CF002E7601 /* AboutBoxWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB87091273369CF002E7601 /* AboutBoxWindowController.xib */; };
+		CEC23E6D2733870500E8D032 /* PermissionsSuccessWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEC23E6F2733870500E8D032 /* PermissionsSuccessWindow.xib */; };
+		CEC23E742733870C00E8D032 /* PermissionsGuidanceWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEC23E762733870C00E8D032 /* PermissionsGuidanceWindow.xib */; };
+		CEC23E7B2733872700E8D032 /* UpdateAvailableWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEC23E7D2733872700E8D032 /* UpdateAvailableWindow.xib */; };
+		CEC23E822733873400E8D032 /* CopySettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEC23E842733873400E8D032 /* CopySettingsWindow.xib */; };
 		DF35CECA2541BCD200C3FF77 /* MorphicBarTrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */; };
 /* End PBXBuildFile section */
 
@@ -322,7 +322,6 @@
 		31C12CBF24B143A000B617A8 /* QuickHelpStepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickHelpStepViewController.swift; sourceTree = "<group>"; };
 		31C12CC024B143A000B617A8 /* QuickHelpStepViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QuickHelpStepViewController.xib; sourceTree = "<group>"; };
 		31C12CC324B1441E00B617A8 /* PageControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageControl.swift; sourceTree = "<group>"; };
-		31CE56E92448E27400A52A7B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/MorphicBarViewController.strings; sourceTree = "<group>"; };
 		31CE56F2244A3CDB00A52A7B /* QuickHelpWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickHelpWindow.swift; sourceTree = "<group>"; };
 		31CE56F4244A407000A52A7B /* QuickHelpViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QuickHelpViewController.xib; sourceTree = "<group>"; };
 		31CE56F6244A408000A52A7B /* QuickHelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickHelpViewController.swift; sourceTree = "<group>"; };
@@ -420,7 +419,6 @@
 		9D3B9EDD26BC7BEB00C9F174 /* MorphicTelemetry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicTelemetry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Autoupdater.swift; sourceTree = "<group>"; };
 		9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAvailableWindow.swift; sourceTree = "<group>"; };
-		9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpdateAvailableWindow.xib; sourceTree = "<group>"; };
 		9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsLinkActions.swift; sourceTree = "<group>"; };
 		9D4D47CA26CBFE5400AC6E3D /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicImageUtils.swift; sourceTree = "<group>"; };
@@ -432,8 +430,6 @@
 		9D94BB24262A046A00BF4992 /* logo_firefox.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_firefox.pdf; sourceTree = "<group>"; };
 		9D94BB27262A047100BF4992 /* logo_chrome.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_chrome.pdf; sourceTree = "<group>"; };
 		9D9DF072251DAE460073F8FB /* MorphicLauncherRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = MorphicLauncherRelease.entitlements; sourceTree = "<group>"; };
-		9DA46E7225CA743B006BEAAC /* PermissionsSuccessWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PermissionsSuccessWindow.xib; path = "Permissions Guidance/PermissionsSuccessWindow.xib"; sourceTree = "<group>"; };
-		9DA46E7325CA743B006BEAAC /* PermissionsGuidanceWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PermissionsGuidanceWindow.xib; path = "Permissions Guidance/PermissionsGuidanceWindow.xib"; sourceTree = "<group>"; };
 		9DA46E7425CA743B006BEAAC /* PermissionsGuidanceSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionsGuidanceSystem.swift; path = "Permissions Guidance/PermissionsGuidanceSystem.swift"; sourceTree = "<group>"; };
 		9DA46E7625CA743B006BEAAC /* PermissionsSuccessWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionsSuccessWindowController.swift; path = "Permissions Guidance/PermissionsSuccessWindowController.swift"; sourceTree = "<group>"; };
 		9DA46E7725CA743B006BEAAC /* PermissionsGuidanceWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionsGuidanceWindowController.swift; path = "Permissions Guidance/PermissionsGuidanceWindowController.swift"; sourceTree = "<group>"; };
@@ -461,7 +457,6 @@
 		9DD4F4E2251A2FC500ADCC25 /* MorphicLauncherDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicLauncherDebug.entitlements; sourceTree = "<group>"; };
 		9DDAE60F25094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarSegmentedButtonItemView.swift; sourceTree = "<group>"; };
 		9DE112E52522243100591E08 /* CopySettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopySettingsWindowController.swift; sourceTree = "<group>"; };
-		9DE112E62522243200591E08 /* CopySettingsWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CopySettingsWindow.xib; sourceTree = "<group>"; };
 		9DFB6E002624B7E500AD39D1 /* logo_calculator.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_calculator.pdf; sourceTree = "<group>"; };
 		CEB8709427336AE4002E7601 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CEC23E602733846100E8D032 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AboutBoxWindowController.xib; sourceTree = "<group>"; };
@@ -469,6 +464,18 @@
 		CEC23E682733853E00E8D032 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AboutBoxWindowController.strings; sourceTree = "<group>"; };
 		CEC23E6A2733867400E8D032 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		CEC23E6C2733867500E8D032 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
+		CEC23E6E2733870500E8D032 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PermissionsSuccessWindow.xib; sourceTree = "<group>"; };
+		CEC23E712733870700E8D032 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PermissionsSuccessWindow.strings; sourceTree = "<group>"; };
+		CEC23E732733870700E8D032 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/PermissionsSuccessWindow.strings; sourceTree = "<group>"; };
+		CEC23E752733870C00E8D032 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PermissionsGuidanceWindow.xib; sourceTree = "<group>"; };
+		CEC23E782733870F00E8D032 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PermissionsGuidanceWindow.strings; sourceTree = "<group>"; };
+		CEC23E7A2733871000E8D032 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/PermissionsGuidanceWindow.strings; sourceTree = "<group>"; };
+		CEC23E7C2733872700E8D032 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/UpdateAvailableWindow.xib; sourceTree = "<group>"; };
+		CEC23E7F2733872900E8D032 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/UpdateAvailableWindow.strings; sourceTree = "<group>"; };
+		CEC23E812733872A00E8D032 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/UpdateAvailableWindow.strings; sourceTree = "<group>"; };
+		CEC23E832733873400E8D032 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CopySettingsWindow.xib; sourceTree = "<group>"; };
+		CEC23E862733873800E8D032 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/CopySettingsWindow.strings; sourceTree = "<group>"; };
+		CEC23E882733873800E8D032 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CopySettingsWindow.strings; sourceTree = "<group>"; };
 		DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarTrayView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -790,7 +797,7 @@
 			children = (
 				9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */,
 				9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */,
-				9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */,
+				CEC23E7D2733872700E8D032 /* UpdateAvailableWindow.xib */,
 			);
 			path = AutoUpdate;
 			sourceTree = "<group>";
@@ -809,9 +816,9 @@
 			isa = PBXGroup;
 			children = (
 				9DA46E7425CA743B006BEAAC /* PermissionsGuidanceSystem.swift */,
-				9DA46E7325CA743B006BEAAC /* PermissionsGuidanceWindow.xib */,
+				CEC23E762733870C00E8D032 /* PermissionsGuidanceWindow.xib */,
 				9DA46E7725CA743B006BEAAC /* PermissionsGuidanceWindowController.swift */,
-				9DA46E7225CA743B006BEAAC /* PermissionsSuccessWindow.xib */,
+				CEC23E6F2733870500E8D032 /* PermissionsSuccessWindow.xib */,
 				9DA46E7625CA743B006BEAAC /* PermissionsSuccessWindowController.swift */,
 			);
 			name = "Permissions Guidance";
@@ -877,7 +884,7 @@
 			isa = PBXGroup;
 			children = (
 				9DE112E52522243100591E08 /* CopySettingsWindowController.swift */,
-				9DE112E62522243200591E08 /* CopySettingsWindow.xib */,
+				CEC23E842733873400E8D032 /* CopySettingsWindow.xib */,
 			);
 			path = CopySettingsWindow;
 			sourceTree = "<group>";
@@ -1037,10 +1044,10 @@
 				9DC0D40825E5F2ED00E17D9E /* envelope_open_text.pdf in Resources */,
 				9D2C145025EC611B00D66DAD /* logo_mail.jpg in Resources */,
 				9D2C146625EC68AF00D66DAD /* logo_box.pdf in Resources */,
-				9DA46E7925CA743B006BEAAC /* PermissionsSuccessWindow.xib in Resources */,
+				CEC23E6D2733870500E8D032 /* PermissionsSuccessWindow.xib in Resources */,
 				9D2C142C25EC5CD600D66DAD /* logo_twitter.pdf in Resources */,
 				31751B822444E11600EEDF14 /* Local.xcconfig in Resources */,
-				9DA46E7B25CA743B006BEAAC /* PermissionsGuidanceWindow.xib in Resources */,
+				CEC23E742733870C00E8D032 /* PermissionsGuidanceWindow.xib in Resources */,
 				9D2C142225EC1C1C00D66DAD /* favicon_foxNews.pdf in Resources */,
 				9D194DE327041D7C00D4BC36 /* logo_msoutlook.pdf in Resources */,
 				9D2C143E25EC5E5400D66DAD /* logo_tumblr.pdf in Resources */,
@@ -1060,7 +1067,7 @@
 				9D2C144725EC60D300D66DAD /* logo_icloud.pdf in Resources */,
 				31751B3C2444DFAA00EEDF14 /* Main.xib in Resources */,
 				9D194DE827041D7C00D4BC36 /* logo_msteams.pdf in Resources */,
-				9D49D4F325BBAA00001DD452 /* UpdateAvailableWindow.xib in Resources */,
+				CEC23E7B2733872700E8D032 /* UpdateAvailableWindow.xib in Resources */,
 				9D2C144425EC60CF00D66DAD /* logo_gmail.pdf in Resources */,
 				9D3A34C525ED5DB300C26902 /* logo_abcNews.pdf in Resources */,
 				9D2C146C25EC699C00D66DAD /* logo_googleDrive.pdf in Resources */,
@@ -1070,7 +1077,7 @@
 				9D2C144125EC60CA00D66DAD /* logo_aolOld.pdf in Resources */,
 				9D3A34B925ED5B1300C26902 /* logo_macys.pdf in Resources */,
 				9D3A34E025ED6AA700C26902 /* logo_huffpost.pdf in Resources */,
-				9DE112E82522243200591E08 /* CopySettingsWindow.xib in Resources */,
+				CEC23E822733873400E8D032 /* CopySettingsWindow.xib in Resources */,
 				9D3A34DD25ED6A9D00C26902 /* logo_forbes.pdf in Resources */,
 				31E1E188244794EF009C4092 /* MorphicBarViewController.xib in Resources */,
 				9D94BB28262A047100BF4992 /* logo_chrome.pdf in Resources */,
@@ -1308,7 +1315,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				31E1E189244794EF009C4092 /* Base */,
-				31CE56E92448E27400A52A7B /* en */,
 			);
 			name = MorphicBarViewController.xib;
 			sourceTree = "<group>";
@@ -1338,6 +1344,48 @@
 				CEC23E682733853E00E8D032 /* en */,
 			);
 			name = AboutBoxWindowController.xib;
+			sourceTree = "<group>";
+		};
+		CEC23E6F2733870500E8D032 /* PermissionsSuccessWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEC23E6E2733870500E8D032 /* Base */,
+				CEC23E712733870700E8D032 /* en */,
+				CEC23E732733870700E8D032 /* es */,
+			);
+			name = PermissionsSuccessWindow.xib;
+			path = "Permissions Guidance";
+			sourceTree = "<group>";
+		};
+		CEC23E762733870C00E8D032 /* PermissionsGuidanceWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEC23E752733870C00E8D032 /* Base */,
+				CEC23E782733870F00E8D032 /* en */,
+				CEC23E7A2733871000E8D032 /* es */,
+			);
+			name = PermissionsGuidanceWindow.xib;
+			path = "Permissions Guidance";
+			sourceTree = "<group>";
+		};
+		CEC23E7D2733872700E8D032 /* UpdateAvailableWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEC23E7C2733872700E8D032 /* Base */,
+				CEC23E7F2733872900E8D032 /* es */,
+				CEC23E812733872A00E8D032 /* en */,
+			);
+			name = UpdateAvailableWindow.xib;
+			sourceTree = "<group>";
+		};
+		CEC23E842733873400E8D032 /* CopySettingsWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEC23E832733873400E8D032 /* Base */,
+				CEC23E862733873800E8D032 /* es */,
+				CEC23E882733873800E8D032 /* en */,
+			);
+			name = CopySettingsWindow.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
