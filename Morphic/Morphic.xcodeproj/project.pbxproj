@@ -158,7 +158,6 @@
 		9D4D47C326CBFE2500AC6E3D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9D4D47C526CBFE2500AC6E3D /* Localizable.strings */; };
 		9D77209E252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
 		9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */; };
-		9D82576F24D31C1E00F6E932 /* AboutBoxWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D82576D24D31C1E00F6E932 /* AboutBoxWindowController.xib */; };
 		9D82577124D353C800F6E932 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82577024D353C800F6E932 /* HyperlinkTextField.swift */; };
 		9D8CEB132507AECF001276E4 /* MorphicBarButtonItemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */; };
 		9D8CEB152507AED7001276E4 /* MorphicBarButtonItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */; };
@@ -193,7 +192,7 @@
 		9DE112E72522243200591E08 /* CopySettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE112E52522243100591E08 /* CopySettingsWindowController.swift */; };
 		9DE112E82522243200591E08 /* CopySettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DE112E62522243200591E08 /* CopySettingsWindow.xib */; };
 		9DFB6E012624B7E500AD39D1 /* logo_calculator.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DFB6E002624B7E500AD39D1 /* logo_calculator.pdf */; };
-		9DE45BAA25171C6000209421 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
+		CEB8708F273369CF002E7601 /* AboutBoxWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB87091273369CF002E7601 /* AboutBoxWindowController.xib */; };
 		DF35CECA2541BCD200C3FF77 /* MorphicBarTrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */; };
 /* End PBXBuildFile section */
 
@@ -423,11 +422,9 @@
 		9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAvailableWindow.swift; sourceTree = "<group>"; };
 		9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpdateAvailableWindow.xib; sourceTree = "<group>"; };
 		9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsLinkActions.swift; sourceTree = "<group>"; };
-		9D4D47C426CBFE2500AC6E3D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9D4D47CA26CBFE5400AC6E3D /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicImageUtils.swift; sourceTree = "<group>"; };
 		9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutBoxWindowController.swift; sourceTree = "<group>"; };
-		9D82576D24D31C1E00F6E932 /* AboutBoxWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutBoxWindowController.xib; sourceTree = "<group>"; };
 		9D82577024D353C800F6E932 /* HyperlinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperlinkTextField.swift; sourceTree = "<group>"; };
 		9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemIcon.swift; sourceTree = "<group>"; };
 		9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemView.swift; sourceTree = "<group>"; };
@@ -466,6 +463,10 @@
 		9DE112E52522243100591E08 /* CopySettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopySettingsWindowController.swift; sourceTree = "<group>"; };
 		9DE112E62522243200591E08 /* CopySettingsWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CopySettingsWindow.xib; sourceTree = "<group>"; };
 		9DFB6E002624B7E500AD39D1 /* logo_calculator.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_calculator.pdf; sourceTree = "<group>"; };
+		CEB8709427336AE4002E7601 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CEC23E602733846100E8D032 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AboutBoxWindowController.xib; sourceTree = "<group>"; };
+		CEC23E62273384E600E8D032 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/AboutBoxWindowController.strings; sourceTree = "<group>"; };
+		CEC23E682733853E00E8D032 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AboutBoxWindowController.strings; sourceTree = "<group>"; };
 		DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarTrayView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -796,7 +797,7 @@
 			isa = PBXGroup;
 			children = (
 				9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */,
-				9D82576D24D31C1E00F6E932 /* AboutBoxWindowController.xib */,
+				CEB87091273369CF002E7601 /* AboutBoxWindowController.xib */,
 				9D82577024D353C800F6E932 /* HyperlinkTextField.swift */,
 			);
 			path = "About Box";
@@ -1045,7 +1046,7 @@
 				9D3A34D725ED697300C26902 /* logo_cnbc.pdf in Resources */,
 				9D2C143B25EC5E3B00D66DAD /* logo_reddit.pdf in Resources */,
 				9D3A34E625ED6FD800C26902 /* logo_nbcNews.pdf in Resources */,
-				9D82576F24D31C1E00F6E932 /* AboutBoxWindowController.xib in Resources */,
+				CEB8708F273369CF002E7601 /* AboutBoxWindowController.xib in Resources */,
 				9D3A348B25ED52E100C26902 /* logo_itunes.pdf in Resources */,
 				9D3A34D125ED68EE00C26902 /* logo_bloomberg.pdf in Resources */,
 				9D3A348525ED51D300C26902 /* logo_youtube.pdf in Resources */,
@@ -1311,8 +1312,8 @@
 		9D4D47C526CBFE2500AC6E3D /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				9D4D47C426CBFE2500AC6E3D /* en */,
 				9D4D47CA26CBFE5400AC6E3D /* es */,
+				CEB8709427336AE4002E7601 /* en */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1323,6 +1324,16 @@
 				9DD4F4DF251A2FC500ADCC25 /* Base */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		CEB87091273369CF002E7601 /* AboutBoxWindowController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEC23E602733846100E8D032 /* Base */,
+				CEC23E62273384E600E8D032 /* es */,
+				CEC23E682733853E00E8D032 /* en */,
+			);
+			name = AboutBoxWindowController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -1460,7 +1471,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 1.5;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.Morphic-Debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1485,7 +1496,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 1.5;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.Morphic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1509,7 +1520,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 1.5;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.MorphicConfigurator-Debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1533,7 +1544,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 1.5;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
 				PRODUCT_NAME = "$(TARGET_NAME)";

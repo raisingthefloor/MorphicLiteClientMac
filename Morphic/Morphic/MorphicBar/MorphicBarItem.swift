@@ -1577,15 +1577,13 @@ class MorphicBarControlItem: MorphicBarItem {
 fileprivate struct LocalizedStrings {
     
     var prefix: String
-    var table = "MorphicBarViewController"
-    var bundle = Bundle.main
     
     init(prefix: String) {
         self.prefix = prefix
     }
     
     func string(for suffix: String) -> String {
-        return bundle.localizedString(forKey: prefix + "." + suffix, value: nil, table: table)
+        return Bundle.main.localizedString(forKey: prefix + "." + suffix, value: nil, table: nil)
     }
 }
 
