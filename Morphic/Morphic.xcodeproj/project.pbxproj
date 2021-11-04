@@ -467,6 +467,8 @@
 		CEC23E602733846100E8D032 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AboutBoxWindowController.xib; sourceTree = "<group>"; };
 		CEC23E62273384E600E8D032 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/AboutBoxWindowController.strings; sourceTree = "<group>"; };
 		CEC23E682733853E00E8D032 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AboutBoxWindowController.strings; sourceTree = "<group>"; };
+		CEC23E6A2733867400E8D032 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
+		CEC23E6C2733867500E8D032 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
 		DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarTrayView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1288,6 +1290,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				31751B3B2444DFAA00EEDF14 /* Base */,
+				CEC23E6A2733867400E8D032 /* en */,
+				CEC23E6C2733867500E8D032 /* es */,
 			);
 			name = Main.xib;
 			sourceTree = "<group>";
