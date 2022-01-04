@@ -44,7 +44,7 @@ public class MorphicAudio {
         var sizeOfAudioDeviceID = UInt32(MemoryLayout<AudioDeviceID>.size)
 
         // option 1: kAudioHardwarePropertyDefaultOutputDevice
-        var outputDevicePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwarePropertyDefaultOutputDevice, mScope: kAudioObjectPropertyScopeGlobal, mElement: kAudioObjectPropertyElementMain)
+        var outputDevicePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwarePropertyDefaultOutputDevice, mScope: kAudioObjectPropertyScopeGlobal, mElement: kAudioObjectPropertyElementMaster)
 //        // option 2: kAudioHardwarePropertyDefaultSystemOutputDevice
 //        var outputDevicePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwarePropertyDefaultSystemOutputDevice, mScope: kAudioObjectPropertyScopeGlobal, mElement: kAudioObjectPropertyElementMaster)
 
@@ -63,7 +63,7 @@ public class MorphicAudio {
         var volume: Float = 0
         var sizeOfFloat = UInt32(MemoryLayout<Float>.size)
 
-        var volumePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMainVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMain)
+        var volumePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMainVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMaster)
 
         // verify that the output device has a volume property to get
         if AudioObjectHasProperty(AudioObjectID(audioDeviceId), &volumePropertyAddress) == false {
@@ -91,7 +91,7 @@ public class MorphicAudio {
         var newVolume = volume
         let sizeOfFloat = UInt32(MemoryLayout<Float>.size)
         
-        var volumePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMainVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMain)
+        var volumePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMainVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMaster)
 
         // verify that the output device has a volume property
         if AudioObjectHasProperty(AudioObjectID(audioDeviceId), &volumePropertyAddress) == false {
@@ -121,7 +121,7 @@ public class MorphicAudio {
     }
     
     public static func enableVolumeChangeNotifications(for audioDeviceId: UInt32) throws {
-        var volumePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMainVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMain)
+        var volumePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMainVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMaster)
 
         // verify that the output device has a volume property to watch
         if AudioObjectHasProperty(AudioObjectID(audioDeviceId), &volumePropertyAddress) == false {
@@ -146,7 +146,7 @@ public class MorphicAudio {
         var muteState: UInt32 = 0
         var sizeOfUInt32 = UInt32(MemoryLayout<UInt32>.size)
         
-        var mutePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioDevicePropertyMute, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMain)
+        var mutePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioDevicePropertyMute, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMaster)
         
         // verify that the output device has a mute state to get
         if AudioObjectHasProperty(AudioObjectID(audioDeviceId), &mutePropertyAddress) == false {
@@ -168,7 +168,7 @@ public class MorphicAudio {
         var newValue = muteState ? UInt32(1) : UInt32(0)
         let sizeOfUInt32 = UInt32(MemoryLayout<UInt32>.size)
         
-        var mutePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioDevicePropertyMute, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMain)
+        var mutePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioDevicePropertyMute, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMaster)
         
         // verify that the output device has a mute property
         if AudioObjectHasProperty(AudioObjectID(audioDeviceId), &mutePropertyAddress) == false {
@@ -203,7 +203,7 @@ public class MorphicAudio {
             return
         }
         
-        var mutePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioDevicePropertyMute, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMain)
+        var mutePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioDevicePropertyMute, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMaster)
 
         // verify that the output device has a mute state to watch
         if AudioObjectHasProperty(AudioObjectID(audioDeviceId), &mutePropertyAddress) == false {
