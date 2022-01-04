@@ -155,9 +155,10 @@
 		9D49D4F225BBAA00001DD452 /* UpdateAvailableWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */; };
 		9D4B24E72517068200F0B2E2 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
 		9D4D47C326CBFE2500AC6E3D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9D4D47C526CBFE2500AC6E3D /* Localizable.strings */; };
+		9D53D8E92784A9B700A96576 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */; };
+		9D53D8EA2784A9B700A96576 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */; };
 		9D77209E252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
 		9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */; };
-		9D82577124D353C800F6E932 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82577024D353C800F6E932 /* HyperlinkTextField.swift */; };
 		9D8CEB132507AECF001276E4 /* MorphicBarButtonItemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */; };
 		9D8CEB152507AED7001276E4 /* MorphicBarButtonItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */; };
 		9D94BB22262A046400BF4992 /* logo_opera.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB21262A046400BF4992 /* logo_opera.pdf */; };
@@ -421,9 +422,9 @@
 		9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAvailableWindow.swift; sourceTree = "<group>"; };
 		9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsLinkActions.swift; sourceTree = "<group>"; };
 		9D4D47CA26CBFE5400AC6E3D /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperlinkTextField.swift; sourceTree = "<group>"; };
 		9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicImageUtils.swift; sourceTree = "<group>"; };
 		9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutBoxWindowController.swift; sourceTree = "<group>"; };
-		9D82577024D353C800F6E932 /* HyperlinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperlinkTextField.swift; sourceTree = "<group>"; };
 		9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemIcon.swift; sourceTree = "<group>"; };
 		9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemView.swift; sourceTree = "<group>"; };
 		9D94BB21262A046400BF4992 /* logo_opera.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_opera.pdf; sourceTree = "<group>"; };
@@ -807,7 +808,7 @@
 			children = (
 				9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */,
 				CEB87091273369CF002E7601 /* AboutBoxWindowController.xib */,
-				9D82577024D353C800F6E932 /* HyperlinkTextField.swift */,
+				9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */,
 			);
 			path = "About Box";
 			sourceTree = "<group>";
@@ -1236,6 +1237,7 @@
 				31CE56F3244A3CDB00A52A7B /* QuickHelpWindow.swift in Sources */,
 				31E1E17D24466E7C009C4092 /* MorphicBarView.swift in Sources */,
 				9D8CEB152507AED7001276E4 /* MorphicBarButtonItemView.swift in Sources */,
+				9D53D8E92784A9B700A96576 /* HyperlinkTextField.swift in Sources */,
 				9DE112E72522243200591E08 /* CopySettingsWindowController.swift in Sources */,
 				31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */,
 				9D2A5AB8259B815800ECD513 /* ConfigurableFeatures.swift in Sources */,
@@ -1243,7 +1245,6 @@
 				31C12CBE24B138D000B617A8 /* ProgressIndicator.swift in Sources */,
 				31C12CC424B1441E00B617A8 /* PageControl.swift in Sources */,
 				9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */,
-				9D82577124D353C800F6E932 /* HyperlinkTextField.swift in Sources */,
 				31E1E17B24466D28009C4092 /* MorphicBarItem.swift in Sources */,
 				9D77209E252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */,
 			);
@@ -1261,6 +1262,7 @@
 				3130B0F524A42006003864DD /* PageViewController.swift in Sources */,
 				31751B992444F21700EEDF14 /* Session.swift in Sources */,
 				3130B0F124A41FA6003864DD /* CaptureWindowController.swift in Sources */,
+				9D53D8EA2784A9B700A96576 /* HyperlinkTextField.swift in Sources */,
 				3130B0EF24A41E8D003864DD /* LoginWindowController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
