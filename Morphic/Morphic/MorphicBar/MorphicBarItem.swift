@@ -68,6 +68,8 @@ public class MorphicBarItem {
             itemAsDictionary["function"] = extraItem.function
             // for type: control (from config.json file, not from custom bar web app schema)
             itemAsDictionary["feature"] = extraItem.feature
+            // for type: application (from config.json file, not from custom bar web app schema)
+            itemAsDictionary["appId"] = extraItem.appId
 
             if let item_ = item(from: itemAsDictionary) {
                 items.append(item_)
@@ -318,7 +320,8 @@ class MorphicBarApplicationItem: MorphicBarItem {
         }
         //
         // NOTE: 'exe' designates the identifier of the EXE to run (e.g. "calendar", "calculator", "word", "adobeReader")
-        if let exe = interoperable.string(for: "exe") {
+        // NOTE: 'appId' is the modern term for application identifier (and 'exe' is the old v1 API name...which we should discontinue use of as soon as practical)
+        if let exe = interoperable.string(for: "exe") ?? interoperable.string(for: "appId") {
             self.exe = exe
             self.exeLaunchDetails = MorphicBarApplicationItem.convertExeIdentifierToExecutableLaunchDetails(exe: exe)
             
