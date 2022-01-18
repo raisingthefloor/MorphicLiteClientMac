@@ -941,9 +941,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         //
         // screen scaling
         // NOTE: this zooms to 100% of the RECOMMENDED value, not 100% of native resolution
-        if let displayCurrentPercentage = Display.main?.currentPercentage {
-            if displayCurrentPercentage != defaultDisplayZoomPercentage {
-                _ = try? Display.main?.zoom(to: defaultDisplayZoomPercentage)
+        if let activeDisplays = Display.activeDisplays() {
+            for activeDisplay in activeDisplays {
+                let displayCurrentPercentage = activeDisplay.currentPercentage
+                if displayCurrentPercentage != defaultDisplayZoomPercentage {
+                    _ = try? activeDisplay.zoom(to: defaultDisplayZoomPercentage)
+                }
             }
         }
         //

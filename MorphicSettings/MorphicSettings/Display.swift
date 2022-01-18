@@ -21,7 +21,7 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Foundation
+import Cocoa
 import MorphicCore
 
 public class Display {
@@ -41,12 +41,49 @@ public class Display {
         }
     }
     
+    public func id() -> UInt32? {
+        return MorphicDisplay.getDisplayIdForDisplayUuid(self.uuid)
+    }
+    
+    // NOTE: we are unsure as to whether screen is a mutable variable (i.e. if it changes when the computer switches between integrated and discrete graphics);if it's not mutable in this scenario, then make this a calculated property instead
+    public func screen() -> NSScreen? {
+        guard let selfDisplayId = self.id() else {
+            return nil
+        }
+        
+        for screen in NSScreen.screens {
+            if let screenDisplayId = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? CGDirectDisplayID {
+                if screenDisplayId == selfDisplayId {
+                    return screen
+                }
+            }
+        }
+        
+        // if we could not find our screen, return nil
+        return nil
+    }
+    
     public static var main: Display? = {
         if let uuid = MorphicDisplay.getMainDisplayUuid() {
             return Display(uuid: uuid)
         }
         return nil
     }()
+    
+    public static func activeDisplays() -> [Display]? {
+        var result = [Display]()
+
+        guard let activeDisplayUuids = MorphicDisplay.getActiveDisplayUuids() else {
+            return nil
+        }
+        
+        for displayUuid in activeDisplayUuids {
+            let display = Display(uuid: displayUuid)
+            result.append(display)
+        }
+
+        return result
+    }
     
     public static func displayContainingPoint(_ point: NSPoint) -> Display? {
         guard let targetDisplayUuid = MorphicSettings.MorphicDisplay.getDisplayUuidForPoint(point) else {
@@ -345,10 +382,20 @@ public class Display {
 public class DisplayZoomHandler: ClientSettingHandler {
     
     public override func read(completion: @escaping (SettingHandler.Result) -> Void) {
-        guard let percentage = Display.main?.currentPercentage else {
+        // NOTE: due to a limitation in Morphic 1.x, we use the current mouse pointer location as a proxy for the screen on which the
+        //       Morphic bar is currently shown; in the future, we should get the current display for the MorphicBar WINDOW instead
+        guard let mousePointerLocation = MorphicSettings.MorphicMouse.getCurrentLocation() else {
+            assertionFailure("Could not locate the mouse pointer")
             completion(.failed)
             return
         }
+        guard let display = Display.displayContainingPoint(mousePointerLocation) else {
+            assertionFailure("Could not determine which display contains the mouse pointer")
+            completion(.failed)
+            return
+        }
+
+        let percentage = display.currentPercentage
         completion(.succeeded(value: percentage))
     }
     
@@ -361,8 +408,22 @@ public class DisplayZoomHandler: ClientSettingHandler {
             completion(false)
             return
         }
+        
+        // NOTE: due to a limitation in Morphic 1.x, we use the current mouse pointer location as a proxy for the screen on which the
+        //       Morphic bar is currently shown; in the future, we should get the current display for the MorphicBar WINDOW instead
+        guard let mousePointerLocation = MorphicSettings.MorphicMouse.getCurrentLocation() else {
+            assertionFailure("Could not locate the mouse pointer")
+            completion(false)
+            return
+        }
+        guard let display = Display.displayContainingPoint(mousePointerLocation) else {
+            assertionFailure("Could not determine which display contains the mouse pointer")
+            completion(false)
+            return
+        }
+        
         let success: Bool
-        if let _ = try? Display.main?.zoom(to: percentage) {
+        if let _ = try? display.zoom(to: percentage) {
             success = true
         } else {
             success = false
