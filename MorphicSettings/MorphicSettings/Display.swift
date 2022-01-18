@@ -25,10 +25,13 @@ import Foundation
 import MorphicCore
 
 public class Display {
+    public let uuid: UUID
     
-    init(id: UInt32) {
-        self.id = id
-        possibleModes = findPossibleModes() ?? []
+    // NOTE: this function is private because we only trust UUIDs which we received from our own internal code
+    private init(uuid: UUID) {
+        self.uuid = uuid
+        // NOTE: if the display has been removed before findPossibleModes() is called, this will return an empty set
+        possibleModes = self.findPossibleModes() ?? []
         
         normalMode = possibleModes.first(where: { $0.isDefault })
         // if no modes are marked as "default" then choose the last mode (which in theory has the highest resolution) from the GUI-usable resolutions
@@ -38,21 +41,27 @@ public class Display {
         }
     }
     
-    private var id: UInt32
-    
     public static var main: Display? = {
-        if let id = MorphicDisplay.getMainDisplayId(){
-            return Display(id: id)
+        if let uuid = MorphicDisplay.getMainDisplayUuid() {
+            return Display(uuid: uuid)
         }
         return nil
     }()
+    
+    public static func displayContainingPoint(_ point: NSPoint) -> Display? {
+        guard let targetDisplayUuid = MorphicSettings.MorphicDisplay.getDisplayUuidForPoint(point) else {
+            return nil
+        }
+        
+        return Display(uuid: targetDisplayUuid)
+    }
     
     public func zoom(to percentage: Double) throws {
         guard let mode = self.mode(for: percentage) else {
             throw MorphicError()
         }
         do {
-            try MorphicDisplay.setCurrentDisplayMode(for: id, to: mode)
+            try MorphicDisplay.setCurrentDisplayMode(for: uuid, to: mode)
         } catch {
             throw MorphicError()
         }
@@ -110,11 +119,11 @@ public class Display {
     private var normalMode: MorphicDisplay.DisplayMode?
     
     private var currentMode: MorphicDisplay.DisplayMode? {
-        return MorphicDisplay.getCurrentDisplayMode(for: id)
+        return MorphicDisplay.getCurrentDisplayMode(for: uuid)
     }
     
     private func findPossibleModes() -> [MorphicDisplay.DisplayMode]? {
-        guard let allDisplayModes = MorphicDisplay.getAllDisplayModes(for: id) else {
+        guard let allDisplayModes = MorphicDisplay.getAllDisplayModes(for: uuid) else {
             return []
         }
         if allDisplayModes.count == 0 {

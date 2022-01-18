@@ -71,6 +71,7 @@
 		9D4B24C225143F8700F0B2E2 /* GeneralPreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */; };
 		9D59F47E24A6B3040004C35B /* CBBlueLightClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D0AF77524A4613D007E177E /* CBBlueLightClient.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */; };
+		9D68EA512797273200AC3A88 /* MorphicMouse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D68EA502797273200AC3A88 /* MorphicMouse.swift */; };
 		9DC0D42A25E6587500E17D9E /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 311336532427FB3400686AF6 /* MorphicCore.framework */; };
 		9DC0D42B25E6587500E17D9E /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 311336532427FB3400686AF6 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9DC4FDE5253603AD0051BB23 /* ApplicationServices.h in Headers */ = {isa = PBXBuildFile; fileRef = 9DC4FDE42536030F0051BB23 /* ApplicationServices.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -179,6 +180,7 @@
 		9D4B24BE25143D0000F0B2E2 /* GeneralUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralUIAutomations.swift; sourceTree = "<group>"; };
 		9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralPreferencesElement.swift; sourceTree = "<group>"; };
 		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
+		9D68EA502797273200AC3A88 /* MorphicMouse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicMouse.swift; sourceTree = "<group>"; };
 		9DC4FDE42536030F0051BB23 /* ApplicationServices.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApplicationServices.h; sourceTree = "<group>"; };
 		9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yAuthorization.swift; sourceTree = "<group>"; };
 		9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechUIAutomations.swift; sourceTree = "<group>"; };
@@ -332,6 +334,7 @@
 				31A16BC52423E86C0081A72C /* Display */,
 				31A16BBF2423E86B0081A72C /* Input */,
 				31A16BC12423E86C0081A72C /* Language */,
+				9D68EA4F2797271F00AC3A88 /* Mouse */,
 				31A16BBC2423E86B0081A72C /* Process */,
 				9D5EC22A24927EE200AC77B5 /* PropertyList */,
 				31A16BC92423E86C0081A72C /* Window */,
@@ -460,6 +463,14 @@
 				9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */,
 			);
 			path = PropertyList;
+			sourceTree = "<group>";
+		};
+		9D68EA4F2797271F00AC3A88 /* Mouse */ = {
+			isa = PBXGroup;
+			children = (
+				9D68EA502797273200AC3A88 /* MorphicMouse.swift */,
+			);
+			path = Mouse;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -611,6 +622,7 @@
 				9DD4F4A12517B06200ADCC25 /* LanguageAndRegionUIAutomations.swift in Sources */,
 				31A16BD02423E86C0081A72C /* MorphicDisplay.swift in Sources */,
 				315EEC8B24A546AE0039C61D /* ToolbarElement.swift in Sources */,
+				9D68EA512797273200AC3A88 /* MorphicMouse.swift in Sources */,
 				315EEC9524A554580039C61D /* ButtonElement.swift in Sources */,
 				9DD4F48E2517ACDE00ADCC25 /* MouseUIAutomations.swift in Sources */,
 				31F9AEDD24A7F2D90026EBDA /* AccessibilityUIAutomation.swift in Sources */,

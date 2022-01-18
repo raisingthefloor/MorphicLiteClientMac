@@ -1512,6 +1512,13 @@ class MorphicBarControlItem: MorphicBarItem {
             let activateMagnifier: () -> Void = {
                 session.storage.load(identifier: "__magnifier__") {
                     (_, preferences: Preferences?) in
+                    // since the magnifier zoom is being shown (i.e. enabled), set the cursor to the center of the display where the mouse cursor is located
+                    if let mousePointerLocation = MorphicSettings.MorphicMouse.getCurrentLocation() {
+                        if let currentDisplay = Display.displayContainingPoint(mousePointerLocation) {
+                            let _ = try? MorphicSettings.MorphicMouse.movePointerToCenterOfDisplay(displayUuid: currentDisplay.uuid)
+                        }
+                    }
+                    
                     if let preferences = preferences {
                         // temporary workaround: if "style" was specified as a preference, remove it (because it's a one-time setup preference)
                         var mutablePreferences = preferences
