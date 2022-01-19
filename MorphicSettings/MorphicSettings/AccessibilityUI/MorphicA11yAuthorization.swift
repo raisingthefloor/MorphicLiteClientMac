@@ -21,6 +21,8 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
+import ApplicationServices
+
 public enum MorphicA11yAuthorizationError: Error {
     case notAuthorized
 }
