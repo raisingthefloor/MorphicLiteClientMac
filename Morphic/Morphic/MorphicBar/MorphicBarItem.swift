@@ -412,6 +412,18 @@ class MorphicBarApplicationItem: MorphicBarItem {
             return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.google.Chrome")
         case "microsoftEdge":
             return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.microsoft.edgemac")
+        case "microsoftExcel":
+            return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.microsoft.Excel")
+        case "microsoftOneNote":
+            return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.microsoft.onenote.mac")
+        case "microsoftOutlook":
+            return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.microsoft.Outlook")
+        case "microsoftPowerPoint":
+            return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.microsoft.Powerpoint")
+        case "microsoftTeams":
+            return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.microsoft.teams")
+        case "microsoftWord":
+            return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.microsoft.Word")
         case "microsoftSkype":
             return ExecutableLaunchDetails.bundleIdentifier(bundleIdentifier: "com.skype.skype")
         case "opera":

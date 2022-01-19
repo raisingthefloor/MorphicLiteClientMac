@@ -60,7 +60,15 @@ class SettingsLinkActions {
             accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: "Color Filters", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
         case .accessibilityDisplayCursor:
             let accessibilityUIAutomation = AccessibilityUIAutomation()
-            accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: "Cursor", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+            let tabName: String
+            if #available(macOS 12.0, *) {
+                // in macOS 12.0, this tab was renamed "Pointer"
+                tabName = "Pointer"
+            } else {
+                // in earlier versions of macOS, this tab was called "Cursor"
+                tabName = "Cursor"
+            }
+            accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: tabName, completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
         case .accessibilityDisplayDisplay:
             let accessibilityUIAutomation = AccessibilityUIAutomation()
             accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: "Display", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
