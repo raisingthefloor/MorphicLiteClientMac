@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		3113364D2427F01100686AF6 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3113364C2427F01100686AF6 /* SettingsManager.swift */; };
 		311336512427F33600686AF6 /* Display.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311336502427F33600686AF6 /* Display.swift */; };
-		311336542427FB3400686AF6 /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 311336532427FB3400686AF6 /* MorphicCore.framework */; };
 		312973EF24A275D7000F5ED1 /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312973EE24A275D7000F5ED1 /* Setting.swift */; };
 		312DBFF024A27BCF002FB951 /* Solution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DBFEF24A27BCF002FB951 /* Solution.swift */; };
 		312DBFF324A28556002FB951 /* DefaultsReadUIWriteSettingHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DBFF224A28556002FB951 /* DefaultsReadUIWriteSettingHandler.swift */; };
@@ -202,7 +201,6 @@
 				9D38C4EC252A33AD0064FB74 /* MediaAccessibility.framework in Frameworks */,
 				9D0AF77324A460A9007E177E /* CoreBrightness.framework in Frameworks */,
 				9DC0D42A25E6587500E17D9E /* MorphicCore.framework in Frameworks */,
-				311336542427FB3400686AF6 /* MorphicCore.framework in Frameworks */,
 				9D38C4F4252A38870064FB74 /* UniversalAccess.framework in Frameworks */,
 				9D38C4C92528F0D70064FB74 /* SkyLight.framework in Frameworks */,
 			);
