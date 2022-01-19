@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - International
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -21,7 +21,8 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Foundation
+import Cocoa
+import ColorSync
 
 // NOTE: the MorphicDisplay class contains the functionality used by Obj-C and Swift applications
 
@@ -137,10 +138,75 @@ public class MorphicDisplay {
         }
     }
 
+    // MARK: - Display ID <-> UUID conversion functions
+    
+    public static func getDisplayUuidForDisplayId(_ displayId: UInt32) -> UUID? {
+        // get the UUID for a display (and, as this is a CF 'Create' function, we are responsible for releasing the result...so we need to retain the value)
+        guard let displayUuidAsCFUUID = CGDisplayCreateUUIDFromDisplayID(displayId)?.takeRetainedValue() else {
+            // if we could not create the UUID from the display id, the display id was presumably not found
+            return nil
+        }
+        
+        // convert the CFUUID into a CFString (NOTE: whiel this is a CF 'Create' function, Swift will clean up and we don't need to retain the value manually)
+        let displayUuidAsCFString = CFUUIDCreateString(kCFAllocatorDefault, displayUuidAsCFUUID)!
+        
+        // convert the CFUUID into a String so that we can then convert the string into a UUID; this is Apple's recommended method for bridging CFUUID and NSUUID/UUID
+        let displayUuidAsNSString = displayUuidAsCFString as NSString
+        let displayUuidAsString = displayUuidAsNSString as String
+        
+        let displayUUID = UUID(uuidString: displayUuidAsString)!
+        return displayUUID
+    }
+
+    public static func getDisplayIdForDisplayUuid(_ displayUuid: UUID) -> UInt32? {
+        // convert the UUID into a String so that we can then convert the string into a CFUUID; this is Apple's recommended method for bridging NSUUID/UUID and CFUUID
+        let displayUuidAsNString = displayUuid.uuidString as NSString
+        let displayUuidAsCFString = displayUuidAsNString as CFString
+        
+        // convert the CFString into a UUID (NOTE: while this is a CF 'Create' function, Swift will clean up and we don't need to retain the value manually)
+        let displayUuidAsCfUUID = CFUUIDCreateFromString(kCFAllocatorDefault, displayUuidAsCFString)!
+        
+        // convert the display uuid (as cfuuid) into a display ID
+        let displayId = CGDisplayGetDisplayIDFromUUID(displayUuidAsCfUUID)
+        // NOTE: CGDisplayGetDisplayIDFromUUID returns 0 if the display UUID is not found; presumably, zero is an invalid display ID value
+        if displayId == 0 {
+            return nil
+        }
+        
+        return displayId
+    }
+    
+    // MARK: - Display from point functions
+    
+    public static func getDisplayUuidForPoint(_ point: NSPoint) -> UUID? {
+        let allScreens = NSScreen.screens
+        for screen in allScreens {
+            // NOTE: although the NSMouseInRect function includes the word "Mouse", it should work for any point calculation
+            if NSMouseInRect(point, screen.frame, false) == true {
+                // we have found the screen which contains the point; get its display id
+                guard let displayId = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? CGDirectDisplayID else {
+                    // we could not get the displayId (which is represented as the screen number in NSScreen) for the
+                    return nil
+                }
+                
+                // convert the display id into a uuid
+                guard let displayUuid = MorphicDisplay.getDisplayUuidForDisplayId(displayId) else {
+                    assertionFailure("Converted NSScreen to displayId, but could not convert tbe displayId to its UUID equivalent")
+                    return nil
+                }
+                
+                return displayUuid
+            }
+        }
+        
+        // if we could not find the point on any screen, return nil
+        return nil
+    }
+
     // MARK: - Display enumeration functions
     
-    public static func getActiveDisplayIds() -> [UInt32]? {
-        var result: [UInt32] = []
+    public static func getActiveDisplayUuids() -> [UUID]? {
+        var result: [UUID] = []
 
         // NOTE: here, we establish a "maximum number of displays" that we support for Core Graphics.  For our primary applications, this number is fairly irrelevant (since the first display we get information about should be the main display--which is usually what we'd be looking for).  But we may find other applications in the future where we want to reset the resolutions of multiple displays--in which case we can increment this constant.
         let maximumNumberOfDisplaysToSupport: UInt32 = 32 // NOTE: we use 32 active displays as a reasonable "upper bound" because we have to allocate an array to hold "up to max # supported" entries; otherwise we would just use UInt32.max
@@ -160,17 +226,22 @@ public class MorphicDisplay {
         // return active display IDs
         for index in 0..<Int(numberOfActiveDisplays) {
             let activeDisplayId = activeDisplayIds[index]
-            result.append(activeDisplayId)
+            guard let activeDisplayUuid = MorphicDisplay.getDisplayUuidForDisplayId(activeDisplayId) else {
+                // NOTE: unless a display was disconnected during execution of this function or the OS switched between integrated and discrete graphics for a display, we should never encounter this error; return nil
+                assertionFailure("Enumerated display ID, but could not convert it to its UUID equivalent")
+                return nil
+            }
+            result.append(activeDisplayUuid)
         }
         
         return result
     }
     
-    public static func getMainDisplayId() -> UInt32? {
+    public static func getMainDisplayUuid() -> UUID? {
         // NOTE: this implementation fetches the first active display as the main display ID (as described in Apple's documentation); we may also want to consider using CGMainDisplayID() instead.
         
         // get the number of active displays
-        guard let activeDisplayIds = MorphicDisplay.getActiveDisplayIds() else {
+        guard let activeDisplayIds = MorphicDisplay.getActiveDisplayUuids() else {
             fatalError("could not retrieve list of active display ids.")
         }
         
@@ -187,9 +258,14 @@ public class MorphicDisplay {
     // MARK: Display mode functions
     
     // NOTE: this function returns nil if it encounters an error; we do this to distinguish an error condition ( nil ) from an empty set ( [] ).
-    public static func getAllDisplayModes(for displayId: UInt32) -> [MorphicDisplay.DisplayMode]? {
+    public static func getAllDisplayModes(for displayUuid: UUID) -> [MorphicDisplay.DisplayMode]? {
         var result: [MorphicDisplay.DisplayMode] = []
         
+        // convert the display UUID to a display ID
+        guard let displayId = MorphicDisplay.getDisplayIdForDisplayUuid(displayUuid) else {
+            return nil
+        }
+
         // get a list of modes for the specified display
         guard let allDisplayModesAsCGDisplayModeArray = MorphicDisplay.getAllDisplayModesAsCGDisplayModeArray(for: displayId) else {
             // if we cannot get a list of all display modes for this display, return nil
@@ -256,7 +332,12 @@ public class MorphicDisplay {
         return result
     }
     
-    public static func getCurrentDisplayMode(for displayId: UInt32) -> MorphicDisplay.DisplayMode? {
+    public static func getCurrentDisplayMode(for displayUuid: UUID) -> MorphicDisplay.DisplayMode? {
+        // convert the display UUID to a display ID
+        guard let displayId = MorphicDisplay.getDisplayIdForDisplayUuid(displayUuid) else {
+            return nil
+        }
+
         guard let displayModeAsCGDisplayMode = CGDisplayCopyDisplayMode(displayId) else {
             // if we could not get our current display's mode details, return nil
             return nil
@@ -280,11 +361,16 @@ public class MorphicDisplay {
 //        case unusableForDesktopGui
         case otherError
     }
-    public static func setCurrentDisplayMode(for displayId: UInt32, to newDisplayMode: MorphicDisplay.DisplayMode) throws {
+    public static func setCurrentDisplayMode(for displayUuid: UUID, to newDisplayMode: MorphicDisplay.DisplayMode) throws {
 //        // OPTIONAL: if we want, we can throw an error if the selected display mode is already known not to be suitable for a desktop GUI
 //        if newDisplayMode.isUsableForDesktopGui == false {
 //            throw SetCurrentDisplayModeError.unusableForDesktopGui
 //        }
+        
+        // convert the display UUID to a display ID
+        guard let displayId = MorphicDisplay.getDisplayIdForDisplayUuid(displayUuid) else {
+            throw SetCurrentDisplayModeError.otherError
+        }
         
         // obtain a CGDisplayMode object which matches the "newDisplayMode" struct passed in by our caller
         //

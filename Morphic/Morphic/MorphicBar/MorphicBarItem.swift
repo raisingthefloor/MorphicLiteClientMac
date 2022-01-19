@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - International
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -68,6 +68,8 @@ public class MorphicBarItem {
             itemAsDictionary["function"] = extraItem.function
             // for type: control (from config.json file, not from custom bar web app schema)
             itemAsDictionary["feature"] = extraItem.feature
+            // for type: application (from config.json file, not from custom bar web app schema)
+            itemAsDictionary["appId"] = extraItem.appId
 
             if let item_ = item(from: itemAsDictionary) {
                 items.append(item_)
@@ -318,7 +320,8 @@ class MorphicBarApplicationItem: MorphicBarItem {
         }
         //
         // NOTE: 'exe' designates the identifier of the EXE to run (e.g. "calendar", "calculator", "word", "adobeReader")
-        if let exe = interoperable.string(for: "exe") {
+        // NOTE: 'appId' is the modern term for application identifier (and 'exe' is the old v1 API name...which we should discontinue use of as soon as practical)
+        if let exe = interoperable.string(for: "exe") ?? interoperable.string(for: "appId") {
             self.exe = exe
             self.exeLaunchDetails = MorphicBarApplicationItem.convertExeIdentifierToExecutableLaunchDetails(exe: exe)
             
@@ -757,8 +760,8 @@ class MorphicBarControlItem: MorphicBarItem {
         case .resolution:
             let localized = LocalizedStrings(prefix: "control.feature.resolution")
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "bigger"), fillColor: buttonColor, helpProvider:  QuickHelpTextSizeBiggerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "bigger.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize), learnMoreTelemetryCategory: "textSize", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize), quickDemoVideoTelemetryCategory: "textSize", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31)),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "smaller"), fillColor: alternateButtonColor, helpProvider: QuickHelpTextSizeSmallerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "smaller.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize), learnMoreTelemetryCategory: "textSize", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize), quickDemoVideoTelemetryCategory: "textSize", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31))
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "bigger"), fillColor: buttonColor, helpProvider:  QuickHelpTextSizeBiggerProvider(/*display: Display.main, */localized: localized), accessibilityLabel: localized.string(for: "bigger.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize), learnMoreTelemetryCategory: "textSize", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize), quickDemoVideoTelemetryCategory: "textSize", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31)),
+                MorphicBarSegmentedButton.Segment(title: localized.string(for: "smaller"), fillColor: alternateButtonColor, helpProvider: QuickHelpTextSizeSmallerProvider(/*display: Display.main, */localized: localized), accessibilityLabel: localized.string(for: "smaller.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize), learnMoreTelemetryCategory: "textSize", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize), quickDemoVideoTelemetryCategory: "textSize", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31))
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.target = self
@@ -852,9 +855,18 @@ class MorphicBarControlItem: MorphicBarItem {
         guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
             return
         }
-        guard let display = Display.main else {
+        
+        // NOTE: due to a limitation in Morphic 1.x, we use the current mouse pointer location as a proxy for the screen on which the
+        //       Morphic bar is currently shown; in the future, we should get the current display for the MorphicBar WINDOW instead
+        guard let mousePointerLocation = MorphicSettings.MorphicMouse.getCurrentLocation() else {
+            assertionFailure("Could not locate the mouse pointer")
             return
         }
+        guard let display = Display.displayContainingPoint(mousePointerLocation) else {
+            assertionFailure("Could not determine which display contains the mouse pointer")
+            return
+        }
+
         var percentage: Double
         var isZoomingIn: Bool
         var zoomToStep: Int?
@@ -1509,6 +1521,14 @@ class MorphicBarControlItem: MorphicBarItem {
             let activateMagnifier: () -> Void = {
                 session.storage.load(identifier: "__magnifier__") {
                     (_, preferences: Preferences?) in
+                    // since the magnifier zoom is being shown (i.e. enabled), set the cursor to the center of the display where the mouse cursor is located
+                    // NOTE: we might need to push a mouse movement message to the system so that the magnifier knows that the mouse has actually moved; or we might need to insert a UI-thread-nonblocking delay which lets the run loop catch up first (if that would remedy any mouse pointer location syncing issues)
+                    if let mousePointerLocation = MorphicSettings.MorphicMouse.getCurrentLocation() {
+                        if let currentDisplay = Display.displayContainingPoint(mousePointerLocation) {
+                            let _ = try? MorphicSettings.MorphicMouse.movePointerToCenterOfDisplay(displayUuid: currentDisplay.uuid)
+                        }
+                    }
+                    
                     if let preferences = preferences {
                         // temporary workaround: if "style" was specified as a preference, remove it (because it's a one-time setup preference)
                         var mutablePreferences = preferences
@@ -1577,15 +1597,13 @@ class MorphicBarControlItem: MorphicBarItem {
 fileprivate struct LocalizedStrings {
     
     var prefix: String
-    var table = "MorphicBarViewController"
-    var bundle = Bundle.main
     
     init(prefix: String) {
         self.prefix = prefix
     }
     
     func string(for suffix: String) -> String {
-        return bundle.localizedString(forKey: prefix + "." + suffix, value: nil, table: table)
+        return Bundle.main.localizedString(forKey: prefix + "." + suffix, value: nil, table: nil)
     }
 }
 
@@ -1610,15 +1628,19 @@ fileprivate class QuickHelpDynamicTextProvider: QuickHelpContentProvider {
 
 fileprivate class QuickHelpTextSizeBiggerProvider: QuickHelpContentProvider {
     
-    init(display: Display?, localized: LocalizedStrings) {
-        self.display = display
+    init(/*display: Display?, */localized: LocalizedStrings) {
+//        self.display = display
         self.localized = localized
     }
     
-    var display: Display?
+//    var display: Display?
     var localized: LocalizedStrings
     
     func quickHelpViewController() -> NSViewController? {
+        // NOTE: due to a limitation in Morphic 1.x, we use the current mouse pointer location as a proxy for the screen on which the
+        //       Morphic bar is currently shown; in the future, we should get the current display for the MorphicBar WINDOW instead
+        let display = getDisplayForMousePointer()
+
         let viewController = QuickHelpStepViewController(nibName: "QuickHelpStepViewController", bundle: nil)
         let total = display?.numberOfSteps ?? 1
         var step = display?.currentStep ?? -1
@@ -1640,15 +1662,18 @@ fileprivate class QuickHelpTextSizeBiggerProvider: QuickHelpContentProvider {
 
 fileprivate class QuickHelpTextSizeSmallerProvider: QuickHelpContentProvider {
     
-    init(display: Display?, localized: LocalizedStrings) {
-        self.display = display
+    init(/*display: Display?, */localized: LocalizedStrings) {
+//        self.display = display
         self.localized = localized
     }
-    
-    var display: Display?
+//    var display: Display?
     var localized: LocalizedStrings
     
     func quickHelpViewController() -> NSViewController? {
+        // NOTE: due to a limitation in Morphic 1.x, we use the current mouse pointer location as a proxy for the screen on which the
+        //       Morphic bar is currently shown; in the future, we should get the current display for the MorphicBar WINDOW instead
+        let display = getDisplayForMousePointer()
+
         let viewController = QuickHelpStepViewController(nibName: "QuickHelpStepViewController", bundle: nil)
         let total = display?.numberOfSteps ?? 1
         var step = display?.currentStep ?? -1

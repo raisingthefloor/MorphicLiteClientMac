@@ -654,6 +654,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         public let function: String?
         // for type: control
         public let feature: String?
+        // for type: application
+        public let appId: String?
     }
     //
     internal struct TelemetryConfigSection: Decodable {
@@ -843,7 +845,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     os_log(.error, log: logger, "Invalid MorphicBar item")
                     continue
                 }
-                if (extraItem.type != "control") && ((extraItem.label == nil) || (extraItem.tooltipHeader == nil)) {
+                if (extraItem.type != "control") && ((extraItem.label == nil)) {
                     // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
                     os_log(.error, log: logger, "Invalid MorphicBar item")
                     continue
@@ -869,6 +871,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     os_log(.error, log: logger, "Invalid MorphicBar item")
                     continue
                 }
+                
+                // if the "application" is missing its appId, log the error and skip this item
+                if (extraItem.type == "application") && (extraItem.appId == nil || extraItem.appId == "") {
+                    // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
+                    os_log(.error, log: logger, "Invalid MorphicBar item")
+                    continue
+                }
 
                 let extraMorphicBarItem = MorphicBarExtraItem(
                     type: extraItem.type,
@@ -877,7 +886,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     tooltipText: extraItem.tooltipText,
                     url: extraItem.url,
                     function: extraItem.function,
-                    feature: extraItem.feature)
+                    feature: extraItem.feature,
+                    appId: extraItem.appId
+                )
                 result.extraMorphicBarItems.append(extraMorphicBarItem)
             }
         }
@@ -930,9 +941,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         //
         // screen scaling
         // NOTE: this zooms to 100% of the RECOMMENDED value, not 100% of native resolution
-        if let displayCurrentPercentage = Display.main?.currentPercentage {
-            if displayCurrentPercentage != defaultDisplayZoomPercentage {
-                _ = try? Display.main?.zoom(to: defaultDisplayZoomPercentage)
+        if let activeDisplays = Display.activeDisplays() {
+            for activeDisplay in activeDisplays {
+                let displayCurrentPercentage = activeDisplay.currentPercentage
+                if displayCurrentPercentage != defaultDisplayZoomPercentage {
+                    _ = try? activeDisplay.zoom(to: defaultDisplayZoomPercentage)
+                }
             }
         }
         //
