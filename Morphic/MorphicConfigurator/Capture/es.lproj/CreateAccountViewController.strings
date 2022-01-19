@@ -1,4 +1,3 @@
-
 /* Class = "NSTextFieldCell"; title = "Passwords do not match"; ObjectID = "58Z-gZ-ndK"; */
 "58Z-gZ-ndK.title" = "Passwords do not match";
 
@@ -12,7 +11,7 @@
 "JcH-TK-ce1.title" = "Box";
 
 /* Class = "NSButtonCell"; title = "Create Account"; ObjectID = "LAQ-6m-MiI"; */
-"LAQ-6m-MiI.title" = "Create Account";
+"LAQ-6m-MiI.title" = "Crear cuenta";
 
 /* Class = "NSTextFieldCell"; title = "Privacy Policy"; ObjectID = "RFe-9o-yTd"; */
 "RFe-9o-yTd.title" = "Privacy Policy";
