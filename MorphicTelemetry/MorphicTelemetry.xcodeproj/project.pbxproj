@@ -317,6 +317,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicTelemetry;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -345,6 +346,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicTelemetry;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -382,7 +384,7 @@
 			repositoryURL = "https://github.com/adam-fowler/mqtt-nio";
 			requirement = {
 				kind = exactVersion;
-				version = 2.1.0;
+				version = 2.5.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

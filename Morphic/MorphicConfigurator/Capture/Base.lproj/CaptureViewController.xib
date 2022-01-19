@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -18,7 +19,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="F08-eL-7oT">
-                    <rect key="frame" x="64" y="236" width="373" height="24"/>
+                    <rect key="frame" x="63" y="235" width="374" height="25"/>
                     <textFieldCell key="cell" lineBreakMode="clipping" title="Collecting settings from your computer..." id="wET-NY-bnQ">
                         <font key="font" metaFont="system" size="21"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -26,7 +27,7 @@
                     </textFieldCell>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="usX-cP-cpv">
-                    <rect key="frame" x="147" y="212" width="207" height="16"/>
+                    <rect key="frame" x="147" y="211" width="207" height="16"/>
                     <textFieldCell key="cell" lineBreakMode="clipping" title="...so you can take them anywhere" id="dSf-jm-qws">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -34,7 +35,7 @@
                     </textFieldCell>
                 </textField>
                 <customView autoresizesSubviews="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wiR-4H-Ooz" customClass="ImageContainerView" customModule="MorphicConfigurator" customModuleProvider="target">
-                    <rect key="frame" x="170" y="22" width="160" height="160"/>
+                    <rect key="frame" x="170" y="21" width="160" height="160"/>
                     <subviews>
                         <imageView wantsLayer="YES" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fGC-Hf-MCy">
                             <rect key="frame" x="0.0" y="0.0" width="160" height="160"/>
