@@ -5,13 +5,13 @@
 "control.feature.resolution.bigger" = "+";
 
 /* Text for VoiceOver for the larger text/icon size button */
-"control.feature.resolution.bigger.tts" = "Aumentar tamaño de texto";
+"control.feature.resolution.bigger.tts" = "Aumentar el tamaño del texto";
 
 /* Title for the help window for the larger text/icon size button */
-"control.feature.resolution.bigger.help.title" = "Aumenta el tamaño del texto en todas partes";
+"control.feature.resolution.bigger.help.title" = "Aumenta el tamaño del texto en todo el ordenador";
 
 /* Message for the help window for the larger text/icon size button */
-"control.feature.resolution.bigger.help.message" = "Hace que todo en la pantalla sea más grande.";
+"control.feature.resolution.bigger.help.message" = "Hace que todo se vea más grande en la pantalla.";
 
 /* Title for the help window for the larger text/icon size button when at its limit */
 "control.feature.resolution.bigger.limit.help.title" = "El tamaño del texto no puede ser mayor";
@@ -23,10 +23,10 @@
 "control.feature.resolution.smaller" = "\U2013";
 
 /* Text for VoiceOver for the smaller text/icon size button */
-"control.feature.resolution.smaller.tts" = "Reducir tamaño de texto";
+"control.feature.resolution.smaller.tts" = "Reducir el tamaño del texto";
 
 /* Title for the help window for the smaller text/icon size button */
-"control.feature.resolution.smaller.help.title" = "Disminuye el tamaño del texto en todas partes";
+"control.feature.resolution.smaller.help.title" = "Reduce el tamaño del texto";
 
 /* Message for the help window for the smaller text/icon size button */
 "control.feature.resolution.smaller.help.message" = "Hace todo en la pantalla más pequeña.";
@@ -38,37 +38,37 @@
 "control.feature.resolution.smaller.limit.help.message" = "";
 
 /* Label for the buttons that control the magnifier */
-"control.feature.magnifier.title" = "Magnifier";
+"control.feature.magnifier.title" = "Magnificador de pantalla";
 
 /* Label for the button that shows the magnifier */
 "control.feature.magnifier.show" = "Mostrar";
 
 /* Text for VoiceOver for the show magnifier button */
-"control.feature.magnifier.show.tts" = "Show Magnifier";
+"control.feature.magnifier.show.tts" = "Mostrar magnificador de pantalla";
 
 /* Title for the help window for the show magnifier button */
-"control.feature.magnifier.show.help.title" = "Activa un lente de lupa";
+"control.feature.magnifier.show.help.title" = "Activa el magnificador de pantalla";
 
 /* Message for the help window for the show magnifier button */
-"control.feature.magnifier.show.help.message" = "La lupa sigue su ratón. Su ratón puede hacer clic a través de la caja.";
+"control.feature.magnifier.show.help.message" = "El magnificador de pantalla sigue su ratón. Puede hacer click con el ratón a través del área magnificada.";
 
 /* Label for the button that hides the magnifier */
 "control.feature.magnifier.hide" = "Ocultar";
 
 /* Text for VoiceOver for the hide magnifier button */
-"control.feature.magnifier.hide.tts" = "Ocultar lupa";
+"control.feature.magnifier.hide.tts" = "Ocultar magnificador de pantalla";
 
 /* Title for the help window for the hide magnifier button */
-"control.feature.magnifier.hide.help.title" = "Desactiva la lupa";
+"control.feature.magnifier.hide.help.title" = "Desactiva el magnificador de pantalla";
 
 /* Message for the help window for the hide magnifier button */
-"control.feature.magnifier.hide.help.message" = "Para cambiar la configuración de la lupa, haga clic derecho sobre el botón.";
+"control.feature.magnifier.hide.help.message" = "Para cambiar la configuración del magnificador de pantalla, use el botón derecho del ratón.";
 
 /* Label for the button that shows the magnifier */
-"control.feature.magnifier.on" = "En";
+"control.feature.magnifier.on" = "Activado";
 
 /* Title for the help window for the show ("on") magnifier button */
-"control.feature.magnifier.on.help.title" = "Enciende la lupa";
+"control.feature.magnifier.on.help.title" = "Activa el magnificador de pantalla";
 
 /* Message for the help window for the show ("on") magnifier button */
 "control.feature.magnifier.on.help.message" = "Aumenta el área alrededor de tu ratón";
@@ -287,7 +287,7 @@
 "control.feature.contrastcolordarknight.title" = "Contraste y color";
 
 /* Label for the button that toggles high contrast */
-"control.feature.contrastcolordarknight.contrast" = "Contrast";
+"control.feature.contrastcolordarknight.contrast" = "Contraste";
 
 /* Text for VoiceOver for the contrast button */
 "control.feature.contrastcolordarknight.contrast.tts" = "Contrast encendido, apagado";
@@ -392,7 +392,7 @@
 "control.feature.usbdrives.open.help.message" = "Abre y muestra los archivos de todas las unidades USB conectadas al ordenador.";
 
 /* Label for the button that safely ejects all usb drives */
-"control.feature.usbdrives.eject" = "Eject";
+"control.feature.usbdrives.eject" = "Expulsar";
 
 /* Title for the help window for the "eject usb drives" button" */
 "control.feature.usbdrives.eject.help.title" = "Expulsar todas las unidades USB";
