@@ -514,6 +514,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         Session.shared.open {
             NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: Session.shared)
             
+            AppDelegate.shared.countly_RecordEvent("signIn")
+
             // TODO: previously in Morphic Basic for macOS, a user's cloud preferences were applied when they logged in; this behavior may need to be split (based on whether they're logging in to get their morphicbars...or logging in to get their preferences)
             let userInfo = notification.userInfo ?? [:]
             if !(userInfo["isRegister"] as? Bool ?? false) {
