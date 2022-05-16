@@ -117,7 +117,9 @@ public class MorphicNetworkInterface {
                     // copy and capture the MAC Address as an array of bytes
                     var macAddressAsBytes = [UInt8](repeating: 0, count: Int(kIOEthernetAddressSize))
                     macAddressAsData.copyBytes(to: &macAddressAsBytes, count: macAddressAsBytes.count)
-                    result.append(macAddressAsBytes)
+                    if MorphicNetworkInterface.isEmptyOrAllZeroes(macAddressAsBytes) == false {
+                        result.append(macAddressAsBytes)
+                    }
                 }
             }
             
@@ -125,6 +127,21 @@ public class MorphicNetworkInterface {
         }
 
         return result
+    }
+    
+    private static func isEmptyOrAllZeroes(_ value: [UInt8]) -> Bool {
+        if value.count == 0 {
+            return true
+        }
+        
+        for element in value {
+            if element != 0 {
+                return false
+            }
+        }
+        
+        // if there was at least one byte and all bytes were zeroes, then return true
+        return true
     }
     
 }
