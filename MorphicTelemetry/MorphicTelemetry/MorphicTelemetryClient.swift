@@ -24,6 +24,7 @@
 import Foundation
 import MQTTNIO
 import NIO
+import MorphicCore
 
 public class MorphicTelemetryClient {
 
@@ -293,8 +294,7 @@ public class MorphicTelemetryClient {
         })
     }
     
-    private struct MqttEventMessage: Codable
-    {
+    private struct MqttEventMessage: Codable {
         var id: UUID
         var recordType: String
         var recordVersion: Int
@@ -305,6 +305,7 @@ public class MorphicTelemetryClient {
         var osName: String
         var osVersion: String
         var eventName: String
+        var data: TelemetryEventData?
         
         enum CodingKeys: String, CodingKey {
             case id
@@ -317,10 +318,62 @@ public class MorphicTelemetryClient {
             case osName = "os_name"
             case osVersion = "os_version"
             case eventName = "event_name"
+            case data = "data"
         }
     }
+    
+    public struct SessionTelemetryEventData: Codable {
+        public var state: String
+        public var sessionId: String
+        
+        public init(state: String, sessionId: String) {
+            self.state = state
+            self.sessionId = sessionId
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case state
+            case sessionId = "session_id"
+        }
+    }
+    
+    public enum TelemetryEventData: Codable {
+        case session(SessionTelemetryEventData)
+        
+        // MARK: - Decodable
+        
+        // NOTE: ideally, we would decode the telemetry event data based on the event name rather than trying to determine its type through deserialization; in Morphic telemetry v2 we should do this decoding based on the parent's event_name property instead
+        public init(from decoder: Decoder) throws {
+            // SessionTelemetryEventData
+            if let value = try? decoder.singleValueContainer().decode(SessionTelemetryEventData.self) {
+                self = .session(value)
+                return
+            }
+            
+            throw DecodingError.unknownType
+        }
+        
+        enum DecodingError : Error {
+            case unknownType
+        }
 
+        // MARK: - Encodable
+        
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.singleValueContainer()
+            
+            switch self {
+            case .session(let data):
+                try container.encode(data)
+            }
+        }
+    }
+    
     public func enqueueActionMessage(eventName: String) {
+        self.enqueueActionMessage(eventName: eventName, data: nil)
+    }
+    
+    public func enqueueActionMessage(eventName: String, data: TelemetryEventData?) {
         // NOTE: we capture the timestamp up front just to alleviate any potential for the timestamp to be captured late
         let capturedAtTimestamp = Date()
 
@@ -337,7 +390,9 @@ public class MorphicTelemetryClient {
             softwareVersion: self.softwareVersion,
             osName: "macOS",
             osVersion: osVersionAsString,
-            eventName: eventName)
+            eventName: eventName,
+            data: data
+        )
 
         // add the actionMessage to our outgoing message queue; do this via the same DispatchQueue which dequeues messages from the queue
         messagesToSendQueue.async {
