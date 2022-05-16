@@ -70,6 +70,7 @@
 		9D4B24C225143F8700F0B2E2 /* GeneralPreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */; };
 		9D59F47E24A6B3040004C35B /* CBBlueLightClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D0AF77524A4613D007E177E /* CBBlueLightClient.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */; };
+		9D6264162832B32900CB4224 /* MorphicNetworkInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D6264152832B32900CB4224 /* MorphicNetworkInterface.swift */; };
 		9D68EA512797273200AC3A88 /* MorphicMouse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D68EA502797273200AC3A88 /* MorphicMouse.swift */; };
 		9DC0D42A25E6587500E17D9E /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 311336532427FB3400686AF6 /* MorphicCore.framework */; };
 		9DC0D42B25E6587500E17D9E /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 311336532427FB3400686AF6 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -179,6 +180,7 @@
 		9D4B24BE25143D0000F0B2E2 /* GeneralUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralUIAutomations.swift; sourceTree = "<group>"; };
 		9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralPreferencesElement.swift; sourceTree = "<group>"; };
 		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
+		9D6264152832B32900CB4224 /* MorphicNetworkInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicNetworkInterface.swift; sourceTree = "<group>"; };
 		9D68EA502797273200AC3A88 /* MorphicMouse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicMouse.swift; sourceTree = "<group>"; };
 		9DC4FDE42536030F0051BB23 /* ApplicationServices.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApplicationServices.h; sourceTree = "<group>"; };
 		9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yAuthorization.swift; sourceTree = "<group>"; };
@@ -333,6 +335,7 @@
 				31A16BBF2423E86B0081A72C /* Input */,
 				31A16BC12423E86C0081A72C /* Language */,
 				9D68EA4F2797271F00AC3A88 /* Mouse */,
+				9D6264142832B2F500CB4224 /* Networking */,
 				31A16BBC2423E86B0081A72C /* Process */,
 				9D5EC22A24927EE200AC77B5 /* PropertyList */,
 				31A16BC92423E86C0081A72C /* Window */,
@@ -461,6 +464,14 @@
 				9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */,
 			);
 			path = PropertyList;
+			sourceTree = "<group>";
+		};
+		9D6264142832B2F500CB4224 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				9D6264152832B32900CB4224 /* MorphicNetworkInterface.swift */,
+			);
+			path = Networking;
 			sourceTree = "<group>";
 		};
 		9D68EA4F2797271F00AC3A88 /* Mouse */ = {
@@ -592,6 +603,7 @@
 				31F9AEEE24AA575B0026EBDA /* SliderElement.swift in Sources */,
 				31CE56EB244A149B00A52A7B /* Audio.swift in Sources */,
 				9D38C4E4252A2D270064FB74 /* MorphicDisplayAccessibilitySettings.swift in Sources */,
+				9D6264162832B32900CB4224 /* MorphicNetworkInterface.swift in Sources */,
 				315EEC9F24A576A50039C61D /* CellElement.swift in Sources */,
 				31A16BD22423E86C0081A72C /* MorphicWindow.swift in Sources */,
 				31A16BD12423E86C0081A72C /* MorphicAudio.swift in Sources */,
