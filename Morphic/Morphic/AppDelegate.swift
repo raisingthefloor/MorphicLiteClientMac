@@ -57,6 +57,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     private var appleKeyboardUIModeObservation: NSKeyValueObservation?
     
     private var telemetryClient: MorphicTelemetryClient?
+    private var telemetrySessionId: String?
+    private var telemetryHeartbeatTimer: Timer?
 
     private let appCastUrl: URL = {
         guard let frontEndUrlAsString = Bundle.main.infoDictionary?["FrontEndURL"] as? String else {
@@ -442,7 +444,39 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         telemetryClient.siteId = telemetrySiteId
         self.telemetryClient = telemetryClient
 
+        // create random session id
+        // NOTE: GUIDs should be lowercase; macOS outputs UUIDs as uppercase; therefore we manually lowercase them
+        let telemetrySessionId = NSUUID().uuidString.lowercased()
+        self.telemetrySessionId = telemetrySessionId
+
         telemetryClient.startSession()
+        
+        // send the first telemetry message (@session begin)
+        // NOTE: for Morphic 2.0, enqueue this message as soon as we create the telemetry client object
+        let sessionTelemetryEventData = MorphicTelemetryClient.SessionTelemetryEventData(
+            state: "begin",
+            sessionId: telemetrySessionId
+        )
+        let eventData = MorphicTelemetryClient.TelemetryEventData.session(sessionTelemetryEventData)
+        telemetryClient.enqueueActionMessage(eventName: "@session", data: eventData);
+
+        // initialize (and start) our heartbeat timer; it should send the heartbeat message every 12 hours
+        let telemetryHeartbeatTimer = Timer(timeInterval: 12 * 3600, target: self, selector: #selector(sendTelemetryHeartbeat), userInfo: nil, repeats: true)
+        self.telemetryHeartbeatTimer = telemetryHeartbeatTimer
+        RunLoop.current.add(telemetryHeartbeatTimer, forMode: .common)
+    }
+
+    @objc private func sendTelemetryHeartbeat(_ timer: Timer) {
+        guard let telemetrySessionId = self.telemetrySessionId else {
+            return
+        }
+        
+        let sessionTelemetryEventData = MorphicTelemetryClient.SessionTelemetryEventData(
+            state: "heartbeat",
+            sessionId: telemetrySessionId
+        )
+        let eventData = MorphicTelemetryClient.TelemetryEventData.session(sessionTelemetryEventData)
+        self.telemetryClient?.enqueueActionMessage(eventName: "@session", data: eventData);
     }
     
     func getApplicationVersion() -> String {
@@ -1478,6 +1512,23 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        // invalidate (stop) our telemetry heartbeat timer
+        self.telemetryHeartbeatTimer?.invalidate()
+        
+        // enqueue a session termination telemetry event
+        if let telemetrySessionId = self.telemetrySessionId {
+            let sessionTelemetryEventData = MorphicTelemetryClient.SessionTelemetryEventData(
+                state: "end",
+                sessionId: telemetrySessionId
+            )
+            let eventData = MorphicTelemetryClient.TelemetryEventData.session(sessionTelemetryEventData)
+            self.telemetryClient?.enqueueActionMessage(eventName: "@session", data: eventData);
+            
+            // TODO: in a future iteration, wait up to 2500ms for the telemetry queue to empty.  Or persist the telemetry queue to disk so that the message can be sent the next time that Morphic starts up.  Or do both.
+        }
+
+        //
+        
         var computerIsLoggingOutOrShuttingDown = false
         
         if let currentAppleEvent = NSAppleEventManager.shared().currentAppleEvent {
