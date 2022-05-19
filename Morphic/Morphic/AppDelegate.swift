@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Cocoa
+import CryptoKit
 import Countly
 import OSLog
 import MorphicCore
@@ -253,6 +254,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     //
     private func getOrCreateTelemetryIdComponents() -> TelemetryIdComponents {
+        let hasValidTelemetrySiteId = ConfigurableFeatures.shared.telemetrySiteId != nil && ConfigurableFeatures.shared.telemetrySiteId != ""
+        
         // retrieve the telemetry device ID for this device; if it doesn't exist then create a new one
         var telemetryCompositeId: String
         var telemetryCompositeIdAsOptional = UserDefaults.morphic.telemetryDeviceUuid()
@@ -266,8 +269,25 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             telemetryCompositeId = telemetryCompositeIdAsOptional
         } else {
             // create a new device uuid for purposes of telemetry
+            //
+            var anonDeviceUuid: UUID
+            // if the configuration file has a telemetry site id, hash the MAC address to derive a one-way hash for pseudonomized device telemetry; note that this will only happen when sites opt-in to site grouping by specifying the site id
+            if hasValidTelemetrySiteId == true {
+                if #available(macOS 10.15, *) {
+                    // NOTE: this derivation is used because sites often reinstall computers frequently (sometimes even daily), so this provides some pseudonomous stability with the site's telemetry data
+                    let hashedMacAddressGuid = Self.getHashedMacAddressForSiteTelemetryId()
+                    anonDeviceUuid = hashedMacAddressGuid ?? NSUUID() as UUID
+                } else {
+                    // gracefully degrade on earlier versions (i.e. macOS 10.14)
+                    anonDeviceUuid = NSUUID() as UUID
+                }
+            } else {
+                // for non-siteID computers, just generate a UUID
+                anonDeviceUuid = NSUUID() as UUID
+            }
+            
             // NOTE: GUIDs should be lowercase; macOS outputs UUIDs as uppercase; therefore we manually lowercase them
-            telemetryCompositeId = "D_" + NSUUID().uuidString.lowercased()
+            telemetryCompositeId = "D_" + anonDeviceUuid.uuidString.lowercased()
             UserDefaults.morphic.set(telemetryDeviceUuid: telemetryCompositeId)
         }
         
@@ -464,6 +484,87 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         let telemetryHeartbeatTimer = Timer(timeInterval: 12 * 3600, target: self, selector: #selector(sendTelemetryHeartbeat), userInfo: nil, repeats: true)
         self.telemetryHeartbeatTimer = telemetryHeartbeatTimer
         RunLoop.current.add(telemetryHeartbeatTimer, forMode: .common)
+    }
+    
+    // NOTE: this function returns nil if no network interface MAC could be determined
+    @available(macOS 10.15, *)
+    private static func getHashedMacAddressForSiteTelemetryId() -> UUID?
+    {
+        // get the MAC address of the primary (built-in) network interface
+        var macAddressAsByteArray = try? MorphicNetworkInterface.macAddressOfPrimaryNetworkInterface()
+        //
+        // if we couldn't find the MAC address of a primary (built-in) network card, find _any_ network card (even an RX-only one)
+        if (macAddressAsByteArray == nil)
+        {
+            if let macAddressesOfNetworkInterfaces = try? MorphicNetworkInterface.macAddressesOfNetworkInterfaces() {
+                if macAddressesOfNetworkInterfaces.count > 0 {
+                    macAddressAsByteArray = macAddressesOfNetworkInterfaces.first
+                }
+            }
+        }
+        //
+        // if we couldn't find any network interface with a non-zero MAC, then return nil
+        if (macAddressAsByteArray == nil)
+        {
+            return nil
+        }
+
+        let macAddressAsHexString = macAddressAsByteArray!.map({ .init(format: "%02X", $0) }).joined()
+        
+        // at this point, we have a network MAC address which is reasonably stable (i.e. is suitable to derive a telemetry GUID-sized value from)
+        // convert the mac address (hex string) to a type 3 UUID (MD5-hashed); note that we pre-pend "MAC_" before the mac address to avoid internal collissions from other types of potentially-derived site telemetry ids
+        var createUuidResult = try? Self.createVersion3Uuid(macAddressAsHexString)
+        if (createUuidResult == nil)
+        {
+            return nil
+        }
+        var macAddressAsMd5HashedGuid = createUuidResult!
+
+        return macAddressAsMd5HashedGuid
+    }
+    
+    @available(macOS 10.15, *)
+    private static func createVersion3Uuid(_ value: String) throws -> UUID {
+        let Namespace_MorphicMAC = UUID(uuidString: "472c19e2-b87f-47c2-b7d3-dd9c175a5cfa")!
+
+        let valueToHash = "{" + Namespace_MorphicMAC.uuidString.lowercased() + "}" + value;
+
+        // NOTE: type 3 GUIDs have 122 bits of "random" data; in this case, it'll be a one-way hash derived from a MAC address (so that we aren't capturing the raw mac addresses of site computers)
+        let bufferAsHashDigest = Insecure.MD5.hash(data: valueToHash.data(using: String.Encoding.utf8)!)
+        let bufferAsData = Data(bufferAsHashDigest)
+        var buffer = [UInt8](bufferAsData)
+        
+        // NOTE: MD5 should create 16-byte hashes; if it created a longer array then cut it down to size; if it created a shorter array then return an error
+        if (buffer.count > 16)
+        {
+            buffer.removeLast(buffer.count - 16)
+        }
+        else if (buffer.count < 16)
+        {
+            throw MorphicError()
+        }
+
+        // clear the fields where version and variant will live
+        buffer[6] &= 0b0000_1111;
+        buffer[8] &= 0b0011_1111;
+        //
+        // set the version and variant bits
+        buffer[6] |= 0b0011_0000; // version 3
+        buffer[8] |= 0b1000_0000; // 0b10 represents an RFC 4122 UUID
+
+        // turn the buffer into a guid
+        var reorderedBuffer = [UInt8]()
+        reorderedBuffer.reserveCapacity(16)
+        reorderedBuffer.append(contentsOf: buffer[0...3].reversed())
+        reorderedBuffer.append(contentsOf: buffer[4...5].reversed())
+        reorderedBuffer.append(contentsOf: buffer[6...7].reversed())
+        reorderedBuffer.append(contentsOf: buffer[8...9])
+        reorderedBuffer.append(contentsOf: buffer[10...15])
+        //
+        let bufferAsUuid = NSUUID(uuidBytes: &reorderedBuffer) as UUID
+
+        return bufferAsUuid;
+
     }
 
     @objc private func sendTelemetryHeartbeat(_ timer: Timer) {
