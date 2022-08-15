@@ -144,6 +144,8 @@ public class MorphicBarItem {
             transformedInteroperable["feature"] = "screensnip"
         case "volume":
             transformedInteroperable["feature"] = "volumewithoutmute"
+        case "usbopeneject":
+            transformedInteroperable["feature"] = "usbopeneject"
         default:
             // no other action items are supported
             break
