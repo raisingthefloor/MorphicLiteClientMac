@@ -23,20 +23,26 @@
 
 import Cocoa
 
-@main
-class AppDelegate: NSObject, NSApplicationDelegate {
-
-    @IBOutlet var window: NSWindow!
-
-
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // Insert code here to initialize your application
+public class MorphicProcess {
+    // MARK: - Process opening (starting)
+    
+    public enum OpenProcessError: Error {
+        case osError(Error)
     }
-
-    func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
+    public static func openProcess(at url: URL, arguments: [String], activate: Bool, hide: Bool) async throws -> NSRunningApplication {
+        //
+        let config = NSWorkspace.OpenConfiguration()
+        config.activates = activate
+        config.hides = hide
+        config.arguments = arguments
+        
+        do {
+            let runningApplication = try await NSWorkspace.shared.openApplication(at: url, configuration: config)
+            return runningApplication
+        } catch let error {
+            // NOTE: in the future, we may want to consider
+            throw OpenProcessError.osError(error)
+        }
     }
-
-
+    
 }
-

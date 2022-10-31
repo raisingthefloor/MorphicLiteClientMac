@@ -21,22 +21,14 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Cocoa
+#import <Foundation/Foundation.h>
 
-@main
-class AppDelegate: NSObject, NSApplicationDelegate {
+//! Project version number for MorphicCore.
+FOUNDATION_EXPORT double MorphicCoreVersionNumber;
 
-    @IBOutlet var window: NSWindow!
+//! Project version string for MorphicCore.
+FOUNDATION_EXPORT const unsigned char MorphicCoreVersionString[];
 
+// In this header, you should import all the public headers of your framework using statements like #import <MorphicCore/PublicHeader.h>
 
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // Insert code here to initialize your application
-    }
-
-    func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
-    }
-
-
-}
 

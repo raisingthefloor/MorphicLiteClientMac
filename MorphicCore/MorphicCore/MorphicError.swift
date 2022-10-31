@@ -1,4 +1,4 @@
-// Copyright 2020-2022 Raising the Floor - US, Inc.
+// Copyright 2021-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
@@ -21,22 +21,6 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Cocoa
-
-@main
-class AppDelegate: NSObject, NSApplicationDelegate {
-
-    @IBOutlet var window: NSWindow!
-
-
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // Insert code here to initialize your application
-    }
-
-    func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
-    }
-
-
+public enum MorphicError: Error {
+    case unspecified
 }
-
