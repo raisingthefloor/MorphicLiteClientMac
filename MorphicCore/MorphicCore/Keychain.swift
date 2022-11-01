@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -195,13 +195,13 @@ public class Keychain {
             status = SecItemAdd(attributes as CFDictionary, nil)
             if status != errSecSuccess {
                 os_log(.error, log: logger, "Failed to add item to keychain: %d", status)
-                throw MorphicError()
+                throw MorphicError.unspecified
             }
             return
         }
         if status != errSecSuccess {
             os_log(.error, log: logger, "Failed to update item in keychain: %d", status)
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
     }
     
@@ -209,7 +209,7 @@ public class Keychain {
         let status = SecItemDelete(query as CFDictionary)
         if status != errSecSuccess {
             os_log(.error, log: logger, "Failed to remove item from keychain: %d", status)
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
     }
     

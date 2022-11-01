@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -95,12 +95,12 @@ public class Display {
     
     public func zoom(to percentage: Double) throws {
         guard let mode = self.mode(for: percentage) else {
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
         do {
             try MorphicDisplay.setCurrentDisplayMode(for: uuid, to: mode)
         } catch {
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
     }
     

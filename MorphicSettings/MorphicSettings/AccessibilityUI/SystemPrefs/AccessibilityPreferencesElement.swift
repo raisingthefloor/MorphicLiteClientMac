@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -35,7 +35,7 @@ public class AccessibilityPreferencesElement: UIElement {
         case zoom
 
         public var rowTitle: String {
-            get{
+            get {
                 switch self {
                 case .display:
                     return "Display"
@@ -188,8 +188,8 @@ public class AccessibilityPreferencesElement: UIElement {
     
     public func select(tabTitled title: String) throws {
         guard let _ = try tabGroup?.select(tabTitled: title) else {
-	    throw MorphicError()
-	}
+            throw MorphicError.unspecified
+        }
     }
     
 }

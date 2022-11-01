@@ -1,10 +1,10 @@
-// Copyright 2021 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -56,7 +56,7 @@ public class MorphicDisk {
         //
         guard let openScript = NSAppleScript(source: script as String) else {
             NSLog("Could not create AppleScript to open folder at path: \(path)")
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
         // TODO: determine is it's possible to capture any error and return it to our caller
         openScript.executeAndReturnError(nil)
@@ -248,7 +248,7 @@ public class MorphicDisk {
 
         // STEP 1: create a matching dictionary which filters on USB interfaces of mass storage devices
         guard let matchingDictionary = MorphicDisk.createMatchingDictionaryForUsbDriveInterfaces() else {
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
 
         // STEP 2: iterate through each currently-attached USB device's interfaces which match our matching dictionary's filter criteria
@@ -258,7 +258,7 @@ public class MorphicDisk {
         // NOTE: the IOServiceGetMatchingServices function automatically releases the matching dictionary (so we do not need to CFRelease in non-Swift languages)
         if IOServiceGetMatchingServices(kIOMasterPortDefault, matchingDictionary, &interfaceIterator) != KERN_SUCCESS {
             // if we could not get an interface iterator, throw an error
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
         //
         // iterate through each device interface in the I/O registry which matched, using our interface iterator

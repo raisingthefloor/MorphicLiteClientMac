@@ -1,10 +1,10 @@
-// Copyright 2020-2021 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -541,7 +541,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
         else if (buffer.count < 16)
         {
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
 
         // clear the fields where version and variant will live
@@ -2499,7 +2499,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     ///This function fires if the bar window loses focus.
     func windowDidResignKey(_ notification: Notification) {
         morphicBarWindow?.windowIsKey = false
-        morphicBarWindow?.morphicBarViewController.closeTray(nil)   //get rid of this to have the tray stay open when defocused
+        morphicBarWindow?.morphicBarViewController.closeTray(nil)   // get rid of this to have the tray stay open when defocused
         QuickHelpWindow.hide()
     }
      
