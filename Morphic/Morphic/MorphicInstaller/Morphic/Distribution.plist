@@ -6,7 +6,7 @@
     <options customize="never" require-scripts="false" hostArchitectures="x86_64"/>
     <volume-check>
         <allowed-os-versions>
-            <os-version min="10.14"/>
+            <os-version min="10.15"/>
         </allowed-os-versions>
     </volume-check>
     <choices-outline>

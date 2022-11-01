@@ -46,7 +46,7 @@ public class AccessibilityPreferencesElement: UIElement {
                         // >= macOS 11.0
                         return "Spoken Content"
                     } else {
-                        // >= macOS 10.14
+                        // macOS 10.15
                         return "Speech"
                     }
                 case .voiceOver:
@@ -71,7 +71,7 @@ public class AccessibilityPreferencesElement: UIElement {
                 return
             }
             AsyncUtils.wait(atMost: 1.0, for: {
-	    	// macOS 10.14-10.15
+	    	// macOS 10.15
                 if self.tabGroup?.tab(titled: "Overview") != nil {
                     return true
                 }
@@ -118,7 +118,7 @@ public class AccessibilityPreferencesElement: UIElement {
                 // >= macOS 11.0
                 waitForCheckboxTitle = "Speak announcements"
             } else {
-                // >= macOS 10.14
+                // macOS 10.15
                 waitForCheckboxTitle = "Enable announcements"
             }
             //

@@ -592,7 +592,7 @@ public class Session {
                     
                     var communityBarsItems: [String: String] = [:]
                     
-                    // encode each community bar's items into JSON and then store them all
+                    // encode each custom bar's items into JSON and then store them all
                     for (userCommunityId, userCommunityDetails) in detailsByUserCommunityId! {
                         let userCommunityDetailsAsJsonData = try! JSONEncoder().encode(userCommunityDetails)
                         let userCommunityDetailsAsJsonString = String(data: userCommunityDetailsAsJsonData, encoding: .utf8)!
@@ -908,7 +908,7 @@ public extension NSNotification.Name {
 }
 
 public extension Preferences.Key {
-    /// The preference key that stores which items appear in each community on the MorphicBar (Morphic Community managed community bar)
+    /// The preference key that stores which items appear in each community on the MorphicBar (Morphic Community managed custom bar)
     static var morphicCustomMorphicBarsAsJson = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicBars", preference: "customMorphicBarsAsJson")
 }
 

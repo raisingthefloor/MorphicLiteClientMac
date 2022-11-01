@@ -116,7 +116,7 @@ public class MorphicBarItem {
             return nil
         }
                 
-        // map the community action items to traditional control items (by mapping their interoperable data)
+        // map the custom action items to traditional control items (by mapping their interoperable data)
         
         var transformedInteroperable: [String: Interoperable?] = [:]
         

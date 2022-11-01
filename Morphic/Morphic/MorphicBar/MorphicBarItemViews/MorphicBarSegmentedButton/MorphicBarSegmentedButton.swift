@@ -36,7 +36,7 @@ import Countly
 // Given the styling and behavior constraints, it seemed better to make a custom control
 // that draws a series of connected buttons than to use NSSegmentedControl.
 class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
-    // NOTE: in macOS 10.14, setting integerValue to a segment index # doesn't necessarily persist the value; selectedSegmentIndex serves the purpose explicitly instead
+    // NOTE: in macOS 10.14 (and possibly newer releases), setting integerValue to a segment index # doesn't necessarily persist the value; selectedSegmentIndex serves the purpose explicitly instead
     var selectedSegmentIndex: Int = 0
     
     // MARK: - Creating a Segmented Button

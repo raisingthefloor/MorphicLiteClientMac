@@ -67,7 +67,7 @@ public class SpeakSelectedTextEnabledUIAutomation: SpeechCheckboxUIAutomation {
             // >= macOS 11.0
             return "Speak selection"
         } else {
-            // >= macOS 10.14
+            // macOS 10.15
             return "Speak selected text when the key is pressed"
         }
     }

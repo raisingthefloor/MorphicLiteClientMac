@@ -200,7 +200,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     self.reloadCustomMorphicBars() {
                         success, error in
                     }
-                    // schedule daily refreshes of the Morphic community bars
+                    // schedule daily refreshes of the Morphic custom bars
                     self.scheduleNextDailyMorphicCustomMorphicBarsRefresh()
                 }
                 DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.userDidSignin), name: .morphicSignin, object: nil)
@@ -735,7 +735,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         self.logoutMenuItem?.isHidden = (session.user == nil)
         
         if session.user != nil {
-            // reload the community bar
+            // reload the custom bar
             reloadCustomMorphicBars() {
                 success, error in
                 // NOTE: we may want to consider telling the user of the error if we can't reload the bars
@@ -1128,7 +1128,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     // NOTE: we maintain a reference to the timer so that we can cancel (invalidate) it, reschedule it, etc.
     var dailyCustomMorphicBarsRefreshTimer: Timer? = nil
     func scheduleNextDailyMorphicCustomMorphicBarsRefresh() {
-        // NOTE: we schedule a community bar reload for 3am every morning local time (+ random 0..<3600 second offset to minimize server peak loads) so that the user gets the latest community bar updates; if their computer is sleeping at 3am then Swift should execute the timer when their computer wakes up
+        // NOTE: we schedule a custom bar reload for 3am every morning local time (+ random 0..<3600 second offset to minimize server peak loads) so that the user gets the latest custom bar updates; if their computer is sleeping at 3am then Swift should execute the timer when their computer wakes up
         
         let secondsInOneDay = 24 * 60 * 60
         
@@ -1304,7 +1304,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 self.selectBasicMorphicBarMenuItem.state = .on
             }
 
-            // now populate the menu with the community names...and highlight the currently-selected community (9)with a checkmark)
+            // now populate the menu with the community names...and highlight the currently-selected community (with a checkmark)
             //
             // add in all the custom bar names
             var menuItemChecked = false
