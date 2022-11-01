@@ -1,4 +1,4 @@
-// Copyright 2020-2022 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
@@ -392,19 +392,11 @@ class MorphicBarApplicationItem: MorphicBarItem {
     }
     
     private func openApplicationUrl(_ applicationUrl: URL) {
-        if #available(macOS 10.15, *) {
-            // macOS 10.15+
-            let openConfiguration = NSWorkspace.OpenConfiguration()
-            openConfiguration.activates = true
-            NSWorkspace.shared.openApplication(at: applicationUrl, configuration: openConfiguration, completionHandler: { (application, error) in
-                // FUTURE: return an error condition (presumably via callback) if this call results in an error
-            })
-        } else {
-            // macOS 10.14
-            // FUTURE: return an error condition if this call throws an exception
-            // NOTE: this function has been deprecated (but was still available as of macOS 11.0)
-            let _ = try? NSWorkspace.shared.launchApplication(at: applicationUrl, options: [], configuration: [:])
-        }
+        let openConfiguration = NSWorkspace.OpenConfiguration()
+        openConfiguration.activates = true
+        NSWorkspace.shared.openApplication(at: applicationUrl, configuration: openConfiguration, completionHandler: { (application, error) in
+            // FUTURE: return an error condition (presumably via callback) if this call results in an error
+        })
     }
 
     private static func convertExeIdentifierToExecutableLaunchDetails(exe: String) -> ExecutableLaunchDetails? {
@@ -581,19 +573,7 @@ class MorphicBarControlItem: MorphicBarItem {
             let contrastHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "contrast.help.title"), message: localized.string(for: "contrast.help.message")) }
             var contrastSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "contrast"), fillColor: buttonColor, helpProvider: contrastHelpProvider, accessibilityLabel: localized.string(for: "contrast.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), learnMoreTelemetryCategory: "highContrast", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), quickDemoVideoTelemetryCategory: "highContrast", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilityDisplayDisplay, category: "highContrast") }, style: style)
             contrastSegment.getStateBlock = {
-                if #available(macOS 10.15, *) {
-                    return MorphicDisplayAccessibilitySettings.increaseContrastEnabled
-                } else {
-                    guard let displayDefaults = UserDefaults(suiteName: "com.apple.universalaccess") else {
-                        NSLog("Could not access defaults domain: \"com.apple.universalaccess\"")
-                        return false // NOTE: ideally we'd return nil
-                    }
-                    guard let contrastEnabled = displayDefaults.value(forKey: "increaseContrast") as? Bool else {
-                        return false // NOTE: ideally we'd return nil
-                    }
-
-                    return contrastEnabled
-                }
+                return MorphicDisplayAccessibilitySettings.increaseContrastEnabled
             }
             contrastSegment.accessibilityLabelByState = [
                 .on: localized.string(for: "contrast.tts.enabled"),
@@ -1042,7 +1022,7 @@ class MorphicBarControlItem: MorphicBarItem {
             keyOptions = hotKeyInfo.keyOptions
             hotKeyEnabled = hotKeyInfo.enabled
         } else {
-            // NOTE: in macOS 10.14+ (tested through 10.15), the hotkeys are not written out to the appropriate .plist file until one of them is changed (including disabling the enabled-by-default feature); the current strategy is to assume the default key combo in this scenario, but in the future we may want to consider reverse engineering the HI libraries or Keyboard system preferences pane to find another way to get this data
+            // NOTE: in macOS 10.15+ (tested through 10.15), the hotkeys are not written out to the appropriate .plist file until one of them is changed (including disabling the enabled-by-default feature); the current strategy is to assume the default key combo in this scenario, but in the future we may want to consider reverse engineering the HI libraries or Keyboard system preferences pane to find another way to get this data
             
             // default values
             keyCode = CGKeyCode(kVK_ANSI_4)
@@ -1071,42 +1051,28 @@ class MorphicBarControlItem: MorphicBarItem {
     }
 
     private func setColorFilterState(_ state: Bool, completion: @escaping (Bool) -> Void) {
-        if #available(macOS 10.15, *) {
-            // if the inverse state is "enabled", then make sure we've set the initial color filter type
-            if state == true {
-                // set the default color filter type (if it hasn't already been set)
-                let didSetInitialColorFilterType = Session.shared.bool(for: .morphicDidSetInitialColorFilterType) ?? false
-                if didSetInitialColorFilterType == false {
-                    // NOTE: we get no "success/failure" from the following function, so we just have to assume success
-                    AppDelegate.shared.setInitialColorFilterType()
-                }
+        // if the inverse state is "enabled", then make sure we've set the initial color filter type
+        if state == true {
+            // set the default color filter type (if it hasn't already been set)
+            let didSetInitialColorFilterType = Session.shared.bool(for: .morphicDidSetInitialColorFilterType) ?? false
+            if didSetInitialColorFilterType == false {
+                // NOTE: we get no "success/failure" from the following function, so we just have to assume success
+                AppDelegate.shared.setInitialColorFilterType()
             }
-            
-            // apply the inverse state
-            //
-            // NOTE: due to current limitations in our implementation, we are unable to disable "invert colors" (which is the desired effect when enabling color filters); this is unlikely to be a common scenario, but if we run into it then we need to use the backup UI automation mechanism
-            // NOTE: in the future, we should rework the settings handlers so that they can call native code which can launch a UI automation (instead of being either/or)...and then move this logic to the settings handler code
-            if state == true && MorphicDisplayAccessibilitySettings.invertColorsEnabled == true {
-                Session.shared.apply(state, for: .macosColorFilterEnabled, completion: completion)
-            } else {
-                MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(state)
-                completion(true)
-            }
+        }
+        
+        // apply the inverse state
+        //
+        // NOTE: due to current limitations in our implementation, we are unable to disable "invert colors" (which is the desired effect when enabling color filters); this is unlikely to be a common scenario, but if we run into it then we need to use the backup UI automation mechanism
+        // NOTE: in the future, we should rework the settings handlers so that they can call native code which can launch a UI automation (instead of being either/or)...and then move this logic to the settings handler code
+        if state == true && MorphicDisplayAccessibilitySettings.invertColorsEnabled == true {
+            Session.shared.apply(state, for: .macosColorFilterEnabled, completion: completion)
         } else {
-            // macOS 10.14
-            self.warnColorVisionFiltersNotAvailableOnMacOS10_14()
+            MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(state)
+            completion(true)
         }
     }
      
-    private func warnColorVisionFiltersNotAvailableOnMacOS10_14() {
-        let alert = NSAlert()
-        alert.messageText = "Color Vision filters not available."
-        alert.informativeText = "Color Vision filters (including color blindness filters) are not available in this older version of macOS.\n\nPlease upgrade to macOS 10.15 (Catalina) or newer to use this feature."
-        alert.alertStyle = .informational
-        alert.addButton(withTitle: "OK")
-        _ = alert.runModal()
-    }
-    
     @objc
     func colorvision(_ sender: Any?) {
         guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
@@ -1231,7 +1197,7 @@ class MorphicBarControlItem: MorphicBarItem {
 //                let verifyIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
 //                senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyIncreaseContrastEnabled)
 //            } else {
-                // macOS 10.14
+                // macOS 10.14 (and tested to work in newer verisons of macOS such as macOS 10.15)
              
                 // capture the current "contrast enabled" setting
                 let increaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
@@ -1253,38 +1219,33 @@ class MorphicBarControlItem: MorphicBarItem {
         case 1:
             // color (color filter)
             
-            if #available(macOS 10.15, *) {
-                // capture the current "color filter enabled" setting
-                SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
-                    value in
-                    guard let valueAsBoolean = value as? Bool else {
-                        // could not get current setting
-                        return
-                    }
-                    // calculate the inverse state
-                    let newValue = !valueAsBoolean
+            // capture the current "color filter enabled" setting
+            SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+                value in
+                guard let valueAsBoolean = value as? Bool else {
+                    // could not get current setting
+                    return
+                }
+                // calculate the inverse state
+                let newValue = !valueAsBoolean
+                
+                defer {
+                    (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newValue ? "colorFiltersOn" : "colorFiltersOff")
+                }
+                
+                self.setColorFilterState(newValue) {
+                    success in
                     
-                    defer {
-                        (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newValue ? "colorFiltersOn" : "colorFiltersOff")
-                    }
-                    
-                    self.setColorFilterState(newValue) {
-                        success in
-                        
-                        // NOTE: we do not currently have a mechanism to report success/failure
-                        SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
-                            verifyValue in
-                            guard let verifyValueAsBoolean = verifyValue as? Bool else {
-                                // could not get current setting
-                                return
-                            }
-                            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyValueAsBoolean)
+                    // NOTE: we do not currently have a mechanism to report success/failure
+                    SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+                        verifyValue in
+                        guard let verifyValueAsBoolean = verifyValue as? Bool else {
+                            // could not get current setting
+                            return
                         }
+                        senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyValueAsBoolean)
                     }
                 }
-            } else {
-                // macOS 10.14
-                self.warnColorVisionFiltersNotAvailableOnMacOS10_14()
             }
         case 2:
             // dark

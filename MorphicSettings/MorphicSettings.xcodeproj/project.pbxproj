@@ -827,7 +827,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MODULEMAP_FILE = MorphicSettings/module.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicSettings;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -862,7 +862,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MODULEMAP_FILE = MorphicSettings/module.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicSettings;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";

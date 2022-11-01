@@ -154,9 +154,7 @@ public class Keychain {
     
     private func first(matching query: [CFString: CFTypeRef]) -> [CFString: CFTypeRef]? {
         var query = query
-        if #available(macOS 10.15, *) {
-            query[kSecUseDataProtectionKeychain] = kCFBooleanTrue
-        }
+        query[kSecUseDataProtectionKeychain] = kCFBooleanTrue
         query[kSecReturnData] = kCFBooleanTrue
         query[kSecReturnAttributes] = kCFBooleanTrue
         query[kSecMatchLimit] = kSecMatchLimitOne
@@ -183,9 +181,7 @@ public class Keychain {
     
     private func save(attributes: [CFString: CFTypeRef], matching query: [CFString: CFTypeRef]) throws {
         var attributes = attributes
-        if #available(macOS 10.15, *) {
-            attributes[kSecUseDataProtectionKeychain] = kCFBooleanTrue
-        }
+        attributes[kSecUseDataProtectionKeychain] = kCFBooleanTrue
         attributes[kSecAttrSynchronizable] = kCFBooleanFalse
         attributes[kSecAttrIsInvisible] = kCFBooleanFalse
         attributes[kSecAttrModificationDate] = Date() as CFDate

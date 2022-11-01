@@ -273,14 +273,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             var anonDeviceUuid: UUID
             // if the configuration file has a telemetry site id, hash the MAC address to derive a one-way hash for pseudonomized device telemetry; note that this will only happen when sites opt-in to site grouping by specifying the site id
             if hasValidTelemetrySiteId == true {
-                if #available(macOS 10.15, *) {
-                    // NOTE: this derivation is used because sites often reinstall computers frequently (sometimes even daily), so this provides some pseudonomous stability with the site's telemetry data
-                    let hashedMacAddressGuid = Self.getHashedMacAddressForSiteTelemetryId()
-                    anonDeviceUuid = hashedMacAddressGuid ?? NSUUID() as UUID
-                } else {
-                    // gracefully degrade on earlier versions (i.e. macOS 10.14)
-                    anonDeviceUuid = NSUUID() as UUID
-                }
+                // NOTE: this derivation is used because sites often reinstall computers frequently (sometimes even daily), so this provides some pseudonomous stability with the site's telemetry data
+                let hashedMacAddressGuid = Self.getHashedMacAddressForSiteTelemetryId()
+                anonDeviceUuid = hashedMacAddressGuid ?? NSUUID() as UUID
             } else {
                 // for non-siteID computers, just generate a UUID
                 anonDeviceUuid = NSUUID() as UUID
@@ -487,7 +482,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     // NOTE: this function returns nil if no network interface MAC could be determined
-    @available(macOS 10.15, *)
     private static func getHashedMacAddressForSiteTelemetryId() -> UUID?
     {
         // get the MAC address of the primary (built-in) network interface
@@ -513,17 +507,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         
         // at this point, we have a network MAC address which is reasonably stable (i.e. is suitable to derive a telemetry GUID-sized value from)
         // convert the mac address (hex string) to a type 3 UUID (MD5-hashed); note that we pre-pend "MAC_" before the mac address to avoid internal collissions from other types of potentially-derived site telemetry ids
-        var createUuidResult = try? Self.createVersion3Uuid(macAddressAsHexString)
-        if (createUuidResult == nil)
-        {
+        guard let createUuidResult = try? Self.createVersion3Uuid(macAddressAsHexString) else {
             return nil
         }
-        var macAddressAsMd5HashedGuid = createUuidResult!
+        let macAddressAsMd5HashedGuid = createUuidResult
 
         return macAddressAsMd5HashedGuid
     }
     
-    @available(macOS 10.15, *)
     private static func createVersion3Uuid(_ value: String) throws -> UUID {
         let Namespace_MorphicMAC = UUID(uuidString: "472c19e2-b87f-47c2-b7d3-dd9c175a5cfa")!
 
@@ -1061,12 +1052,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         let waitTimeForSettingCompletion = TimeInterval(10) // 10 seconds max per setting
         
         // color filters
-        if #available(macOS 10.15, *) {
-            // we do not currently have a mechanism to report success/failure
-            let currentColorFiltersIsEnabled = MorphicDisplayAccessibilitySettings.colorFiltersEnabled
-            if currentColorFiltersIsEnabled != defaultColorFiltersIsEnabled {
-                MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(defaultColorFiltersIsEnabled)
-            }
+        //
+        // NOTE: we do not currently have a mechanism to report success/failure
+        let currentColorFiltersIsEnabled = MorphicDisplayAccessibilitySettings.colorFiltersEnabled
+        if currentColorFiltersIsEnabled != defaultColorFiltersIsEnabled {
+            MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(defaultColorFiltersIsEnabled)
         }
         //
         // night mode
