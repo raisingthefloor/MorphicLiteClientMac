@@ -157,6 +157,8 @@
 		9D4D47C326CBFE2500AC6E3D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9D4D47C526CBFE2500AC6E3D /* Localizable.strings */; };
 		9D53D8E92784A9B700A96576 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */; };
 		9D53D8EA2784A9B700A96576 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */; };
+		9D69161F2911B7EA002F3A21 /* MorphicMacOSNative.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */; };
+		9D6916202911B7EA002F3A21 /* MorphicMacOSNative.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9D77209E252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
 		9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */; };
 		9D8CEB132507AECF001276E4 /* MorphicBarButtonItemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */; };
@@ -215,6 +217,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				31751B4B2444E04300EEDF14 /* MorphicCore.framework in Embed Frameworks */,
+				9D6916202911B7EA002F3A21 /* MorphicMacOSNative.framework in Embed Frameworks */,
 				31751B4F2444E04300EEDF14 /* MorphicSettings.framework in Embed Frameworks */,
 				31751B4D2444E04300EEDF14 /* MorphicService.framework in Embed Frameworks */,
 				9D3B9EDF26BC7BEB00C9F174 /* MorphicTelemetry.framework in Embed Frameworks */,
@@ -431,6 +434,7 @@
 		9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsLinkActions.swift; sourceTree = "<group>"; };
 		9D4D47CA26CBFE5400AC6E3D /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperlinkTextField.swift; sourceTree = "<group>"; };
+		9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicMacOSNative.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicImageUtils.swift; sourceTree = "<group>"; };
 		9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutBoxWindowController.swift; sourceTree = "<group>"; };
 		9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemIcon.swift; sourceTree = "<group>"; };
@@ -496,6 +500,7 @@
 				31751B4A2444E04300EEDF14 /* MorphicCore.framework in Frameworks */,
 				9D1FA1CF251A31990008559D /* ServiceManagement.framework in Frameworks */,
 				9D3530A525C2860200F8D590 /* Countly in Frameworks */,
+				9D69161F2911B7EA002F3A21 /* MorphicMacOSNative.framework in Frameworks */,
 				9D3B9EDE26BC7BEB00C9F174 /* MorphicTelemetry.framework in Frameworks */,
 				31751B4E2444E04300EEDF14 /* MorphicSettings.framework in Frameworks */,
 				31751B4C2444E04300EEDF14 /* MorphicService.framework in Frameworks */,
@@ -639,6 +644,7 @@
 		31751B462444E04300EEDF14 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */,
 				9D3B9EDD26BC7BEB00C9F174 /* MorphicTelemetry.framework */,
 				9D1FA1CE251A31990008559D /* ServiceManagement.framework */,
 				31751B472444E04300EEDF14 /* MorphicCore.framework */,

@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicMacOSNative
 
 public class TableElement: UIElement {
     

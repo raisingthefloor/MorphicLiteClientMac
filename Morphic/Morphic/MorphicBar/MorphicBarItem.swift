@@ -25,6 +25,7 @@ import Carbon.HIToolbox
 import Cocoa
 import Countly
 import MorphicCore
+import MorphicMacOSNative
 import MorphicSettings
 import MorphicService
 import OSLog

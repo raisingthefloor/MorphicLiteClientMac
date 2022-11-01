@@ -21,36 +21,14 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Foundation
-import MorphicCore
-import MorphicMacOSNative
+#import <Foundation/Foundation.h>
 
-public class TabGroupElement: UIElement {
-    
-    public func select(tabTitled title: String) throws {
-        guard let tab = self.tab(titled: title) else {
-            throw MorphicError.unspecified
-        }
-        try tab.select()
-    }
-    
-    public func tab(titled: String) -> TabElement? {
-        guard let tabs: [MorphicA11yUIElement] = try? accessibilityElement.values(forAttribute: .tabs) else {
-            return nil
-        }
-        guard let tab = tabs.first(where: {
-            do {
-                let title: String = try $0.value(forAttribute: .title)
-                return title == titled
-            } catch {
-                // if we could not retrieve the title attribute, return false
-                // NOTE: in the future, we should consider bubbling-up errors
-                return false
-            }
-        }) else {
-            return nil
-        }
-        return TabElement(accessibilityElement: tab)
-    }
-    
-}
+//! Project version number for MorphicMacOSNative.
+FOUNDATION_EXPORT double MorphicMacOSNativeVersionNumber;
+
+//! Project version string for MorphicMacOSNative.
+FOUNDATION_EXPORT const unsigned char MorphicMacOSNativeVersionString[];
+
+// In this header, you should import all the public headers of your framework using statements like #import <MorphicMacOSNative/PublicHeader.h>
+
+

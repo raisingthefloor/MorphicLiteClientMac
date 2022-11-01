@@ -21,8 +21,8 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Foundation
 import Cocoa
+import MorphicMacOSNative
 import OSLog
 
 private let logger = OSLog(subsystem: "MorphicSettings", category: "UIElement")

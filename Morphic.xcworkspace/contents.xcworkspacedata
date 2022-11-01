@@ -8,6 +8,9 @@
       location = "group:MorphicCore/MorphicCore.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:MorphicMacOSNative/MorphicMacOSNative.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:MorphicSettings/MorphicSettings.xcodeproj">
    </FileRef>
    <FileRef

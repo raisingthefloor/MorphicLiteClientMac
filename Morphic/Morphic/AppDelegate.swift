@@ -26,6 +26,7 @@ import CryptoKit
 import Countly
 import OSLog
 import MorphicCore
+import MorphicMacOSNative
 import MorphicService
 import MorphicSettings
 import MorphicTelemetry

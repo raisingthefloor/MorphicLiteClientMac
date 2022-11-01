@@ -23,6 +23,7 @@
 
 import Foundation
 import MorphicCore
+import MorphicMacOSNative
 
 // NOTE: the MorphicInput class contains the functionality used by Obj-C and Swift applications
 
