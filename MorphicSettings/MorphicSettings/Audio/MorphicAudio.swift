@@ -63,7 +63,7 @@ public class MorphicAudio {
         var volume: Float = 0
         var sizeOfFloat = UInt32(MemoryLayout<Float>.size)
 
-        var volumePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMaster)
+        var volumePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMainVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMaster)
 
         // verify that the output device has a volume property to get
         if AudioObjectHasProperty(AudioObjectID(audioDeviceId), &volumePropertyAddress) == false {
@@ -91,7 +91,7 @@ public class MorphicAudio {
         var newVolume = volume
         let sizeOfFloat = UInt32(MemoryLayout<Float>.size)
         
-        var volumePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMaster)
+        var volumePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMainVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMaster)
 
         // verify that the output device has a volume property
         if AudioObjectHasProperty(AudioObjectID(audioDeviceId), &volumePropertyAddress) == false {
@@ -121,7 +121,7 @@ public class MorphicAudio {
     }
     
     public static func enableVolumeChangeNotifications(for audioDeviceId: UInt32) throws {
-        var volumePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMasterVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMaster)
+        var volumePropertyAddress = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMainVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMaster)
 
         // verify that the output device has a volume property to watch
         if AudioObjectHasProperty(AudioObjectID(audioDeviceId), &volumePropertyAddress) == false {
