@@ -70,6 +70,7 @@ stages:
             useXcpretty: false
             signingOption: '$(signingOption)'
             args: '$(extraArgs)'
+        - task: Xcode@5
           displayName: Build MorphicMacOSNative
           inputs:
             actions: 'build'
