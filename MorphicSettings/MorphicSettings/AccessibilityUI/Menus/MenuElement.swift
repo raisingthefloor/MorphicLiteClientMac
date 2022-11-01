@@ -33,7 +33,7 @@ public class MenuElement: UIElement {
     }
     
     public var items: [MenuItemElement] {
-        guard let children = accessibilityElement.children() else {
+        guard let children = try? accessibilityElement.children() else {
             return []
         }
         var items = [MenuItemElement]()

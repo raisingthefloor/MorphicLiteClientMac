@@ -27,8 +27,8 @@ import MorphicCore
 public class SliderElement: UIElement {
     
     public var value: Double? {
-        get{
-            accessibilityElement.value(forAttribute: .value)
+        get {
+            try? accessibilityElement.value(forAttribute: .value)
         }
     }
     

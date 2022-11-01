@@ -34,7 +34,7 @@ public class CheckboxElement: UIElement {
     }
     
     public var state: State {
-        guard let checked: Bool = accessibilityElement.value(forAttribute: .value) else {
+        guard let checked: Bool = try? accessibilityElement.value(forAttribute: .value) else {
             return .unknown
         }
         if checked {

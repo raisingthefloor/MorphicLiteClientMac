@@ -131,7 +131,7 @@ public class ApplicationElement: UIElement {
             guard accessibilityElement != nil else {
                 return nil
             }
-            guard let mainWindow: MorphicA11yUIElement = accessibilityElement.value(forAttribute: .mainWindow) else {
+            guard let mainWindow: MorphicA11yUIElement = try? accessibilityElement.value(forAttribute: .mainWindow) else {
                 return nil
             }
             return WindowElement(accessibilityElement: mainWindow)
@@ -143,7 +143,7 @@ public class ApplicationElement: UIElement {
             guard accessibilityElement != nil else {
                 return nil
             }
-            guard let windows: [MorphicA11yUIElement] = accessibilityElement.values(forAttribute: .windows) else {
+            guard let windows: [MorphicA11yUIElement] = try? accessibilityElement.values(forAttribute: .windows) else {
                 return nil
             }
 

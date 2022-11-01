@@ -38,14 +38,14 @@ public class KeyboardPreferencesElement: UIElement {
         }
         var targetRow: RowElement? = nil
         for row in table.rows {
-            guard let rowChildren = row.accessibilityElement.children() else {
+            guard let rowChildren = try? row.accessibilityElement.children() else {
                 continue
             }
             for rowChild in rowChildren {
-                if let childRoleAsString: String = rowChild.value(forAttribute: .role) {
+                if let childRoleAsString: String = try? rowChild.value(forAttribute: .role) {
                     let childRole = NSAccessibility.Role(rawValue: childRoleAsString)
                     if childRole == .staticText {
-                        if let currentRowTitle: String = rowChild.value(forAttribute: .value) {
+                        if let currentRowTitle: String = try? rowChild.value(forAttribute: .value) {
                             if currentRowTitle == rowTitle {
                                 targetRow = row
                                 break

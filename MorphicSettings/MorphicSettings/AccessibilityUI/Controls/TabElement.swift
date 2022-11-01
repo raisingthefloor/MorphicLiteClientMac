@@ -33,7 +33,7 @@ public class TabElement: UIElement {
     }
     
     public var state: State {
-        guard let selected: Bool = accessibilityElement.value(forAttribute: .value) else {
+        guard let selected: Bool = try? accessibilityElement.value(forAttribute: .value) else {
             return .unknown
         }
         if selected{

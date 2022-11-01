@@ -34,10 +34,19 @@ public class TabGroupElement: UIElement {
     }
     
     public func tab(titled: String) -> TabElement? {
-        guard let tabs: [MorphicA11yUIElement] = accessibilityElement.values(forAttribute: .tabs) else {
+        guard let tabs: [MorphicA11yUIElement] = try? accessibilityElement.values(forAttribute: .tabs) else {
             return nil
         }
-        guard let tab = tabs.first(where: { $0.value(forAttribute: .title) == titled }) else {
+        guard let tab = tabs.first(where: {
+            do {
+                let title: String = try $0.value(forAttribute: .title)
+                return title == titled
+            } catch {
+                // if we could not retrieve the title attribute, return false
+                // NOTE: in the future, we should consider bubbling-up errors
+                return false
+            }
+        }) else {
             return nil
         }
         return TabElement(accessibilityElement: tab)

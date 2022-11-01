@@ -27,8 +27,12 @@ import MorphicCore
 public class ButtonElement: UIElement {
     
     public var enabled: Bool {
-        get{
-            return accessibilityElement.supportedActions()?.contains(.press) ?? false
+        get {
+            guard let supportedActions = try? accessibilityElement.supportedActions() else {
+	    	// NOTE: in the future, we should consider bubbling up any errors
+	    	return false
+	    }
+            return supportedActions.contains(.press) ?? false
         }
     }
     
