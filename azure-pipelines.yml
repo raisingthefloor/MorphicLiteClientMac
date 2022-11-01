@@ -17,11 +17,9 @@ variables:
 # Provides: P12_PASSWORD, APPLICATION_SIGNING_IDENTITY, INSTALLER_SIGNING_IDENTITY, ALTOOL_USERNAME, ALTOOL_APP_PASSWORD
 - group: 'macos-signing'
 - name: sdk
-  value: macosx11.0
-- name: xcodeVersionNum
-  value: 12.2
-- name: XCODE_12.2_DEVELOPER_DIR
-  value: '/Applications/Xcode_12.2.app/Contents/Developer'
+  value: macosx12.3
+- name: xcodeDeveloperDir
+  value: '/Applications/Xcode_14.0.app/Contents/Developer'
 - name: configuration
   value: 'Release'
 - name: workspacePath
@@ -35,7 +33,7 @@ variables:
   value: 'OTHER_CODE_SIGN_FLAGS="--timestamp" CURRENT_PROJECT_VERSION="$(Build.BuildNumber)"'
 
 pool:
-  vmImage: 'macOS-10.15'
+  vmImage: 'macOS-12'
 
 stages:
   - stage: build
@@ -67,7 +65,20 @@ stages:
             scheme: 'MorphicCore'
             configuration: '$(configuration)'
             xcWorkspacePath: '$(workspacePath)'
-            xcodeVersion: $(xcodeVersionNum)
+            xcodeVersion: specifyPath
+            xcodeDeveloperDir: $(xcodeDeveloperDir)
+            useXcpretty: false
+            signingOption: '$(signingOption)'
+            args: '$(extraArgs)'
+          displayName: Build MorphicMacOSNative
+          inputs:
+            actions: 'build'
+            sdk: $(sdk)
+            scheme: 'MorphicMacOSNative'
+            configuration: '$(configuration)'
+            xcWorkspacePath: '$(workspacePath)'
+            xcodeVersion: specifyPath
+            xcodeDeveloperDir: $(xcodeDeveloperDir)
             useXcpretty: false
             signingOption: '$(signingOption)'
             args: '$(extraArgs)'
@@ -79,7 +90,8 @@ stages:
             scheme: 'MorphicTelemetry'
             configuration: '$(configuration)'
             xcWorkspacePath: '$(workspacePath)'
-            xcodeVersion: $(xcodeVersionNum)
+            xcodeVersion: specifyPath
+            xcodeDeveloperDir: $(xcodeDeveloperDir)
             useXcpretty: false
             signingOption: '$(signingOption)'
             args: '$(extraArgs)'
@@ -91,7 +103,8 @@ stages:
             scheme: 'MorphicService'
             configuration: '$(configuration)'
             xcWorkspacePath: '$(workspacePath)'
-            xcodeVersion: $(xcodeVersionNum)
+            xcodeVersion: specifyPath
+            xcodeDeveloperDir: $(xcodeDeveloperDir)
             useXcpretty: false
             signingOption: '$(signingOption)'
             args: '$(extraArgs)'
@@ -103,7 +116,8 @@ stages:
             scheme: 'MorphicSettings'
             configuration: '$(configuration)'
             xcWorkspacePath: '$(workspacePath)'
-            xcodeVersion: $(xcodeVersionNum)
+            xcodeVersion: specifyPath
+            xcodeDeveloperDir: $(xcodeDeveloperDir)
             useXcpretty: false
             signingOption: '$(signingOption)'
             args: '$(extraArgs)'
@@ -115,7 +129,8 @@ stages:
             scheme: 'MorphicConfigurator'
             configuration: '$(configuration)'
             xcWorkspacePath: '$(workspacePath)'
-            xcodeVersion: $(xcodeVersionNum)
+            xcodeVersion: specifyPath
+            xcodeDeveloperDir: $(xcodeDeveloperDir)
             useXcpretty: false
             signingOption: '$(signingOption)'
             args: '$(extraArgs)'
@@ -127,7 +142,8 @@ stages:
             scheme: 'MorphicLauncher'
             configuration: '$(configuration)'
             xcWorkspacePath: '$(workspacePath)'
-            xcodeVersion: $(xcodeVersionNum)
+            xcodeVersion: specifyPath
+            xcodeDeveloperDir: $(xcodeDeveloperDir)
             useXcpretty: false
             signingOption: '$(signingOption)'
             args: '$(extraArgs)'
@@ -139,7 +155,8 @@ stages:
             scheme: 'MorphicDockApp'
             configuration: '$(configuration)'
             xcWorkspacePath: '$(workspacePath)'
-            xcodeVersion: $(xcodeVersionNum)
+            xcodeVersion: specifyPath
+            xcodeDeveloperDir: $(xcodeDeveloperDir)
             useXcpretty: false
             signingOption: '$(signingOption)'
             args: '$(extraArgs)'
@@ -151,7 +168,8 @@ stages:
             scheme: 'Morphic'
             configuration: '$(configuration)'
             xcWorkspacePath: '$(workspacePath)'
-            xcodeVersion: $(xcodeVersionNum)
+            xcodeVersion: specifyPath
+            xcodeDeveloperDir: $(xcodeDeveloperDir)
             useXcpretty: false
             signingOption: '$(signingOption)'
             args: '$(extraArgs)'
