@@ -21,7 +21,7 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Foundation
+import Cocoa
 import MorphicCore
 import MorphicMacOSNative
 

@@ -11,6 +11,9 @@
       location = "group:MorphicMacOSNative/MorphicMacOSNative.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:MorphicUIAutomation/MorphicUIAutomation.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:MorphicSettings/MorphicSettings.xcodeproj">
    </FileRef>
    <FileRef

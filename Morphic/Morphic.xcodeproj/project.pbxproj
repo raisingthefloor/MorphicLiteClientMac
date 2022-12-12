@@ -163,6 +163,8 @@
 		9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */; };
 		9D8CEB132507AECF001276E4 /* MorphicBarButtonItemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */; };
 		9D8CEB152507AED7001276E4 /* MorphicBarButtonItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */; };
+		9D8EB4EE2947AA2B006F2DDA /* MorphicUIAutomation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D8EB4ED2947AA2B006F2DDA /* MorphicUIAutomation.framework */; };
+		9D8EB4EF2947AA2B006F2DDA /* MorphicUIAutomation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D8EB4ED2947AA2B006F2DDA /* MorphicUIAutomation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9D94BB22262A046400BF4992 /* logo_opera.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB21262A046400BF4992 /* logo_opera.pdf */; };
 		9D94BB25262A046A00BF4992 /* logo_firefox.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB24262A046A00BF4992 /* logo_firefox.pdf */; };
 		9D94BB28262A047100BF4992 /* logo_chrome.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB27262A047100BF4992 /* logo_chrome.pdf */; };
@@ -220,6 +222,7 @@
 				9D6916202911B7EA002F3A21 /* MorphicMacOSNative.framework in Embed Frameworks */,
 				31751B4F2444E04300EEDF14 /* MorphicSettings.framework in Embed Frameworks */,
 				31751B4D2444E04300EEDF14 /* MorphicService.framework in Embed Frameworks */,
+				9D8EB4EF2947AA2B006F2DDA /* MorphicUIAutomation.framework in Embed Frameworks */,
 				9D3B9EDF26BC7BEB00C9F174 /* MorphicTelemetry.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -439,6 +442,7 @@
 		9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutBoxWindowController.swift; sourceTree = "<group>"; };
 		9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemIcon.swift; sourceTree = "<group>"; };
 		9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemView.swift; sourceTree = "<group>"; };
+		9D8EB4ED2947AA2B006F2DDA /* MorphicUIAutomation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicUIAutomation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D94BB21262A046400BF4992 /* logo_opera.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_opera.pdf; sourceTree = "<group>"; };
 		9D94BB24262A046A00BF4992 /* logo_firefox.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_firefox.pdf; sourceTree = "<group>"; };
 		9D94BB27262A047100BF4992 /* logo_chrome.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_chrome.pdf; sourceTree = "<group>"; };
@@ -499,6 +503,7 @@
 			files = (
 				31751B4A2444E04300EEDF14 /* MorphicCore.framework in Frameworks */,
 				9D1FA1CF251A31990008559D /* ServiceManagement.framework in Frameworks */,
+				9D8EB4EE2947AA2B006F2DDA /* MorphicUIAutomation.framework in Frameworks */,
 				9D3530A525C2860200F8D590 /* Countly in Frameworks */,
 				9D69161F2911B7EA002F3A21 /* MorphicMacOSNative.framework in Frameworks */,
 				9D3B9EDE26BC7BEB00C9F174 /* MorphicTelemetry.framework in Frameworks */,
@@ -644,6 +649,7 @@
 		31751B462444E04300EEDF14 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9D8EB4ED2947AA2B006F2DDA /* MorphicUIAutomation.framework */,
 				9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */,
 				9D3B9EDD26BC7BEB00C9F174 /* MorphicTelemetry.framework */,
 				9D1FA1CE251A31990008559D /* ServiceManagement.framework */,
