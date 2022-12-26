@@ -36,7 +36,7 @@ import Countly
 // Given the styling and behavior constraints, it seemed better to make a custom control
 // that draws a series of connected buttons than to use NSSegmentedControl.
 class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
-    // NOTE: in macOS 10.14, setting integerValue to a segment index # doesn't necessarily persist the value; selectedSegmentIndex serves the purpose explicitly instead
+    // NOTE: in macOS 10.14 (and possibly newer releases), setting integerValue to a segment index # doesn't necessarily persist the value; selectedSegmentIndex serves the purpose explicitly instead
     var selectedSegmentIndex: Int = 0
     
     // MARK: - Creating a Segmented Button
@@ -100,7 +100,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         var learnMoreTelemetryCategory: String? = nil
         var quickDemoVideoUrl: URL? = nil
         var quickDemoVideoTelemetryCategory: String? = nil
-        var settingsBlock: (() -> Void)? = nil
+        var settingsBlock: (() async throws -> Void)? = nil
         
         var getStateBlock: (() -> Bool)? = nil
         //
@@ -116,7 +116,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         var accessibilityLabelByState: [NSControl.StateValue : String]? = [:]
         
         /// Create a segment with a title
-        init(title: String, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() -> Void)?, style: MorphicBarControlItemStyle) {
+        init(title: String, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() async throws -> Void)?, style: MorphicBarControlItemStyle) {
             self.title = title
             self.helpProvider = helpProvider
             self.fillColor = fillColor
@@ -130,7 +130,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         }
         
         /// Create a segment with an icon
-        init(icon: NSImage, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() -> Void)?, style: MorphicBarControlItemStyle) {
+        init(icon: NSImage, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() async throws -> Void)?, style: MorphicBarControlItemStyle) {
             self.icon = icon
             self.helpProvider = helpProvider
             self.fillColor = fillColor
@@ -733,8 +733,6 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         guard let settingsBlock = selectedSegment.settingsBlock else {
             return
         }
-        DispatchQueue.main.async {
-            settingsBlock()
-        }
+        Task { try? await settingsBlock() }
     }
 }

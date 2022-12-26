@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -28,12 +28,19 @@ public protocol FoundationA11yUIAttributeValueCompatible {
 extension NSNumber: FoundationA11yUIAttributeValueCompatible {
 }
 
+public enum MorphicA11yUIAttributeValueCompatibleError: Error {
+    case couldNotConvertValue
+    case couldNotInitializeA11yUIElement(initError: MorphicA11yUIElement.InitError)
+    case unsupportedAxValueType(_ axValueType: AXValueType)
+    case unsupportedCoreFoundationType(_ cfTypeId: CFTypeID)
+}
+
 public protocol MorphicA11yUIAttributeValueCompatible: FoundationA11yUIAttributeValueCompatible {
-    static func fromCFTypeRef(_ value: AnyObject) -> FoundationA11yUIAttributeValueCompatible?
+    static func fromCFTypeRef(_ value: AnyObject) throws -> FoundationA11yUIAttributeValueCompatible
     func toCFTypeRef() -> CFTypeRef
 }
 extension MorphicA11yUIAttributeValueCompatible {
-    public static func fromCFTypeRef(_ axValue: CFTypeRef) -> FoundationA11yUIAttributeValueCompatible? {
+    public static func fromCFTypeRef(_ axValue: CFTypeRef) throws -> FoundationA11yUIAttributeValueCompatible {
         // determine Core Foundation type (so we can handle UIElements separately from Core Foundation data types
         let coreFoundationTypeId = CFGetTypeID(axValue)
 
@@ -47,10 +54,12 @@ extension MorphicA11yUIAttributeValueCompatible {
         if coreFoundationTypeId == AXUIElementGetTypeID() {
             let valueAsAxValue = axValue as! AXUIElement
             
-            guard let result = MorphicA11yUIElement(axUiElement: valueAsAxValue) else {
-                return nil
+            do {
+                let result = try MorphicA11yUIElement(axUiElement: valueAsAxValue)
+                return result
+            } catch let error as MorphicA11yUIElement.InitError {
+                throw MorphicA11yUIAttributeValueCompatibleError.couldNotInitializeA11yUIElement(initError: error)
             }
-            return result
         } else if coreFoundationTypeId == AXValueGetTypeID() {
             // get type of AXValue
             let valueAsAxValue: AXValue = axValue as! AXValue
@@ -60,32 +69,40 @@ extension MorphicA11yUIAttributeValueCompatible {
             case .cfRange:
                 var result: CFRange = CFRange()
                 let success = AXValueGetValue(valueAsAxValue, axValueType, &result)
-                precondition(success == true, "Fatal error: could not convert value")
+                if success == false {
+                    throw MorphicA11yUIAttributeValueCompatibleError.couldNotConvertValue
+                }
                 return result
             case .cgPoint:
                 var result: CGPoint = CGPoint()
                 let success = AXValueGetValue(valueAsAxValue, axValueType, &result)
-                precondition(success == true, "Fatal error: could not convert value")
+                if success == false {
+                    throw MorphicA11yUIAttributeValueCompatibleError.couldNotConvertValue
+                }
                 return result
             case .cgRect:
                 var result: CGRect = CGRect()
                 let success = AXValueGetValue(valueAsAxValue, axValueType, &result)
-                precondition(success == true, "Fatal error: could not convert value")
+                if success == false {
+                    throw MorphicA11yUIAttributeValueCompatibleError.couldNotConvertValue
+                }
                 return result
             case .cgSize:
                 var result: CGSize = CGSize()
                 let success = AXValueGetValue(valueAsAxValue, axValueType, &result)
-                precondition(success == true, "Fatal error: could not convert value")
+                if success == false {
+                    throw MorphicA11yUIAttributeValueCompatibleError.couldNotConvertValue
+                }
                 return result
             case .axError:
-                fatalError("not supported")
+                throw MorphicA11yUIAttributeValueCompatibleError.unsupportedAxValueType(axValueType)
             case .illegal:
-                fatalError("not supported")
+                throw MorphicA11yUIAttributeValueCompatibleError.unsupportedAxValueType(axValueType)
             @unknown default:
-                fatalError("not supported")
+                throw MorphicA11yUIAttributeValueCompatibleError.unsupportedAxValueType(axValueType)
             }
         } else {
-            fatalError("not supported")
+            throw MorphicA11yUIAttributeValueCompatibleError.unsupportedCoreFoundationType(coreFoundationTypeId)
         }
     }
 }

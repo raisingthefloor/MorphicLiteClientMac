@@ -1,10 +1,10 @@
-// Copyright 2020-2021 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -26,6 +26,7 @@ import CryptoKit
 import Countly
 import OSLog
 import MorphicCore
+import MorphicMacOSNative
 import MorphicService
 import MorphicSettings
 import MorphicTelemetry
@@ -199,7 +200,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     self.reloadCustomMorphicBars() {
                         success, error in
                     }
-                    // schedule daily refreshes of the Morphic community bars
+                    // schedule daily refreshes of the Morphic custom bars
                     self.scheduleNextDailyMorphicCustomMorphicBarsRefresh()
                 }
                 DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.userDidSignin), name: .morphicSignin, object: nil)
@@ -273,14 +274,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             var anonDeviceUuid: UUID
             // if the configuration file has a telemetry site id, hash the MAC address to derive a one-way hash for pseudonomized device telemetry; note that this will only happen when sites opt-in to site grouping by specifying the site id
             if hasValidTelemetrySiteId == true {
-                if #available(macOS 10.15, *) {
-                    // NOTE: this derivation is used because sites often reinstall computers frequently (sometimes even daily), so this provides some pseudonomous stability with the site's telemetry data
-                    let hashedMacAddressGuid = Self.getHashedMacAddressForSiteTelemetryId()
-                    anonDeviceUuid = hashedMacAddressGuid ?? NSUUID() as UUID
-                } else {
-                    // gracefully degrade on earlier versions (i.e. macOS 10.14)
-                    anonDeviceUuid = NSUUID() as UUID
-                }
+                // NOTE: this derivation is used because sites often reinstall computers frequently (sometimes even daily), so this provides some pseudonomous stability with the site's telemetry data
+                let hashedMacAddressGuid = Self.getHashedMacAddressForSiteTelemetryId()
+                anonDeviceUuid = hashedMacAddressGuid ?? NSUUID() as UUID
             } else {
                 // for non-siteID computers, just generate a UUID
                 anonDeviceUuid = NSUUID() as UUID
@@ -487,7 +483,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     // NOTE: this function returns nil if no network interface MAC could be determined
-    @available(macOS 10.15, *)
     private static func getHashedMacAddressForSiteTelemetryId() -> UUID?
     {
         // get the MAC address of the primary (built-in) network interface
@@ -513,17 +508,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         
         // at this point, we have a network MAC address which is reasonably stable (i.e. is suitable to derive a telemetry GUID-sized value from)
         // convert the mac address (hex string) to a type 3 UUID (MD5-hashed); note that we pre-pend "MAC_" before the mac address to avoid internal collissions from other types of potentially-derived site telemetry ids
-        var createUuidResult = try? Self.createVersion3Uuid(macAddressAsHexString)
-        if (createUuidResult == nil)
-        {
+        guard let createUuidResult = try? Self.createVersion3Uuid(macAddressAsHexString) else {
             return nil
         }
-        var macAddressAsMd5HashedGuid = createUuidResult!
+        let macAddressAsMd5HashedGuid = createUuidResult
 
         return macAddressAsMd5HashedGuid
     }
     
-    @available(macOS 10.15, *)
     private static func createVersion3Uuid(_ value: String) throws -> UUID {
         let Namespace_MorphicMAC = UUID(uuidString: "472c19e2-b87f-47c2-b7d3-dd9c175a5cfa")!
 
@@ -541,7 +533,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
         else if (buffer.count < 16)
         {
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
 
         // clear the fields where version and variant will live
@@ -743,7 +735,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         self.logoutMenuItem?.isHidden = (session.user == nil)
         
         if session.user != nil {
-            // reload the community bar
+            // reload the custom bar
             reloadCustomMorphicBars() {
                 success, error in
                 // NOTE: we may want to consider telling the user of the error if we can't reload the bars
@@ -1061,12 +1053,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         let waitTimeForSettingCompletion = TimeInterval(10) // 10 seconds max per setting
         
         // color filters
-        if #available(macOS 10.15, *) {
-            // we do not currently have a mechanism to report success/failure
-            let currentColorFiltersIsEnabled = MorphicDisplayAccessibilitySettings.colorFiltersEnabled
-            if currentColorFiltersIsEnabled != defaultColorFiltersIsEnabled {
-                MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(defaultColorFiltersIsEnabled)
-            }
+        //
+        // NOTE: we do not currently have a mechanism to report success/failure
+        let currentColorFiltersIsEnabled = MorphicDisplayAccessibilitySettings.colorFiltersEnabled
+        if currentColorFiltersIsEnabled != defaultColorFiltersIsEnabled {
+            MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(defaultColorFiltersIsEnabled)
         }
         //
         // night mode
@@ -1137,7 +1128,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     // NOTE: we maintain a reference to the timer so that we can cancel (invalidate) it, reschedule it, etc.
     var dailyCustomMorphicBarsRefreshTimer: Timer? = nil
     func scheduleNextDailyMorphicCustomMorphicBarsRefresh() {
-        // NOTE: we schedule a community bar reload for 3am every morning local time (+ random 0..<3600 second offset to minimize server peak loads) so that the user gets the latest community bar updates; if their computer is sleeping at 3am then Swift should execute the timer when their computer wakes up
+        // NOTE: we schedule a custom bar reload for 3am every morning local time (+ random 0..<3600 second offset to minimize server peak loads) so that the user gets the latest custom bar updates; if their computer is sleeping at 3am then Swift should execute the timer when their computer wakes up
         
         let secondsInOneDay = 24 * 60 * 60
         
@@ -1313,7 +1304,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 self.selectBasicMorphicBarMenuItem.state = .on
             }
 
-            // now populate the menu with the community names...and highlight the currently-selected community (9)with a checkmark)
+            // now populate the menu with the community names...and highlight the currently-selected community (with a checkmark)
             //
             // add in all the custom bar names
             var menuItemChecked = false
@@ -2378,7 +2369,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "allAccessibility", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilityOverview)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityOverview) }
     }
     
     @IBAction
@@ -2386,7 +2377,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "brightness", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.displaysDisplay)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.displaysDisplay) }
     }
     
     @IBAction
@@ -2394,7 +2385,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "colorFilter", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayColorFilters)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayColorFilters) }
     }
     
     @IBAction
@@ -2402,7 +2393,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "highContrast", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayDisplay) }
     }
     
     @IBAction
@@ -2410,7 +2401,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "darkMode", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.general)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.appearance) }
     }
 
     @IBAction
@@ -2418,7 +2409,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "language", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.languageandregionGeneral)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.languageandregionGeneral) }
     }
     
     @IBAction
@@ -2426,7 +2417,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "magnifier", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilityZoom)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityZoom) }
     }
 
     @IBAction
@@ -2434,7 +2425,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "mouse", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.mouse)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.mouse) }
     }
 
     @IBAction
@@ -2442,7 +2433,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "nightMode", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.displaysNightShift)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.displaysNightShift) }
     }
     
     @IBAction
@@ -2450,7 +2441,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "pointerSize", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayCursor)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayCursor) }
     }
     
     @IBAction
@@ -2458,7 +2449,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "readAloud", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilitySpeech)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilitySpeech) }
     }
 
     @IBAction
@@ -2466,7 +2457,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "keyboard", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.keyboardKeyboard)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.keyboardKeyboard) }
     }
     
     //
@@ -2499,7 +2490,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     ///This function fires if the bar window loses focus.
     func windowDidResignKey(_ notification: Notification) {
         morphicBarWindow?.windowIsKey = false
-        morphicBarWindow?.morphicBarViewController.closeTray(nil)   //get rid of this to have the tray stay open when defocused
+        morphicBarWindow?.morphicBarViewController.closeTray(nil)   // get rid of this to have the tray stay open when defocused
         QuickHelpWindow.hide()
     }
      

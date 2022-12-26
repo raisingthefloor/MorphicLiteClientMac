@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -28,7 +28,9 @@ public enum MorphicA11yAuthorizationError: Error {
 }
 
 public struct MorphicA11yAuthorization {
+    // NOTE: this function does not prompt the computer's user if authorization status is not already approved
     public static func authorizationStatus() -> Bool {
+        // NOTE: this function call also adds Morphic to the list of possible applications to authorize in the accessibility section
         return AXIsProcessTrusted()
     }
 
@@ -49,7 +51,7 @@ public struct MorphicA11yAuthorization {
             NotificationCenter.default.post(name: .morphicPermissionsPopup, object: nil)
         }
 
-	return response
+        return response
     }
     
     public static func promptUserToGrantAuthorization() {

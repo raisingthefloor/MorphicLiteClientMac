@@ -40,7 +40,6 @@
 		31A0A5862405967600166668 /* MorphicSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0A5852405967600166668 /* MorphicSettingsTests.swift */; };
 		31A0A5882405967600166668 /* MorphicSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = 31A0A57A2405967600166668 /* MorphicSettings.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		31A16BCB2423E86C0081A72C /* MorphicLaunchDaemonsAndAgents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A16BBD2423E86B0081A72C /* MorphicLaunchDaemonsAndAgents.swift */; };
-		31A16BCC2423E86C0081A72C /* MorphicProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A16BBE2423E86B0081A72C /* MorphicProcess.swift */; };
 		31A16BCD2423E86C0081A72C /* MorphicInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A16BC02423E86B0081A72C /* MorphicInput.swift */; };
 		31A16BCE2423E86C0081A72C /* MorphicLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A16BC22423E86C0081A72C /* MorphicLanguage.swift */; };
 		31A16BCF2423E86C0081A72C /* MorphicDisk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A16BC42423E86C0081A72C /* MorphicDisk.swift */; };
@@ -54,8 +53,6 @@
 		31F9AEE524A803B90026EBDA /* ZoomUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F9AEE424A803B90026EBDA /* ZoomUIAutomations.swift */; };
 		31F9AEEC24AA54BF0026EBDA /* PopUpButtonElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F9AEEB24AA54BF0026EBDA /* PopUpButtonElement.swift */; };
 		31F9AEEE24AA575B0026EBDA /* SliderElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F9AEED24AA575B0026EBDA /* SliderElement.swift */; };
-		9D0AF73724A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF73624A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift */; };
-		9D0AF73924A0FB78007E177E /* MorphicA11yUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */; };
 		9D0AF77324A460A9007E177E /* CoreBrightness.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0AF77224A460A9007E177E /* CoreBrightness.framework */; };
 		9D0AF77724A4616E007E177E /* MorphicNightShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0AF77624A4616E007E177E /* MorphicNightShift.swift */; };
 		9D38C4C52528F09B0064FB74 /* SkyLight.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D38C4C42528F0810064FB74 /* SkyLight.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -72,10 +69,11 @@
 		9D5EC22C24927EFD00AC77B5 /* MorphicPropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */; };
 		9D6264162832B32900CB4224 /* MorphicNetworkInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D6264152832B32900CB4224 /* MorphicNetworkInterface.swift */; };
 		9D68EA512797273200AC3A88 /* MorphicMouse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D68EA502797273200AC3A88 /* MorphicMouse.swift */; };
+		9D6916222911B835002F3A21 /* MorphicMacOSNative.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D6916212911B835002F3A21 /* MorphicMacOSNative.framework */; };
+		9D6916232911B835002F3A21 /* MorphicMacOSNative.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D6916212911B835002F3A21 /* MorphicMacOSNative.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9DC0D42A25E6587500E17D9E /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 311336532427FB3400686AF6 /* MorphicCore.framework */; };
 		9DC0D42B25E6587500E17D9E /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 311336532427FB3400686AF6 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9DC4FDE5253603AD0051BB23 /* ApplicationServices.h in Headers */ = {isa = PBXBuildFile; fileRef = 9DC4FDE42536030F0051BB23 /* ApplicationServices.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		9DCE209224CF1AAF00D3445B /* MorphicA11yAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */; };
 		9DD22FBA24DCB8B800C2FA52 /* SpeechUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */; };
 		9DD4F4842517ACCD00ADCC25 /* MousePreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F4832517ACCD00ADCC25 /* MousePreferencesElement.swift */; };
 		9DD4F48E2517ACDE00ADCC25 /* MouseUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD4F48D2517ACDE00ADCC25 /* MouseUIAutomations.swift */; };
@@ -104,6 +102,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				9D6916232911B835002F3A21 /* MorphicMacOSNative.framework in Embed Frameworks */,
 				9DC0D42B25E6587500E17D9E /* MorphicCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -149,7 +148,6 @@
 		31A0A5852405967600166668 /* MorphicSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicSettingsTests.swift; sourceTree = "<group>"; };
 		31A0A5872405967600166668 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		31A16BBD2423E86B0081A72C /* MorphicLaunchDaemonsAndAgents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorphicLaunchDaemonsAndAgents.swift; sourceTree = "<group>"; };
-		31A16BBE2423E86B0081A72C /* MorphicProcess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorphicProcess.swift; sourceTree = "<group>"; };
 		31A16BC02423E86B0081A72C /* MorphicInput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorphicInput.swift; sourceTree = "<group>"; };
 		31A16BC22423E86C0081A72C /* MorphicLanguage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorphicLanguage.swift; sourceTree = "<group>"; };
 		31A16BC42423E86C0081A72C /* MorphicDisk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorphicDisk.swift; sourceTree = "<group>"; };
@@ -163,8 +161,6 @@
 		31F9AEE424A803B90026EBDA /* ZoomUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomUIAutomations.swift; sourceTree = "<group>"; };
 		31F9AEEB24AA54BF0026EBDA /* PopUpButtonElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpButtonElement.swift; sourceTree = "<group>"; };
 		31F9AEED24AA575B0026EBDA /* SliderElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderElement.swift; sourceTree = "<group>"; };
-		9D0AF73624A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yUIAttributeValueCompatible.swift; sourceTree = "<group>"; };
-		9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yUIElement.swift; sourceTree = "<group>"; };
 		9D0AF77224A460A9007E177E /* CoreBrightness.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBrightness.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/PrivateFrameworks/CoreBrightness.framework; sourceTree = DEVELOPER_DIR; };
 		9D0AF77524A4613D007E177E /* CBBlueLightClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBBlueLightClient.h; sourceTree = "<group>"; };
 		9D0AF77624A4616E007E177E /* MorphicNightShift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicNightShift.swift; sourceTree = "<group>"; };
@@ -182,8 +178,8 @@
 		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
 		9D6264152832B32900CB4224 /* MorphicNetworkInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicNetworkInterface.swift; sourceTree = "<group>"; };
 		9D68EA502797273200AC3A88 /* MorphicMouse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicMouse.swift; sourceTree = "<group>"; };
+		9D6916212911B835002F3A21 /* MorphicMacOSNative.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicMacOSNative.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DC4FDE42536030F0051BB23 /* ApplicationServices.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApplicationServices.h; sourceTree = "<group>"; };
-		9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yAuthorization.swift; sourceTree = "<group>"; };
 		9DD22FB924DCB8B800C2FA52 /* SpeechUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechUIAutomations.swift; sourceTree = "<group>"; };
 		9DD4F4832517ACCD00ADCC25 /* MousePreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MousePreferencesElement.swift; sourceTree = "<group>"; };
 		9DD4F48D2517ACDE00ADCC25 /* MouseUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MouseUIAutomations.swift; sourceTree = "<group>"; };
@@ -204,6 +200,7 @@
 				9D0AF77324A460A9007E177E /* CoreBrightness.framework in Frameworks */,
 				9DC0D42A25E6587500E17D9E /* MorphicCore.framework in Frameworks */,
 				9D38C4F4252A38870064FB74 /* UniversalAccess.framework in Frameworks */,
+				9D6916222911B835002F3A21 /* MorphicMacOSNative.framework in Frameworks */,
 				9D38C4C92528F0D70064FB74 /* SkyLight.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -222,6 +219,7 @@
 		311336522427FB3400686AF6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9D6916212911B835002F3A21 /* MorphicMacOSNative.framework */,
 				9D38C4F3252A38870064FB74 /* UniversalAccess.framework */,
 				9D38C4EB252A33AD0064FB74 /* MediaAccessibility.framework */,
 				9D38C4C82528F0D70064FB74 /* SkyLight.framework */,
@@ -371,7 +369,6 @@
 			isa = PBXGroup;
 			children = (
 				31A16BBD2423E86B0081A72C /* MorphicLaunchDaemonsAndAgents.swift */,
-				31A16BBE2423E86B0081A72C /* MorphicProcess.swift */,
 			);
 			path = Process;
 			sourceTree = "<group>";
@@ -431,9 +428,6 @@
 		9D0AF73524A0FB49007E177E /* AccessibilityUI */ = {
 			isa = PBXGroup;
 			children = (
-				9DCE209124CF1AAF00D3445B /* MorphicA11yAuthorization.swift */,
-				9D0AF73624A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift */,
-				9D0AF73824A0FB78007E177E /* MorphicA11yUIElement.swift */,
 				315EEC8424A536290039C61D /* UIElement.swift */,
 				315EECA424A5890B0039C61D /* WorkspaceElement.swift */,
 				315EEC8E24A5477E0039C61D /* ApplicationElement.swift */,
@@ -599,7 +593,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9D4B24C225143F8700F0B2E2 /* GeneralPreferencesElement.swift in Sources */,
-				9D0AF73924A0FB78007E177E /* MorphicA11yUIElement.swift in Sources */,
 				31F9AEEE24AA575B0026EBDA /* SliderElement.swift in Sources */,
 				31CE56EB244A149B00A52A7B /* Audio.swift in Sources */,
 				9D38C4E4252A2D270064FB74 /* MorphicDisplayAccessibilitySettings.swift in Sources */,
@@ -610,7 +603,6 @@
 				315EEC9724A56DF20039C61D /* AccessibilityPreferencesElement.swift in Sources */,
 				312DBFFD24A2C683002FB951 /* CaptureSession.swift in Sources */,
 				9D0AF77724A4616E007E177E /* MorphicNightShift.swift in Sources */,
-				31A16BCC2423E86C0081A72C /* MorphicProcess.swift in Sources */,
 				315EEC9124A547B70039C61D /* WindowElement.swift in Sources */,
 				312973EF24A275D7000F5ED1 /* Setting.swift in Sources */,
 				31F9AEEC24AA54BF0026EBDA /* PopUpButtonElement.swift in Sources */,
@@ -639,12 +631,10 @@
 				9D38C4CF2528F11A0064FB74 /* MorphicDisplayAppearance.swift in Sources */,
 				3137AC4424B0FBC600CE3808 /* MenuItemElement.swift in Sources */,
 				315EEC8324A530970039C61D /* SystemPreferences.swift in Sources */,
-				9DCE209224CF1AAF00D3445B /* MorphicA11yAuthorization.swift in Sources */,
 				31A16BCF2423E86C0081A72C /* MorphicDisk.swift in Sources */,
 				3113364D2427F01100686AF6 /* SettingsManager.swift in Sources */,
 				31A16BCD2423E86C0081A72C /* MorphicInput.swift in Sources */,
 				9DD4F4842517ACCD00ADCC25 /* MousePreferencesElement.swift in Sources */,
-				9D0AF73724A0FB67007E177E /* MorphicA11yUIAttributeValueCompatible.swift in Sources */,
 				9DD4F49A2517AF1600ADCC25 /* KeyboardPreferencesElement.swift in Sources */,
 				9D4B24BF25143D0000F0B2E2 /* GeneralUIAutomations.swift in Sources */,
 				31CE56E22448C8F700A52A7B /* SettingHandler.swift in Sources */,
@@ -735,7 +725,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -792,7 +782,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -827,7 +817,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MODULEMAP_FILE = MorphicSettings/module.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicSettings;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -862,7 +852,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MODULEMAP_FILE = MorphicSettings/module.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicSettings;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";

@@ -1,4 +1,4 @@
-// Copyright 2022 Raising the Floor - US, Inc.
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
@@ -60,7 +60,7 @@ public class MorphicNetworkInterface {
         // create a CFMutableDictionary to match services using the Ethernet interface class
         guard let matchingDictionaryAsCFDictionary = IOServiceMatching(kIOEthernetInterfaceClass) else {
             // if we could not create the matching dictionary, throw an error
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
         // NOTE: Swift manages Core Foundation memory for us; in other languages, be sure to CFRelease
 //        defer {
@@ -81,7 +81,7 @@ public class MorphicNetworkInterface {
         // NOTE: the IOServiceGetMatchingServices function automatically releases the matching dictionary (so we do not need to CFRelease in non-Swift languages)
         if IOServiceGetMatchingServices(kIOMasterPortDefault, matchingDictionaryAsNSDictionary, &servicesIterator) != KERN_SUCCESS {
             // if we could not get an interface iterator, throw an error
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
         defer {
             IOObjectRelease(servicesIterator)

@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -592,7 +592,7 @@ public class Session {
                     
                     var communityBarsItems: [String: String] = [:]
                     
-                    // encode each community bar's items into JSON and then store them all
+                    // encode each custom bar's items into JSON and then store them all
                     for (userCommunityId, userCommunityDetails) in detailsByUserCommunityId! {
                         let userCommunityDetailsAsJsonData = try! JSONEncoder().encode(userCommunityDetails)
                         let userCommunityDetailsAsJsonString = String(data: userCommunityDetailsAsJsonData, encoding: .utf8)!
@@ -822,31 +822,6 @@ extension URLRequest {
     }
 }
 
-extension HTTPURLResponse {
-    // NOTE: this function re-implements functionality present in macOS 10.15 and beyond (for macOS <=10.14 compatibility)
-    @available(macOS, obsoleted: 10.15)
-    public func value(forHTTPHeaderField field: String) -> String? {
-        // if we found a case-sensitive result, return it immediately
-        if let value = self.allHeaderFields[field] {
-            return value as? String
-        }
-
-        // do a case-insensitive search on the key
-        for (key, value) in self.allHeaderFields {
-            guard let keyAsString = key as? String else {
-                continue
-            }
-            
-            if keyAsString.caseInsensitiveCompare(field) == .orderedSame {
-                return value as? String
-            }
-        }
-        
-        // if we did not find a value, return nil
-        return nil
-    }
-}
-
 extension URLResponse {
     
     /// Get a Morphic model object by decoding the response JSON data
@@ -933,7 +908,7 @@ public extension NSNotification.Name {
 }
 
 public extension Preferences.Key {
-    /// The preference key that stores which items appear in each community on the MorphicBar (Morphic Community managed community bar)
+    /// The preference key that stores which items appear in each community on the MorphicBar (Morphic Community managed custom bar)
     static var morphicCustomMorphicBarsAsJson = Preferences.Key(solution: "org.raisingthefloor.morphic.morphicBars", preference: "customMorphicBarsAsJson")
 }
 

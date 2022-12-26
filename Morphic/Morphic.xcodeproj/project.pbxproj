@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -157,10 +157,14 @@
 		9D4D47C326CBFE2500AC6E3D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9D4D47C526CBFE2500AC6E3D /* Localizable.strings */; };
 		9D53D8E92784A9B700A96576 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */; };
 		9D53D8EA2784A9B700A96576 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */; };
+		9D69161F2911B7EA002F3A21 /* MorphicMacOSNative.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */; };
+		9D6916202911B7EA002F3A21 /* MorphicMacOSNative.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9D77209E252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
 		9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */; };
 		9D8CEB132507AECF001276E4 /* MorphicBarButtonItemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */; };
 		9D8CEB152507AED7001276E4 /* MorphicBarButtonItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */; };
+		9D8EB4EE2947AA2B006F2DDA /* MorphicUIAutomation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D8EB4ED2947AA2B006F2DDA /* MorphicUIAutomation.framework */; };
+		9D8EB4EF2947AA2B006F2DDA /* MorphicUIAutomation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D8EB4ED2947AA2B006F2DDA /* MorphicUIAutomation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9D94BB22262A046400BF4992 /* logo_opera.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB21262A046400BF4992 /* logo_opera.pdf */; };
 		9D94BB25262A046A00BF4992 /* logo_firefox.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB24262A046A00BF4992 /* logo_firefox.pdf */; };
 		9D94BB28262A047100BF4992 /* logo_chrome.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB27262A047100BF4992 /* logo_chrome.pdf */; };
@@ -215,8 +219,10 @@
 			dstSubfolderSpec = 10;
 			files = (
 				31751B4B2444E04300EEDF14 /* MorphicCore.framework in Embed Frameworks */,
+				9D6916202911B7EA002F3A21 /* MorphicMacOSNative.framework in Embed Frameworks */,
 				31751B4F2444E04300EEDF14 /* MorphicSettings.framework in Embed Frameworks */,
 				31751B4D2444E04300EEDF14 /* MorphicService.framework in Embed Frameworks */,
+				9D8EB4EF2947AA2B006F2DDA /* MorphicUIAutomation.framework in Embed Frameworks */,
 				9D3B9EDF26BC7BEB00C9F174 /* MorphicTelemetry.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -431,10 +437,12 @@
 		9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsLinkActions.swift; sourceTree = "<group>"; };
 		9D4D47CA26CBFE5400AC6E3D /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperlinkTextField.swift; sourceTree = "<group>"; };
+		9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicMacOSNative.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicImageUtils.swift; sourceTree = "<group>"; };
 		9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutBoxWindowController.swift; sourceTree = "<group>"; };
 		9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemIcon.swift; sourceTree = "<group>"; };
 		9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemView.swift; sourceTree = "<group>"; };
+		9D8EB4ED2947AA2B006F2DDA /* MorphicUIAutomation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicUIAutomation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D94BB21262A046400BF4992 /* logo_opera.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_opera.pdf; sourceTree = "<group>"; };
 		9D94BB24262A046A00BF4992 /* logo_firefox.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_firefox.pdf; sourceTree = "<group>"; };
 		9D94BB27262A047100BF4992 /* logo_chrome.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_chrome.pdf; sourceTree = "<group>"; };
@@ -495,7 +503,9 @@
 			files = (
 				31751B4A2444E04300EEDF14 /* MorphicCore.framework in Frameworks */,
 				9D1FA1CF251A31990008559D /* ServiceManagement.framework in Frameworks */,
+				9D8EB4EE2947AA2B006F2DDA /* MorphicUIAutomation.framework in Frameworks */,
 				9D3530A525C2860200F8D590 /* Countly in Frameworks */,
+				9D69161F2911B7EA002F3A21 /* MorphicMacOSNative.framework in Frameworks */,
 				9D3B9EDE26BC7BEB00C9F174 /* MorphicTelemetry.framework in Frameworks */,
 				31751B4E2444E04300EEDF14 /* MorphicSettings.framework in Frameworks */,
 				31751B4C2444E04300EEDF14 /* MorphicService.framework in Frameworks */,
@@ -639,6 +649,8 @@
 		31751B462444E04300EEDF14 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9D8EB4ED2947AA2B006F2DDA /* MorphicUIAutomation.framework */,
+				9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */,
 				9D3B9EDD26BC7BEB00C9F174 /* MorphicTelemetry.framework */,
 				9D1FA1CE251A31990008559D /* ServiceManagement.framework */,
 				31751B472444E04300EEDF14 /* MorphicCore.framework */,
@@ -1182,6 +1194,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		318744F52481B38C00AE3954 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -1199,6 +1212,7 @@
 		};
 		9D0AF79024A57FC2007E177E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -1493,7 +1507,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1549,7 +1563,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -1573,7 +1587,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.5;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.Morphic-Debug";
@@ -1599,7 +1613,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.5;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.Morphic;
@@ -1624,6 +1638,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.5;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.MorphicConfigurator-Debug";
@@ -1648,6 +1663,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.5;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
@@ -1673,7 +1689,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.MorphicDockApp-Debug";
 				PRODUCT_NAME = " Morphic ";
 				SWIFT_VERSION = 5.0;
@@ -1697,7 +1713,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicDockApp;
 				PRODUCT_NAME = " Morphic ";
 				PROVISIONING_PROFILE_SPECIFIER = "Morphic Dock App for macOS";
@@ -1722,7 +1738,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.MorphicLauncher-Debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1748,7 +1764,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicLauncher;
 				PRODUCT_NAME = "$(TARGET_NAME)";

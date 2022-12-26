@@ -53,7 +53,7 @@ public class GeneralUIAutomation: UIAutomation {
                     return
                 }
                 
-                // wait for the general pane to appear
+                // wait for the appearance pane to appear
                 AsyncUtils.wait(atMost: 1.0, for: { general?.checkbox(titled: "Light") != nil }) {
                     success in
                     completion(general)

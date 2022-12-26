@@ -1,4 +1,4 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - International
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
@@ -22,7 +22,10 @@
 // * Consumer Electronics Association Foundation
 
 import Cocoa
+import MorphicCore
+import MorphicMacOSNative
 import MorphicSettings
+import MorphicUIAutomation
 
 // MARK: scripts to open preferences panes for the user
 
@@ -34,75 +37,148 @@ class SettingsLinkActions {
         case accessibilityDisplayDisplay
         case accessibilitySpeech
         case accessibilityZoom
+        case appearance
         case displaysDisplay
         case displaysNightShift
-        case general
         case keyboardKeyboard
         case keyboardShortcutsScreenshots
         case languageandregionGeneral
         case mouse
     }
-    
-    static func openSystemPreferencesPaneWithTelemetry(_ pane: SystemPreferencePane, category systemSettingsCategory: String) {
+
+    static func openSystemSettingsPaneWithTelemetry(_ pane: SystemPreferencePane, category systemSettingsCategory: String) async throws {
         defer {
             AppDelegate.shared.recordCountlyOpenSystemSettingsEvent(category: systemSettingsCategory, tag: 1)
         }
-        openSystemPreferencesPane(pane)
+        try await openSystemSettingsPane(pane)
     }
-    
-    static func openSystemPreferencesPane(_ pane: SystemPreferencePane) {
-        switch pane {
-        case .accessibilityOverview:
-            let accessibilityUIAutomation = AccessibilityUIAutomation()
-            accessibilityUIAutomation.showAccessibilityOverviewPreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
-        case .accessibilityDisplayColorFilters:
-            let accessibilityUIAutomation = AccessibilityUIAutomation()
-            accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: "Color Filters", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
-        case .accessibilityDisplayCursor:
-            let accessibilityUIAutomation = AccessibilityUIAutomation()
-            let tabName: String
-            if #available(macOS 12.0, *) {
-                // in macOS 12.0, this tab was renamed "Pointer"
-                tabName = "Pointer"
-            } else {
-                // in earlier versions of macOS, this tab was called "Cursor"
-                tabName = "Cursor"
+
+    // NOTE: this legacy implementation of openSystemSettingsPane is only compatible with macOS versions prior to macOS 13.0; once we deprecate support for earlier versions of macOS, we should delete this function and its callback
+    static func openSystemSettingsPane(_ pane: SystemPreferencePane) async throws {
+        if #available(macOS 13.0, *) {
+            // NOTE: we will wait up to 5 seconds for the System Settings app to launch/attach; we may want to tweak this value in the future based on user feedback
+            let waitForSystemSettingsLaunchTimespan = TimeInterval(5.0)
+
+            let waitUntilFinishedLaunchingDeadline = ProcessInfo.processInfo.systemUptime + waitForSystemSettingsLaunchTimespan
+
+            let systemSettingsApp: SystemSettingsApp
+            do {
+                systemSettingsApp = try await SystemSettingsApp.launchOrAttach(waitUntilFinishedLaunching: waitForSystemSettingsLaunchTimespan)
+            } catch let error {
+                throw error // UIAutomationApp.LaunchError
             }
-            accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: tabName, completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
-        case .accessibilityDisplayDisplay:
-            let accessibilityUIAutomation = AccessibilityUIAutomation()
-            accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: "Display", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
-        case .accessibilitySpeech:
-            let accessibilityUIAutomation = AccessibilityUIAutomation()
-            accessibilityUIAutomation.showAccessibilitySpeechPreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
-        case .accessibilityZoom:
-            let accessibilityUIAutomation = AccessibilityUIAutomation()
-            accessibilityUIAutomation.showAccessibilityZoomPreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
-        case .displaysDisplay:
-            let displaysUIAutomation = DisplaysUIAutomation()
-            displaysUIAutomation.showDisplaysPreferences(tabTitled: "Display", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
-        case .displaysNightShift:
-            let displaysUIAutomation = DisplaysUIAutomation()
-            displaysUIAutomation.showDisplaysPreferences(tabTitled: "Night Shift", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
-        case .general:
-            let generalUIAutomation = GeneralUIAutomation()
-            generalUIAutomation.showGeneralPreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
-        case .keyboardKeyboard:
-            let keyboardUIAutomation = KeyboardUIAutomation()
-            keyboardUIAutomation.showKeyboardPreferences(tabTitled: "Keyboard", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
-        case .keyboardShortcutsScreenshots:
-            let keyboardUIAutomation = KeyboardUIAutomation()
-            keyboardUIAutomation.showKeyboardShortcutsPreferences(categoryTitled: "Screenshots", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
-        case .languageandregionGeneral:
-            let languageAndRegionUIAutomation = LanguageAndRegionUIAutomation()
-            languageAndRegionUIAutomation.showLanguageAndRegionPreferences(tabTitled: "General", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
-        case .mouse:
-            let mouseUIAutomation = MouseUIAutomation()
-            mouseUIAutomation.showMousePreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+
+            // NOTE: at this point, we have launched or attached to the System Settings app
+            
+            // make sure that the main window is available
+            let waitUntilMainWindowIsAvailableInterval = Double.maximum(waitUntilFinishedLaunchingDeadline - ProcessInfo.processInfo.systemUptime, 0)
+            let mainWindowIsAvailable: Bool
+            do {
+                mainWindowIsAvailable = try await systemSettingsApp.waitUntilMainWindowIsAvailable(waitUntilMainWindowIsAvailableInterval)
+            } catch let error {
+                throw error
+            }
+            guard mainWindowIsAvailable == true else {
+                throw SystemSettingsApp.NavigationError.unspecified
+            }
+
+            //
+
+            let waitForNavigationTimespan = TimeInterval(5.0)
+            
+            switch pane {
+            case .accessibilityOverview:
+                _ = try await systemSettingsApp.navigateTo(.accessibility, waitAtMost: waitForNavigationTimespan)
+            case .accessibilityDisplayColorFilters:
+                _ = try await systemSettingsApp.navigateTo(.colorFilters, waitAtMost: waitForNavigationTimespan)
+            case .accessibilityDisplayCursor:
+                _ = try await systemSettingsApp.navigateTo(.pointerSize, waitAtMost: waitForNavigationTimespan)
+            case .accessibilityDisplayDisplay:
+                _ = try await systemSettingsApp.navigateTo(.contrast, waitAtMost: waitForNavigationTimespan)
+            case .accessibilitySpeech:
+                _ = try await systemSettingsApp.navigateTo(.speech, waitAtMost: waitForNavigationTimespan)
+            case .accessibilityZoom:
+                _ = try await systemSettingsApp.navigateTo(.magnifier, waitAtMost: waitForNavigationTimespan)
+            case .appearance:
+                _ = try await systemSettingsApp.navigateTo(.appearance, waitAtMost: waitForNavigationTimespan)
+            case .displaysDisplay:
+                _ = try await systemSettingsApp.navigateTo(.displayBrightness, waitAtMost: waitForNavigationTimespan)
+            case .displaysNightShift:
+                _ = try await systemSettingsApp.navigateTo(.nightShift, waitAtMost: waitForNavigationTimespan)
+            case .keyboardKeyboard:
+                _ = try await systemSettingsApp.navigateTo(.keyboard, waitAtMost: waitForNavigationTimespan)
+            case .keyboardShortcutsScreenshots:
+                _ = try await systemSettingsApp.navigateTo(.screenshotKeyboardShortcuts, waitAtMost: waitForNavigationTimespan)
+            case .languageandregionGeneral:
+                _ = try await systemSettingsApp.navigateTo(.languageAndRegion, waitAtMost: waitForNavigationTimespan)
+            case .mouse:
+                _ = try await systemSettingsApp.navigateTo(.mouse, waitAtMost: waitForNavigationTimespan)
+            }
+
+            // NOTE: at this point, we have opened the requested view (category) within System Settings
+
+            // show System Settings and raise it to the top of the application window stack
+            let activateSuccess = systemSettingsApp.activate(options: .activateIgnoringOtherApps)
+            guard activateSuccess == true else {
+                throw MorphicError.unspecified
+            }
+        } else {
+            // macOS 12.x and earlier
+            switch pane {
+            case .accessibilityOverview:
+                let accessibilityUIAutomation = AccessibilityUIAutomation()
+                accessibilityUIAutomation.showAccessibilityOverviewPreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+            case .accessibilityDisplayColorFilters:
+                let accessibilityUIAutomation = AccessibilityUIAutomation()
+                accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: "Color Filters", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+            case .accessibilityDisplayCursor:
+                let accessibilityUIAutomation = AccessibilityUIAutomation()
+                let tabName: String
+                if #available(macOS 12.0, *) {
+                    // in macOS 12.0, this tab was renamed "Pointer"
+                    tabName = "Pointer"
+                } else {
+                    // in earlier versions of macOS, this tab was called "Cursor"
+                    tabName = "Cursor"
+                }
+                accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: tabName, completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+            case .accessibilityDisplayDisplay:
+                let accessibilityUIAutomation = AccessibilityUIAutomation()
+                accessibilityUIAutomation.showAccessibilityDisplayPreferences(tab: "Display", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+            case .accessibilitySpeech:
+                let accessibilityUIAutomation = AccessibilityUIAutomation()
+                accessibilityUIAutomation.showAccessibilitySpeechPreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+            case .accessibilityZoom:
+                let accessibilityUIAutomation = AccessibilityUIAutomation()
+                accessibilityUIAutomation.showAccessibilityZoomPreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+            case .appearance:
+                // NOTE: the dark mode (appearance) settings were located in the General tab in macOS v12.x and earlier
+                let generalUIAutomation = GeneralUIAutomation()
+                generalUIAutomation.showGeneralPreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+            case .displaysDisplay:
+                let displaysUIAutomation = DisplaysUIAutomation()
+                displaysUIAutomation.showDisplaysPreferences(tabTitled: "Display", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+            case .displaysNightShift:
+                let displaysUIAutomation = DisplaysUIAutomation()
+                displaysUIAutomation.showDisplaysPreferences(tabTitled: "Night Shift", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+            case .keyboardKeyboard:
+                let keyboardUIAutomation = KeyboardUIAutomation()
+                keyboardUIAutomation.showKeyboardPreferences(tabTitled: "Keyboard", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+            case .keyboardShortcutsScreenshots:
+                let keyboardUIAutomation = KeyboardUIAutomation()
+                keyboardUIAutomation.showKeyboardShortcutsPreferences(categoryTitled: "Screenshots", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+            case .languageandregionGeneral:
+                let languageAndRegionUIAutomation = LanguageAndRegionUIAutomation()
+                languageAndRegionUIAutomation.showLanguageAndRegionPreferences(tabTitled: "General", completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+            case .mouse:
+                let mouseUIAutomation = MouseUIAutomation()
+                mouseUIAutomation.showMousePreferences(completion: SettingsLinkActions.raiseSystemPreferencesAfterNavigation)
+            }
         }
     }
     
-    private static func raiseSystemPreferencesAfterNavigation(_ uiElement: UIElement?) {
+    // NOTE: this function exists only to support our legacy code (for macOS 12.x and earlier); we should remove this function only all calls to it are eventually removed
+    private static func raiseSystemPreferencesAfterNavigation(_ uiElement: MorphicSettings.UIElement?) {
         guard let _ = uiElement else {
             // if we could not successfully launch System Preferences and navigate to this pane, log the error
             // NOTE for future enhancement: notify the user of any errors here (and retry or try different methods)
@@ -116,6 +192,4 @@ class SettingsLinkActions {
         }
         systemPreferencesApplication.activate(options: .activateIgnoringOtherApps)
     }
-    
-
 }

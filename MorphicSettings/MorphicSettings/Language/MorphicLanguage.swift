@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -50,7 +50,7 @@ public class MorphicLanguage {
         CFPreferencesSetValue("AppleLanguages" as CFString, languages as CFArray, kCFPreferencesAnyApplication, kCFPreferencesCurrentUser, kCFPreferencesAnyHost)
         let success = CFPreferencesSynchronize(kCFPreferencesAnyApplication, kCFPreferencesCurrentUser, kCFPreferencesAnyHost)
         if success == false {
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
     }
     
@@ -67,12 +67,12 @@ public class MorphicLanguage {
         
         // implementation option 2: get our current list of Apple Languages from Core Foundation; this is the preferred method
         guard var appleLanguages = MorphicLanguage.getPreferredLanguages() else {
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
         
         // verify that the specified 'primaryLanguage' is contained within the list of installed languages
         guard appleLanguages.contains(primaryLanguage) == true else {
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
         
         // remove the desired primary language from the list of apple languages (since we want to push it to the top of the list)

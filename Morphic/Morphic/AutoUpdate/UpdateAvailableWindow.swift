@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Cocoa
+import MorphicMacOSNative
 import MorphicSettings
 
 class UpdateAvailableWindow: NSWindowController, URLSessionTaskDelegate, URLSessionDownloadDelegate {

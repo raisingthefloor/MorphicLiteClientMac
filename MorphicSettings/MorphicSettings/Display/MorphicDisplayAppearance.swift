@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -56,10 +56,8 @@ public struct MorphicDisplayAppearance {
         // set the new appearance theme
         SLSSetAppearanceThemeLegacy(appearanceThemeAsApiArgument)
         
-        // for macOS 10.15+: make sure that we set the theme to "not switch automatically" (or else macOS will change it again)
-        if #available(macOS 10.15, *) {
-            let falseAsUInt32: UInt32 = 0
-            SLSSetAppearanceThemeSwitchesAutomatically(falseAsUInt32)
-        }
+        // make sure that we set the theme to "not switch automatically" (or else macOS will change it again)
+        let falseAsUInt32: UInt32 = 0
+        SLSSetAppearanceThemeSwitchesAutomatically(falseAsUInt32)
     }
 }

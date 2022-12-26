@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -58,44 +58,20 @@ public struct MorphicDisplayAccessibilitySettings {
     
     public static var increaseContrastEnabled: Bool {
         get {
-            if #available(macOS 10.15, *) {
-                let resultAsInt32: Int32 = UAIncreaseContrastIsEnabled()
-                let result: Bool = resultAsInt32 != 0
-                return result
-            } else {
-                // macOS 10.14
-                
-                let resultAsInt32: Int32 = _AXInterfaceGetIncreaseContrastEnabled()
-                let result: Bool = resultAsInt32 != 0
-                return result
-            }
+            let resultAsInt32: Int32 = UAIncreaseContrastIsEnabled()
+            let result: Bool = resultAsInt32 != 0
+            return result
         }
     }
     
     // NOTE: we would need "user-preference-write" or "file-write-data" sandbox access to write preferences outside of our application's container
     public static func setIncreaseContrastEnabled(_ value: Bool) {
-        if #available(macOS 10.15, *) {
-            // get the current state of "increase contrast enabled"
-            let currentIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
-            
-            // only update our contrast (and deal with reducing transparency if necessary) if it the state is actually changing; this is following the same pattern used by "System Preferences > Accessibility > Display > Display > 'Increase contrast'" in macOS 10.15.7; it's probably not a necessary check, but since this is reverse-engineered we're doing it out of an abundance of caution
-            if currentIncreaseContrastEnabled != value {
-                UAIncreaseContrastSetEnabled(value == true ? 1 : 0)
-            }
-        } else {
-            fatalError("UAIncreaseContrastSetEnabled is not supported in this version of macOS")
-
-//            // macOS 10.14
-//
-//            // get the current state of "increase contrast enabled"
-//            let currentIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
-//
-//            if currentIncreaseContrastEnabled != value {
-//                // NOTE: we would need "user-preference-write" or "file-write-data" sandbox access to write preferences outside of our application's container
-//                // NOTE: the signature on this function apperas to have changed as of macOS 10.15
-//                _ = _AXInterfaceSetIncreaseContrastEnabled(value == true ? 1 : 0)
-//                print("setIncreaseContrastEnabled success: \(success)")
-//            }
+        // get the current state of "increase contrast enabled"
+        let currentIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+        
+        // only update our contrast (and deal with reducing transparency if necessary) if it the state is actually changing; this is following the same pattern used by "System Preferences > Accessibility > Display > Display > 'Increase contrast'" in macOS 10.15.7; it's probably not a necessary check, but since this is reverse-engineered we're doing it out of an abundance of caution
+        if currentIncreaseContrastEnabled != value {
+            UAIncreaseContrastSetEnabled(value == true ? 1 : 0)
         }
     }
 }

@@ -1,4 +1,4 @@
-// Copyright 2020-2022 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
@@ -35,18 +35,18 @@ public class MorphicMouse {
     public static func movePointerToCenterOfDisplay(displayUuid: UUID) throws {
         // calculate center point of display
         guard let displayMode = MorphicDisplay.getCurrentDisplayMode(for: displayUuid) else {
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
         let centerPoint = CGPoint(x: displayMode.widthInVirtualPixels / 2, y: displayMode.heightInVirtualPixels / 2)
         
         guard let displayId = MorphicDisplay.getDisplayIdForDisplayUuid(displayUuid) else {
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
         
         let moveCursorToPointResult = CGDisplayMoveCursorToPoint(displayId, centerPoint)
         if moveCursorToPointResult != CGError.success {
             // NOTE: we actually get an error code back as a CGError here, but for now we're just returning nil to indicate error
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
     }
 }
