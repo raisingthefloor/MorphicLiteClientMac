@@ -26,7 +26,7 @@ import MorphicCore
 import MorphicMacOSNative
 
 public class SystemPreferencesElement: ApplicationElement {
-    
+    // NOTE: starting with macOS 13, the app is renamed to "System Settings" but the bundle identifier remains "com.apple.systempreferences"
     public static let bundleIdentifier = "com.apple.systempreferences"
     
     public init() {
@@ -156,6 +156,10 @@ public class SystemPreferencesElement: ApplicationElement {
                 completion(true, ElementType(accessibilityElement: window.accessibilityElement))
                 return
             }
+        case nil:
+            // if this is not an identifiable window, return an error
+            completion(false, nil)
+            return
         }
         guard let showAllButton = window.toolbar?.button(titled: "Show All") else {
             completion(false, nil)
@@ -186,6 +190,9 @@ public class SystemPreferencesElement: ApplicationElement {
                         return matchFunction(windowAsUIElement) == true
                     case .windowTitle(let identifierWindowTitle):
                         return window.title == identifierWindowTitle
+                    case nil:
+                        // if this is not an identifiable window, return an error
+                        return false
                     }
             }) {
                 success in

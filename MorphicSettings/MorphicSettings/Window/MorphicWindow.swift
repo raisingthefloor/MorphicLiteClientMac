@@ -21,7 +21,7 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Foundation
+import Cocoa
 
 // NOTE: the MorphicWindow class contains the functionality used by Obj-C and Swift applications
 

@@ -40,10 +40,15 @@ public class TabGroupElement: UIElement {
         }
         guard let tab = tabs.first(where: {
             do {
-                let title: String = try $0.value(forAttribute: .title)
+                let title: String? = try $0.value(forAttribute: .title)
+                guard let title = title else {
+                    // if we could not retrieve the title attribute, return false
+                    // NOTE: in the future, we should consider bubbling-up errors
+                    return false
+                }
                 return title == titled
             } catch {
-                // if we could not retrieve the title attribute, return false
+                // if trying to retrieve the title attribute resulted in an error, return false
                 // NOTE: in the future, we should consider bubbling-up errors
                 return false
             }

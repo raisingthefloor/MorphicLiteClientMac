@@ -24,16 +24,16 @@
 import Foundation
 import MorphicMacOSNative
 
-public class WindowUIElement : UIElement {
+public class ButtonUIElement : UIElement {
     public let accessibilityUiElement: MorphicA11yUIElement
     
     public required init(accessibilityUiElement: MorphicA11yUIElement) {
         self.accessibilityUiElement = accessibilityUiElement
     }
     
-    // properties
+    // actions
     
-    public func title() throws -> String? {
-        return try self.accessibilityUiElement.value(forAttribute: .title)
+    public func press() throws {
+        try self.accessibilityUiElement.perform(action: .press)
     }
 }

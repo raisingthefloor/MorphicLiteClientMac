@@ -81,6 +81,8 @@ public class UIAutomationApp {
         
         // wait until the application is open (so that we can capture its main window)
         let applicationIsRunning = await AsyncUtils.wait(atMost: waitUntilFinishedLaunching, for: { launchedApplication.isFinishedLaunching == true })
+
+        // NOTE: although the application is running, it may not yet be ready for UI automation
         
         // return an instance of our running application (along with a flag indiciating if it has fully launched yet or not)
         let uiAutomationApp = UIAutomationApp(runningApplication: launchedApplication)
@@ -97,7 +99,7 @@ public class UIAutomationApp {
         let result = await AsyncUtils.wait(atMost: timeInterval, for: { self.runningApplication.isFinishedLaunching == true })
         return result
     }
-
+    
     public func terminate() throws {
         if runningApplication.isTerminated == true {
             return
@@ -107,12 +109,33 @@ public class UIAutomationApp {
         }
     }
     
+    // MARK: - Accessibility UI helpers (to wait for the main window to be ready)
+    
+    public func waitUntilMainWindowIsAvailable(_ timeInterval: TimeInterval) async throws -> Bool {
+        guard timeInterval >= 0.0 else {
+            fatalError("Argument 'timeInterval' cannot be a negative value")
+        }
+
+        // if our application is running, wait for the main window to become available for automation before returning
+        let mainWindowIsAvailable: Bool
+        do {
+            mainWindowIsAvailable = try await AsyncUtils.wait(atMost: timeInterval, for: {
+                let mainWindow = try self.mainWindow()
+                return mainWindow != nil
+            })
+        } catch let error {
+            throw error
+        }
+
+        return mainWindowIsAvailable
+    }
+    
     // MARK: - Accessibility UI
     
     public enum AccessibilityError: Error {
         case isNotFinishedLaunching
         case isTerminated
-        case notAuthorized // NOTE: if the caller receives this error, the program should probably promptthe user to grand authorization (by calling MorphicA11yAuthorization.promptUserToGrantAuthorization() or otherwise)
+        case notAuthorized // NOTE: if the caller receives this error, the program should probably prompt the user to grant authorization (by calling MorphicA11yAuthorization.promptUserToGrantAuthorization() or otherwise)
         case unspecified
     }
     //
@@ -138,16 +161,19 @@ public class UIAutomationApp {
     
     // MARK: Application-specific UI elements
     
-    private func mainWindow() throws -> WindowUIElement {
+    public func mainWindow() throws -> WindowUIElement? {
         // NOTE: we bubble up any error from the call to accessibilityUiElement()
         let accessibilityUiElement = try self.accessibilityUiElement()
         
         // get the main window element
-        var mainWindowUiElement: MorphicA11yUIElement
+        var mainWindowUiElement: MorphicA11yUIElement?
         do {
             mainWindowUiElement = try accessibilityUiElement.value(forAttribute: .mainWindow)
         } catch {
             throw AccessibilityError.unspecified
+        }
+        guard let mainWindowUiElement = mainWindowUiElement else {
+            return nil
         }
         
         return WindowUIElement(accessibilityUiElement: mainWindowUiElement)

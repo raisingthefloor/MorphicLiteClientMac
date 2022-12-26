@@ -114,18 +114,23 @@ public struct MorphicA11yUIElement {
 
     //
 
-    public func value<T>(forAttribute attribute: NSAccessibility.Attribute) throws -> T where T: MorphicA11yUIAttributeValueCompatible {
+    public func value<T>(forAttribute attribute: NSAccessibility.Attribute) throws -> T? where T: MorphicA11yUIAttributeValueCompatible {
         // NOTE: we bubble up any errors thrown by the following call
-        let result: T = try MorphicA11yUIElement.value(forAttribute: attribute, forAXUIElement: self.axUiElement)
+        let result: T? = try MorphicA11yUIElement.value(forAttribute: attribute, forAXUIElement: self.axUiElement)
         return result
     }
 
-    private static func value<T>(forAttribute attribute: NSAccessibility.Attribute, forAXUIElement axUiElement: AXUIElement) throws -> T where T: MorphicA11yUIAttributeValueCompatible {
+    private static func value<T>(forAttribute attribute: NSAccessibility.Attribute, forAXUIElement axUiElement: AXUIElement) throws -> T? where T: MorphicA11yUIAttributeValueCompatible {
         var valueAsCFTypeRef: AnyObject? = nil
 
         let error = AXUIElementCopyAttributeValue(axUiElement, attribute.rawValue as CFString, &valueAsCFTypeRef)
         guard error == .success && valueAsCFTypeRef != nil else {
-            throw MorphicError.unspecified
+            switch error {
+            case .noValue:
+                return nil
+            default:
+                throw MorphicError.unspecified
+            }
         }
         //
         guard let result = try? MorphicA11yAttributeValueCompatibleSampleImpl.fromCFTypeRef(valueAsCFTypeRef!) else {
@@ -237,5 +242,336 @@ extension Array where Element == MorphicA11yUIElement {
         } else {
             return nil
         }
+    }
+    
+    //
+    
+    public func firstAncestorInLineage(where predicate: (MorphicA11yUIElement) throws -> Bool) throws -> MorphicA11yUIElement? {
+        // if only a direct child is found in the lineage, return nil
+        if self.count <= 1 {
+            return nil
+        }
+        
+        for parent in self[1...] {
+            // if the parent satisfies the predicate, return that parent
+            let parentSatisfiesPredicate: Bool
+            do {
+                parentSatisfiesPredicate = try predicate(parent)
+            } catch let error {
+                throw error
+            }
+            if parentSatisfiesPredicate == true {
+                return parent
+            }
+        }
+        
+        // if no parents satisfied the predicate, return nil
+        return nil
+    }
+    
+    public func firstAncestorInLineage(identifier: String) throws -> MorphicA11yUIElement? {
+        return try self.firstAncestorInLineage(
+            where: { parent in
+                // if the parent's identifier matches the requested identifier, return that parent
+                let parentIdentifier: String?
+                do {
+                    parentIdentifier = try parent.value(forAttribute: .identifier)
+                } catch let error {
+                    throw error
+                }
+                guard let parentIdentifier = parentIdentifier else {
+                    return false
+                }
+                return (parentIdentifier == identifier)
+            }
+        )
+    }
+    
+    public func firstAncestorInLineage(role: NSAccessibility.Role) throws -> MorphicA11yUIElement? {
+        return try self.firstAncestorInLineage(where: { $0.role == role })
+    }
+}
+
+// MARK: - functions for finding specific types of children/parents and descendants/ancestors
+
+extension MorphicA11yUIElement {
+    public func firstChild(where predicate: (MorphicA11yUIElement) throws -> Bool) throws -> MorphicA11yUIElement? {
+        let children: [MorphicA11yUIElement]
+        do {
+            children = try self.children()
+        } catch let error {
+            throw error
+        }
+        
+        for child in children {
+            // check to see if the child matches the predicate
+            let childSatisfiesPredicate: Bool
+            do {
+                childSatisfiesPredicate = try predicate(child)
+            } catch let error {
+                throw error
+            }
+            if childSatisfiesPredicate == true {
+                return child
+            }
+        }
+        
+        // no child found which satisfies the predicate
+        return nil
+    }
+    
+    public func firstChild(role: NSAccessibility.Role) throws -> MorphicA11yUIElement? {
+        return try self.firstChild(where: { $0.role == role })
+    }
+    
+    //
+    
+    public func onlyChild(where predicate: (MorphicA11yUIElement) throws -> Bool) throws -> MorphicA11yUIElement? {
+        let children: [MorphicA11yUIElement]
+        do {
+            children = try self.children()
+        } catch let error {
+            throw error
+        }
+        
+        var matches: [MorphicA11yUIElement] = []
+        
+        for child in children {
+            // check to see if the child matches the predicate
+            let childSatisfiesPredicate: Bool
+            do {
+                childSatisfiesPredicate = try predicate(child)
+            } catch let error {
+                throw error
+            }
+            if childSatisfiesPredicate == true {
+                matches.append(child)
+            }
+        }
+        
+        if matches.count == 1 {
+            return matches.first!
+        } else {
+            return nil
+        }
+    }
+    
+    public func onlyChild(role: NSAccessibility.Role) throws -> MorphicA11yUIElement? {
+        return try self.onlyChild(where: { $0.role == role })
+    }
+
+    //
+    
+    public func children(where predicate: (MorphicA11yUIElement) throws -> Bool) throws -> [MorphicA11yUIElement] {
+        var result: [MorphicA11yUIElement] = []
+        
+        let children: [MorphicA11yUIElement]
+        do {
+            children = try self.children()
+        } catch let error {
+            throw error
+        }
+        
+        for child in children {
+            // check to see if the child matches the predicate
+            let childSatisfiesPredicate: Bool
+            do {
+                childSatisfiesPredicate = try predicate(child)
+            } catch let error {
+                throw error
+            }
+            if childSatisfiesPredicate == true {
+                result.append(child)
+            }
+        }
+        
+        return result
+    }
+    
+    public func children(role: NSAccessibility.Role) throws -> [MorphicA11yUIElement] {
+        return try self.children(where: { $0.role == role })
+    }
+    
+    //
+    
+    // NOTE: firstDescendant iterates through each child's branch, left-to-right; it will return a deep match before returning a shallow match if that deep match is a descendant of a child which is more leftmost; as it could be easily misunderstood and misused, returning technically-accurate results which did not match up with the intentions of the caller, we have marked it as private
+    private func firstDescendant(where predicate: (MorphicA11yUIElement) throws -> Bool, maxDepth: Int = Int.max) throws -> MorphicA11yUIElement? {
+        return try MorphicA11yUIElement.firstDescendant(where: predicate, startingElement: self, currentDepth: 1, maxDepth: maxDepth)
+    }
+    private static func firstDescendant(where predicate: (MorphicA11yUIElement) throws -> Bool, startingElement: MorphicA11yUIElement, currentDepth: Int, maxDepth: Int) throws -> MorphicA11yUIElement? {
+        
+        let firstDescendantWithLineage: [MorphicA11yUIElement]?
+        do {
+            firstDescendantWithLineage = try self.firstDescendantWithLineage(where: predicate, startingElement: startingElement, currentDepth: currentDepth, maxDepth: maxDepth)
+        } catch let error {
+            throw error
+        }
+        
+        guard let firstDescendant = firstDescendantWithLineage?.first else {
+            return nil
+        }
+        
+        return firstDescendant
+    }
+    
+    private func firstDescendantWithLineage(where predicate: (MorphicA11yUIElement) throws -> Bool, maxDepth: Int = Int.max) throws -> [MorphicA11yUIElement]? {
+        return try MorphicA11yUIElement.firstDescendantWithLineage(where: predicate, startingElement: self, currentDepth: 1, maxDepth: maxDepth)
+    }
+    private static func firstDescendantWithLineage(where predicate: (MorphicA11yUIElement) throws -> Bool, startingElement: MorphicA11yUIElement, currentDepth: Int, maxDepth: Int) throws -> [MorphicA11yUIElement]? {
+        guard currentDepth <= maxDepth else {
+            return nil
+        }
+        
+        let children: [MorphicA11yUIElement]
+        do {
+            children = try startingElement.children()
+        } catch let error {
+            throw error
+        }
+        
+        for child in children {
+            // check to see if the child matches the predicate
+            let childSatisfiesPredicate: Bool
+            do {
+                childSatisfiesPredicate = try predicate(child)
+            } catch let error {
+                throw error
+            }
+            if childSatisfiesPredicate == true {
+                return [child, startingElement]
+            }
+            
+            // if the child does not satisfy the predicate, recurse into the child
+            //
+            // NOTE: special-case: if currentDepth is already the maximum depth, do not attempt to recurse any further as we have already reached the maximum depth
+            guard currentDepth < Int.max else {
+                return nil
+            }
+            //
+            let descendantElements: [MorphicA11yUIElement]?
+            do {
+                descendantElements = try MorphicA11yUIElement.firstDescendantWithLineage(where: predicate, startingElement: child, currentDepth: currentDepth + 1, maxDepth: maxDepth)
+            } catch let error {
+                throw error
+            }
+            // if a descendant matched, return that descendant's lineage (appending the starting element, so that the descendant is the ultimate first entry and the original ancestor is the last entry)
+            if var descendantElements = descendantElements {
+                descendantElements.append(startingElement)
+                return descendantElements
+            }
+        }
+        
+        // if no children matched, return nil
+        return nil
+    }
+    
+    public func descendantWithLineage(identifier: String, maxDepth: Int = Int.max) throws -> [MorphicA11yUIElement]? {
+        return try self.firstDescendantWithLineage(
+            where: { child in
+                // check to see if the child matches the specified identifier
+                let childIdentifier: String?
+                do {
+                    childIdentifier = try child.value(forAttribute: .identifier)
+                } catch let error {
+                    throw error
+                }
+                guard let childIdentifier = childIdentifier else {
+                    return false
+                }
+                return (childIdentifier == identifier)
+            },
+            maxDepth: maxDepth)
+    }
+    
+    public func descendant(identifier: String, maxDepth: Int = Int.max) throws -> MorphicA11yUIElement? {
+        let descendantWithLineage: [MorphicA11yUIElement]?
+        do {
+            descendantWithLineage = try self.descendantWithLineage(identifier: identifier, maxDepth: maxDepth)
+        } catch let error {
+            throw error
+        }
+        
+        guard let descendant = descendantWithLineage?.first else {
+            return nil
+        }
+        
+        return descendant
+    }
+    
+    //
+    
+    // NOTE: we provide these "dangerous" options for finding descendants in exceptional circumstances; these should not be relied on, however
+    public func dangerousFirstDescendant(where predicate: (MorphicA11yUIElement) throws -> Bool, maxDepth: Int = Int.max) throws -> MorphicA11yUIElement? {
+        return try self.firstDescendant(where: predicate, maxDepth: maxDepth)
+    }
+    
+    public func dangerousFirstDescendantWithLineage(where predicate: (MorphicA11yUIElement) throws -> Bool, maxDepth: Int = Int.max) throws -> [MorphicA11yUIElement]? {
+        return try self.firstDescendantWithLineage(where: predicate, maxDepth: maxDepth)
+    }
+
+    //
+    
+    public func firstAncestor(where predicate: (MorphicA11yUIElement) throws -> Bool, maxDepth: Int = Int.max) throws -> MorphicA11yUIElement? {
+        return try MorphicA11yUIElement.firstAncestor(where: predicate, startingElement: self, currentDepth: 1, maxDepth: maxDepth)
+    }
+    private static func firstAncestor(where predicate: (MorphicA11yUIElement) throws -> Bool, startingElement: MorphicA11yUIElement, currentDepth: Int, maxDepth: Int) throws -> MorphicA11yUIElement? {
+        guard currentDepth <= maxDepth else {
+            return nil
+        }
+        
+        let parent: MorphicA11yUIElement?
+        do {
+            parent = try startingElement.parent()
+        } catch let error {
+            throw error
+        }
+        
+        // if our element has no parent, return nil
+        guard let parent = parent else {
+            return nil
+        }
+        
+        // if the parent satisfies the predicate, return that parent
+        let parentSatisfiesPredicate: Bool
+        do {
+            parentSatisfiesPredicate = try predicate(parent)
+        } catch let error {
+            throw error
+        }
+        if parentSatisfiesPredicate == true {
+            return parent
+        }
+        
+        // if the parent does not satisfy the predicate, try the parent's parent
+        //
+        // NOTE: special-case: if currentDepth is already the maximum depth, do not attempt to recurse any further as we have already reached the maximum depth
+        guard currentDepth < Int.max else {
+            return nil
+        }
+        //
+        return try MorphicA11yUIElement.firstAncestor(where: predicate, startingElement: parent, currentDepth: currentDepth + 1, maxDepth: maxDepth)
+    }
+    
+    public func firstAncestor(identifier: String, maxDepth: Int = Int.max) throws -> MorphicA11yUIElement? {
+        return try self.firstAncestor(
+            where: { parent in
+                // if the parent's identifier matches the requested identifier, return that parent
+                let parentIdentifier: String?
+                do {
+                    parentIdentifier = try parent.value(forAttribute: .identifier)
+                } catch let error {
+                    throw error
+                }
+                guard let parentIdentifier = parentIdentifier else {
+                    return false
+                }
+                return (parentIdentifier == identifier)
+            },
+            maxDepth: maxDepth
+        )
+    }
+    
+    public func firstAncestor(role: NSAccessibility.Role, maxDepth: Int = Int.max) throws -> MorphicA11yUIElement? {
+        return try self.firstAncestor(where: { $0.role == role }, maxDepth: maxDepth)
     }
 }

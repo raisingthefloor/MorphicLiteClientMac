@@ -22,9 +22,10 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
 import MorphicMacOSNative
 
-public class WindowUIElement : UIElement {
+public class RowUIElement : UIElement {
     public let accessibilityUiElement: MorphicA11yUIElement
     
     public required init(accessibilityUiElement: MorphicA11yUIElement) {
@@ -32,8 +33,18 @@ public class WindowUIElement : UIElement {
     }
     
     // properties
+
+    public func isSelected() throws -> Bool {
+        let isSelected: Bool? = try self.accessibilityUiElement.value(forAttribute: .selected)
+        guard let isSelected = isSelected else {
+            throw MorphicError.unspecified
+        }
+        return isSelected
+    }
     
-    public func title() throws -> String? {
-        return try self.accessibilityUiElement.value(forAttribute: .title)
+    // actions
+    
+    public func select() throws {
+        try self.accessibilityUiElement.setValue(true, forAttribute: .selected)
     }
 }

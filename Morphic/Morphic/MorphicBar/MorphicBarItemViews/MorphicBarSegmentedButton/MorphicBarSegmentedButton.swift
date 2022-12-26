@@ -100,7 +100,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         var learnMoreTelemetryCategory: String? = nil
         var quickDemoVideoUrl: URL? = nil
         var quickDemoVideoTelemetryCategory: String? = nil
-        var settingsBlock: (() -> Void)? = nil
+        var settingsBlock: (() async throws -> Void)? = nil
         
         var getStateBlock: (() -> Bool)? = nil
         //
@@ -116,7 +116,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         var accessibilityLabelByState: [NSControl.StateValue : String]? = [:]
         
         /// Create a segment with a title
-        init(title: String, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() -> Void)?, style: MorphicBarControlItemStyle) {
+        init(title: String, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() async throws -> Void)?, style: MorphicBarControlItemStyle) {
             self.title = title
             self.helpProvider = helpProvider
             self.fillColor = fillColor
@@ -130,7 +130,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         }
         
         /// Create a segment with an icon
-        init(icon: NSImage, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() -> Void)?, style: MorphicBarControlItemStyle) {
+        init(icon: NSImage, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() async throws -> Void)?, style: MorphicBarControlItemStyle) {
             self.icon = icon
             self.helpProvider = helpProvider
             self.fillColor = fillColor
@@ -733,8 +733,6 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         guard let settingsBlock = selectedSegment.settingsBlock else {
             return
         }
-        DispatchQueue.main.async {
-            settingsBlock()
-        }
+        Task { try? await settingsBlock() }
     }
 }

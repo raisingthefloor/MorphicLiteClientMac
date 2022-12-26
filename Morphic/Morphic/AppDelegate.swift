@@ -2369,7 +2369,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "allAccessibility", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilityOverview)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityOverview) }
     }
     
     @IBAction
@@ -2377,7 +2377,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "brightness", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.displaysDisplay)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.displaysDisplay) }
     }
     
     @IBAction
@@ -2385,7 +2385,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "colorFilter", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayColorFilters)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayColorFilters) }
     }
     
     @IBAction
@@ -2393,7 +2393,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "highContrast", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayDisplay) }
     }
     
     @IBAction
@@ -2401,7 +2401,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "darkMode", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.general)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.appearance) }
     }
 
     @IBAction
@@ -2409,7 +2409,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "language", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.languageandregionGeneral)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.languageandregionGeneral) }
     }
     
     @IBAction
@@ -2417,7 +2417,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "magnifier", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilityZoom)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityZoom) }
     }
 
     @IBAction
@@ -2425,7 +2425,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "mouse", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.mouse)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.mouse) }
     }
 
     @IBAction
@@ -2433,7 +2433,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "nightMode", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.displaysNightShift)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.displaysNightShift) }
     }
     
     @IBAction
@@ -2441,7 +2441,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "pointerSize", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayCursor)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayCursor) }
     }
     
     @IBAction
@@ -2449,7 +2449,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "readAloud", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilitySpeech)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilitySpeech) }
     }
 
     @IBAction
@@ -2457,7 +2457,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordCountlyOpenSystemSettingsEvent(category: "keyboard", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.keyboardKeyboard)
+        Task { try? await SettingsLinkActions.openSystemSettingsPane(.keyboardKeyboard) }
     }
     
     //
