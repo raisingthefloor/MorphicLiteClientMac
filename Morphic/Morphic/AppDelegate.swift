@@ -23,7 +23,6 @@
 
 import Cocoa
 import CryptoKit
-import Countly
 import OSLog
 import MorphicCore
 import MorphicMacOSNative
@@ -57,9 +56,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     private var voiceOverEnabledObservation: NSKeyValueObservation?
     private var appleKeyboardUIModeObservation: NSKeyValueObservation?
-    
-    private var telemetryClient: MorphicTelemetryClient?
-    private var telemetrySessionId: String?
+
     private var telemetryHeartbeatTimer: Timer?
 
     private let appCastUrl: URL = {
@@ -107,7 +104,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         ConfigurableFeatures.shared.telemetrySiteId = commonConfiguration.telemetrySiteId
 
         if ConfigurableFeatures.shared.telemetryIsEnabled == true {
-            self.configureCountly()
             self.configureTelemetry()
         }
         
@@ -231,22 +227,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
-    internal func countly_RecordEvent(_ key: String) {
-        if ConfigurableFeatures.shared.telemetryIsEnabled == true {
-            Countly.sharedInstance().recordEvent(key)
-            
-            self.telemetryClient?.enqueueActionMessage(eventName: key)
-        }
-    }
-    
-    internal func countly_RecordEvent(_ key: String, segmentation: [String: String]?) {
-        if ConfigurableFeatures.shared.telemetryIsEnabled == true {
-            Countly.sharedInstance().recordEvent(key, segmentation: segmentation)
-            
-            self.telemetryClient?.enqueueActionMessage(eventName: key)
-        }
-    }
-    
     private struct TelemetryIdComponents
     {
         public var compositeId: String
@@ -316,53 +296,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
 
         // TODO: there is a potential scenario that our telemetry device uuid could be (incorrectly) saved as a blank entry; we should consider
-        //       how we'd want to deal with that scenario; NOTE: this _might_ just pertain to countly--or it might pertain to MorphicTelemetry as well
+        //       how we'd want to deal with that scenario; NOTE: this _might_ pertain to MorphicTelemetry (or it might have just been a Countly issue)
 
         // capture the raw device UUID
         let rangeOfTelemetryDeviceUuidPrefix = telemetryCompositeId.range(of: "D_")!
         let telemetryDeviceUuid = String(telemetryCompositeId.suffix(from: rangeOfTelemetryDeviceUuidPrefix.upperBound))
 
         return TelemetryIdComponents(compositeId: telemetryCompositeId, siteId: telemetrySiteIdAsOptional, deviceUuid: telemetryDeviceUuid)
-    }
-    
-    func configureCountly() {
-        guard let appKey = Bundle.main.infoDictionary?["CountlyAppKey"] as? String else {
-            assertionFailure("Missing Countly app key.  Check build config files")
-            os_log(.fault, log: logger, "Missing Countly app key.  Check build config files")
-            return
-        }
-        guard let serverUrl = Bundle.main.infoDictionary?["CountlyServerUrl"] as? String else {
-            assertionFailure("Missing Countly server url.  Check build config files")
-            os_log(.fault, log: logger, "Missing Countly server url.  Check build config files")
-            return
-        }
-        
-        // retrieve the telemetry composite ID for this device; if it doesn't exist then create a new one
-        let telemetryDeviceCompositeId = self.getOrCreateTelemetryIdComponents().compositeId;
-
-        let config: CountlyConfig = CountlyConfig()
-        config.appKey = appKey
-        config.host = serverUrl
-        if let compositeVersion = VersionUtils.compositeVersion() {
-            // TODO: figure out where we pass in the appVersion on macOS
-            config.customMetrics[CLYMetricKey.appVersion.rawValue] = compositeVersion
-        }
-        config.features = [CLYFeature.crashReporting]
-        //
-        #if DEBUG
-        config.enableDebug = true
-        #endif
-        //
-        // if Countly is using another telemetry ID, reset the stored device ID and specify the new telemetry ID
-        // NOTE: There is also a 'setNewDeviceID' method on Countly.sharedInstance() which would let us change the session ID _after_ starting up the session...which has additional features like being able to update older records to the new telemetry ID...but this method is simpler and less error-prone for our current needs (and we can supplement our use with the function call method if needed in the future)
-        if Countly.sharedInstance().deviceID() != telemetryDeviceCompositeId {
-            // NOTE: changing the deviceID via config takes no effect if an existing "deviceID" is already in use; therefore we reset it here out of an abundance of caution (and to handle situations where we might change the "deviceID" to another telemetry ID instead)
-            config.resetStoredDeviceID = true
-            config.deviceID = telemetryDeviceCompositeId
-        }
-        //
-        Countly.sharedInstance().start(with: config)
-        Countly.sharedInstance().beginSession()
     }
     
     func prependSiteIdToTelemetryUuid(_ value: String, telemetrySiteId: String) -> String {
@@ -456,16 +396,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             port: 443,
             path: "/ws",
             useTls: true)
-        var telemetryClient = MorphicTelemetryClient(config: mqttConfig, softwareVersion: self.getApplicationVersion())
+        let telemetryClient = MorphicTelemetryClient(config: mqttConfig, softwareVersion: self.getApplicationVersion())
         telemetryClient.siteId = telemetrySiteId
-        self.telemetryClient = telemetryClient
-
+        //
         // create random session id
         // NOTE: GUIDs should be lowercase; macOS outputs UUIDs as uppercase; therefore we manually lowercase them
         let telemetrySessionId = NSUUID().uuidString.lowercased()
-        self.telemetrySessionId = telemetrySessionId
 
-        telemetryClient.startSession()
+        // configure our telemetry client proxy (which will handle all tleemetry calls after we start up the session)
+        TelemetryClientProxy.configure(telemetryClient: telemetryClient, telemetrySessionId: telemetrySessionId)
+        
+        // start our telemetry session
+        TelemetryClientProxy.startSession()
         
         // send the first telemetry message (@session begin)
         // NOTE: for Morphic 2.0, enqueue this message as soon as we create the telemetry client object
@@ -474,7 +416,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             sessionId: telemetrySessionId
         )
         let eventData = MorphicTelemetryClient.TelemetryEventData.session(sessionTelemetryEventData)
-        telemetryClient.enqueueActionMessage(eventName: "@session", data: eventData);
+        TelemetryClientProxy.enqueueActionMessage(eventName: "@session", data: eventData);
 
         // initialize (and start) our heartbeat timer; it should send the heartbeat message every 12 hours
         let telemetryHeartbeatTimer = Timer(timeInterval: 12 * 3600, target: self, selector: #selector(sendTelemetryHeartbeat), userInfo: nil, repeats: true)
@@ -560,7 +502,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
 
     @objc private func sendTelemetryHeartbeat(_ timer: Timer) {
-        guard let telemetrySessionId = self.telemetrySessionId else {
+        guard let telemetrySessionId = TelemetryClientProxy.telemetrySessionId else {
             return
         }
         
@@ -569,7 +511,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             sessionId: telemetrySessionId
         )
         let eventData = MorphicTelemetryClient.TelemetryEventData.session(sessionTelemetryEventData)
-        self.telemetryClient?.enqueueActionMessage(eventName: "@session", data: eventData);
+        TelemetryClientProxy.enqueueActionMessage(eventName: "@session", data: eventData);
     }
     
     func getApplicationVersion() -> String {
@@ -615,9 +557,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     func applicationWillTerminate(_ aNotification: Notification) {
         if ConfigurableFeatures.shared.telemetryIsEnabled == true {
-            Countly.sharedInstance().endSession()
-            
-            self.telemetryClient?.endSession()
+            TelemetryClientProxy.endSession()
         }
     }
     
@@ -641,7 +581,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         Session.shared.open {
             NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: Session.shared)
             
-            AppDelegate.shared.countly_RecordEvent("signIn")
+            TelemetryClientProxy.enqueueActionMessage(eventName: "signIn")
 
             // TODO: previously in Morphic Basic for macOS, a user's cloud preferences were applied when they logged in; this behavior may need to be split (based on whether they're logging in to get their morphicbars...or logging in to get their preferences)
             let userInfo = notification.userInfo ?? [:]
@@ -1526,16 +1466,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     @IBAction func menuBarExtraAboutMorphicMenuItemClicked(_ sender: NSMenuItem) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            self.countly_RecordEvent("aboutMorphic", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "aboutMorphic")
         }
         showAboutBox()
     }
 
     @IBAction func morphicBarIconAboutMorphicMenuItemClicked(_ sender: NSMenuItem) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-            self.countly_RecordEvent("aboutMorphic", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "aboutMorphic")
         }
         showAboutBox()
     }
@@ -1556,22 +1494,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     func terminateMorphicClientDueToCmdQ() {
-        let segmentation = ["eventSource": "keyboardShortcut"]
-        self.countly_RecordEvent("quit", segmentation: segmentation)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "quit")
 
         quitApplication()
     }
     
     @IBAction func menuBarExtraQuitApplicationMenuItemClicked(_ sender: NSMenuItem) {
-        let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-        self.countly_RecordEvent("quit", segmentation: segmentation)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "quit")
 
         quitApplication()
     }
 
     @IBAction func morphicBarIconQuitApplicationMenuItemClicked(_ sender: NSMenuItem) {
-        let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-        self.countly_RecordEvent("quit", segmentation: segmentation)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "quit")
 
         quitApplication()
     }
@@ -1608,13 +1543,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         self.telemetryHeartbeatTimer?.invalidate()
         
         // enqueue a session termination telemetry event
-        if let telemetrySessionId = self.telemetrySessionId {
+        if let telemetrySessionId = TelemetryClientProxy.telemetrySessionId {
             let sessionTelemetryEventData = MorphicTelemetryClient.SessionTelemetryEventData(
                 state: "end",
                 sessionId: telemetrySessionId
             )
             let eventData = MorphicTelemetryClient.TelemetryEventData.session(sessionTelemetryEventData)
-            self.telemetryClient?.enqueueActionMessage(eventName: "@session", data: eventData);
+            TelemetryClientProxy.enqueueActionMessage(eventName: "@session", data: eventData);
             
             // TODO: in a future iteration, wait up to 2500ms for the telemetry queue to empty.  Or persist the telemetry queue to disk so that the message can be sent the next time that Morphic starts up.  Or do both.
         }
@@ -1656,12 +1591,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         switch sender.state {
         case .on:
             defer {
-                self.countly_RecordEvent("autorunAfterLoginDisabled")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "autorunAfterLoginDisabled")
             }
             _ = setMorphicAutostartAtLogin(false)
         case .off:
             defer {
-                self.countly_RecordEvent("autorunAfterLoginEnabled")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "autorunAfterLoginEnabled")
             }
             _ = setMorphicAutostartAtLogin(true)
         default:
@@ -1749,9 +1684,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             switch newKeyRepeatEnabledState {
             case true:
-                self.countly_RecordEvent("stopKeyRepeatOff")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "stopKeyRepeatOff")
             case false:
-                self.countly_RecordEvent("stopKeyRepeatOn")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "stopKeyRepeatOn")
             }
         }
 
@@ -1960,12 +1895,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         switch sender.state {
         case .on:
             defer {
-                self.countly_RecordEvent("showMorphicBarAfterLoginDisabled")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "showMorphicBarAfterLoginDisabled")
             }
             showMorphicBarAtStart = false
         case .off:
             defer {
-                self.countly_RecordEvent("showMorphicBarAfterLoginEnabled")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "showMorphicBarAfterLoginEnabled")
             }
             showMorphicBarAtStart = true
         default:
@@ -2104,11 +2039,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
             let morphicBarWindowWasVisible = morphicBarWindow != nil
             defer {
-                let segmentation: [String: String] = ["eventSource": "trayIconClick"]
                 if morphicBarWindowWasVisible == true {
-                    self.countly_RecordEvent("morphicBarHide", segmentation: segmentation)
+                    TelemetryClientProxy.enqueueActionMessage(eventName: "morphicBarHide")
                 } else {
-                    self.countly_RecordEvent("morphicBarShow", segmentation: segmentation)
+                    TelemetryClientProxy.enqueueActionMessage(eventName: "morphicBarShow")
                 }
             }
             toggleMorphicBar(sender)
@@ -2126,8 +2060,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
             // show the menu (by assigning it to the menubar extra and re-clicking the extra; then disconnect the menu again so that our custom actions (custom left- and right-mouseDown) work properly.
             defer {
-                let segmentation = AppDelegate.shared.createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-                self.countly_RecordEvent("showMenu", segmentation: segmentation)
+                TelemetryClientProxy.enqueueActionMessage(eventName: "showMenu")
             }
             statusItem.menu = self.mainMenu
             statusItemButton.performClick(sender)
@@ -2176,8 +2109,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     @IBAction
     func menuBarExtraShowMorphicBarMenuItemClicked(_ sender: NSMenuItem) {
-        let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-        self.countly_RecordEvent("morphicBarShow", segmentation: segmentation)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "morphicBarShow")
         showMorphicBar(sender)
     }
     
@@ -2200,21 +2132,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     @IBAction
     func menuBarExtraHideMorphicBarMenuItemClicked(_ sender: NSMenuItem) {
-        let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-        self.countly_RecordEvent("morphicBarHide", segmentation: segmentation)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "morphicBarHide")
         hideMorphicBar(sender)
     }
 
     @IBAction
     func morphicBarIconHideMorphicBarMenuItemClicked(_ sender: NSMenuItem) {
-        let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-        self.countly_RecordEvent("morphicBarHide", segmentation: segmentation)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "morphicBarHide")
         hideMorphicBar(sender)
     }
 
     func morphicBarCloseButtonPressed() {
-        let segmentation = ["eventSource": "closeButton"]
-        self.countly_RecordEvent("morphicBarHide", segmentation: segmentation)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "morphicBarHide")
         hideMorphicBar(nil)
     }
     
@@ -2241,8 +2170,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func menuBarExtraCustomizeMorphicbarMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            self.countly_RecordEvent("customizeMorphicbar", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "customizeMorphicbar")
         }
 
         customizeMorphicbarClicked()
@@ -2260,8 +2188,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func menuBarExtraHowToCopySetupsMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            self.countly_RecordEvent("howToCopySetups", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "howToCopySetups")
         }
 
         transferSetupsClicked()
@@ -2275,8 +2202,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     @IBAction func menuBarExtraContactUsMenuItemClicked(_ sender: Any) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            self.countly_RecordEvent("contactUs", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "contactUs")
         }
         
         contactUsClicked()
@@ -2290,8 +2216,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func menuBarExtraExploreMorphicMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            self.countly_RecordEvent("exploreMorphic", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "exploreMorphic")
         }
 
         exploreMorphicClicked()
@@ -2300,8 +2225,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func morphicBarIconExploreMorphicMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-            self.countly_RecordEvent("exploreMorphic", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "exploreMorphic")
         }
         
         exploreMorphicClicked()
@@ -2315,8 +2239,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func menuBarExtraQuickDemoMoviesMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            self.countly_RecordEvent("quickDemoVideo", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "quickDemoVideo")
         }
         
         quickDemoMoviesClicked()
@@ -2325,8 +2248,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func morphicBarIconQuickDemoMoviesMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-            self.countly_RecordEvent("quickDemoVideo", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "quickDemoVideo")
         }
 
         quickDemoMoviesClicked()
@@ -2340,8 +2262,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func menuBarExtraOtherHelpfulThingsMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            self.countly_RecordEvent("otherHelpfulThings", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "otherHelpfulThings")
         }
         
         otherHelpfulThingsClicked()
@@ -2350,8 +2271,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func morphicBarIconOtherHelpfulThingsMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-            self.countly_RecordEvent("otherHelpfulThings", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "otherHelpfulThings")
         }
 
         otherHelpfulThingsClicked()
@@ -2463,16 +2383,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     //
     
     func recordCountlyOpenSystemSettingsEvent(category settingsCategoryName: String, tag: Int?) {
-        var segmentation: [String: String] = [:]
-        segmentation["category"] = settingsCategoryName
-        if tag == nil || tag! == 0 {
-            // main menu
-            segmentation["eventSource"] = "iconMenu"
-        } else if tag! == 1 {
-            segmentation["eventSource"] = "contextMenu"
-        }
-        self.countly_RecordEvent("systemSettings", segmentation: segmentation)
-//        self.countly_RecordEvent("systemSettings" + settingsCategoryName)
+        // NOTE: if we need to send the settings category name, we could do so via event data
+        TelemetryClientProxy.enqueueActionMessage(eventName: "systemSettings")
     }
     
     //
