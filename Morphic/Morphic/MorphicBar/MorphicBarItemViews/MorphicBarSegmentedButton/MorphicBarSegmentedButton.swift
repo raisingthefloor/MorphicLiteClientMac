@@ -22,7 +22,6 @@
 // * Consumer Electronics Association Foundation
 
 import Cocoa
-import Countly
 
 // A control similar to a segmented control, but with momentary buttons and custom styling.
 //
@@ -686,14 +685,9 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             return
         }
         //
-        let learnMoreTelemetryCategory = selectedSegment.learnMoreTelemetryCategory
         defer {
-            var segmentation: [String: String] = [:]
-            if learnMoreTelemetryCategory != nil {
-                segmentation["category"] = learnMoreTelemetryCategory
-            }
-            segmentation["eventSource"] = "contextMenu"
-            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("learnMore", segmentation: segmentation)
+            // NOTE: if we wanted to send the category that the user was learning more about, we could capture selectedSegment.learnMoreTelemetryCateogry--and send that category name via eventData
+            TelemetryClientProxy.enqueueActionMessage(eventName: "learnMore")
         }
         //
         NSWorkspace.shared.open(learnMoreUrl)
@@ -710,14 +704,9 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             return
         }
         //
-        let quickDemoVideoTelemetryCategory = selectedSegment.quickDemoVideoTelemetryCategory
         defer {
-            var segmentation: [String: String] = [:]
-            if quickDemoVideoTelemetryCategory != nil {
-                segmentation["category"] = quickDemoVideoTelemetryCategory
-            }
-            segmentation["eventSource"] = "contextMenu"
-            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("quickDemoVideo", segmentation: segmentation)
+            // NOTE: if we wanted to send the category that the user was checking out (via quick demo videos), we could capture selectedSegment.quickDemoVideoTelemetryCategory--and send that category name via eventData
+            TelemetryClientProxy.enqueueActionMessage(eventName: "quickDemoVideo")
         }
         //
         NSWorkspace.shared.open(quickDemoVideoUrl)

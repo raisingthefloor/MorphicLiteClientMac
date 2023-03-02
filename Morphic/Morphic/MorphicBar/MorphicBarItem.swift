@@ -23,7 +23,6 @@
 
 import Carbon.HIToolbox
 import Cocoa
-import Countly
 import MorphicCore
 import MorphicMacOSNative
 import MorphicSettings
@@ -97,7 +96,7 @@ public class MorphicBarItem {
             if let _ = interoperable["function"] {
                 // config.json (Windows-compatible) action item
                 defer {
-                    (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("morphicBarExtraItem")
+                    TelemetryClientProxy.enqueueActionMessage(eventName: "morphicBarExtraItem")
                 }
                 return MorphicBarActionItem(interoperable: interoperable)
             } else {
@@ -865,15 +864,11 @@ class MorphicBarControlItem: MorphicBarItem {
         }
         //
         defer {
-            var segmentation: [String: String] = [:]
-            segmentation["scalePercent"] =  String(Int(percentage * 100))
-            if let zoomToStep = zoomToStep {
-                segmentation["dotOffset"] = String(zoomToStep)
-            }
+            // NOTE: if we wanted to send the scale percentage, we could capture "scalePercentage"--and then send that as a parameter via eventData; ideally we'd look at this from a "relative to system default/recommended %" basis, rather than "dots" or absolute %
             if isZoomingIn == true {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("textSizeIncrease", segmentation: segmentation)
+                TelemetryClientProxy.enqueueActionMessage(eventName: "textSizeIncrease")
             } else {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("textSizeDecrease", segmentation: segmentation)
+                TelemetryClientProxy.enqueueActionMessage(eventName: "textSizeDecrease")
             }
         }
         //
@@ -995,7 +990,7 @@ class MorphicBarControlItem: MorphicBarItem {
     @objc
     func signout(_ sender: Any?) {
         defer {
-            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("signOut")
+            TelemetryClientProxy.enqueueActionMessage(eventName: "signOut")
         }
         
         MorphicProcess.logOutUserViaOsaScriptWithConfirmation()
@@ -1004,7 +999,7 @@ class MorphicBarControlItem: MorphicBarItem {
     @objc
     func screensnip(_ sender: Any?) {
         defer {
-            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("screenSnip")
+            TelemetryClientProxy.enqueueActionMessage(eventName: "screenSnip")
         }
 
         // verify that we have accessibility permissions (since UI automation and sendKeys will not work without them)
@@ -1081,7 +1076,7 @@ class MorphicBarControlItem: MorphicBarItem {
         }
         if segment == 0 {
             defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("colorFiltersOn")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "colorFiltersOn")
             }
 
             self.setColorFilterState(true) {
@@ -1089,7 +1084,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
         } else {
             defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("colorFiltersOff")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "colorFiltersOff")
             }
 
             self.setColorFilterState(false) {
@@ -1206,7 +1201,7 @@ class MorphicBarControlItem: MorphicBarItem {
                 let newIncreaseContrastEnabled = !increaseContrastEnabled
                 //
                 defer {
-                    (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newIncreaseContrastEnabled ? "highContrastOn" : "highContrastOff")
+		    TelemetryClientProxy.enqueueActionMessage(eventName: newIncreaseContrastEnabled ? "highContrastOn" : "highContrastOff")
                 }
                 // apply the inverse state
                 Session.shared.apply(newIncreaseContrastEnabled, for: .macosDisplayContrastEnabled) {
@@ -1231,7 +1226,7 @@ class MorphicBarControlItem: MorphicBarItem {
                 let newValue = !valueAsBoolean
                 
                 defer {
-                    (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newValue ? "colorFiltersOn" : "colorFiltersOff")
+                    TelemetryClientProxy.enqueueActionMessage(eventName: newValue ? "colorFiltersOn" : "colorFiltersOff")
                 }
                 
                 self.setColorFilterState(newValue) {
@@ -1261,7 +1256,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
             //
             defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newDarkModeEnabled ? "darkModeOn" : "darkModeOff")
+                TelemetryClientProxy.enqueueActionMessage(eventName: newDarkModeEnabled ? "darkModeOn" : "darkModeOff")
             }
             //
             switch newDarkModeEnabled {
@@ -1314,7 +1309,7 @@ class MorphicBarControlItem: MorphicBarItem {
             let newNightShiftEnabled = !nightShiftEnabled
             //
             defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newNightShiftEnabled ? "nightModeOn" : "nightModeOff")
+                TelemetryClientProxy.enqueueActionMessage(eventName: newNightShiftEnabled ? "nightModeOn" : "nightModeOff")
             }
             //
             MorphicNightShift.setEnabled(newNightShiftEnabled)
@@ -1338,13 +1333,13 @@ class MorphicBarControlItem: MorphicBarItem {
         }
         if segment == 0 {
             defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("darkModeOn")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "darkModeOn")
             }
 
             MorphicDisplayAppearance.setCurrentAppearanceTheme(.dark)
         } else {
             defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("darkModeOff")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "darkModeOff")
             }
 
             MorphicDisplayAppearance.setCurrentAppearanceTheme(.light)
@@ -1382,7 +1377,7 @@ class MorphicBarControlItem: MorphicBarItem {
     @objc
     func readselected(_ sender: Any?) {
         defer {
-            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("readSelectedToggle")
+            TelemetryClientProxy.enqueueActionMessage(eventName: "readSelectedToggle")
         }
         
         // verify that we have accessibility permissions (since UI automation and sendKeys will not work without them)
@@ -1476,9 +1471,10 @@ class MorphicBarControlItem: MorphicBarItem {
             return
         }
         let session = Session.shared
+        
         if segment == 0 {
             defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("magnifierShow")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "magnifierShow")
             }
             
             // this is the code which will activate our magnifier once we have established that it is configured properly
@@ -1531,7 +1527,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
         } else {
             defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("magnifierHide")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "magnifierHide")
             }
             
             session.storage.load(identifier: "__magnifier__") {
