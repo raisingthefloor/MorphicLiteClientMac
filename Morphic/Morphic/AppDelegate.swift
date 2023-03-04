@@ -29,6 +29,7 @@ import MorphicMacOSNative
 import MorphicService
 import MorphicSettings
 import MorphicTelemetry
+import MorphicUIAutomation
 import ServiceManagement
 
 private let logger = OSLog(subsystem: "app", category: "delegate")
@@ -1727,6 +1728,41 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
 
     //
+
+    func setInitialColorFilterType(waitAtMost: TimeInterval) async throws {
+        if #available(macOS 13.0, *) {
+            // the async version of this function is built for macOS 13 and later: proceed.
+        } else {
+            fatalError("This version of macOS is not yet supported by this code")
+        }
+
+        // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+        let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+        let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+
+        let newColorFilterType = MorphicSettings.AccessibilityDisplaySettings.ColorFilterType.protanopia
+        
+        do {
+            let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+            try await AccessibilityDisplayUIAutomationScript_macOS13.setColorFilterType(newColorFilterType, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+        } catch let error {
+            throw error
+        }
+        
+        // double-check that the setting has been set correctly (by reading the setting from the system defaults)
+        let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+        let verifySuccess = try await AsyncUtils.wait(atMost: waitForTimespan) {
+            let currentColorFilterType = try MorphicSettings.AccessibilityDisplaySettings.getColorFilterType()
+            return currentColorFilterType?.intValue == newColorFilterType.intValue
+        }
+        if verifySuccess == false {
+            // timeout occurred while waiting for the change to be verified
+            throw MorphicError.unspecified
+        }
+
+        // finally, record a persistent flag indicating that we have set up the initial magnifier zoom style
+        Session.shared.set(true, for: .morphicDidSetInitialColorFilterType)
+    }
     
     func setInitialColorFilterType() {
 //        // NOTE: color-filter types (as their enumerated int values)
@@ -1738,64 +1774,112 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         // TODO: convert this int into an enumeration (using the values from the above list)
         let colorFilterTypeAsInt: Int = 2 // Red/Green filter (Protanopia)
         
-        Session.shared.apply(colorFilterTypeAsInt, for: .macosColorFilterType) {
-            success in
-            
-            // we do not currently have a mechanism to report success/failure
-            SettingsManager.shared.capture(valueFor: .macosColorFilterType) {
-                verifyColorFilterType in
-                guard let verifyColorFilterTypeAsInt = verifyColorFilterType as? Int else {
-                    // could not get current setting
-                    return
-                }
-                //
-                if verifyColorFilterTypeAsInt != colorFilterTypeAsInt {
-                    NSLog("Could not set color filter type to Red/Green filter (Protanopia)")
-                    assertionFailure("Could not set color filter type to Red/Green filter (Protanopia)")
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            fatalError("This version of macOS is not supported by this code; use the new async version instead.")
+        } else {
+            // macOS 12.x and earlier
+
+            Session.shared.apply(colorFilterTypeAsInt, for: .macosColorFilterType) {
+                success in
+                
+                // we do not currently have a mechanism to report success/failure
+                SettingsManager.shared.capture(valueFor: .macosColorFilterType) {
+                    verifyColorFilterType in
+                    guard let verifyColorFilterTypeAsInt = verifyColorFilterType as? Int else {
+                        // could not get current setting
+                        return
+                    }
+                    //
+                    if verifyColorFilterTypeAsInt != colorFilterTypeAsInt {
+                        NSLog("Could not set color filter type to Red/Green filter (Protanopia)")
+                        assertionFailure("Could not set color filter type to Red/Green filter (Protanopia)")
+                    }
                 }
             }
         }
         
         Session.shared.set(true, for: .morphicDidSetInitialColorFilterType)
     }
-    
+
+    func setInitialMagnifierZoomStyle(waitAtMost: TimeInterval) async throws {
+        if #available(macOS 13.0, *) {
+            // the async version of this function is built for macOS 13 and later: proceed.
+        } else {
+            fatalError("This version of macOS is not yet supported by this code")
+        }
+        
+        // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+        let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+        let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+
+        let newZoomStyle = MorphicSettings.MagnifierZoomSettings.ZoomStyle.pictureInPicture // aka "lens"
+        
+        do {
+            let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+            try await MagnifierUIAutomationScript_macOS13.setZoomStyle(newZoomStyle, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+        } catch let error {
+            throw error
+        }
+        
+        // double-check that the setting has been set correctly (by reading the setting from the system defaults
+        let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+        let verifySuccess = try await AsyncUtils.wait(atMost: waitForTimespan) {
+            let currentZoomStyle = try MorphicSettings.MagnifierZoomSettings.getZoomStyle()
+            return currentZoomStyle?.intValue == newZoomStyle.intValue
+        }
+        if verifySuccess == false {
+            // timeout occurred while waiting for the change to be verified
+            throw MorphicError.unspecified
+        }
+
+        // finally, record a persistent flag indicating that we have set up the initial magnifier zoom style
+        Session.shared.set(true, for: .morphicDidSetInitialMagnifierZoomStyle)
+    }
+
     func setInitialMagnifierZoomStyle(completion: @escaping (_ success: Bool) -> Void) {
-//        // NOTE: zoom styles (as their enumerated int values)
-//        0: "Full screen",
-//        1: "Picture-in-picture",
-//        2: "Split screen",
-        // TODO: convert this int into an enumeration (using the values from the above list)
+        //        // NOTE: zoom styles (as their enumerated int values)
+        //        0: "Full screen",
+        //        1: "Picture-in-picture",
+        //        2: "Split screen",
         let zoomStyleAsInt: Int = 1 // Picture-in-picture (aka "lens")
 
-        Session.shared.apply(zoomStyleAsInt, for: .macosZoomStyle) {
-            success in
-         
-            guard success == true else {
-                completion(false)
-                return
-            }
-            
-            Session.shared.set(true, for: .morphicDidSetInitialMagnifierZoomStyle)
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            fatalError("This version of macOS is not supported by this code; use the new async version instead.")
+        } else {
+            // macOS 12.x and earlier
 
-            // we do not currently have a mechanism to report success/failure
-            SettingsManager.shared.capture(valueFor: .macosZoomStyle) {
-                verifyZoomStyle in
-
-                guard let verifyZoomStyleAsInt = verifyZoomStyle as? Int else {
-                    // could not get current setting
-                    completion(false)
-                    return
-                }
-                //
-                if verifyZoomStyleAsInt != verifyZoomStyleAsInt {
-                    NSLog("Could not set magnifier zoom style to Picture-in-picture")
-                    assertionFailure("Could not set magnifier zoom style to Picture-in-picture")
-
+            Session.shared.apply(zoomStyleAsInt, for: .macosZoomStyle) {
+                success in
+             
+                guard success == true else {
                     completion(false)
                     return
                 }
                 
-                completion(true)
+                Session.shared.set(true, for: .morphicDidSetInitialMagnifierZoomStyle)
+
+                // we do not currently have a mechanism to report success/failure
+                SettingsManager.shared.capture(valueFor: .macosZoomStyle) {
+                    verifyZoomStyle in
+
+                    guard let verifyZoomStyleAsInt = verifyZoomStyle as? Int else {
+                        // could not get current setting
+                        completion(false)
+                        return
+                    }
+                    //
+                    if verifyZoomStyleAsInt != verifyZoomStyleAsInt {
+                        NSLog("Could not set magnifier zoom style to Picture-in-picture")
+                        assertionFailure("Could not set magnifier zoom style to Picture-in-picture")
+
+                        completion(false)
+                        return
+                    }
+                    
+                    completion(true)
+                }
             }
         }
     }

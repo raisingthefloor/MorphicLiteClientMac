@@ -35,16 +35,29 @@ public class SystemSettingsApp {
         self.uiAutomationApp = uiAutomationApp
     }
     
-    public static func launchOrAttach(waitUntilFinishedLaunching: TimeInterval = 0.0) async throws -> SystemSettingsApp {
+    public static func isRunningApplication() -> Bool {
+        UIAutomationApp.isRunningApplication(bundleIdentifier: SystemSettingsApp.bundleIdentifier)
+    }
+    
+    public static func launchOrAttach(waitUntilFinishedLaunching: TimeInterval = 0.0) async throws -> (app: SystemSettingsApp, launchedSystemSettingsApp: Bool) {
         let uiAutomationApp: UIAutomationApp
+        let launchedSystemSettingsApp: Bool
         do {
-            (uiAutomationApp, _) = try await UIAutomationApp.launchOrAttach(bundleIdentifier: bundleIdentifier, waitUntilFinishedLaunching: waitUntilFinishedLaunching)
+            (uiAutomationApp, launchedSystemSettingsApp, _) = try await UIAutomationApp.launchOrAttach(bundleIdentifier: SystemSettingsApp.bundleIdentifier, waitUntilFinishedLaunching: waitUntilFinishedLaunching)
         } catch let error {
             throw error // UIAutomationApp.LaunchError
         }
                 
-        let result = SystemSettingsApp(uiAutomationApp: uiAutomationApp)
-        return result
+        let app = SystemSettingsApp(uiAutomationApp: uiAutomationApp)
+        return (app: app, launchedSystemSettingsApp: launchedSystemSettingsApp)
+    }
+    
+    public func terminate() throws {
+        try self.uiAutomationApp.terminate()
+    }
+    
+    public static func terminate() throws {
+        try UIAutomationApp.terminate(bundleIdentifier: SystemSettingsApp.bundleIdentifier)
     }
  
     // MARK: - App process status
@@ -73,12 +86,13 @@ public class SystemSettingsApp {
 
     // MARK: - App UI logic
     
-    public static func launchOrAttachThenNavigateTo(_ view: SystemSettingsView, waitUntilFinishedLaunching: TimeInterval) async throws {
+    public static func launchOrAttachThenNavigateTo(_ view: SystemSettingsView, waitUntilFinishedLaunching: TimeInterval) async throws -> (groupUIElementWrapper: SystemSettingsGroupUIElementWrapper?, launchedSystemSettingsApp: Bool) {
         let waitUntilFinishedLaunchingDeadline = ProcessInfo.processInfo.systemUptime + waitUntilFinishedLaunching
 
         let systemSettingsApp: SystemSettingsApp
+        let launchedSystemSettingsApp: Bool
         do {
-            systemSettingsApp = try await SystemSettingsApp.launchOrAttach(waitUntilFinishedLaunching: waitUntilFinishedLaunching)
+            (systemSettingsApp, launchedSystemSettingsApp) = try await SystemSettingsApp.launchOrAttach(waitUntilFinishedLaunching: waitUntilFinishedLaunching)
         } catch let error {
             throw error // UIAutomationApp.LaunchError
         }
@@ -99,11 +113,14 @@ public class SystemSettingsApp {
             throw SystemSettingsApp.NavigationError.unspecified
         }
         
+        let result: SystemSettingsGroupUIElementWrapper?
         do {
-            _ = try await systemSettingsApp.navigateTo(view)
+            result = try await systemSettingsApp.navigateTo(view)
         } catch let error {
             throw error
         }
+        
+        return (groupUIElementWrapper: result, launchedSystemSettingsApp: launchedSystemSettingsApp)
     }
     
     public enum NavigationError: Error {
@@ -112,6 +129,9 @@ public class SystemSettingsApp {
     
     public enum SystemSettingsView {
         case accessibility
+        case accessibilityDisplay
+        case accessibilitySpokenContent
+        case accessibilityZoom
         case appearance
         case colorFilters
         case contrast
@@ -119,14 +139,14 @@ public class SystemSettingsApp {
         case general
         case keyboard
         case languageAndRegion
-        case magnifier
         case mouse
         case nightShift
         case pointerSize
         case screenshotKeyboardShortcuts
         case speech
+        case trackpad
     }
-    public func navigateTo(_ view: SystemSettingsView, waitAtMost: TimeInterval = TimeInterval(2.0)) async throws {
+    public func navigateTo(_ view: SystemSettingsView, waitAtMost: TimeInterval = TimeInterval(2.0)) async throws -> SystemSettingsGroupUIElementWrapper? {
         let windowUIElement: WindowUIElement?
         do {
             windowUIElement = try self.uiAutomationApp.mainWindow()
@@ -137,9 +157,11 @@ public class SystemSettingsApp {
             throw NavigationError.unspecified
         }
         
-        // wait for the main category navigation up to "waitAtMost" (or 2 seconds, whichever is shorter)
+        // wait for the main category (or subcategory) navigation up to "waitAtMost" (or 2 seconds, whichever is shorter)
         let mainCategoryNavigationWaitMaximum = TimeInterval.minimum(waitAtMost, TimeInterval(2.0))
         let subCategoryNavigationWaitMaximum = TimeInterval.minimum(waitAtMost, TimeInterval(2.0))
+        
+        var groupUIElementWrapper: SystemSettingsGroupUIElementWrapper? = nil
         
         switch view {
         case .accessibility:
@@ -147,7 +169,71 @@ public class SystemSettingsApp {
                 // macOS 13.0 and later
                 let systemSettingsMainWindow = SystemSettingsMainWindow_macOS13(windowUIElement: windowUIElement)
                 do {
-                    _ = try await systemSettingsMainWindow.navigateTo(SystemSettingsMainWindow_macOS13.CategoryPane.accessibility, waitAtMost: mainCategoryNavigationWaitMaximum)
+                    let groupUIElement = try await systemSettingsMainWindow.navigateTo(SystemSettingsMainWindow_macOS13.CategoryPane.accessibility, waitAtMost: mainCategoryNavigationWaitMaximum)
+                    groupUIElementWrapper = SystemSettingsAccessibilityCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: groupUIElement)
+                } catch let error {
+                    throw error
+                }
+            } else {
+                fatalError("Unsupported macOS version")
+            }
+        case .accessibilityDisplay:
+            if #available(macOS 13.0, *) {
+                // macOS 13.0 and later
+                let systemSettingsMainWindow = SystemSettingsMainWindow_macOS13(windowUIElement: windowUIElement)
+                let accessibilityCategoryGroupUIElement: GroupUIElement
+                do {
+                    accessibilityCategoryGroupUIElement = try await systemSettingsMainWindow.navigateTo(SystemSettingsMainWindow_macOS13.CategoryPane.accessibility, waitAtMost: mainCategoryNavigationWaitMaximum)
+                } catch let error {
+                    throw error
+                }
+                
+                let accessibilityCategoryPane = SystemSettingsAccessibilityCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: accessibilityCategoryGroupUIElement)
+                do {
+                    let groupUIElement = try await accessibilityCategoryPane.navigateTo(.display, waitAtMost: subCategoryNavigationWaitMaximum)
+                    groupUIElementWrapper = SystemSettingsAccessibilityDisplayCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: groupUIElement)
+                } catch let error {
+                    throw error
+                }
+            } else {
+                fatalError("Unsupported macOS version")
+            }
+        case .accessibilitySpokenContent:
+            if #available(macOS 13.0, *) {
+                // macOS 13.0 and later
+                let systemSettingsMainWindow = SystemSettingsMainWindow_macOS13(windowUIElement: windowUIElement)
+                let accessibilityCategoryGroupUIElement: GroupUIElement
+                do {
+                    accessibilityCategoryGroupUIElement = try await systemSettingsMainWindow.navigateTo(SystemSettingsMainWindow_macOS13.CategoryPane.accessibility, waitAtMost: mainCategoryNavigationWaitMaximum)
+                } catch let error {
+                    throw error
+                }
+                
+                let accessibilityCategoryPane = SystemSettingsAccessibilityCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: accessibilityCategoryGroupUIElement)
+                do {
+                    let groupUIElement = try await accessibilityCategoryPane.navigateTo(.spokenContent, waitAtMost: subCategoryNavigationWaitMaximum)
+                    groupUIElementWrapper = SystemSettingsAccessibilitySpokenContentCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: groupUIElement)
+                } catch let error {
+                    throw error
+                }
+            } else {
+                fatalError("Unsupported macOS version")
+            }
+        case .accessibilityZoom:
+            if #available(macOS 13.0, *) {
+                // macOS 13.0 and later
+                let systemSettingsMainWindow = SystemSettingsMainWindow_macOS13(windowUIElement: windowUIElement)
+                let accessibilityCategoryGroupUIElement: GroupUIElement
+                do {
+                    accessibilityCategoryGroupUIElement = try await systemSettingsMainWindow.navigateTo(SystemSettingsMainWindow_macOS13.CategoryPane.accessibility, waitAtMost: mainCategoryNavigationWaitMaximum)
+                } catch let error {
+                    throw error
+                }
+                
+                let accessibilityCategoryPane = SystemSettingsAccessibilityCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: accessibilityCategoryGroupUIElement)
+                do {
+                    let groupUIElement = try await accessibilityCategoryPane.navigateTo(.zoom, waitAtMost: subCategoryNavigationWaitMaximum)
+                    groupUIElementWrapper = SystemSettingsAccessibilityZoomCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: groupUIElement)
                 } catch let error {
                     throw error
                 }
@@ -223,7 +309,8 @@ public class SystemSettingsApp {
                 // macOS 13.0 and later
                 let systemSettingsMainWindow = SystemSettingsMainWindow_macOS13(windowUIElement: windowUIElement)
                 do {
-                    _ = try await systemSettingsMainWindow.navigateTo(SystemSettingsMainWindow_macOS13.CategoryPane.general, waitAtMost: mainCategoryNavigationWaitMaximum)
+                    let groupUIElement = try await systemSettingsMainWindow.navigateTo(SystemSettingsMainWindow_macOS13.CategoryPane.general, waitAtMost: mainCategoryNavigationWaitMaximum)
+                    groupUIElementWrapper = SystemSettingsGeneralCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: groupUIElement)
                 } catch let error {
                     throw error
                 }
@@ -235,7 +322,8 @@ public class SystemSettingsApp {
                 // macOS 13.0 and later
                 let systemSettingsMainWindow = SystemSettingsMainWindow_macOS13(windowUIElement: windowUIElement)
                 do {
-                    _ = try await systemSettingsMainWindow.navigateTo(SystemSettingsMainWindow_macOS13.CategoryPane.keyboard, waitAtMost: mainCategoryNavigationWaitMaximum)
+                    let groupUIElement = try await systemSettingsMainWindow.navigateTo(SystemSettingsMainWindow_macOS13.CategoryPane.keyboard, waitAtMost: mainCategoryNavigationWaitMaximum)
+                    groupUIElementWrapper = SystemSettingsKeyboardCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: groupUIElement)
                 } catch let error {
                     throw error
                 }
@@ -256,27 +344,6 @@ public class SystemSettingsApp {
                 let generalCategoryPane = SystemSettingsGeneralCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: generalCategoryGroupUIElement)
                 do {
                     _ = try await generalCategoryPane.navigateTo(.languageAndRegion, waitAtMost: subCategoryNavigationWaitMaximum)
-                } catch let error {
-                    throw error
-                }
-            } else {
-                fatalError("Unsupported macOS version")
-            }
-
-        case .magnifier:
-            if #available(macOS 13.0, *) {
-                // macOS 13.0 and later
-                let systemSettingsMainWindow = SystemSettingsMainWindow_macOS13(windowUIElement: windowUIElement)
-                let accessibilityCategoryGroupUIElement: GroupUIElement
-                do {
-                    accessibilityCategoryGroupUIElement = try await systemSettingsMainWindow.navigateTo(SystemSettingsMainWindow_macOS13.CategoryPane.accessibility, waitAtMost: mainCategoryNavigationWaitMaximum)
-                } catch let error {
-                    throw error
-                }
-                
-                let accessibilityCategoryPane = SystemSettingsAccessibilityCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: accessibilityCategoryGroupUIElement)
-                do {
-                    _ = try await accessibilityCategoryPane.navigateTo(.zoom, waitAtMost: subCategoryNavigationWaitMaximum)
                 } catch let error {
                     throw error
                 }
@@ -309,7 +376,7 @@ public class SystemSettingsApp {
                 // find the "Night Shift..." button and press it
                 let displaysCategoryPane = SystemSettingsDisplaysCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: displaysCategoryGroupUIElement)
                 do {
-                    _ = try displaysCategoryPane.pressButton(.nightShift)
+                    _ = try displaysCategoryPane.pressButton(forButtonWithLabel: SystemSettingsDisplaysCategoryPane_macOS13.Button.nightShift)
                 } catch let error {
                     throw error
                 }
@@ -350,7 +417,7 @@ public class SystemSettingsApp {
                 // find the "Keyboard Shortcuts..." button and press it
                 let keyboardCategoryPane = SystemSettingsKeyboardCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: keyboardCategoryGroupUIElement)
                 do {
-                    _ = try keyboardCategoryPane.pressButton(.keyboardShortcuts)
+                    _ = try keyboardCategoryPane.pressButton(forButtonWithLabel: SystemSettingsKeyboardCategoryPane_macOS13.Button.keyboardShortcuts)
                 } catch let error {
                     throw error
                 }
@@ -388,10 +455,10 @@ public class SystemSettingsApp {
                 let sheetGroupUIElement = GroupUIElement(accessibilityUiElement: sheetGroupA11yElement)
                 //
                 // create a KeyboardShortcutsSheet object using the sheet's group
-                let keyboardShortcutsSheet = SystemSettingsKeyboardShortcutsSheet_macOS13(groupUIElement: sheetGroupUIElement)
+                let keyboardShortcutsSheet = SystemSettingsKeyboardShortcutsSheet_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: sheetGroupUIElement)
                 //
                 do {
-                    _ = try await keyboardShortcutsSheet.navigateTo(.screenshots, waitAtMost: subCategoryNavigationWaitMaximum)
+                    _ = try await keyboardShortcutsSheet.navigateTo(SystemSettingsKeyboardShortcutsSheet_macOS13.CategoryPane.screenshots, waitAtMost: subCategoryNavigationWaitMaximum)
                 } catch let error {
                     throw error
                 }
@@ -418,6 +485,20 @@ public class SystemSettingsApp {
             } else {
                 fatalError("Unsupported macOS version")
             }
+        case .trackpad:
+            if #available(macOS 13.0, *) {
+                // macOS 13.0 and later
+                let systemSettingsMainWindow = SystemSettingsMainWindow_macOS13(windowUIElement: windowUIElement)
+                do {
+                    _ = try await systemSettingsMainWindow.navigateTo(SystemSettingsMainWindow_macOS13.CategoryPane.trackpad, waitAtMost: mainCategoryNavigationWaitMaximum)
+                } catch let error {
+                    throw error
+                }
+            } else {
+                fatalError("Unsupported macOS version")
+            }
         }
+        
+        return groupUIElementWrapper
     }
 }

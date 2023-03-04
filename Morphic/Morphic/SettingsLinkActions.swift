@@ -63,7 +63,7 @@ class SettingsLinkActions {
 
             let systemSettingsApp: SystemSettingsApp
             do {
-                systemSettingsApp = try await SystemSettingsApp.launchOrAttach(waitUntilFinishedLaunching: waitForSystemSettingsLaunchTimespan)
+                (systemSettingsApp, _/*launchedSystemSettingsApp*/) = try await SystemSettingsApp.launchOrAttach(waitUntilFinishedLaunching: waitForSystemSettingsLaunchTimespan)
             } catch let error {
                 throw error // UIAutomationApp.LaunchError
             }
@@ -84,35 +84,41 @@ class SettingsLinkActions {
 
             //
 
-            let waitForNavigationTimespan = TimeInterval(5.0)
+            let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
             
             switch pane {
             case .accessibilityOverview:
-                _ = try await systemSettingsApp.navigateTo(.accessibility, waitAtMost: waitForNavigationTimespan)
+                _ = try await systemSettingsApp.navigateTo(.accessibility, waitAtMost: waitForTimespan)
             case .accessibilityDisplayColorFilters:
-                _ = try await systemSettingsApp.navigateTo(.colorFilters, waitAtMost: waitForNavigationTimespan)
+                _ = try await systemSettingsApp.navigateTo(.colorFilters, waitAtMost: waitForTimespan)
             case .accessibilityDisplayCursor:
-                _ = try await systemSettingsApp.navigateTo(.pointerSize, waitAtMost: waitForNavigationTimespan)
+                _ = try await systemSettingsApp.navigateTo(.pointerSize, waitAtMost: waitForTimespan)
             case .accessibilityDisplayDisplay:
-                _ = try await systemSettingsApp.navigateTo(.contrast, waitAtMost: waitForNavigationTimespan)
+                _ = try await systemSettingsApp.navigateTo(.contrast, waitAtMost: waitForTimespan)
             case .accessibilitySpeech:
-                _ = try await systemSettingsApp.navigateTo(.speech, waitAtMost: waitForNavigationTimespan)
+                _ = try await systemSettingsApp.navigateTo(.speech, waitAtMost: waitForTimespan)
             case .accessibilityZoom:
-                _ = try await systemSettingsApp.navigateTo(.magnifier, waitAtMost: waitForNavigationTimespan)
+                _ = try await systemSettingsApp.navigateTo(.accessibilityZoom, waitAtMost: waitForTimespan)
             case .appearance:
-                _ = try await systemSettingsApp.navigateTo(.appearance, waitAtMost: waitForNavigationTimespan)
+                _ = try await systemSettingsApp.navigateTo(.appearance, waitAtMost: waitForTimespan)
             case .displaysDisplay:
-                _ = try await systemSettingsApp.navigateTo(.displayBrightness, waitAtMost: waitForNavigationTimespan)
+                _ = try await systemSettingsApp.navigateTo(.displayBrightness, waitAtMost: waitForTimespan)
             case .displaysNightShift:
-                _ = try await systemSettingsApp.navigateTo(.nightShift, waitAtMost: waitForNavigationTimespan)
+                _ = try await systemSettingsApp.navigateTo(.nightShift, waitAtMost: waitForTimespan)
             case .keyboardKeyboard:
-                _ = try await systemSettingsApp.navigateTo(.keyboard, waitAtMost: waitForNavigationTimespan)
+                _ = try await systemSettingsApp.navigateTo(.keyboard, waitAtMost: waitForTimespan)
             case .keyboardShortcutsScreenshots:
-                _ = try await systemSettingsApp.navigateTo(.screenshotKeyboardShortcuts, waitAtMost: waitForNavigationTimespan)
+                _ = try await systemSettingsApp.navigateTo(.screenshotKeyboardShortcuts, waitAtMost: waitForTimespan)
             case .languageandregionGeneral:
-                _ = try await systemSettingsApp.navigateTo(.languageAndRegion, waitAtMost: waitForNavigationTimespan)
+                _ = try await systemSettingsApp.navigateTo(.languageAndRegion, waitAtMost: waitForTimespan)
             case .mouse:
-                _ = try await systemSettingsApp.navigateTo(.mouse, waitAtMost: waitForNavigationTimespan)
+                do {
+                    _ = try await systemSettingsApp.navigateTo(.mouse, waitAtMost: waitForTimespan)
+                } catch {
+                    // if we cannot navigate to the "mouse" category, try navigating to the "trackpad" category instead
+                    // TODO: ideally, we'd either capture a "category doesn't exist" error from the first call before attempting this--or we would survey all the available categories before navigating (so that we knew in advance which of the categories was available).
+                    _ = try await systemSettingsApp.navigateTo(.trackpad, waitAtMost: waitForTimespan)
+                }
             }
 
             // NOTE: at this point, we have opened the requested view (category) within System Settings

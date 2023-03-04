@@ -25,11 +25,9 @@ import Cocoa
 import MorphicCore
 import MorphicMacOSNative
 
-internal class SystemSettingsKeyboardShortcutsSheet_macOS13 {
-    private let groupUIElement: GroupUIElement
-    
-    public required init(groupUIElement: GroupUIElement) {
-        self.groupUIElement = groupUIElement
+internal class SystemSettingsKeyboardShortcutsSheet_macOS13: SystemSettingsGroupUIElementWrapper {
+    public required init(systemSettingsMainWindow: SystemSettingsMainWindow_macOS13, groupUIElement: GroupUIElement) {
+        super.init(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: groupUIElement)
     }
     
     public enum CategoryPane {

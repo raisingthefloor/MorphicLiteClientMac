@@ -25,13 +25,9 @@ import Cocoa
 import MorphicCore
 import MorphicMacOSNative
 
-internal class SystemSettingsGeneralCategoryPane_macOS13 {
-    private let systemSettingsMainWindow: SystemSettingsMainWindow_macOS13
-    private let groupUIElement: GroupUIElement
-    
+internal class SystemSettingsGeneralCategoryPane_macOS13: SystemSettingsGroupUIElementWrapper {
     public required init(systemSettingsMainWindow: SystemSettingsMainWindow_macOS13, groupUIElement: GroupUIElement) {
-        self.systemSettingsMainWindow = systemSettingsMainWindow
-        self.groupUIElement = groupUIElement
+        super.init(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: groupUIElement)
     }
     
     public enum CategoryPane {

@@ -25,70 +25,25 @@ import Cocoa
 import MorphicCore
 import MorphicMacOSNative
 
-internal class SystemSettingsKeyboardCategoryPane_macOS13 {
-    private let systemSettingsMainWindow: SystemSettingsMainWindow_macOS13
-    private let groupUIElement: GroupUIElement
-    
+internal class SystemSettingsKeyboardCategoryPane_macOS13: SystemSettingsGroupUIElementWrapper {
     public required init(systemSettingsMainWindow: SystemSettingsMainWindow_macOS13, groupUIElement: GroupUIElement) {
-        self.systemSettingsMainWindow = systemSettingsMainWindow
-        self.groupUIElement = groupUIElement
+        super.init(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: groupUIElement)
     }
     
-    public enum Button {
+    public enum Button: A11yUIButtonLabel {
+        // NOTE: we may want to look at additional automation values (e.g. "Keyboard Shortcuts…" may be a title instead of or in addition to a label)
         case keyboardShortcuts
-    }
-    
-    private static func labelForButton(_ button: Button) -> String {
-        if #available(macOS 13.0, *) {
-            switch button {
-            case .keyboardShortcuts:
-                return "Keyboard Shortcuts…"
-            }
-        } else {
-            fatalError("This version of macOS is not yet supported by this code")
-        }
-    }
-
-    /// NOTE: we may be looking at the wrong automation value; "Night Shift..." may be a title instead of a label, etc.  TBD.
-    public func pressButton(_ button: Button) throws {
-        let requiredButtonLabel = SystemSettingsKeyboardCategoryPane_macOS13.labelForButton(button)
-
-        // STEP 1: find the button by its text
-        let buttonA11yUiElement: MorphicA11yUIElement?
-        switch button {
-        case .keyboardShortcuts:
-            do {
-                // NOTE: the button in this dialog is within a scroll view, potentially at various depths, etc.  Ideally we would navigate through a more specific hieratchy; for our initial implementation, we are choosing to find the element--but if we find that there are multiple buttons and we are locating the wrong one, then we should revise this code
-                buttonA11yUiElement = try self.groupUIElement.accessibilityUiElement.dangerousFirstDescendant(where: {
-                    guard $0.role == .button else {
-                        return false
-                    }
-
-                    // NOTE: in our testing, the button label in this dialog is represented as the description value (i.e. not the title, and not the title ui element's value)
-                    // NOTE: if we cannot get the title of the label, we intentionally ignore the issue
-                    guard let buttonLabel: String = try? $0.value(forAttribute: .description) else {
-                        return false
-                    }
-
-                    return buttonLabel == requiredButtonLabel
-                })
-            } catch let error {
-                throw error
+        
+        public func a11yUILabel() -> String {
+            // NOTE: at the time of writing, these have been validated with macOS 13.0 (but not earlier versions)
+            if #available(macOS 13.0, *) {
+                switch self {
+                case .keyboardShortcuts:
+                    return "Keyboard Shortcuts…"
+                }
+            } else {
+                fatalError("This version of macOS is not yet supported by this code")
             }
         }
-
-        // if we could not find the button, return an error
-        guard let buttonA11yUiElement = buttonA11yUiElement else {
-            throw SystemSettingsApp.NavigationError.unspecified
-        }
-        
-        // STEP 2: convert the button to a ButtonUIElement and press it
-        let buttonUIElement = ButtonUIElement(accessibilityUiElement: buttonA11yUiElement)
-        do {
-            try buttonUIElement.press()
-        } catch let error {
-            throw error
-        }
     }
-        
 }

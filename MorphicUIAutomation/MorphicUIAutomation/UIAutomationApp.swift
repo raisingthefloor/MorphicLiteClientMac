@@ -28,8 +28,21 @@ import MorphicMacOSNative
 public class UIAutomationApp {
     public let runningApplication: NSRunningApplication
     
+    public static let defaultMaximumWaitInterval = TimeInterval(8.0)
+
     private init(runningApplication: NSRunningApplication) {
         self.runningApplication = runningApplication
+    }
+    
+    public static func isRunningApplication(bundleIdentifier: String) -> Bool {
+        if let runningApplication = NSRunningApplication.runningApplications(withBundleIdentifier: bundleIdentifier).first {
+            // NOTE: a runningApplication retrieved from NSRunningApplication should never be terminated, but we check anyway out of an abundance of caution
+            if runningApplication.isTerminated == false {
+                return true
+            }
+        }
+        
+        return false
     }
     
     public enum LaunchError: Error {
@@ -37,7 +50,7 @@ public class UIAutomationApp {
         case osError(Error)
     }
     // NOTE: we intentionally do not support arguments in this implementation of the function because we return success if the application is already launched
-    public static func launchOrAttach(bundleIdentifier: String, waitUntilFinishedLaunching: TimeInterval, hideIfLaunched: Bool = true) async throws -> (uiAutomationApp: UIAutomationApp, isFinishedLaunching: Bool) {
+    public static func launchOrAttach(bundleIdentifier: String, waitUntilFinishedLaunching: TimeInterval, hideIfLaunched: Bool = true) async throws -> (uiAutomationApp: UIAutomationApp, launchedApp: Bool, isFinishedLaunching: Bool) {
         // determine if the application is already running
         if let runningApplication = NSRunningApplication.runningApplications(withBundleIdentifier: bundleIdentifier).first {
             // NOTE: a runningApplication retrieved from NSRunningApplication should never be terminated, but we check anyway out of an abundance of caution
@@ -49,13 +62,13 @@ public class UIAutomationApp {
 
                 // return an instance of the attached application (along with a flag indiciating if it has fully launched yet or not)
                 let uiAutomationApp = UIAutomationApp(runningApplication: runningApplication)
-                return (uiAutomationApp: uiAutomationApp, isFinishedLaunching: applicationIsRunning)
+                return (uiAutomationApp: uiAutomationApp, launchedApp: false, isFinishedLaunching: applicationIsRunning)
             }
         }
 
         // if the app was not already running, launch it now
-        let result = try await UIAutomationApp.launch(bundleIdentifier: bundleIdentifier, arguments: [], waitUntilFinishedLaunching: waitUntilFinishedLaunching, activate: false, hide: hideIfLaunched)
-        return result
+        let (uiAutomationApp, isFinishedLaunching) = try await UIAutomationApp.launch(bundleIdentifier: bundleIdentifier, arguments: [], waitUntilFinishedLaunching: waitUntilFinishedLaunching, activate: false, hide: hideIfLaunched)
+        return (uiAutomationApp: uiAutomationApp, launchedApp: true, isFinishedLaunching: isFinishedLaunching)
     }
     //
     // NOTE: this implementation opens the app using the provided arguments; it does not check to see if the app is already started
@@ -107,6 +120,21 @@ public class UIAutomationApp {
         if runningApplication.terminate() == false {
             throw MorphicError.unspecified
         }
+    }
+    
+    public static func terminate(bundleIdentifier: String) throws {
+        // if the application wasn't running, simply return
+        guard let runningApplication = NSRunningApplication.runningApplications(withBundleIdentifier: bundleIdentifier).first else {
+            return
+        }
+        
+        // NOTE: a runningApplication retrieved from NSRunningApplication should never be terminated, but we check anyway out of an abundance of caution
+        if runningApplication.isTerminated == true {
+            return
+        }
+
+        let uiAutomationAppToTerminate = UIAutomationApp(runningApplication: runningApplication)
+        try uiAutomationAppToTerminate.terminate()
     }
     
     // MARK: - Accessibility UI helpers (to wait for the main window to be ready)

@@ -27,6 +27,7 @@ import MorphicCore
 import MorphicMacOSNative
 import MorphicSettings
 import MorphicService
+import MorphicUIAutomation
 import OSLog
 
 public class MorphicBarItem {
@@ -1046,66 +1047,299 @@ class MorphicBarControlItem: MorphicBarItem {
         }
     }
 
-    private func setColorFilterState(_ state: Bool, completion: @escaping (Bool) -> Void) {
-        // if the inverse state is "enabled", then make sure we've set the initial color filter type
-        if state == true {
-            // set the default color filter type (if it hasn't already been set)
-            let didSetInitialColorFilterType = Session.shared.bool(for: .morphicDidSetInitialColorFilterType) ?? false
-            if didSetInitialColorFilterType == false {
-                // NOTE: we get no "success/failure" from the following function, so we just have to assume success
-                AppDelegate.shared.setInitialColorFilterType()
+    private func setColorFilterState(_ state: Bool, waitAtMost: TimeInterval) async throws {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            
+            // if the inverse state is "enabled", then make sure we've set the initial color filter type
+            if state == true {
+                // set the default color filter type (if it hasn't already been set)
+                let didSetInitialColorFilterType = Session.shared.bool(for: .morphicDidSetInitialColorFilterType) ?? false
+                if didSetInitialColorFilterType == false {
+                    // NOTE: we currently ignore success/failure from the following function
+                    let _ = try await AppDelegate.shared.setInitialColorFilterType(waitAtMost: waitAtMost)
+                }
             }
-        }
-        
-        // apply the inverse state
-        //
-        // NOTE: due to current limitations in our implementation, we are unable to disable "invert colors" (which is the desired effect when enabling color filters); this is unlikely to be a common scenario, but if we run into it then we need to use the backup UI automation mechanism
-        // NOTE: in the future, we should rework the settings handlers so that they can call native code which can launch a UI automation (instead of being either/or)...and then move this logic to the settings handler code
-        if state == true && MorphicDisplayAccessibilitySettings.invertColorsEnabled == true {
-            Session.shared.apply(state, for: .macosColorFilterEnabled, completion: completion)
+            
+            // apply the inverse state
+            //
+            // NOTE: due to current limitations in our implementation, we are unable to disable "invert colors" (which is the desired effect when enabling color filters); this is unlikely to be a common scenario, but if we run into it then we need to use the backup UI automation mechanism
+            // NOTE: in the future, we should rework the settings handlers so that they can call native code which can launch a UI automation (instead of being either/or)...and then move this logic to the settings handler code
+            if state == true && MorphicDisplayAccessibilitySettings.invertColorsEnabled == true {
+                // NOTE: in our current implementation, we have no method to determine success/failure of the operation
+                Session.shared.apply(state, for: .macosColorFilterEnabled, completion: { _ in })
+            } else {
+                // NOTE: in our current implementation, we have no method to determine success/failure of the operation
+                MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(state)
+            }
         } else {
-            MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(state)
-            completion(true)
+            // macOS 12.x and earlier
+            fatalError("This function is intended for use with macOS 13.0 and later; use the nonasync version of this function for earlier versions.")
+        }
+    }
+    
+    private func setColorFilterState(_ state: Bool, completion: @escaping (Bool) -> Void) {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            fatalError("This function is intended for use with macOS versions prior to macOS 13.0; use the async version of this function for macOS 13.0 and greater instead.")
+        } else {
+            // macOS 12.x and earlier
+         
+            // if the inverse state is "enabled", then make sure we've set the initial color filter type
+            if state == true {
+                // set the default color filter type (if it hasn't already been set)
+                let didSetInitialColorFilterType = Session.shared.bool(for: .morphicDidSetInitialColorFilterType) ?? false
+                if didSetInitialColorFilterType == false {
+                    // NOTE: we get no "success/failure" from the following function, so we just have to assume success
+                    AppDelegate.shared.setInitialColorFilterType()
+                }
+            }
+            
+            // apply the inverse state
+            //
+            // NOTE: due to current limitations in our implementation, we are unable to disable "invert colors" (which is the desired effect when enabling color filters); this is unlikely to be a common scenario, but if we run into it then we need to use the backup UI automation mechanism
+            // NOTE: in the future, we should rework the settings handlers so that they can call native code which can launch a UI automation (instead of being either/or)...and then move this logic to the settings handler code
+            if state == true && MorphicDisplayAccessibilitySettings.invertColorsEnabled == true {
+                Session.shared.apply(state, for: .macosColorFilterEnabled, completion: completion)
+            } else {
+                MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(state)
+                completion(true)
+            }
         }
     }
      
     @objc
     func colorvision(_ sender: Any?) {
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
+        guard let senderAsSegmentedButton = sender as? MorphicBarSegmentedButton else {
             return
         }
-        if segment == 0 {
-            defer {
-                TelemetryClientProxy.enqueueActionMessage(eventName: "colorFiltersOn")
-            }
+        let segment = senderAsSegmentedButton.selectedSegmentIndex
+        
+        let newValue = (segment == 0 ? true : false)
+        
+        defer {
+            TelemetryClientProxy.enqueueActionMessage(eventName: (newValue == true) ? "colorFiltersOn" : "colorFiltersOff")
+        }
 
-            self.setColorFilterState(true) {
-                _ in
+        if #available(macOS 13.0, *) {
+            Task {
+                let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
+                try await self.setColorFilterState(newValue, waitAtMost: waitForTimespan)
+
+                guard let verifyColorFiltersAreEnabled = try AccessibilityDisplaySettings.getColorFiltersAreEnabled() else {
+                    // could not get current setting
+                    return
+                }
+                await senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyColorFiltersAreEnabled)
             }
         } else {
-            defer {
-                TelemetryClientProxy.enqueueActionMessage(eventName: "colorFiltersOff")
-            }
-
-            self.setColorFilterState(false) {
-                _ in
+            self.setColorFilterState(newValue) {
+                success in
+                
+                // NOTE: we do not currently have a mechanism to report success/failure
+                SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+                    verifyValue in
+                    guard let verifyValueAsBoolean = verifyValue as? Bool else {
+                        // could not get current setting
+                        return
+                    }
+                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyValueAsBoolean)
+                }
             }
         }
     }
 
+     // NOTE: this function returns the new contrast state
+     func toggleContrastState() throws -> Bool {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            fatalError("This function is intended for use with macOS versions prior to macOS 13.0; use the async version of this function for macOS 13.0 and greater instead.")
+        } else {
+            // macOS 12.x and earlier
+
+            // verify that we have accessibility permissions (since UI automation will not work without them)
+            // NOTE: this function call will prompt the user for authorization if they have not already granted it
+            guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+                NSLog("User had not granted 'accessibility' authorization; user now prompted")
+                throw MorphicError.unspecified
+            }
+
+            // capture the current "contrast enabled" setting
+            let increaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+            // calculate the inverse state
+            let newIncreaseContrastEnabled = !increaseContrastEnabled
+            
+            self.setContrastState(newIncreaseContrastEnabled)
+            
+            // we do not currently have a mechanism to report success/failure
+            let verifyIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+            return verifyIncreaseContrastEnabled
+        }
+    }
+    
+    // NOTE: this function returns the new contrast state
+    func toggleContrastState(waitAtMost: TimeInterval) async throws -> Bool {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            
+            // verify that we have accessibility permissions (since UI automation will not work without them)
+            // NOTE: this function call will prompt the user for authorization if they have not already granted it
+            guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+                NSLog("User had not granted 'accessibility' authorization; user now prompted")
+                throw MorphicError.unspecified
+            }
+            
+            // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+            let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+            let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+
+            // capture the current "contrast enabled" setting
+            var waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+            let increaseContrastIsEnabled = try await AccessibilityDisplayUIAutomationScript_macOS13.getIncreaseContrastIsEnabled(sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+            // calculate the inverse state
+            let newIncreaseContrastEnabled = !increaseContrastIsEnabled
+        
+            waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+            try await self.setContrastState(newIncreaseContrastEnabled, waitAtMost: waitForTimespan)
+
+            // verify that the state has changed
+            waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+            let verifyIncreaseContrastEnabled = try await AsyncUtils.wait(atMost: waitForTimespan) {
+                guard let verifyValue = try MorphicSettings.AccessibilityDisplaySettings.getIncreaseContrastIsEnabled() else {
+                    return false
+                }
+
+                return verifyValue == newIncreaseContrastEnabled
+            }
+            if verifyIncreaseContrastEnabled == false {
+                // could not verify "reduce transparency" value change
+                throw MorphicError.unspecified
+            }
+
+            return newIncreaseContrastEnabled
+        } else {
+            // macOS 12.x and earlier
+            fatalError("This function is not intended for use with macOS versions prior to macOS 13.0: use the non-async version of this function instead")
+        }
+    }
+    
+    func setContrastState(_ value: Bool) {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            fatalError("This function is intended for use with macOS versions prior to macOS 13.0; use the async version of this function for macOS 13.0 and greater instead.")
+        } else {
+            // macOS 12.x and earlier
+
+            // verify that we have accessibility permissions (since UI automation will not work without them)
+            // NOTE: this function call will prompt the user for authorization if they have not already granted it
+            guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+                NSLog("User had not granted 'accessibility' authorization; user now prompted")
+                return
+            }
+
+            Session.shared.apply(value, for: .macosDisplayContrastEnabled) {
+                _ in
+            }
+        }
+    }
+    
+    func setContrastState(_ value: Bool, waitAtMost: TimeInterval) async throws {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            
+            // verify that we have accessibility permissions (since UI automation will not work without them)
+            // NOTE: this function call will prompt the user for authorization if they have not already granted it
+            guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+                NSLog("User had not granted 'accessibility' authorization; user now prompted")
+                throw MorphicError.unspecified
+            }
+
+            // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+            let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+            let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+
+            // capture the current state of the "increase contrast" and "reduce transparency" features
+            // NOTE: before "increase contrast" is changed the first time, macOS will not have a default for this value (i.e. it defaults to "false")
+            let increaseContrastIsEnabled = try MorphicSettings.AccessibilityDisplaySettings.getIncreaseContrastIsEnabled()
+
+            // set the new "increase contrast" state
+            if increaseContrastIsEnabled == nil || increaseContrastIsEnabled! != value {
+                let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+                try await AccessibilityDisplayUIAutomationScript_macOS13.setIncreaseContrastIsEnabled(value, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+            }
+            // verify that the state has changed
+            let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+            let verifyIncreaseContrast = try await AsyncUtils.wait(atMost: waitForTimespan) {
+                guard let verifyState = try MorphicSettings.AccessibilityDisplaySettings.getIncreaseContrastIsEnabled() else {
+                    return false
+                }
+
+                return verifyState == value
+            }
+            if verifyIncreaseContrast == false {
+                // could not verify state change completion
+                throw MorphicError.unspecified
+            }
+
+            // when turning off "increase contrast", also turn off "reduce transparency" (to match what Morphic v1.x for macOS did)
+            if value == false {
+                // NOTE: before "reduce transparency" is changed the first time, macOS will not have a default for this value (i.e. it defaults to "false")
+                let reduceTransparencyIsEnabled = try MorphicSettings.AccessibilityDisplaySettings.getReduceTransparencyIsEnabled()
+
+                let newReduceTransparencyIsEnabled = false
+
+                if reduceTransparencyIsEnabled == nil || reduceTransparencyIsEnabled! != newReduceTransparencyIsEnabled {
+                    var waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+                    try await AccessibilityDisplayUIAutomationScript_macOS13.setReduceTransparencyIsEnabled(newReduceTransparencyIsEnabled, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+                    // verify that the state has changed
+                    waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+                    let verifyReduceTransparency = try await AsyncUtils.wait(atMost: waitForTimespan) {
+                        guard let verifyValue = try MorphicSettings.AccessibilityDisplaySettings.getReduceTransparencyIsEnabled() else {
+                            return false
+                        }
+
+                        return verifyValue == newReduceTransparencyIsEnabled
+                    }
+                    if verifyReduceTransparency == false {
+                        // could not verify "reduce transparency" value change
+                        throw MorphicError.unspecified
+                    }
+                }
+            }
+        } else {
+            // macOS 12.x and earlier
+            fatalError("This function is not intended for use with macOS versions prior to macOS 13.0: use the non-async version of this function instead")
+        }
+    }
+    
     @objc
     func contrast(_ sender: Any?) {
         guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
             return
         }
+        
+        let newState: Bool
         if segment == 0 {
-            Session.shared.apply(true, for: .macosDisplayContrastEnabled) {
-                _ in
+            newState = true
+        } else {
+            newState = false
+        }
+        
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task {
+                // NOTE: we have no mechanism to report success/failure in the current implementation of this "contrast(...)" @objc function
+                do {
+                    let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
+                    try await self.setContrastState(newState, waitAtMost: waitForTimespan)
+                } catch {
+                    // NOTE: we don't currently have a way to report an error to the caller
+                }
             }
         } else {
-            Session.shared.apply(false, for: .macosDisplayContrastEnabled) {
-                _ in
-            }
+            // macOS 12.x and earlier
+            // NOTE: we have no mechanism to report success/failure in the current implementation of this "contrast(...)" @objc function
+            self.setContrastState(newState)
         }
     }
     
@@ -1193,25 +1427,35 @@ class MorphicBarControlItem: MorphicBarItem {
 //                let verifyIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
 //                senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyIncreaseContrastEnabled)
 //            } else {
-                // macOS 10.14 (and tested to work in newer verisons of macOS such as macOS 10.15)
-             
-                // capture the current "contrast enabled" setting
-                let increaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
-                // calculate the inverse state
-                let newIncreaseContrastEnabled = !increaseContrastEnabled
-                //
-                defer {
-		    TelemetryClientProxy.enqueueActionMessage(eventName: newIncreaseContrastEnabled ? "highContrastOn" : "highContrastOff")
-                }
-                // apply the inverse state
-                Session.shared.apply(newIncreaseContrastEnabled, for: .macosDisplayContrastEnabled) {
-                    success in
-                    // we do not currently have a mechanism to report success/failure
+                // macOS 10.14 (and tested to work in newer verisons of macOS such as macOS 10.15, macOS 11+, etc.)
 
-                    let verifyIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
-                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyIncreaseContrastEnabled)
+                if #available(macOS 13.0, *) {
+                    Task {
+                        do {
+                            // NOTE: due to limitations in how this function gets called after the button press, we don't have a good way to return the result of the toggle (i.e. the new state)
+                            let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
+                            let newContrastState = try await self.toggleContrastState(waitAtMost: waitForTimespan)
+
+                            defer {
+                                TelemetryClientProxy.enqueueActionMessage(eventName: newContrastState ? "highContrastOn" : "highContrastOff")
+                            }
+                            await senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newContrastState)
+                        } catch {
+                            // ignore any errors; we don't have a way to report success/failure
+                        }
+                    }
+                } else {
+                    do {
+                        let newContrastState = try self.toggleContrastState()
+
+                        defer {
+                            TelemetryClientProxy.enqueueActionMessage(eventName: newContrastState ? "highContrastOn" : "highContrastOff")
+                        }
+                        senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newContrastState)
+                    } catch {
+                        // ignore any errors; we don't have a way to report success/failure
+                    }
                 }
-//            }
         case 1:
             // color (color filter)
             
@@ -1229,17 +1473,30 @@ class MorphicBarControlItem: MorphicBarItem {
                     TelemetryClientProxy.enqueueActionMessage(eventName: newValue ? "colorFiltersOn" : "colorFiltersOff")
                 }
                 
-                self.setColorFilterState(newValue) {
-                    success in
-                    
-                    // NOTE: we do not currently have a mechanism to report success/failure
-                    SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
-                        verifyValue in
-                        guard let verifyValueAsBoolean = verifyValue as? Bool else {
+                if #available(macOS 13.0, *) {
+                    Task {
+                        let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
+                        try await self.setColorFilterState(newValue, waitAtMost: waitForTimespan)
+
+                        guard let verifyColorFiltersAreEnabled = try AccessibilityDisplaySettings.getColorFiltersAreEnabled() else {
                             // could not get current setting
                             return
                         }
-                        senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyValueAsBoolean)
+                        await senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyColorFiltersAreEnabled)
+                    }
+                } else {
+                    self.setColorFilterState(newValue) {
+                        success in
+                        
+                        // NOTE: we do not currently have a mechanism to report success/failure
+                        SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+                            verifyValue in
+                            guard let verifyValueAsBoolean = verifyValue as? Bool else {
+                                // could not get current setting
+                                return
+                            }
+                            senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyValueAsBoolean)
+                        }
                     }
                 }
             }
@@ -1276,7 +1533,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
             senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyButtonState)
 
-//            // NOTE: if we ever have problems with our reverse-engineered implementation (above), the below UI automation code also works (albeit very slowly)
+//            // NOTE: if we ever have problems with our reverse-engineered implementation (above), the below UI automation code also works (albeit very slowly); note that this only works with macOS releases prior to macOS 13.0 and it would need to be updated to the correspondingly-appropriate code for newer versions of macOS
 //            switch NSApp.effectiveAppearance.name {
 //            case .darkAqua,
 //                 .vibrantDark,
@@ -1380,88 +1637,164 @@ class MorphicBarControlItem: MorphicBarItem {
             TelemetryClientProxy.enqueueActionMessage(eventName: "readSelectedToggle")
         }
         
-        // verify that we have accessibility permissions (since UI automation and sendKeys will not work without them)
-        // NOTE: this function call will prompt the user for authorization if they have not already granted it
-        guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
-            NSLog("User had not granted 'accessibility' authorization; user now prompted")
-            return
-        }
-        
-        // NOTE: we retrieve system settings here which are _not_ otherwise captured by Morphic; if we decide to capture those settings in the future for broader capture/apply purposes, then we should modify this code to access those settings via Session.shared (if doing so will ensure that we are not getting cached data...rather than 'captured or set data'...since we need to check these settings every time this function is called).
-        let defaultsDomain = "com.apple.speech.synthesis.general.prefs"
-        guard let defaults = UserDefaults(suiteName: defaultsDomain) else {
-            NSLog("Could not access defaults domain: \(defaultsDomain)")
-            return
-        }
-        
-        // NOTE: sendSpeakSelectedTextHotKey will be called synchronously or asynchronously (depending on whether we need to enable the OS feature asynchronously first)
-        let sendSpeakSelectedTextHotKey = {
-            // obtain any custom-specified key sequence used for activating the "speak selected text" feature in macOS (or else assume default)
-            let speakSelectedTextHotKeyCombo = defaults.integer(forKey: "SpokenUIUseSpeakingHotKeyCombo")
-            //
-            let keyCode: CGKeyCode
-            let keyOptions: MorphicInput.KeyOptions
-            if speakSelectedTextHotKeyCombo != 0 {
-                guard let (customKeyCode, customKeyOptions) = MorphicInput.parseDefaultsKeyCombo(speakSelectedTextHotKeyCombo) else {
-                    // NOTE: while we should be able to decode any custom hotkey, this code is here to capture edge cases we have not anticipated
-                    // NOTE: in the future, we should consider an informational prompt alerting the user that we could not decode their custom hotkey (so they know why the feature did not work...or at least that it intentionally did not work)
-                    NSLog("Could not decode custom hotkey")
-                    return
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task {
+                do {
+                    let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
+                    try await self.readSelectedText(waitAtMost: waitForTimespan)
+                } catch {
+                    // NOTE: we currently have no method for alerting the user to errors
                 }
-                keyCode = customKeyCode
-                keyOptions = customKeyOptions
-            } else {
-                // default hotkey is Option+Esc
-                keyCode = CGKeyCode(kVK_Escape)
-                keyOptions = .withAlternateKey
-            }
-            
-            //
-            
-            // get the window ID of the topmost window
-            guard let (_ /* topmostWindowOwnerName */, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
-                NSLog("Could not get ID of topmost window")
-                return
-            }
-
-            // capture a reference to the topmost application
-            guard let topmostApplication = NSRunningApplication(processIdentifier: pid_t(topmostProcessId)) else {
-                NSLog("Could not get reference to application owning the topmost window")
-                return
-            }
-            
-            // activate the topmost application
-            guard topmostApplication.activate(options: .activateIgnoringOtherApps) == true else {
-                NSLog("Could not activate the topmost window")
-                return
-            }
-            
-            AsyncUtils.wait(atMost: 2.0, for: { topmostApplication.isActive == true }) {
-                success in
-                if success == false {
-                    NSLog("Could not activate topmost application within two seconds")
-                }
-                
-                // send the "speak selected text key" to the system
-                guard let _ = try? MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) else {
-                    NSLog("Could not send 'Speak selected text' hotkey to the keyboard input stream")
-                    return
-                }
-            }
-        }
-        
-        // make sure the user has "speak selected text..." enabled in System Preferences
-        let speakSelectedTextKeyEnabled = defaults.bool(forKey: "SpokenUIUseSpeakingHotKeyFlag")
-        if speakSelectedTextKeyEnabled == false {
-            // if SpokenUIUseSpeakingHotKeyFlag is false, then enable it via UI automation
-            Session.shared.apply(true, for: .macosSpeakSelectedTextEnabled) {
-                _ in
-                // send the hotkey (asynchronously) once we have enabled macOS's "speak selected text" feature
-                sendSpeakSelectedTextHotKey()
             }
         } else {
-            // send the hotkey (synchronously) now
-            sendSpeakSelectedTextHotKey()
+            // macOS 12.x and earlier
+            do {
+                try self.readSelectedText()
+            } catch {
+                // NOTE: we currently have no method for alerting the user to errors
+            }
+        }
+    }
+
+    //
+    
+    // NOTE: sendSpeakSelectedTextHotKey will be called synchronously or asynchronously (depending on whether we need to enable the OS feature asynchronously first)
+    private static func sendSpeakSelectedTextHotKey(defaults: UserDefaults) {
+        // obtain any custom-specified key sequence used for activating the "speak selected text" feature in macOS (or else assume default)
+        let speakSelectedTextHotKeyCombo = defaults.integer(forKey: "SpokenUIUseSpeakingHotKeyCombo")
+        //
+        let keyCode: CGKeyCode
+        let keyOptions: MorphicInput.KeyOptions
+        if speakSelectedTextHotKeyCombo != 0 {
+            guard let (customKeyCode, customKeyOptions) = MorphicInput.parseDefaultsKeyCombo(speakSelectedTextHotKeyCombo) else {
+                // NOTE: while we should be able to decode any custom hotkey, this code is here to capture edge cases we have not anticipated
+                // NOTE: in the future, we should consider an informational prompt alerting the user that we could not decode their custom hotkey (so they know why the feature did not work...or at least that it intentionally did not work)
+                NSLog("Could not decode custom hotkey")
+                return
+            }
+            keyCode = customKeyCode
+            keyOptions = customKeyOptions
+        } else {
+            // default hotkey is Option+Esc
+            keyCode = CGKeyCode(kVK_Escape)
+            keyOptions = .withAlternateKey
+        }
+        
+        //
+        
+        // get the window ID of the topmost window
+        guard let (_ /* topmostWindowOwnerName */, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
+            NSLog("Could not get ID of topmost window")
+            return
+        }
+
+        // capture a reference to the topmost application
+        guard let topmostApplication = NSRunningApplication(processIdentifier: pid_t(topmostProcessId)) else {
+            NSLog("Could not get reference to application owning the topmost window")
+            return
+        }
+        
+        // activate the topmost application
+        guard topmostApplication.activate(options: .activateIgnoringOtherApps) == true else {
+            NSLog("Could not activate the topmost window")
+            return
+        }
+        
+        AsyncUtils.wait(atMost: 2.0, for: { topmostApplication.isActive == true }) {
+            success in
+            if success == false {
+                NSLog("Could not activate topmost application within two seconds")
+            }
+            
+            // send the "speak selected text key" to the system
+            guard let _ = try? MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) else {
+                NSLog("Could not send 'Speak selected text' hotkey to the keyboard input stream")
+                return
+            }
+        }
+    }
+    
+    func readSelectedText() throws {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            fatalError("This function is intended for use with macOS versions prior to macOS 13.0; use the async version of this function for macOS 13.0 and greater instead.")
+        } else {
+            // macOS 12.x and earlier
+
+            // verify that we have accessibility permissions (since UI automation will not work without them)
+            // NOTE: this function call will prompt the user for authorization if they have not already granted it
+            guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+                NSLog("User had not granted 'accessibility' authorization; user now prompted")
+                throw MorphicError.unspecified
+            }
+            
+            // NOTE: we retrieve system settings here which are _not_ otherwise captured by Morphic; if we decide to capture those settings in the future for broader capture/apply purposes, then we should modify this code to access those settings via Session.shared (if doing so will ensure that we are not getting cached data...rather than 'captured or set data'...since we need to check these settings every time this function is called).
+            let defaultsDomain = "com.apple.speech.synthesis.general.prefs"
+            guard let defaults = UserDefaults(suiteName: defaultsDomain) else {
+                NSLog("Could not access defaults domain: \(defaultsDomain)")
+                return
+            }
+            
+            // make sure the user has "speak selected text..." enabled in System Preferences
+            let speakSelectedTextKeyEnabled = defaults.bool(forKey: "SpokenUIUseSpeakingHotKeyFlag")
+            if speakSelectedTextKeyEnabled == false {
+                // macOS 12.x and earlier
+
+                // if SpokenUIUseSpeakingHotKeyFlag is false, then enable it via UI automation
+                Session.shared.apply(true, for: .macosSpeakSelectedTextEnabled) {
+                    _ in
+                    // send the hotkey (asynchronously) once we have enabled macOS's "speak selected text" feature
+                    Self.sendSpeakSelectedTextHotKey(defaults: defaults)
+                }
+            } else {
+                // send the hotkey (synchronously) now
+                Self.sendSpeakSelectedTextHotKey(defaults: defaults)
+            }
+        }
+    }
+    
+    func readSelectedText(waitAtMost: TimeInterval) async throws {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            
+            // verify that we have accessibility permissions (since UI automation will not work without them)
+            // NOTE: this function call will prompt the user for authorization if they have not already granted it
+            guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+                NSLog("User had not granted 'accessibility' authorization; user now prompted")
+                throw MorphicError.unspecified
+            }
+
+            // NOTE: we retrieve system settings here which are _not_ otherwise captured by Morphic; if we decide to capture those settings in the future for broader capture/apply purposes, then we should modify this code to access those settings via Session.shared (if doing so will ensure that we are not getting cached data...rather than 'captured or set data'...since we need to check these settings every time this function is called).
+            let defaultsDomain = "com.apple.speech.synthesis.general.prefs"
+            guard let defaults = UserDefaults(suiteName: defaultsDomain) else {
+                NSLog("Could not access defaults domain: \(defaultsDomain)")
+                return
+            }
+            
+            // make sure the user has "speak selected text..." enabled in System Preferences
+            let speakSelectedTextKeyEnabled = defaults.bool(forKey: "SpokenUIUseSpeakingHotKeyFlag")
+            if speakSelectedTextKeyEnabled == false {
+                // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+                let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+                let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+
+                do {
+                    var waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+                    try await AccessibilitySpokenContentUIAutomationScript_macOS13.setSpeakSelectionIsEnabled(true, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+
+                    // send the hotkey (asynchronously) once we have enabled macOS's "speak selected text" feature
+                    Self.sendSpeakSelectedTextHotKey(defaults: defaults)
+                } catch {
+                    // ignore any errors, as we don't have any mechanism to report errors
+                }
+            } else {
+                // send the hotkey (synchronously) now
+                Self.sendSpeakSelectedTextHotKey(defaults: defaults)
+            }
+        } else {
+            // macOS 12.x and earlier
+            fatalError("This function is not intended for use with macOS versions prior to macOS 13.0: use the non-async version of this function instead")
         }
     }
 
@@ -1471,24 +1804,87 @@ class MorphicBarControlItem: MorphicBarItem {
             return
         }
         let session = Session.shared
+
+        let newState: Bool = (segment == 0 ? true : false)
+
+        defer {
+            TelemetryClientProxy.enqueueActionMessage(eventName: (newState == true) ? "magnifierShow" : "magnifierHide")
+        }
         
-        if segment == 0 {
-            defer {
-                TelemetryClientProxy.enqueueActionMessage(eventName: "magnifierShow")
+        if #available(macOS 13.0, *) {
+            Task {
+                do {
+                    let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
+                    try await self.setMagnifierState(newState, waitAtMost: waitForTimespan)
+                } catch {
+                    // NOTE: we don't currently have a mechanism to raise errors to the user
+                }
             }
-            
-            // this is the code which will activate our magnifier once we have established that it is configured properly
-            let activateMagnifier: () -> Void = {
-                session.storage.load(identifier: "__magnifier__") {
-                    (_, preferences: Preferences?) in
-                    // since the magnifier zoom is being shown (i.e. enabled), set the cursor to the center of the display where the mouse cursor is located
-                    // NOTE: we might need to push a mouse movement message to the system so that the magnifier knows that the mouse has actually moved; or we might need to insert a UI-thread-nonblocking delay which lets the run loop catch up first (if that would remedy any mouse pointer location syncing issues)
-                    if let mousePointerLocation = MorphicSettings.MorphicMouse.getCurrentLocation() {
-                        if let currentDisplay = Display.displayContainingPoint(mousePointerLocation) {
-                            let _ = try? MorphicSettings.MorphicMouse.movePointerToCenterOfDisplay(displayUuid: currentDisplay.uuid)
+        } else {
+            // NOTE: we don't currently have a mechanism to raise errors to the user
+            self.setMagnifierState(newState, forSession: session)
+        }
+    }
+    
+    func setMagnifierState(_ value: Bool, forSession session: Session) {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            fatalError("This function is intended for use with macOS versions prior to macOS 13.0; use the async version of this function for macOS 13.0 and greater instead.")
+        } else {
+            // macOS 12.x and earlier
+
+            if value == true {
+                // this is the code which will activate our magnifier once we have established that it is configured properly
+                let activateMagnifier: () -> Void = {
+                    session.storage.load(identifier: "__magnifier__") {
+                        (_, preferences: Preferences?) in
+                        // since the magnifier zoom is being shown (i.e. enabled), set the cursor to the center of the display where the mouse cursor is located
+                        // NOTE: we might need to push a mouse movement message to the system so that the magnifier knows that the mouse has actually moved; or we might need to insert a UI-thread-nonblocking delay which lets the run loop catch up first (if that would remedy any mouse pointer location syncing issues)
+                        if let mousePointerLocation = MorphicSettings.MorphicMouse.getCurrentLocation() {
+                            if let currentDisplay = Display.displayContainingPoint(mousePointerLocation) {
+                                let _ = try? MorphicSettings.MorphicMouse.movePointerToCenterOfDisplay(displayUuid: currentDisplay.uuid)
+                            }
+                        }
+                        
+                        if let preferences = preferences {
+                            // temporary workaround: if "style" was specified as a preference, remove it (because it's a one-time setup preference)
+                            var mutablePreferences = preferences
+                            if mutablePreferences.get(key: .macosZoomStyle) != nil {
+                                mutablePreferences.remove(key: .macosZoomStyle)
+                            }
+                            
+                            let apply = ApplySession(settingsManager: session.settings, preferences: mutablePreferences)
+                            apply.addFirst(key: .macosZoomEnabled, value: true)
+                            apply.run {
+                            }
+                        } else {
+                            session.apply(true, for: .macosZoomEnabled) {
+                                _ in
+                            }
                         }
                     }
-                    
+                }
+
+                // set the default magnifier zoom style (if it hasn't already been set)
+                let didSetInitialMagnifierZoomStyle = Session.shared.bool(for: .morphicDidSetInitialMagnifierZoomStyle) ?? false
+                if didSetInitialMagnifierZoomStyle == false {
+                    // NOTE: we get no "success/failure" from the following function, so we just have to assume success
+                    AppDelegate.shared.setInitialMagnifierZoomStyle() {
+                        success in
+                        
+                        guard success == true else {
+                            os_log("Cannot set initial magnifier zoom style")
+                            return
+                        }
+                        
+                        activateMagnifier()
+                    }
+                } else {
+                    activateMagnifier()
+                }
+            } else /*if value == false*/ {
+                session.storage.load(identifier: "__magnifier__") {
+                    (_, preferences: Preferences?) in
                     if let preferences = preferences {
                         // temporary workaround: if "style" was specified as a preference, remove it (because it's a one-time setup preference)
                         var mutablePreferences = preferences
@@ -1497,58 +1893,129 @@ class MorphicBarControlItem: MorphicBarItem {
                         }
                         
                         let apply = ApplySession(settingsManager: session.settings, preferences: mutablePreferences)
-                        apply.addFirst(key: .macosZoomEnabled, value: true)
+                        apply.addFirst(key: .macosZoomEnabled, value: false)
                         apply.run {
                         }
                     } else {
-                        session.apply(true, for: .macosZoomEnabled) {
+                        session.apply(false, for: .macosZoomEnabled) {
                             _ in
                         }
                     }
                 }
             }
-            
-            // set the default magnifier zoom style (if it hasn't already been set)
-            let didSetInitialMagnifierZoomStyle = Session.shared.bool(for: .morphicDidSetInitialMagnifierZoomStyle) ?? false
-            if didSetInitialMagnifierZoomStyle == false {
-                // NOTE: we get no "success/failure" from the following function, so we just have to assume success
-                AppDelegate.shared.setInitialMagnifierZoomStyle() {
-                    success in
-                    
-                    guard success == true else {
-                        os_log("Cannot set initial magnifier zoom style")
-                        return
+        }
+    }
+    
+    func setMagnifierState(_ value: Bool, waitAtMost: TimeInterval) async throws {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+
+            if value == true {
+                // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+                let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+                let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+
+                let didSetInitialMagnifierZoomStyle = Session.shared.bool(for: .morphicDidSetInitialMagnifierZoomStyle) ?? false
+                if didSetInitialMagnifierZoomStyle == false {
+                    do {
+                        let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
+                        try await AppDelegate.shared.setInitialMagnifierZoomStyle(waitAtMost: waitForTimespan)
+                    } catch {
+                        // NOTE: we must be able to set the initial magnifier zoom style; if we cannot, the feature cannot be known to work properly
+                        throw MorphicError.unspecified
+                    }
+                }
+
+                // make sure that magnifier hotkeys are enabled
+                do {
+                    let hotkeysEnabledAsOptional = try MorphicSettings.MagnifierZoomSettings.getHotkeysEnabled()
+                    guard let hotkeysEnabled = hotkeysEnabledAsOptional else {
+                        throw MorphicError.unspecified
                     }
                     
-                    activateMagnifier()
+                    if hotkeysEnabled == false {
+                        let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+                        try await MagnifierUIAutomationScript_macOS13.setHotkeysEnabled(true, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+                    }
+                } catch let error {
+                    throw error
                 }
-            } else {
-                activateMagnifier()
+                
+                // since the magnifier zoom is being shown (i.e. enabled), set the cursor to the center of the display where the mouse cursor is located
+                // NOTE: we might need to push a mouse movement message to the system so that the magnifier knows that the mouse has actually moved; or we might need to insert a UI-thread-nonblocking delay which lets the run loop catch up first (if that would remedy any mouse pointer location syncing issues)
+                if let mousePointerLocation = MorphicSettings.MorphicMouse.getCurrentLocation() {
+                    if let currentDisplay = Display.displayContainingPoint(mousePointerLocation) {
+                        do {
+                            let _ = try MorphicSettings.MorphicMouse.movePointerToCenterOfDisplay(displayUuid: currentDisplay.uuid)
+                        } catch {
+                            // ignore any errors while moving pointer to the center of the display
+                        }
+                    }
+                }
+
+                // activate the magnifier
+                guard let magnifierIsEnabled = try MorphicSettings.MagnifierZoomSettings.getMagnifierEnabled() else {
+                    throw MorphicError.unspecified
+                }
+                if magnifierIsEnabled == false {
+                    try MorphicSettings.MagnifierZoomSettings.sendMagnifierToggleZoomHotkey()
+                    let waitForMagnifierToAppearTimeInterval = TimeInterval(5.0)
+                    // wait for the magnifier
+                    let magnifierShowSuccess = try await AsyncUtils.wait(atMost: waitForMagnifierToAppearTimeInterval) {
+                        guard let magnifierIsEnabled = try MorphicSettings.MagnifierZoomSettings.getMagnifierEnabled() else {
+                            return false
+                        }
+
+                        return magnifierIsEnabled == true
+                    }
+                    
+                    if magnifierShowSuccess == false {
+                        throw MorphicError.unspecified
+                    }
+                }
+            } else /*if value == false*/ {
+                // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+                let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+                let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+
+                // make sure that magnifier hotkeys are enabled
+                do {
+                    let hotkeysEnabledAsOptional = try MorphicSettings.MagnifierZoomSettings.getHotkeysEnabled()
+                    guard let hotkeysEnabled = hotkeysEnabledAsOptional else {
+                        throw MorphicError.unspecified
+                    }
+                    
+                    if hotkeysEnabled == false {
+                        let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+                        try await MagnifierUIAutomationScript_macOS13.setHotkeysEnabled(true, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+                    }
+                } catch let error {
+                    throw error
+                }
+                
+                // deactivate the magnifier
+                // NOTE: to gracefully degrade for the user, we'll allow the sending of the toggle hotkey to try to turn "off" the magnifier if the magnifier is on and also if we cannot determine its state
+                let magnifierIsEnabledAsOptional = try MorphicSettings.MagnifierZoomSettings.getMagnifierEnabled()
+                if magnifierIsEnabledAsOptional == true || magnifierIsEnabledAsOptional == nil {
+                    try MorphicSettings.MagnifierZoomSettings.sendMagnifierToggleZoomHotkey()
+                    let waitForMagnifierToAppearTimeInterval = TimeInterval(5.0)
+                    // wait for the magnifier
+                    let magnifierHideSuccess = try await AsyncUtils.wait(atMost: waitForMagnifierToAppearTimeInterval) {
+                        guard let magnifierIsEnabled = try MorphicSettings.MagnifierZoomSettings.getMagnifierEnabled() else {
+                            return false
+                        }
+
+                        return magnifierIsEnabled == false
+                    }
+                    
+                    if magnifierHideSuccess == false {
+                        throw MorphicError.unspecified
+                    }
+                }
             }
         } else {
-            defer {
-                TelemetryClientProxy.enqueueActionMessage(eventName: "magnifierHide")
-            }
-            
-            session.storage.load(identifier: "__magnifier__") {
-                (_, preferences: Preferences?) in
-                if let preferences = preferences {
-                    // temporary workaround: if "style" was specified as a preference, remove it (because it's a one-time setup preference)
-                    var mutablePreferences = preferences
-                    if mutablePreferences.get(key: .macosZoomStyle) != nil {
-                        mutablePreferences.remove(key: .macosZoomStyle)
-                    }
-
-                    let apply = ApplySession(settingsManager: session.settings, preferences: mutablePreferences)
-                    apply.addFirst(key: .macosZoomEnabled, value: false)
-                    apply.run {
-                    }
-                } else {
-                    session.apply(false, for: .macosZoomEnabled) {
-                        _ in
-                    }
-                }
-            }
+            // macOS 12.x and earlier
+            fatalError("This function is not intended for use with macOS versions prior to macOS 13.0: use the non-async version of this function instead")
         }
     }
     
