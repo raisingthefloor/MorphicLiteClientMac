@@ -1,4 +1,4 @@
-// Copyright 2020-2022 Raising the Floor - US, Inc.
+// Copyright 2020-2023 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
@@ -25,21 +25,20 @@ import Cocoa
 import MorphicCore
 import MorphicMacOSNative
 
-internal class SystemSettingsDisplaysCategoryPane_macOS13: SystemSettingsGroupUIElementWrapper {
+internal class SystemSettingsAccessibilitySpokenContentCategoryPane_macOS13: SystemSettingsGroupUIElementWrapper {
     public required init(systemSettingsMainWindow: SystemSettingsMainWindow_macOS13, groupUIElement: GroupUIElement) {
         super.init(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: groupUIElement)
     }
     
-    public enum Button: A11yUIButtonLabel {
-        // NOTE: we may want to look at additional automation values (e.g. "Night Shift…" may be a title instead of or in addition to a label)
-        case nightShift
+    public enum Checkbox: A11yUICheckboxIdentifier {
+        case speakSelection
         
-        public func a11yUILabel() -> String {
+        public func a11yUIIdentifier() -> String {
             // NOTE: at the time of writing, these have been validated with macOS 13.0 (but not earlier versions)
             if #available(macOS 13.0, *) {
                 switch self {
-                case .nightShift:
-                    return "Night Shift…"
+                case .speakSelection:
+                    return "AX_SPOKEN_HOTKEY"
                 }
             } else {
                 fatalError("This version of macOS is not yet supported by this code")

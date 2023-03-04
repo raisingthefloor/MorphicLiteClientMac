@@ -1,4 +1,4 @@
-// Copyright 2020-2022 Raising the Floor - US, Inc.
+// Copyright 2020-2023 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
@@ -21,29 +21,43 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Cocoa
+import Foundation
 import MorphicCore
 import MorphicMacOSNative
 
-internal class SystemSettingsDisplaysCategoryPane_macOS13: SystemSettingsGroupUIElementWrapper {
-    public required init(systemSettingsMainWindow: SystemSettingsMainWindow_macOS13, groupUIElement: GroupUIElement) {
-        super.init(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: groupUIElement)
+public class CheckboxUIElement : UIElement {
+    public let accessibilityUiElement: MorphicA11yUIElement
+    
+    public required init(accessibilityUiElement: MorphicA11yUIElement) {
+        self.accessibilityUiElement = accessibilityUiElement
     }
     
-    public enum Button: A11yUIButtonLabel {
-        // NOTE: we may want to look at additional automation values (e.g. "Night Shift…" may be a title instead of or in addition to a label)
-        case nightShift
+    // actions
+    
+    public func getValue() throws -> Bool? {
+        guard let value: Int = try self.accessibilityUiElement.value(forAttribute: .value) else {
+            return nil
+        }
         
-        public func a11yUILabel() -> String {
-            // NOTE: at the time of writing, these have been validated with macOS 13.0 (but not earlier versions)
-            if #available(macOS 13.0, *) {
-                switch self {
-                case .nightShift:
-                    return "Night Shift…"
-                }
-            } else {
-                fatalError("This version of macOS is not yet supported by this code")
+        let valueAsBool = value != 0 ? true : false
+        return valueAsBool
+    }
+    
+    public func press() throws {
+        try self.accessibilityUiElement.perform(action: .press)
+    }
+    
+    public func setValue(_ value: Bool) throws {
+        do {
+            guard let currentValue = try self.getValue() else {
+                throw MorphicError.unspecified
             }
+            
+            if currentValue != value {
+                try self.press()
+            }
+        } catch let error {
+            throw error
         }
     }
 }

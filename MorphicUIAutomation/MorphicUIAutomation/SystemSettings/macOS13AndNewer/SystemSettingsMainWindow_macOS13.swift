@@ -39,6 +39,7 @@ internal class SystemSettingsMainWindow_macOS13 {
         case general
         case keyboard
         case mouse
+        case trackpad
     }
 
     // NOTE: at the time of writing, these have been validated with macOS 13.0 (but not earlier versions)
@@ -57,6 +58,8 @@ internal class SystemSettingsMainWindow_macOS13 {
                 return "com.apple.Keyboard-Settings.extension"
             case .mouse:
                 return "com.apple.Mouse-Settings.extension"
+            case .trackpad:
+                return "com.apple.Trackpad-Settings.extension"
             }
         } else {
             fatalError("This version of macOS is not yet supported by this code")
@@ -78,6 +81,8 @@ internal class SystemSettingsMainWindow_macOS13 {
                 return "Keyboard"
             case .mouse:
                 return "Mouse"
+            case .trackpad:
+                return "Trackpad"
             }
         } else {
             fatalError("This version of macOS is not yet supported by this code")

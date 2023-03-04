@@ -63,6 +63,9 @@
 		9D38C4EC252A33AD0064FB74 /* MediaAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D38C4EB252A33AD0064FB74 /* MediaAccessibility.framework */; };
 		9D38C4F0252A386B0064FB74 /* UniversalAccess.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D38C4EE252A37AB0064FB74 /* UniversalAccess.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		9D38C4F4252A38870064FB74 /* UniversalAccess.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D38C4F3252A38870064FB74 /* UniversalAccess.framework */; };
+		9D3AC8B929AD41F2007D3E8A /* MagnifierZoomSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3AC8B829AD41F2007D3E8A /* MagnifierZoomSettings.swift */; };
+		9D3AC8C229AE9EA8007D3E8A /* AccessibilityDisplaySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3AC8C129AE9EA8007D3E8A /* AccessibilityDisplaySettings.swift */; };
+		9D3AC8C429AE9F34007D3E8A /* UserDefaultsUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3AC8C329AE9F34007D3E8A /* UserDefaultsUtils.swift */; };
 		9D4B24BF25143D0000F0B2E2 /* GeneralUIAutomations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24BE25143D0000F0B2E2 /* GeneralUIAutomations.swift */; };
 		9D4B24C225143F8700F0B2E2 /* GeneralPreferencesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */; };
 		9D59F47E24A6B3040004C35B /* CBBlueLightClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D0AF77524A4613D007E177E /* CBBlueLightClient.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -173,6 +176,9 @@
 		9D38C4EB252A33AD0064FB74 /* MediaAccessibility.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaAccessibility.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/MediaAccessibility.framework; sourceTree = DEVELOPER_DIR; };
 		9D38C4EE252A37AB0064FB74 /* UniversalAccess.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UniversalAccess.h; sourceTree = "<group>"; };
 		9D38C4F3252A38870064FB74 /* UniversalAccess.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniversalAccess.framework; path = ../../../../../../System/Library/PrivateFrameworks/UniversalAccess.framework; sourceTree = "<group>"; };
+		9D3AC8B829AD41F2007D3E8A /* MagnifierZoomSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnifierZoomSettings.swift; sourceTree = "<group>"; };
+		9D3AC8C129AE9EA8007D3E8A /* AccessibilityDisplaySettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityDisplaySettings.swift; sourceTree = "<group>"; };
+		9D3AC8C329AE9F34007D3E8A /* UserDefaultsUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsUtils.swift; sourceTree = "<group>"; };
 		9D4B24BE25143D0000F0B2E2 /* GeneralUIAutomations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralUIAutomations.swift; sourceTree = "<group>"; };
 		9D4B24C125143F8700F0B2E2 /* GeneralPreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralPreferencesElement.swift; sourceTree = "<group>"; };
 		9D5EC22B24927EFD00AC77B5 /* MorphicPropertyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicPropertyList.swift; sourceTree = "<group>"; };
@@ -325,6 +331,7 @@
 		31A0A5792405967600166668 /* MorphicSettings */ = {
 			isa = PBXGroup;
 			children = (
+				9D3AC8B429AD41B7007D3E8A /* macOS13AndNewer */,
 				9D0AF73524A0FB49007E177E /* AccessibilityUI */,
 				314EB6DC24A6A65F00CF3D48 /* Automations */,
 				31A16BC72423E86C0081A72C /* Audio */,
@@ -450,6 +457,32 @@
 				9D38C4EE252A37AB0064FB74 /* UniversalAccess.h */,
 			);
 			path = include;
+			sourceTree = "<group>";
+		};
+		9D3AC8B429AD41B7007D3E8A /* macOS13AndNewer */ = {
+			isa = PBXGroup;
+			children = (
+				9D3AC8C029AE9E8D007D3E8A /* AccessibilityDisplay */,
+				9D3AC8B729AD41D3007D3E8A /* Magnifier */,
+				9D3AC8C329AE9F34007D3E8A /* UserDefaultsUtils.swift */,
+			);
+			path = macOS13AndNewer;
+			sourceTree = "<group>";
+		};
+		9D3AC8B729AD41D3007D3E8A /* Magnifier */ = {
+			isa = PBXGroup;
+			children = (
+				9D3AC8B829AD41F2007D3E8A /* MagnifierZoomSettings.swift */,
+			);
+			path = Magnifier;
+			sourceTree = "<group>";
+		};
+		9D3AC8C029AE9E8D007D3E8A /* AccessibilityDisplay */ = {
+			isa = PBXGroup;
+			children = (
+				9D3AC8C129AE9EA8007D3E8A /* AccessibilityDisplaySettings.swift */,
+			);
+			path = AccessibilityDisplay;
 			sourceTree = "<group>";
 		};
 		9D5EC22A24927EE200AC77B5 /* PropertyList */ = {
@@ -594,6 +627,7 @@
 			files = (
 				9D4B24C225143F8700F0B2E2 /* GeneralPreferencesElement.swift in Sources */,
 				31F9AEEE24AA575B0026EBDA /* SliderElement.swift in Sources */,
+				9D3AC8C229AE9EA8007D3E8A /* AccessibilityDisplaySettings.swift in Sources */,
 				31CE56EB244A149B00A52A7B /* Audio.swift in Sources */,
 				9D38C4E4252A2D270064FB74 /* MorphicDisplayAccessibilitySettings.swift in Sources */,
 				9D6264162832B32900CB4224 /* MorphicNetworkInterface.swift in Sources */,
@@ -605,6 +639,8 @@
 				9D0AF77724A4616E007E177E /* MorphicNightShift.swift in Sources */,
 				315EEC9124A547B70039C61D /* WindowElement.swift in Sources */,
 				312973EF24A275D7000F5ED1 /* Setting.swift in Sources */,
+				9D3AC8C429AE9F34007D3E8A /* UserDefaultsUtils.swift in Sources */,
+				9D3AC8B929AD41F2007D3E8A /* MagnifierZoomSettings.swift in Sources */,
 				31F9AEEC24AA54BF0026EBDA /* PopUpButtonElement.swift in Sources */,
 				31F9AEE524A803B90026EBDA /* ZoomUIAutomations.swift in Sources */,
 				9DD4F4A42517B0F200ADCC25 /* LanguageAndRegionPreferencesElement.swift in Sources */,
