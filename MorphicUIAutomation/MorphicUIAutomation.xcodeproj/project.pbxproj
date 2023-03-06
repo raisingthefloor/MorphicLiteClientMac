@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9D3AC8A929AD1C46007D3E8A /* UIAutomationScriptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3AC8A829AD1C46007D3E8A /* UIAutomationScriptUtils.swift */; };
-		9D3AC8AD29AD1E2B007D3E8A /* MagnifierUIAutomationScript_macOS13.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3AC8AC29AD1E2B007D3E8A /* MagnifierUIAutomationScript_macOS13.swift */; };
+		9D3AC8AD29AD1E2B007D3E8A /* AccessibilityZoomUIAutomationScript_macOS13.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3AC8AC29AD1E2B007D3E8A /* AccessibilityZoomUIAutomationScript_macOS13.swift */; };
 		9D3AC8AF29AD233C007D3E8A /* CheckboxUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3AC8AE29AD233C007D3E8A /* CheckboxUIElement.swift */; };
 		9D3AC8B129AD24E6007D3E8A /* SystemSettingsAccessibilityZoomCategoryPane_macOS13.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3AC8B029AD24E6007D3E8A /* SystemSettingsAccessibilityZoomCategoryPane_macOS13.swift */; };
 		9D3AC8B329AD2774007D3E8A /* SystemSettingsGroupUIElementWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3AC8B229AD2774007D3E8A /* SystemSettingsGroupUIElementWrapper.swift */; };
@@ -33,6 +33,15 @@
 		9D3DA5A929590FE700361DCC /* SystemSettingsKeyboardShortcutsSheet_macOS13.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3DA5A829590FE700361DCC /* SystemSettingsKeyboardShortcutsSheet_macOS13.swift */; };
 		9D3DA5AE295914DE00361DCC /* SheetUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3DA5AD295914DE00361DCC /* SheetUIElement.swift */; };
 		9D3DA5CE2959458F00361DCC /* ToolbarUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3DA5CD2959458F00361DCC /* ToolbarUIElement.swift */; };
+		9D4DF00629B546230033FD1F /* AccessibilityDisplayUIAutomationSetSettingProxies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4DF00529B546230033FD1F /* AccessibilityDisplayUIAutomationSetSettingProxies.swift */; };
+		9D4DF00E29B54A470033FD1F /* MorphicSettingsUIAutomationBridgeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4DF00D29B54A470033FD1F /* MorphicSettingsUIAutomationBridgeHelper.swift */; };
+		9D4DF01829B578D20033FD1F /* AccessibilitySpokenContentUIAutomationSetSettingProxies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4DF01729B578D20033FD1F /* AccessibilitySpokenContentUIAutomationSetSettingProxies.swift */; };
+		9D4DF01B29B57A3C0033FD1F /* AccessibilityVoiceOverUIAutomationSetSettingProxies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4DF01A29B57A3C0033FD1F /* AccessibilityVoiceOverUIAutomationSetSettingProxies.swift */; };
+		9D4DF01E29B57AA30033FD1F /* AccessibilityZoomUIAutomationSetSettingProxies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4DF01D29B57AA30033FD1F /* AccessibilityZoomUIAutomationSetSettingProxies.swift */; };
+		9D516C7D29B47F25002DCC84 /* SystemSettingsAccessibilityVoiceOverCategoryPane_macOS13.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D516C7C29B47F25002DCC84 /* SystemSettingsAccessibilityVoiceOverCategoryPane_macOS13.swift */; };
+		9D516C8029B47F95002DCC84 /* AccessibilityVoiceOverUIAutomationScript_macOS13.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D516C7F29B47F95002DCC84 /* AccessibilityVoiceOverUIAutomationScript_macOS13.swift */; };
+		9D516C8229B48937002DCC84 /* SliderUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D516C8129B48937002DCC84 /* SliderUIElement.swift */; };
+		9D516C8429B49158002DCC84 /* RadioGroupUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D516C8329B49158002DCC84 /* RadioGroupUIElement.swift */; };
 		9D83E49829B2ADFB0068F5DB /* UIAutomationSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D83E49729B2ADFB0068F5DB /* UIAutomationSequence.swift */; };
 		9D83E49A29B2B01F0068F5DB /* SystemSettingsUIAutomationSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D83E49929B2B01F0068F5DB /* SystemSettingsUIAutomationSequence.swift */; };
 		9D83E49C29B323370068F5DB /* A11yUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D83E49B29B323370068F5DB /* A11yUILabel.swift */; };
@@ -64,7 +73,7 @@
 
 /* Begin PBXFileReference section */
 		9D3AC8A829AD1C46007D3E8A /* UIAutomationScriptUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAutomationScriptUtils.swift; sourceTree = "<group>"; };
-		9D3AC8AC29AD1E2B007D3E8A /* MagnifierUIAutomationScript_macOS13.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnifierUIAutomationScript_macOS13.swift; sourceTree = "<group>"; };
+		9D3AC8AC29AD1E2B007D3E8A /* AccessibilityZoomUIAutomationScript_macOS13.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityZoomUIAutomationScript_macOS13.swift; sourceTree = "<group>"; };
 		9D3AC8AE29AD233C007D3E8A /* CheckboxUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckboxUIElement.swift; sourceTree = "<group>"; };
 		9D3AC8B029AD24E6007D3E8A /* SystemSettingsAccessibilityZoomCategoryPane_macOS13.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettingsAccessibilityZoomCategoryPane_macOS13.swift; sourceTree = "<group>"; };
 		9D3AC8B229AD2774007D3E8A /* SystemSettingsGroupUIElementWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettingsGroupUIElementWrapper.swift; sourceTree = "<group>"; };
@@ -111,6 +120,15 @@
 		9D3DA5C92959153900361DCC /* LanguageAndRegionPreferencesElement_macOS12AndOlder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageAndRegionPreferencesElement_macOS12AndOlder.swift; sourceTree = "<group>"; };
 		9D3DA5CA2959153900361DCC /* MousePreferencesElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MousePreferencesElement.swift; sourceTree = "<group>"; };
 		9D3DA5CD2959458F00361DCC /* ToolbarUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarUIElement.swift; sourceTree = "<group>"; };
+		9D4DF00529B546230033FD1F /* AccessibilityDisplayUIAutomationSetSettingProxies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityDisplayUIAutomationSetSettingProxies.swift; sourceTree = "<group>"; };
+		9D4DF00D29B54A470033FD1F /* MorphicSettingsUIAutomationBridgeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicSettingsUIAutomationBridgeHelper.swift; sourceTree = "<group>"; };
+		9D4DF01729B578D20033FD1F /* AccessibilitySpokenContentUIAutomationSetSettingProxies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilitySpokenContentUIAutomationSetSettingProxies.swift; sourceTree = "<group>"; };
+		9D4DF01A29B57A3C0033FD1F /* AccessibilityVoiceOverUIAutomationSetSettingProxies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityVoiceOverUIAutomationSetSettingProxies.swift; sourceTree = "<group>"; };
+		9D4DF01D29B57AA30033FD1F /* AccessibilityZoomUIAutomationSetSettingProxies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityZoomUIAutomationSetSettingProxies.swift; sourceTree = "<group>"; };
+		9D516C7C29B47F25002DCC84 /* SystemSettingsAccessibilityVoiceOverCategoryPane_macOS13.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettingsAccessibilityVoiceOverCategoryPane_macOS13.swift; sourceTree = "<group>"; };
+		9D516C7F29B47F95002DCC84 /* AccessibilityVoiceOverUIAutomationScript_macOS13.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityVoiceOverUIAutomationScript_macOS13.swift; sourceTree = "<group>"; };
+		9D516C8129B48937002DCC84 /* SliderUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderUIElement.swift; sourceTree = "<group>"; };
+		9D516C8329B49158002DCC84 /* RadioGroupUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioGroupUIElement.swift; sourceTree = "<group>"; };
 		9D83E49729B2ADFB0068F5DB /* UIAutomationSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAutomationSequence.swift; sourceTree = "<group>"; };
 		9D83E49929B2B01F0068F5DB /* SystemSettingsUIAutomationSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettingsUIAutomationSequence.swift; sourceTree = "<group>"; };
 		9D83E49B29B323370068F5DB /* A11yUILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = A11yUILabel.swift; sourceTree = "<group>"; };
@@ -150,8 +168,9 @@
 		9D3AC8AA29AD1DB2007D3E8A /* Accessibility */ = {
 			isa = PBXGroup;
 			children = (
-				9D3AC8CF29AECB51007D3E8A /* SpokenContent */,
 				9D3AC8C529AE9FC7007D3E8A /* Display */,
+				9D3AC8CF29AECB51007D3E8A /* SpokenContent */,
+				9D516C7E29B47F88002DCC84 /* VoiceOver */,
 				9D3AC8AB29AD1DCD007D3E8A /* Zoom */,
 			);
 			path = Accessibility;
@@ -160,7 +179,7 @@
 		9D3AC8AB29AD1DCD007D3E8A /* Zoom */ = {
 			isa = PBXGroup;
 			children = (
-				9D3AC8AC29AD1E2B007D3E8A /* MagnifierUIAutomationScript_macOS13.swift */,
+				9D3AC8AC29AD1E2B007D3E8A /* AccessibilityZoomUIAutomationScript_macOS13.swift */,
 			);
 			path = Zoom;
 			sourceTree = "<group>";
@@ -205,6 +224,7 @@
 				9D3DA59C295632DC00361DCC /* SystemSettingsAccessibilityCategoryPane_macOS13.swift */,
 				9D3AC8C829AEA15C007D3E8A /* SystemSettingsAccessibilityDisplayCategoryPane_macOS13.swift */,
 				9D3AC8CA29AEC43E007D3E8A /* SystemSettingsAccessibilitySpokenContentCategoryPane_macOS13.swift */,
+				9D516C7C29B47F25002DCC84 /* SystemSettingsAccessibilityVoiceOverCategoryPane_macOS13.swift */,
 				9D3AC8B029AD24E6007D3E8A /* SystemSettingsAccessibilityZoomCategoryPane_macOS13.swift */,
 				9D3DA5A02958EE7D00361DCC /* SystemSettingsDisplaysCategoryPane_macOS13.swift */,
 				9D3DA5A22958F78400361DCC /* SystemSettingsGeneralCategoryPane_macOS13.swift */,
@@ -284,6 +304,65 @@
 			path = AccessibilityUI;
 			sourceTree = "<group>";
 		};
+		9D4DF00229B545EF0033FD1F /* UIAutomationSetSettingProxies */ = {
+			isa = PBXGroup;
+			children = (
+				9D4DF00329B545F90033FD1F /* Accessibility */,
+			);
+			path = UIAutomationSetSettingProxies;
+			sourceTree = "<group>";
+		};
+		9D4DF00329B545F90033FD1F /* Accessibility */ = {
+			isa = PBXGroup;
+			children = (
+				9D4DF00429B546070033FD1F /* Display */,
+				9D4DF01629B578BE0033FD1F /* SpokenContent */,
+				9D4DF01929B57A1F0033FD1F /* VoiceOver */,
+				9D4DF01C29B57A8C0033FD1F /* Zoom */,
+			);
+			path = Accessibility;
+			sourceTree = "<group>";
+		};
+		9D4DF00429B546070033FD1F /* Display */ = {
+			isa = PBXGroup;
+			children = (
+				9D4DF00529B546230033FD1F /* AccessibilityDisplayUIAutomationSetSettingProxies.swift */,
+			);
+			path = Display;
+			sourceTree = "<group>";
+		};
+		9D4DF01629B578BE0033FD1F /* SpokenContent */ = {
+			isa = PBXGroup;
+			children = (
+				9D4DF01729B578D20033FD1F /* AccessibilitySpokenContentUIAutomationSetSettingProxies.swift */,
+			);
+			path = SpokenContent;
+			sourceTree = "<group>";
+		};
+		9D4DF01929B57A1F0033FD1F /* VoiceOver */ = {
+			isa = PBXGroup;
+			children = (
+				9D4DF01A29B57A3C0033FD1F /* AccessibilityVoiceOverUIAutomationSetSettingProxies.swift */,
+			);
+			path = VoiceOver;
+			sourceTree = "<group>";
+		};
+		9D4DF01C29B57A8C0033FD1F /* Zoom */ = {
+			isa = PBXGroup;
+			children = (
+				9D4DF01D29B57AA30033FD1F /* AccessibilityZoomUIAutomationSetSettingProxies.swift */,
+			);
+			path = Zoom;
+			sourceTree = "<group>";
+		};
+		9D516C7E29B47F88002DCC84 /* VoiceOver */ = {
+			isa = PBXGroup;
+			children = (
+				9D516C7F29B47F95002DCC84 /* AccessibilityVoiceOverUIAutomationScript_macOS13.swift */,
+			);
+			path = VoiceOver;
+			sourceTree = "<group>";
+		};
 		9D8EB4CE29478976006F2DDA = {
 			isa = PBXGroup;
 			children = (
@@ -312,6 +391,7 @@
 				9D8EB4E529478AE2006F2DDA /* UIAutomationApp.swift */,
 				9D3AC8A829AD1C46007D3E8A /* UIAutomationScriptUtils.swift */,
 				9D83E49729B2ADFB0068F5DB /* UIAutomationSequence.swift */,
+				9D4DF00D29B54A470033FD1F /* MorphicSettingsUIAutomationBridgeHelper.swift */,
 			);
 			path = MorphicUIAutomation;
 			sourceTree = "<group>";
@@ -340,8 +420,10 @@
 				9D3AC8BA29AD74BE007D3E8A /* PopUpButtonUIElement.swift */,
 				9DECF45029551F3D009CE2D8 /* RowUIElement.swift */,
 				9D3DA5AD295914DE00361DCC /* SheetUIElement.swift */,
-				9D3DA5CD2959458F00361DCC /* ToolbarUIElement.swift */,
+				9D516C8329B49158002DCC84 /* RadioGroupUIElement.swift */,
+				9D516C8129B48937002DCC84 /* SliderUIElement.swift */,
 				9D3DA5A629590A4D00361DCC /* SplitGroupUIElement.swift */,
+				9D3DA5CD2959458F00361DCC /* ToolbarUIElement.swift */,
 				9D8EB4E82947A27B006F2DDA /* WindowUIElement.swift */,
 			);
 			path = UIElements;
@@ -350,6 +432,7 @@
 		9DECF44B2954D6DE009CE2D8 /* macOS13AndNewer */ = {
 			isa = PBXGroup;
 			children = (
+				9D4DF00229B545EF0033FD1F /* UIAutomationSetSettingProxies */,
 				9D3AC8A729AD1C2E007D3E8A /* UIAutomationScripts */,
 				9D3DA5AB29590FF600361DCC /* CategoryPanes */,
 				9D3DA5AA29590FEB00361DCC /* Sheets */,
@@ -442,18 +525,23 @@
 				9D3DA5AE295914DE00361DCC /* SheetUIElement.swift in Sources */,
 				9D3AC8BF29AD7FAE007D3E8A /* MenuItemUIElement.swift in Sources */,
 				9D3DA5A929590FE700361DCC /* SystemSettingsKeyboardShortcutsSheet_macOS13.swift in Sources */,
+				9D4DF00629B546230033FD1F /* AccessibilityDisplayUIAutomationSetSettingProxies.swift in Sources */,
 				9D3AC8BB29AD74BE007D3E8A /* PopUpButtonUIElement.swift in Sources */,
 				9D8EB4E629478AE2006F2DDA /* UIAutomationApp.swift in Sources */,
 				9D8EB4E429478A37006F2DDA /* SystemSettingsApp.swift in Sources */,
 				9D3DA59F2958DFD800361DCC /* ButtonUIElement.swift in Sources */,
 				9DECF44D2954D81D009CE2D8 /* UIElement.swift in Sources */,
+				9D516C8029B47F95002DCC84 /* AccessibilityVoiceOverUIAutomationScript_macOS13.swift in Sources */,
 				9DECF45129551F3D009CE2D8 /* RowUIElement.swift in Sources */,
 				9D3DA59D295632DC00361DCC /* SystemSettingsAccessibilityCategoryPane_macOS13.swift in Sources */,
 				9D3AC8D129AECB63007D3E8A /* AccessibilitySpokenContentUIAutomationScript_macOS13.swift in Sources */,
 				9D3DA5A32958F78400361DCC /* SystemSettingsGeneralCategoryPane_macOS13.swift in Sources */,
+				9D4DF01829B578D20033FD1F /* AccessibilitySpokenContentUIAutomationSetSettingProxies.swift in Sources */,
 				9D3AC8C729AE9FDF007D3E8A /* AccessibilityDisplayUIAutomationScript_macOS13.swift in Sources */,
 				9D3AC8CD29AEC7C2007D3E8A /* A11yUIIdentifier.swift in Sources */,
+				9D516C8229B48937002DCC84 /* SliderUIElement.swift in Sources */,
 				9D3AC8B329AD2774007D3E8A /* SystemSettingsGroupUIElementWrapper.swift in Sources */,
+				9D516C7D29B47F25002DCC84 /* SystemSettingsAccessibilityVoiceOverCategoryPane_macOS13.swift in Sources */,
 				9D83E49829B2ADFB0068F5DB /* UIAutomationSequence.swift in Sources */,
 				9D3AC8BD29AD7E9C007D3E8A /* MenuUIElement.swift in Sources */,
 				9D83E49A29B2B01F0068F5DB /* SystemSettingsUIAutomationSequence.swift in Sources */,
@@ -463,15 +551,19 @@
 				9DECF4532955274B009CE2D8 /* CellUIElement.swift in Sources */,
 				9D3DA5A52958FFB900361DCC /* SystemSettingsKeyboardCategoryPane_macOS13.swift in Sources */,
 				9D3AC8C929AEA15C007D3E8A /* SystemSettingsAccessibilityDisplayCategoryPane_macOS13.swift in Sources */,
+				9D4DF01E29B57AA30033FD1F /* AccessibilityZoomUIAutomationSetSettingProxies.swift in Sources */,
+				9D4DF00E29B54A470033FD1F /* MorphicSettingsUIAutomationBridgeHelper.swift in Sources */,
 				9D3AC8AF29AD233C007D3E8A /* CheckboxUIElement.swift in Sources */,
 				9D83E49C29B323370068F5DB /* A11yUILabel.swift in Sources */,
 				9D3AC8A929AD1C46007D3E8A /* UIAutomationScriptUtils.swift in Sources */,
 				9D3AC8CB29AEC43E007D3E8A /* SystemSettingsAccessibilitySpokenContentCategoryPane_macOS13.swift in Sources */,
 				9D3DA5A729590A4D00361DCC /* SplitGroupUIElement.swift in Sources */,
-				9D3AC8AD29AD1E2B007D3E8A /* MagnifierUIAutomationScript_macOS13.swift in Sources */,
+				9D3AC8AD29AD1E2B007D3E8A /* AccessibilityZoomUIAutomationScript_macOS13.swift in Sources */,
 				9D8EB4E92947A27B006F2DDA /* WindowUIElement.swift in Sources */,
+				9D4DF01B29B57A3C0033FD1F /* AccessibilityVoiceOverUIAutomationSetSettingProxies.swift in Sources */,
 				9D3DA5A12958EE7D00361DCC /* SystemSettingsDisplaysCategoryPane_macOS13.swift in Sources */,
 				9D3DA5CE2959458F00361DCC /* ToolbarUIElement.swift in Sources */,
+				9D516C8429B49158002DCC84 /* RadioGroupUIElement.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

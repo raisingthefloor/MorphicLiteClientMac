@@ -33,6 +33,7 @@ internal class SystemSettingsAccessibilityCategoryPane_macOS13: SystemSettingsGr
     public enum CategoryPane {
         case display
         case spokenContent
+        case voiceOver
         case zoom
     }
 
@@ -44,6 +45,8 @@ internal class SystemSettingsAccessibilityCategoryPane_macOS13: SystemSettingsGr
                 return "AX_FEATURE_DISPLAY"
             case .spokenContent:
                 return "AX_FEATURE_SPOKENCONTENT"
+            case .voiceOver:
+                return "AX_FEATURE_VOICEOVER"
             case .zoom:
                 return "AX_FEATURE_ZOOM"
             }
@@ -59,6 +62,8 @@ internal class SystemSettingsAccessibilityCategoryPane_macOS13: SystemSettingsGr
                 return "Display"
             case .spokenContent:
                 return "Spoken Content"
+            case .voiceOver:
+                return "VoiceOver"
             case .zoom:
                 return "Zoom"
             }

@@ -116,6 +116,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             }
         #endif
 
+        // setup ui automation set setting proxies (macOS 13.0 and above)
+        if #available(macOS 13.0, *) {
+            MorphicSettingsUIAutomationBridgeHelper.setupUIAutomationSetSettingProxies()
+        }
+        
         os_log(.info, log: logger, "opening morphic session...")
         populateSolutions()
         createStatusItem()
@@ -1736,29 +1741,22 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             fatalError("This version of macOS is not yet supported by this code")
         }
 
-        // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
-        let uiAutomationSequence = SystemSettingsUIAutomationSequence()
-        let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
-
-        let newColorFilterType = MorphicSettings.AccessibilityDisplaySettings.ColorFilterType.protanopia
-        
-        do {
-            let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
-            try await AccessibilityDisplayUIAutomationScript_macOS13.setColorFilterType(newColorFilterType, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
-        } catch let error {
-            throw error
-        }
-        
-        // double-check that the setting has been set correctly (by reading the setting from the system defaults)
-        let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
-        let verifySuccess = try await AsyncUtils.wait(atMost: waitForTimespan) {
-            let currentColorFilterType = try MorphicSettings.AccessibilityDisplaySettings.getColorFilterType()
-            return currentColorFilterType?.intValue == newColorFilterType.intValue
-        }
-        if verifySuccess == false {
-            // timeout occurred while waiting for the change to be verified
+        // verify that we have accessibility permissions (since UI automation will not work without them)
+        // NOTE: this function call will prompt the user for authorization if they have not already granted it
+        guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+            NSLog("User had not granted 'accessibility' authorization; user now prompted")
             throw MorphicError.unspecified
         }
+
+//        // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+//        let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+        let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+        
+        let newColorFilterType = MorphicSettings.AccessibilityDisplaySettings.ColorFilterType.protanopia
+
+        let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+        let setSettingProxy = ColorFilterTypeUIAutomationSetSettingProxy()
+        try await setSettingProxy.setColorFilterType(newColorFilterType, waitAtMost: waitForTimespan)
 
         // finally, record a persistent flag indicating that we have set up the initial magnifier zoom style
         Session.shared.set(true, for: .morphicDidSetInitialColorFilterType)
@@ -1817,7 +1815,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         
         do {
             let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
-            try await MagnifierUIAutomationScript_macOS13.setZoomStyle(newZoomStyle, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+            try await AccessibilityZoomUIAutomationScript_macOS13.setZoomStyle(newZoomStyle, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
         } catch let error {
             throw error
         }

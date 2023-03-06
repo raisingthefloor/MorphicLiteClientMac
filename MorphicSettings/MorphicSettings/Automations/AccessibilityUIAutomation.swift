@@ -28,7 +28,7 @@ import OSLog
 private let logger = OSLog(subsystem: "MorphicSettings", category: "AccessibilityUIAutomation")
 
 
-public class AccessibilityUIAutomation: UIAutomation {
+public class AccessibilityUIAutomation: LegacyUIAutomation {
     public required init() {
     }
     

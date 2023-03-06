@@ -27,7 +27,7 @@ import OSLog
 
 private let logger = OSLog(subsystem: "MorphicSettings", category: "GeneralUIAutomations")
 
-public class GeneralUIAutomation: UIAutomation {
+public class GeneralUIAutomation: LegacyUIAutomation {
     
     public required init() {
     }

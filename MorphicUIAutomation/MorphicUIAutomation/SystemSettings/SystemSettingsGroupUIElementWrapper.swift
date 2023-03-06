@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Cocoa
+import MorphicCore
 import MorphicMacOSNative
 
 public class SystemSettingsGroupUIElementWrapper {
@@ -86,14 +87,111 @@ public class SystemSettingsGroupUIElementWrapper {
         // STEP 1: find the MorphicA11yUIElement through its identifier; this will get the AXPopUpButton element
         let a11yUIElement = try self.findA11yUIElementForIdentifier(popUpButtonIdentifier)
 
-        // STEP 2: convert the popUpButton to a PopUpButtonUIElement, then set its value
+        // STEP 2: convert the MorphicA11yUIElement to a PopUpButtonUIElement, then set its value
         let popUpButtonUIElement = PopUpButtonUIElement(accessibilityUiElement: a11yUIElement)
         //
         // NOTE: the value provided to this call is case-sensitive
         let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
         try await popUpButtonUIElement.setValue(value, waitAtMost: waitForTimespan)
     }
+
+    //
     
+    // NOTE: technically this function returns an optional String representing the label of the radio button, rather than returning the radio button's enum member value (as it cannot know which enum to use); in the future, we may want to consider returning a struct which contains "label: String" and "value: Int" members (assuming that the value of RadioButtons is always an Int)
+    public func getSelectedRadioButton(forRadioGroupWithIdentifier radioGroupIdentifier: A11yUIRadioGroupIdentifier) throws -> String? {
+        // STEP 1: find the MorphicA11yUIElement through its identifier; this will get the AXRadioGroup element
+        let a11yUIElement = try self.findA11yUIElementForIdentifier(radioGroupIdentifier)
+
+        // STEP 2: encapsulate the MorphicA11yUIElement into a RadioGroupUIElement, then get its max value
+        let radioGroupUIElement = RadioGroupUIElement(accessibilityUiElement: a11yUIElement)
+        //
+        let resultAsOptional = try radioGroupUIElement.getSelectedRadioButton()
+        return resultAsOptional
+    }
+    
+    public func setSelectedRadioButton(_ radioButtonLabel: A11yUIRadioButtonLabel, forRadioGroupWithIdentifier radioGroupIdentifier: A11yUIRadioGroupIdentifier) throws {
+        // STEP 1: find the MorphicA11yUIElement through its identifier; this will get the AXRadioGroup element
+        let a11yUIElement = try self.findA11yUIElementForIdentifier(radioGroupIdentifier)
+
+        // STEP 2: convert the MorphicA11yUIElement to a RadioGroupUIElement, then set its value
+        let radioGroupUIElement = RadioGroupUIElement(accessibilityUiElement: a11yUIElement)
+        //
+        try radioGroupUIElement.setSelectedRadioButton(radioButtonLabel.a11yUILabel())
+    }
+    
+    //
+
+    public func getMaxValue(forSliderWithIdentifier sliderIdentifier: A11yUISliderIdentifier) throws -> Double {
+        // STEP 1: find the MorphicA11yUIElement through its identifier; this will get the AXSlider element
+        let a11yUIElement = try self.findA11yUIElementForIdentifier(sliderIdentifier)
+
+        // STEP 2: encapsulate the MorphicA11yUIElement into a SliderUIElement, then get its max value
+        let sliderUIElement = SliderUIElement(accessibilityUiElement: a11yUIElement)
+        //
+        let resultAsOptional = try sliderUIElement.getMaxValue()
+        if resultAsOptional == nil {
+            // could not get the slider's value
+            throw SystemSettingsApp.NavigationError.unspecified
+        }
+        let result = resultAsOptional!
+        
+        return result
+    }
+
+    public func getMinValue(forSliderWithIdentifier sliderIdentifier: A11yUISliderIdentifier) throws -> Double {
+        // STEP 1: find the MorphicA11yUIElement through its identifier; this will get the AXSlider element
+        let a11yUIElement = try self.findA11yUIElementForIdentifier(sliderIdentifier)
+
+        // STEP 2: encapsulate the MorphicA11yUIElement into a SliderUIElement, then get its min value
+        let sliderUIElement = SliderUIElement(accessibilityUiElement: a11yUIElement)
+        //
+        let resultAsOptional = try sliderUIElement.getMinValue()
+        if resultAsOptional == nil {
+            // could not get the slider's value
+            throw SystemSettingsApp.NavigationError.unspecified
+        }
+        let result = resultAsOptional!
+        
+        return result
+    }
+
+    public func getValue(forSliderWithIdentifier sliderIdentifier: A11yUISliderIdentifier) throws -> Double {
+        // STEP 1: find the MorphicA11yUIElement through its identifier; this will get the AXSlider element
+        let a11yUIElement = try self.findA11yUIElementForIdentifier(sliderIdentifier)
+
+        // STEP 2: encapsulate the MorphicA11yUIElement into a SliderUIElement, then get its value
+        let sliderUIElement = SliderUIElement(accessibilityUiElement: a11yUIElement)
+        //
+        let resultAsOptional = try sliderUIElement.getValue()
+        if resultAsOptional == nil {
+            // could not get the slider's value
+            throw SystemSettingsApp.NavigationError.unspecified
+        }
+        let result = resultAsOptional!
+        
+        return result
+    }
+    
+    public func decrementValue(forSliderWithIdentifier sliderIdentifier: A11yUISliderIdentifier) throws {
+        // STEP 1: find the MorphicA11yUIElement through its identifier; this will get the AXSlider element
+        let a11yUIElement = try self.findA11yUIElementForIdentifier(sliderIdentifier)
+
+        // STEP 2: convert the MorphicA11yUIElement to a SliderUIElement, then decrement its value
+        let sliderUIElement = SliderUIElement(accessibilityUiElement: a11yUIElement)
+        //
+        try sliderUIElement.decrement()
+    }
+
+    public func incrementValue(forSliderWithIdentifier sliderIdentifier: A11yUISliderIdentifier) throws {
+        // STEP 1: find the MorphicA11yUIElement through its identifier; this will get the AXSlider element
+        let a11yUIElement = try self.findA11yUIElementForIdentifier(sliderIdentifier)
+
+        // STEP 2: convert the MorphicA11yUIElement to a SliderUIElement, then increment its value
+        let sliderUIElement = SliderUIElement(accessibilityUiElement: a11yUIElement)
+        //
+        try sliderUIElement.increment()
+    }
+
     //
     
     public func pressButton(forButtonWithLabel buttonLabel: A11yUIButtonLabel) throws {

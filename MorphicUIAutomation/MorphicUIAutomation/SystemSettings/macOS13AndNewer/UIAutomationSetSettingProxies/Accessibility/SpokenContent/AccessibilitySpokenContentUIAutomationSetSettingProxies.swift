@@ -22,14 +22,20 @@
 // * Consumer Electronics Association Foundation
 
 import Foundation
+import MorphicCore
+import MorphicSettings
 
-
-public protocol A11yUILabel {
-    func a11yUILabel() -> String
-}
-
-public protocol A11yUIButtonLabel: A11yUILabel {
-}
-
-public protocol A11yUIRadioButtonLabel: A11yUILabel {
+public class SpeakSelectedTextEnabledUIAutomation: UIAutomationSetSettingProxy {
+    public required init() {
+    }
+    
+    public func apply(_ value: Interoperable?) async throws {
+        guard let valueAsBool = value as? Bool else {
+            // invalid argument
+            throw MorphicError.unspecified
+        }
+        
+        let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
+        try await AccessibilitySpokenContentUIAutomationScript_macOS13.setSpeakSelectionIsEnabled(valueAsBool, waitAtMost: waitForTimespan)
+    }
 }

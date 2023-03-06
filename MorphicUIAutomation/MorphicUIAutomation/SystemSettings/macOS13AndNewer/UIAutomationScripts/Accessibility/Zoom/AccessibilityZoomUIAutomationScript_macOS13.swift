@@ -26,32 +26,45 @@ import MorphicCore
 import MorphicMacOSNative
 import MorphicSettings
 
-public class MagnifierUIAutomationScript_macOS13 {
+public class AccessibilityZoomUIAutomationScript_macOS13 {
     public static func setHotkeysEnabled(_ value: Bool, sequence: UIAutomationSequence? = nil, waitAtMost: TimeInterval) async throws {
         // verify that we have accessibility permissions (since UI automation will not work without them)
         try UIAutomationScriptUtils.verifyA11yAuthorization()
         
-        let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
-        
-        // step 1: launch the System Settings app and navigate to the Zoom pane
-        let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
-        let accessibilityZoomCategoryPane = try await Self.launchOrAttachSystemSettingsThenNavigativeToAccessibilityZoom(sequence: sequence, waitFor: waitForTimespan)
-        
-        // step 2: check/uncheck the "Use keyboard shortcuts to zoom" checkbox (if it is not already appropriately checked/unchecked)
-        try accessibilityZoomCategoryPane.setValue(value, forCheckboxWithIdentifier: SystemSettingsAccessibilityZoomCategoryPane_macOS13.Checkbox.useKeyboardShortcutsToZoom)
-        
-        // step 3: verify that the value has been changed successfully
-        let remainingWaitTime = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
-        let verifySuccess = try await AsyncUtils.wait(atMost: remainingWaitTime) {
-            let checkboxValue = try accessibilityZoomCategoryPane.getValue(forCheckboxWithIdentifier: SystemSettingsAccessibilityZoomCategoryPane_macOS13.Checkbox.useKeyboardShortcutsToZoom)
-            return checkboxValue == value
-        }
-        if verifySuccess == false {
-            // timeout occurred while waiting for checkbox to be confirmed as changed
-            throw MorphicError.unspecified
-        }
+        try await Self.setAndVerifyCheckboxValue(value, forCheckboxWithIdentifier: SystemSettingsAccessibilityZoomCategoryPane_macOS13.Checkbox.useKeyboardShortcutsToZoom, waitAtMost: waitAtMost)
     }
     
+    //
+    
+    public static func setHoverTextIsOn(_ value: Bool, sequence: UIAutomationSequence? = nil, waitAtMost: TimeInterval) async throws {
+        // verify that we have accessibility permissions (since UI automation will not work without them)
+        try UIAutomationScriptUtils.verifyA11yAuthorization()
+        
+        try await Self.setAndVerifyCheckboxValue(value, forCheckboxWithIdentifier: SystemSettingsAccessibilityZoomCategoryPane_macOS13.Checkbox.hoverText, waitAtMost: waitAtMost)
+    }
+    
+    //
+    
+    
+    public static func setUseScrollGestureWithModifierKeysToZoomIsOn(_ value: Bool, sequence: UIAutomationSequence? = nil, waitAtMost: TimeInterval) async throws {
+        // verify that we have accessibility permissions (since UI automation will not work without them)
+        try UIAutomationScriptUtils.verifyA11yAuthorization()
+        
+        try await Self.setAndVerifyCheckboxValue(value, forCheckboxWithIdentifier: SystemSettingsAccessibilityZoomCategoryPane_macOS13.Checkbox.useScrollGestureWithModifierKeysToZoom, waitAtMost: waitAtMost)
+    }
+    
+    //
+    
+    public static func setUseTrackpadGestureToZoomIsOn(_ value: Bool, sequence: UIAutomationSequence? = nil, waitAtMost: TimeInterval) async throws {
+        // verify that we have accessibility permissions (since UI automation will not work without them)
+        try UIAutomationScriptUtils.verifyA11yAuthorization()
+        
+        try await Self.setAndVerifyCheckboxValue(value, forCheckboxWithIdentifier: SystemSettingsAccessibilityZoomCategoryPane_macOS13.Checkbox.useTrackpadGestureToZoom, waitAtMost: waitAtMost)
+    }
+    
+    //
+    
+    // TODO: should MagnifierZoomSettings.ZoomStyle belong to the MorphicSettings class?  Should it be more generic?
     public static func setZoomStyle(_ value: MorphicSettings.MagnifierZoomSettings.ZoomStyle, sequence: UIAutomationSequence? = nil, waitAtMost: TimeInterval) async throws {
         // verify that we have accessibility permissions (since UI automation will not work without them)
         try UIAutomationScriptUtils.verifyA11yAuthorization()
@@ -72,7 +85,7 @@ public class MagnifierUIAutomationScript_macOS13 {
         // step 1: launch the System Settings app and navigate to the Zoom pane
         var waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
         let accessibilityZoomCategoryPane = try await Self.launchOrAttachSystemSettingsThenNavigativeToAccessibilityZoom(sequence: sequence, waitFor: waitForTimespan)
-
+        
         // step 2: set the value of the "Zoom style" drop-down
         //        let valueAsInt = value.ToRawValue()
         guard let valueAsString = value.stringValue else {
@@ -93,13 +106,35 @@ public class MagnifierUIAutomationScript_macOS13 {
             throw MorphicError.unspecified
         }
     }
-        
+    
     /* helper functions */
     
     private static func launchOrAttachSystemSettingsThenNavigativeToAccessibilityZoom(sequence: UIAutomationSequence?, waitFor: TimeInterval) async throws -> SystemSettingsAccessibilityZoomCategoryPane_macOS13 {
         let (categoryPane, launchedSystemSettingsApp) = try await SystemSettingsApp.launchOrAttachThenNavigateTo(.accessibilityZoom, waitUntilFinishedLaunching: waitFor)
         if launchedSystemSettingsApp == true { sequence?.setScriptLaunchedApplicationFlag() }
-
+        
         return categoryPane as! SystemSettingsAccessibilityZoomCategoryPane_macOS13
+    }
+    
+    private static func setAndVerifyCheckboxValue(_ value: Bool, forCheckboxWithIdentifier a11yUIIdentifier: A11yUICheckboxIdentifier, sequence: UIAutomationSequence? = nil, waitAtMost: TimeInterval) async throws {
+        let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+        
+        // step 1: launch the System Settings app and navigate to the Accessibility > Zoom pane
+        let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+        let accessibilityZoomCategoryPane = try await Self.launchOrAttachSystemSettingsThenNavigativeToAccessibilityZoom(sequence: sequence, waitFor: waitForTimespan)
+        
+        // step 2: check/uncheck the checkbox (if it is not already appropriately checked/unchecked)
+        try accessibilityZoomCategoryPane.setValue(value, forCheckboxWithIdentifier: a11yUIIdentifier)
+        
+        // step 3: verify that the value has been changed successfully
+        let remainingWaitTime = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+        let verifySuccess = try await AsyncUtils.wait(atMost: remainingWaitTime) {
+            let checkboxValue = try accessibilityZoomCategoryPane.getValue(forCheckboxWithIdentifier: a11yUIIdentifier)
+            return checkboxValue == value
+        }
+        if verifySuccess == false {
+            // timeout occurred while waiting for checkbox to be confirmed as changed
+            throw MorphicError.unspecified
+        }
     }
 }

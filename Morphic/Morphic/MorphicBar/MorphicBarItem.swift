@@ -1047,6 +1047,7 @@ class MorphicBarControlItem: MorphicBarItem {
         }
     }
 
+    // NOTE: the operation of the button's "setColorFilterState" is a more complicated script than what the settings handler for color filter state does (i.e. that setting handler opens the System Settings and checks/unchecks the appropriate box)
     private func setColorFilterState(_ state: Bool, waitAtMost: TimeInterval) async throws {
         if #available(macOS 13.0, *) {
             // macOS 13.0 and later
@@ -1195,7 +1196,7 @@ class MorphicBarControlItem: MorphicBarItem {
 
             // capture the current "contrast enabled" setting
             var waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
-            let increaseContrastIsEnabled = try await AccessibilityDisplayUIAutomationScript_macOS13.getIncreaseContrastIsEnabled(sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+            let increaseContrastIsEnabled = try await AccessibilityDisplayUIAutomationScript_macOS13.getIncreaseContrastIsOn(sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
             // calculate the inverse state
             let newIncreaseContrastEnabled = !increaseContrastIsEnabled
         
@@ -1254,58 +1255,12 @@ class MorphicBarControlItem: MorphicBarItem {
                 throw MorphicError.unspecified
             }
 
-            // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
-            let uiAutomationSequence = SystemSettingsUIAutomationSequence()
-            let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
-
-            // capture the current state of the "increase contrast" and "reduce transparency" features
-            // NOTE: before "increase contrast" is changed the first time, macOS will not have a default for this value (i.e. it defaults to "false")
-            let increaseContrastIsEnabled = try MorphicSettings.AccessibilityDisplaySettings.getIncreaseContrastIsEnabled()
-
-            // set the new "increase contrast" state
-            if increaseContrastIsEnabled == nil || increaseContrastIsEnabled! != value {
-                let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
-                try await AccessibilityDisplayUIAutomationScript_macOS13.setIncreaseContrastIsEnabled(value, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
-            }
-            // verify that the state has changed
-            let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
-            let verifyIncreaseContrast = try await AsyncUtils.wait(atMost: waitForTimespan) {
-                guard let verifyState = try MorphicSettings.AccessibilityDisplaySettings.getIncreaseContrastIsEnabled() else {
-                    return false
-                }
-
-                return verifyState == value
-            }
-            if verifyIncreaseContrast == false {
-                // could not verify state change completion
-                throw MorphicError.unspecified
-            }
-
-            // when turning off "increase contrast", also turn off "reduce transparency" (to match what Morphic v1.x for macOS did)
-            if value == false {
-                // NOTE: before "reduce transparency" is changed the first time, macOS will not have a default for this value (i.e. it defaults to "false")
-                let reduceTransparencyIsEnabled = try MorphicSettings.AccessibilityDisplaySettings.getReduceTransparencyIsEnabled()
-
-                let newReduceTransparencyIsEnabled = false
-
-                if reduceTransparencyIsEnabled == nil || reduceTransparencyIsEnabled! != newReduceTransparencyIsEnabled {
-                    var waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
-                    try await AccessibilityDisplayUIAutomationScript_macOS13.setReduceTransparencyIsEnabled(newReduceTransparencyIsEnabled, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
-                    // verify that the state has changed
-                    waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
-                    let verifyReduceTransparency = try await AsyncUtils.wait(atMost: waitForTimespan) {
-                        guard let verifyValue = try MorphicSettings.AccessibilityDisplaySettings.getReduceTransparencyIsEnabled() else {
-                            return false
-                        }
-
-                        return verifyValue == newReduceTransparencyIsEnabled
-                    }
-                    if verifyReduceTransparency == false {
-                        // could not verify "reduce transparency" value change
-                        throw MorphicError.unspecified
-                    }
-                }
-            }
+    //        // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+    //        let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+    //        let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+        
+            let setSettingProxy = IncreaseConstrastUIAutomationSetSettingProxy()
+            try await setSettingProxy.setIncreaseContrast(value, waitAtMost: waitAtMost)
         } else {
             // macOS 12.x and earlier
             fatalError("This function is not intended for use with macOS versions prior to macOS 13.0: use the non-async version of this function instead")
@@ -1935,7 +1890,7 @@ class MorphicBarControlItem: MorphicBarItem {
                     
                     if hotkeysEnabled == false {
                         let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
-                        try await MagnifierUIAutomationScript_macOS13.setHotkeysEnabled(true, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+                        try await AccessibilityZoomUIAutomationScript_macOS13.setHotkeysEnabled(true, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
                     }
                 } catch let error {
                     throw error
@@ -1959,9 +1914,11 @@ class MorphicBarControlItem: MorphicBarItem {
                 }
                 if magnifierIsEnabled == false {
                     try MorphicSettings.MagnifierZoomSettings.sendMagnifierToggleZoomHotkey()
-                    let waitForMagnifierToAppearTimeInterval = TimeInterval(5.0)
-                    // wait for the magnifier
-                    let magnifierShowSuccess = try await AsyncUtils.wait(atMost: waitForMagnifierToAppearTimeInterval) {
+
+                    let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+
+                    // wait for the magnifier to show
+                    let magnifierShowSuccess = try await AsyncUtils.wait(atMost: waitForTimespan) {
                         guard let magnifierIsEnabled = try MorphicSettings.MagnifierZoomSettings.getMagnifierEnabled() else {
                             return false
                         }
@@ -1987,7 +1944,7 @@ class MorphicBarControlItem: MorphicBarItem {
                     
                     if hotkeysEnabled == false {
                         let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
-                        try await MagnifierUIAutomationScript_macOS13.setHotkeysEnabled(true, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+                        try await AccessibilityZoomUIAutomationScript_macOS13.setHotkeysEnabled(true, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
                     }
                 } catch let error {
                     throw error
@@ -1998,9 +1955,11 @@ class MorphicBarControlItem: MorphicBarItem {
                 let magnifierIsEnabledAsOptional = try MorphicSettings.MagnifierZoomSettings.getMagnifierEnabled()
                 if magnifierIsEnabledAsOptional == true || magnifierIsEnabledAsOptional == nil {
                     try MorphicSettings.MagnifierZoomSettings.sendMagnifierToggleZoomHotkey()
-                    let waitForMagnifierToAppearTimeInterval = TimeInterval(5.0)
-                    // wait for the magnifier
-                    let magnifierHideSuccess = try await AsyncUtils.wait(atMost: waitForMagnifierToAppearTimeInterval) {
+
+                    let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+
+                    // wait for the magnifier to hide
+                    let magnifierHideSuccess = try await AsyncUtils.wait(atMost: waitForTimespan) {
                         guard let magnifierIsEnabled = try MorphicSettings.MagnifierZoomSettings.getMagnifierEnabled() else {
                             return false
                         }

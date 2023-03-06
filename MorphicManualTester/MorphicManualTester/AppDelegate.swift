@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Cocoa
+import MorphicUIAutomation
 import SwiftUI
 
 @NSApplicationMain
@@ -30,6 +31,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        // setup ui automation set setting proxies (macOS 13.0 and above)
+        if #available(macOS 13.0, *) {
+            MorphicSettingsUIAutomationBridgeHelper.setupUIAutomationSetSettingProxies()
+        }
+        
         // Create the SwiftUI view that provides the window contents.
         let contentView = ContentView()
 

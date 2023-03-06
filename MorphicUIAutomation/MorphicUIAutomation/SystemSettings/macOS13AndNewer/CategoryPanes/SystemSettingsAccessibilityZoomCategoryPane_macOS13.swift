@@ -31,14 +31,23 @@ internal class SystemSettingsAccessibilityZoomCategoryPane_macOS13: SystemSettin
     }
     
     public enum Checkbox: A11yUICheckboxIdentifier {
+        case hoverText
         case useKeyboardShortcutsToZoom
+        case useScrollGestureWithModifierKeysToZoom
+        case useTrackpadGestureToZoom
         
         public func a11yUIIdentifier() -> String {
             // NOTE: at the time of writing, these have been validated with macOS 13.0 (but not earlier versions)
             if #available(macOS 13.0, *) {
                 switch self {
+                case .hoverText:
+                    return "AX_HOVER_TEXT_ENABLE"
                 case .useKeyboardShortcutsToZoom:
                     return "AX_ZOOM_ENABLE_HOTKEYS"
+                case .useScrollGestureWithModifierKeysToZoom:
+                    return "AX_ZOOM_ENABLE_GESTURE"
+                case .useTrackpadGestureToZoom:
+                    return "AX_ZOOM_TRACKPAD"
                 }
             } else {
                 fatalError("This version of macOS is not yet supported by this code")
