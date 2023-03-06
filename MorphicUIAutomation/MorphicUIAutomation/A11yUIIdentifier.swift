@@ -33,3 +33,9 @@ public protocol A11yUICheckboxIdentifier: A11yUIIdentifier {
 
 public protocol A11yUIPopUpButtonIdentifier: A11yUIIdentifier {
 }
+
+public protocol A11yUIRadioGroupIdentifier: A11yUIIdentifier {
+}
+
+public protocol A11yUISliderIdentifier: A11yUIIdentifier {
+}

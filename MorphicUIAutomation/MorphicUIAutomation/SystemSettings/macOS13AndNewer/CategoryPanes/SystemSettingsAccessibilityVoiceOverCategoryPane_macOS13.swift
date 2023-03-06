@@ -21,15 +21,28 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Foundation
+import Cocoa
+import MorphicCore
+import MorphicMacOSNative
 
-
-public protocol A11yUILabel {
-    func a11yUILabel() -> String
-}
-
-public protocol A11yUIButtonLabel: A11yUILabel {
-}
-
-public protocol A11yUIRadioButtonLabel: A11yUILabel {
+internal class SystemSettingsAccessibilityVoiceOverCategoryPane_macOS13: SystemSettingsGroupUIElementWrapper {
+    public required init(systemSettingsMainWindow: SystemSettingsMainWindow_macOS13, groupUIElement: GroupUIElement) {
+        super.init(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: groupUIElement)
+    }
+    
+    public enum Checkbox: A11yUICheckboxIdentifier {
+        case voiceOver
+        
+        public func a11yUIIdentifier() -> String {
+            // NOTE: at the time of writing, these have been validated with macOS 13.0 (but not earlier versions)
+            if #available(macOS 13.0, *) {
+                switch self {
+                case .voiceOver:
+                    return "AX_VOICEOVER_ENABLED"
+                }
+            } else {
+                fatalError("This version of macOS is not yet supported by this code")
+            }
+        }
+    }
 }

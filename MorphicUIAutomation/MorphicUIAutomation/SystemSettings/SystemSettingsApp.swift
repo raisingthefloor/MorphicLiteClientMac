@@ -131,6 +131,7 @@ public class SystemSettingsApp {
         case accessibility
         case accessibilityDisplay
         case accessibilitySpokenContent
+        case accessibilityVoiceOver
         case accessibilityZoom
         case appearance
         case colorFilters
@@ -213,6 +214,27 @@ public class SystemSettingsApp {
                 do {
                     let groupUIElement = try await accessibilityCategoryPane.navigateTo(.spokenContent, waitAtMost: subCategoryNavigationWaitMaximum)
                     groupUIElementWrapper = SystemSettingsAccessibilitySpokenContentCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: groupUIElement)
+                } catch let error {
+                    throw error
+                }
+            } else {
+                fatalError("Unsupported macOS version")
+            }
+        case .accessibilityVoiceOver:
+            if #available(macOS 13.0, *) {
+                // macOS 13.0 and later
+                let systemSettingsMainWindow = SystemSettingsMainWindow_macOS13(windowUIElement: windowUIElement)
+                let accessibilityCategoryGroupUIElement: GroupUIElement
+                do {
+                    accessibilityCategoryGroupUIElement = try await systemSettingsMainWindow.navigateTo(SystemSettingsMainWindow_macOS13.CategoryPane.accessibility, waitAtMost: mainCategoryNavigationWaitMaximum)
+                } catch let error {
+                    throw error
+                }
+                
+                let accessibilityCategoryPane = SystemSettingsAccessibilityCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: accessibilityCategoryGroupUIElement)
+                do {
+                    let groupUIElement = try await accessibilityCategoryPane.navigateTo(.voiceOver, waitAtMost: subCategoryNavigationWaitMaximum)
+                    groupUIElementWrapper = SystemSettingsAccessibilityVoiceOverCategoryPane_macOS13(systemSettingsMainWindow: systemSettingsMainWindow, groupUIElement: groupUIElement)
                 } catch let error {
                     throw error
                 }

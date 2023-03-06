@@ -7,8 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FF486AC724C09A600024503E /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF486AC624C09A600024503E /* MorphicSettings.framework */; };
-		FF486AC824C09A600024503E /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FF486AC624C09A600024503E /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9D4DF01029B54BA30033FD1F /* MorphicUIAutomation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D4DF00F29B54BA30033FD1F /* MorphicUIAutomation.framework */; };
+		9D4DF01129B54BA30033FD1F /* MorphicUIAutomation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D4DF00F29B54BA30033FD1F /* MorphicUIAutomation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9D4DF01229B54BC00033FD1F /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF486AC624C09A600024503E /* MorphicSettings.framework */; };
+		9D4DF01329B54BC00033FD1F /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FF486AC624C09A600024503E /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9D4DF01429B54BD00033FD1F /* MorphicMacOSNative.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D4DEFFA29B535910033FD1F /* MorphicMacOSNative.framework */; };
+		9D4DF01529B54BD00033FD1F /* MorphicMacOSNative.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D4DEFFA29B535910033FD1F /* MorphicMacOSNative.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FF486ACB24C09A660024503E /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF486ACA24C09A660024503E /* MorphicCore.framework */; };
 		FF486ACC24C09A660024503E /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FF486ACA24C09A660024503E /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FF486ACE24C5BF4F0024503E /* RegistryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF486ACD24C5BF4F0024503E /* RegistryManager.swift */; };
@@ -27,8 +31,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				9D4DF01529B54BD00033FD1F /* MorphicMacOSNative.framework in Embed Frameworks */,
 				FF486ACC24C09A660024503E /* MorphicCore.framework in Embed Frameworks */,
-				FF486AC824C09A600024503E /* MorphicSettings.framework in Embed Frameworks */,
+				9D4DF01329B54BC00033FD1F /* MorphicSettings.framework in Embed Frameworks */,
+				9D4DF01129B54BA30033FD1F /* MorphicUIAutomation.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -36,6 +42,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9D4DEFFA29B535910033FD1F /* MorphicMacOSNative.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicMacOSNative.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9D4DF00F29B54BA30033FD1F /* MorphicUIAutomation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicUIAutomation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF486AC624C09A600024503E /* MorphicSettings.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicSettings.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF486ACA24C09A660024503E /* MorphicCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF486ACD24C5BF4F0024503E /* RegistryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistryManager.swift; sourceTree = "<group>"; };
@@ -56,8 +64,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D4DF01429B54BD00033FD1F /* MorphicMacOSNative.framework in Frameworks */,
 				FF486ACB24C09A660024503E /* MorphicCore.framework in Frameworks */,
-				FF486AC724C09A600024503E /* MorphicSettings.framework in Frameworks */,
+				9D4DF01229B54BC00033FD1F /* MorphicSettings.framework in Frameworks */,
+				9D4DF01029B54BA30033FD1F /* MorphicUIAutomation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,6 +77,8 @@
 		FF486AC524C09A600024503E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9D4DF00F29B54BA30033FD1F /* MorphicUIAutomation.framework */,
+				9D4DEFFA29B535910033FD1F /* MorphicMacOSNative.framework */,
 				FF62B90724C85F8700BFDFAF /* MorphicService.framework */,
 				FF486ACA24C09A660024503E /* MorphicCore.framework */,
 				FF486AC624C09A600024503E /* MorphicSettings.framework */,

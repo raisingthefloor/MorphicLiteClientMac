@@ -124,10 +124,12 @@ class SettingControl: ObservableObject, Identifiable
         }
         let sname = String(name)
         SettingsManager.shared.apply(val, for: Preferences.Key(solution: solutionName, preference: sname)) { success in
-            if !success {
-                self.capture()
-            } else {
-                self.loading = false
+            DispatchQueue.main.async {
+                if !success {
+                    self.capture()
+                } else {
+                    self.loading = false
+                }
             }
         }
     }

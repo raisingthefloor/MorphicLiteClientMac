@@ -27,7 +27,7 @@ import OSLog
 
 private let logger = OSLog(subsystem: "MorphicSettings", category: "MouseUIAutomations")
 
-public class MouseUIAutomation: UIAutomation {
+public class MouseUIAutomation: LegacyUIAutomation {
     
     public required init() {
     }

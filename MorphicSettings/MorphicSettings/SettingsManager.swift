@@ -36,31 +36,39 @@ public class SettingsManager {
     private init() {
         // Display
         ClientSettingHandler.register(type: DisplayZoomHandler.self, for: .macosDisplayZoom)
-        DefaultsReadUIWriteSettingHandler.register(automation: ContrastUIAutomation.self, for: .macosDisplayContrastEnabled)
-        DefaultsReadUIWriteSettingHandler.register(automation: InvertColorsUIAutomation.self, for: .macosDisplayInvertColors)
-        DefaultsReadUIWriteSettingHandler.register(automation: InvertClassicUIAutomation.self, for: .macosDisplayClassicInvert)
-        DefaultsReadUIWriteSettingHandler.register(automation: ReduceMotionUIAutomation.self, for: .macosDisplayReduceMotion)
-        DefaultsReadUIWriteSettingHandler.register(automation: ReduceTransparencyUIAutomation.self, for: .macosDisplayReduceTransparency)
-        DefaultsReadUIWriteSettingHandler.register(automation: DifferentiateWithoutColorUIAutomation.self, for: .macosDisplayDifferentiateWithoutColor)
-        DefaultsReadUIWriteSettingHandler.register(automation: CursorShakeUIAutomation.self, for: .macosCursorShake)
-        DefaultsReadUIWriteSettingHandler.register(automation: CursorSizeUIAutomation.self, for: .macosCursorSize)
-        DefaultsReadUIWriteSettingHandler.register(automation: ColorFilterEnabledAutomation.self, for: .macosColorFilterEnabled)
-        DefaultsReadUIWriteSettingHandler.register(automation: ColorFilterTypeAutomation.self, for: .macosColorFilterType)
-        DefaultsReadUIWriteSettingHandler.register(automation: ColorFilterIntensityUIAutomation.self, for: .macosColorFilterIntensity)
 
-        // Speech
-        DefaultsReadUIWriteSettingHandler.register(automation: SpeakSelectedTextEnabledUIAutomation.self, for: .macosSpeakSelectedTextEnabled)
-        
-        // Voice Over
-        DefaultsReadUIWriteSettingHandler.register(automation: VoiceOverUIAutomation.self, for: .macosVoiceOverEnabled)
-        
-        // Zoom
-        DefaultsReadUIWriteSettingHandler.register(automation: ZoomEnabledUIAutomation.self, for: .macosZoomEnabled)
-        DefaultsReadUIWriteSettingHandler.register(automation: ScrollToZoomEnabledUIAutomation.self, for: .macosScrollToZoomEnabled)
-        DefaultsReadUIWriteSettingHandler.register(automation: HoverTextEnabledUIAutomation.self, for: .macosHoverTextEnabled)
-        DefaultsReadUIWriteSettingHandler.register(automation: TouchbarZoomEnabledUIAutomation.self, for: .macosTouchbarZoomEnabled)
-        DefaultsReadUIWriteSettingHandler.register(automation: ZoomStyleUIAutomation.self, for: .macosZoomStyle)
-        
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+
+            // NOTE: with macOS 13.0 and later, the automation setup is completed by calling registerUIAuatomationSetSettingProxies once during startup; this is necessary due to a circular dependency issue (which we should resolve when we remove the legacy ui automation code)
+        } else {
+            // macOS 12.x and earlier
+            
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: ContrastUIAutomation.self, for: .macosDisplayContrastEnabled)
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: InvertColorsUIAutomation.self, for: .macosDisplayInvertColors)
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: InvertClassicUIAutomation.self, for: .macosDisplayClassicInvert)
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: ReduceMotionUIAutomation.self, for: .macosDisplayReduceMotion)
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: ReduceTransparencyUIAutomation.self, for: .macosDisplayReduceTransparency)
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: DifferentiateWithoutColorUIAutomation.self, for: .macosDisplayDifferentiateWithoutColor)
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: CursorShakeUIAutomation.self, for: .macosCursorShake)
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: CursorSizeUIAutomation.self, for: .macosCursorSize)
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: ColorFilterEnabledAutomation.self, for: .macosColorFilterEnabled)
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: ColorFilterTypeAutomation.self, for: .macosColorFilterType)
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: ColorFilterIntensityUIAutomation.self, for: .macosColorFilterIntensity)
+
+            // Speech
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: SpeakSelectedTextEnabledUIAutomation.self, for: .macosSpeakSelectedTextEnabled)
+            
+            // Voice Over
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: VoiceOverUIAutomation.self, for: .macosVoiceOverEnabled)
+            
+            // Zoom
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: ZoomEnabledUIAutomation.self, for: .macosZoomEnabled)
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: ScrollToZoomEnabledUIAutomation.self, for: .macosScrollToZoomEnabled)
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: HoverTextEnabledUIAutomation.self, for: .macosHoverTextEnabled)
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: TouchbarZoomEnabledUIAutomation.self, for: .macosTouchbarZoomEnabled)
+            DefaultsReadUIWriteSettingHandler.legacyRegister(automation: ZoomStyleUIAutomation.self, for: .macosZoomStyle)
+        }
     }
     
     /// All known solutions

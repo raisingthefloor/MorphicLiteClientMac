@@ -133,4 +133,11 @@ public class AccessibilityDisplaySettings {
         let result = try UserDefaultsUtils.defaultAsOptionalBool(suiteName: "com.apple.mediaaccessibility", forKey: "__Color__-MADisplayFilterCategoryEnabled")
         return result
     }
+    
+    //
+    
+    public enum InvertColorsMode {
+        case classic
+        case smart
+    }
 }

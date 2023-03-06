@@ -138,57 +138,96 @@ public class DefaultsReadUIWriteSettingHandler: SettingHandler {
     private var description: Description {
         return setting.handlerDescription as! Description
     }
+
+    //
     
-    private static var automationTypesByKey = [Preferences.Key: UIAutomation.Type]()
+    private static var uiAutomationSetSettingProxyTypesByKey = [Preferences.Key: UIAutomationSetSettingProxy.Type]()
     
-    public static func register(automation: UIAutomation.Type, for key: Preferences.Key) {
-        automationTypesByKey[key] = automation
+    public static func register(uiAutomationSetSettingProxy: UIAutomationSetSettingProxy.Type, for key: Preferences.Key) {
+        uiAutomationSetSettingProxyTypesByKey[key] = uiAutomationSetSettingProxy
+    }
+
+    public static func uiAutomationSetSettingProxy(for key: Preferences.Key) -> UIAutomationSetSettingProxy? {
+        guard let type = uiAutomationSetSettingProxyTypesByKey[key] else {
+            return nil
+        }
+        return type.init()
+    }
+
+    //
+    
+    private static var legacyAutomationTypesByKey = [Preferences.Key: LegacyUIAutomation.Type]()
+    
+    public static func legacyRegister(automation: LegacyUIAutomation.Type, for key: Preferences.Key) {
+        legacyAutomationTypesByKey[key] = automation
     }
     
-    public static func automation(for key: Preferences.Key) -> UIAutomation? {
-        guard let type = automationTypesByKey[key] else{
+    public static func legacyAutomation(for key: Preferences.Key) -> LegacyUIAutomation? {
+        guard let type = legacyAutomationTypesByKey[key] else{
             return nil
         }
         return type.init()
     }
     
+    //
+    
     public override func apply(_ value: Interoperable?, completion: @escaping (_ success: Bool) -> Void) {
         let key = Preferences.Key(solution: description.solution, preference: description.preference)
-        guard let automation = DefaultsReadUIWriteSettingHandler.automation(for: key) else{
+        
+        if let uiAutomationSetSettingProxy = DefaultsReadUIWriteSettingHandler.uiAutomationSetSettingProxy(for: key) {
+            // transitional ui set setting proxy automation (macOS 13 and newer)
+
+            Task {
+                do {
+                    try await uiAutomationSetSettingProxy.apply(value)
+                } catch {
+                    // if the operation fails, call the completion handler with a failure result
+                    completion(false)
+                    return
+                }
+
+                // if we reach here, the operation was successful
+                completion(true)
+                return
+            }
+        } else if let automation = DefaultsReadUIWriteSettingHandler.legacyAutomation(for: key) {
+            // legacy automation (prior to macOS 13.0)
+            
+            automation.apply(value, completion: completion)
+            
+    //        var steps = description.ui.steps
+    //        var element: UIElement = WorkspaceElement.shared
+    //        var runNextStep: (() -> Void)!
+    //        runNextStep = {
+    //            let step = steps.removeFirst()
+    //            os_log(.debug, log: logger, "UI step %{public}s for %{public}s", step.action, step.identifier)
+    //            guard let action = step.action(for: value) else{
+    //                os_log(.error, log: logger, "Failed to create ui action from step")
+    //                completion(false)
+    //                return
+    //            }
+    //            element.perform(action: action) {
+    //                success, nextTarget in
+    //                guard success else {
+    //                    os_log(.error, log: logger, "Failed to perform action")
+    //                    completion(false)
+    //                    return
+    //                }
+    //                if let target = nextTarget {
+    //                    element = target
+    //                }
+    //                if steps.count > 0 {
+    //                    runNextStep()
+    //                }else{
+    //                    completion(true)
+    //                }
+    //            }
+    //        }
+    //        runNextStep()
+        } else {
             completion(false)
             return
         }
-        automation.apply(value, completion: completion)
-        
-//        var steps = description.ui.steps
-//        var element: UIElement = WorkspaceElement.shared
-//        var runNextStep: (() -> Void)!
-//        runNextStep = {
-//            let step = steps.removeFirst()
-//            os_log(.debug, log: logger, "UI step %{public}s for %{public}s", step.action, step.identifier)
-//            guard let action = step.action(for: value) else{
-//                os_log(.error, log: logger, "Failed to create ui action from step")
-//                completion(false)
-//                return
-//            }
-//            element.perform(action: action) {
-//                success, nextTarget in
-//                guard success else {
-//                    os_log(.error, log: logger, "Failed to perform action")
-//                    completion(false)
-//                    return
-//                }
-//                if let target = nextTarget {
-//                    element = target
-//                }
-//                if steps.count > 0 {
-//                    runNextStep()
-//                }else{
-//                    completion(true)
-//                }
-//            }
-//        }
-//        runNextStep()
     }
     
     public override func read(completion: @escaping (_ result: SettingHandler.Result) -> Void) {
