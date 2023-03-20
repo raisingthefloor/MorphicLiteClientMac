@@ -187,7 +187,7 @@ public class AccessibilityDisplayUIAutomationScript_macOS13 {
 
     private static func launchOrAttachSystemSettingsThenNavigativeToAccessibilityDisplay(sequence: UIAutomationSequence?, waitFor: TimeInterval) async throws -> SystemSettingsAccessibilityDisplayCategoryPane_macOS13 {
         let (categoryPane, launchedSystemSettingsApp) = try await SystemSettingsApp.launchOrAttachThenNavigateTo(.accessibilityDisplay, waitUntilFinishedLaunching: waitFor)
-        if launchedSystemSettingsApp == true { sequence?.setScriptLaunchedApplicationFlag() }
+        if launchedSystemSettingsApp == true { sequence?.setScriptLaunchedApplicationFlag(bundleIdentifier: SystemSettingsApp.bundleIdentifier) }
 
         return categoryPane as! SystemSettingsAccessibilityDisplayCategoryPane_macOS13
     }

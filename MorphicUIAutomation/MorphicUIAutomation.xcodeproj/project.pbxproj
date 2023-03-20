@@ -43,12 +43,13 @@
 		9D516C8229B48937002DCC84 /* SliderUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D516C8129B48937002DCC84 /* SliderUIElement.swift */; };
 		9D516C8429B49158002DCC84 /* RadioGroupUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D516C8329B49158002DCC84 /* RadioGroupUIElement.swift */; };
 		9D83E49829B2ADFB0068F5DB /* UIAutomationSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D83E49729B2ADFB0068F5DB /* UIAutomationSequence.swift */; };
-		9D83E49A29B2B01F0068F5DB /* SystemSettingsUIAutomationSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D83E49929B2B01F0068F5DB /* SystemSettingsUIAutomationSequence.swift */; };
 		9D83E49C29B323370068F5DB /* A11yUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D83E49B29B323370068F5DB /* A11yUILabel.swift */; };
 		9D8EB4DC29478976006F2DDA /* MorphicUIAutomation.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D8EB4DB29478976006F2DDA /* MorphicUIAutomation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9D8EB4E429478A37006F2DDA /* SystemSettingsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8EB4E329478A37006F2DDA /* SystemSettingsApp.swift */; };
 		9D8EB4E629478AE2006F2DDA /* UIAutomationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8EB4E529478AE2006F2DDA /* UIAutomationApp.swift */; };
 		9D8EB4E92947A27B006F2DDA /* WindowUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8EB4E82947A27B006F2DDA /* WindowUIElement.swift */; };
+		9DC26BEF29C8AB1900882AB9 /* MorphicSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DC26BEE29C8AB1900882AB9 /* MorphicSettings.framework */; };
+		9DC26BF029C8AB1900882AB9 /* MorphicSettings.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9DC26BEE29C8AB1900882AB9 /* MorphicSettings.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9DECF44A2954D6D0009CE2D8 /* SystemSettingsMainWindow_macOS13.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DECF4492954D6D0009CE2D8 /* SystemSettingsMainWindow_macOS13.swift */; };
 		9DECF44D2954D81D009CE2D8 /* UIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DECF44C2954D81D009CE2D8 /* UIElement.swift */; };
 		9DECF44F2954DC39009CE2D8 /* GroupUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DECF44E2954DC39009CE2D8 /* GroupUIElement.swift */; };
@@ -64,6 +65,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				9D3DA59B29554F3700361DCC /* MorphicMacOSNative.framework in Embed Frameworks */,
+				9DC26BF029C8AB1900882AB9 /* MorphicSettings.framework in Embed Frameworks */,
 				9D3DA59729554F2200361DCC /* MorphicCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -130,13 +132,13 @@
 		9D516C8129B48937002DCC84 /* SliderUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderUIElement.swift; sourceTree = "<group>"; };
 		9D516C8329B49158002DCC84 /* RadioGroupUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioGroupUIElement.swift; sourceTree = "<group>"; };
 		9D83E49729B2ADFB0068F5DB /* UIAutomationSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAutomationSequence.swift; sourceTree = "<group>"; };
-		9D83E49929B2B01F0068F5DB /* SystemSettingsUIAutomationSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettingsUIAutomationSequence.swift; sourceTree = "<group>"; };
 		9D83E49B29B323370068F5DB /* A11yUILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = A11yUILabel.swift; sourceTree = "<group>"; };
 		9D8EB4D829478976006F2DDA /* MorphicUIAutomation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MorphicUIAutomation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D8EB4DB29478976006F2DDA /* MorphicUIAutomation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MorphicUIAutomation.h; sourceTree = "<group>"; };
 		9D8EB4E329478A37006F2DDA /* SystemSettingsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettingsApp.swift; sourceTree = "<group>"; };
 		9D8EB4E529478AE2006F2DDA /* UIAutomationApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAutomationApp.swift; sourceTree = "<group>"; };
 		9D8EB4E82947A27B006F2DDA /* WindowUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowUIElement.swift; sourceTree = "<group>"; };
+		9DC26BEE29C8AB1900882AB9 /* MorphicSettings.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicSettings.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DECF4492954D6D0009CE2D8 /* SystemSettingsMainWindow_macOS13.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettingsMainWindow_macOS13.swift; sourceTree = "<group>"; };
 		9DECF44C2954D81D009CE2D8 /* UIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIElement.swift; sourceTree = "<group>"; };
 		9DECF44E2954DC39009CE2D8 /* GroupUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupUIElement.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9D3DA59A29554F3700361DCC /* MorphicMacOSNative.framework in Frameworks */,
+				9DC26BEF29C8AB1900882AB9 /* MorphicSettings.framework in Frameworks */,
 				9D3DA59629554F2200361DCC /* MorphicCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -203,6 +206,7 @@
 		9D3DA59429554F2200361DCC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9DC26BEE29C8AB1900882AB9 /* MorphicSettings.framework */,
 				9D3DA5CC2959153900361DCC /* AccessibilityUI */,
 				9D3DA59929554F3700361DCC /* MorphicMacOSNative.framework */,
 				9D3DA59529554F2200361DCC /* MorphicCore.framework */,
@@ -402,7 +406,6 @@
 				9DECF44B2954D6DE009CE2D8 /* macOS13AndNewer */,
 				9D8EB4E329478A37006F2DDA /* SystemSettingsApp.swift */,
 				9D3AC8B229AD2774007D3E8A /* SystemSettingsGroupUIElementWrapper.swift */,
-				9D83E49929B2B01F0068F5DB /* SystemSettingsUIAutomationSequence.swift */,
 			);
 			path = SystemSettings;
 			sourceTree = "<group>";
@@ -544,7 +547,6 @@
 				9D516C7D29B47F25002DCC84 /* SystemSettingsAccessibilityVoiceOverCategoryPane_macOS13.swift in Sources */,
 				9D83E49829B2ADFB0068F5DB /* UIAutomationSequence.swift in Sources */,
 				9D3AC8BD29AD7E9C007D3E8A /* MenuUIElement.swift in Sources */,
-				9D83E49A29B2B01F0068F5DB /* SystemSettingsUIAutomationSequence.swift in Sources */,
 				9DECF44A2954D6D0009CE2D8 /* SystemSettingsMainWindow_macOS13.swift in Sources */,
 				9DECF44F2954DC39009CE2D8 /* GroupUIElement.swift in Sources */,
 				9D3AC8B129AD24E6007D3E8A /* SystemSettingsAccessibilityZoomCategoryPane_macOS13.swift in Sources */,

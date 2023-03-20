@@ -35,15 +35,16 @@ public class IncreaseConstrastUIAutomationSetSettingProxy: UIAutomationSetSettin
             throw MorphicError.unspecified
         }
 
+        // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+        let sequence = UIAutomationSequence()
+
         let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
-        try await setIncreaseContrast(valueAsBool, waitAtMost: waitForTimespan)
+        try await setIncreaseContrast(valueAsBool, sequence: sequence, waitAtMost: waitForTimespan)
     }
     
     //
-    
-    public func setIncreaseContrast(_ value: Bool, waitAtMost: TimeInterval) async throws {
-        // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
-        let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+
+    public func setIncreaseContrast(_ value: Bool, sequence: UIAutomationSequence, waitAtMost: TimeInterval) async throws {
         let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
 
         // capture the current state of the "increase contrast" and "reduce transparency" features
@@ -54,7 +55,7 @@ public class IncreaseConstrastUIAutomationSetSettingProxy: UIAutomationSetSettin
         // set the new "increase contrast" state
         if increaseContrastIsEnabled == nil || increaseContrastIsEnabled! != value {
             let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
-            try await AccessibilityDisplayUIAutomationScript_macOS13.setIncreaseContrastIsOn(value, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+            try await AccessibilityDisplayUIAutomationScript_macOS13.setIncreaseContrastIsOn(value, sequence: sequence, waitAtMost: waitForTimespan)
         }
         // verify that the state has changed
         // TODO: we probably want to refactor this into a standard function (which takes a closure as an argument) which we reuse in many places
@@ -81,7 +82,7 @@ public class IncreaseConstrastUIAutomationSetSettingProxy: UIAutomationSetSettin
 
             if reduceTransparencyIsEnabled == nil || reduceTransparencyIsEnabled! != newReduceTransparencyIsEnabled {
                 var waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
-                try await AccessibilityDisplayUIAutomationScript_macOS13.setReduceTransparencyIsOn(newReduceTransparencyIsEnabled, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+                try await AccessibilityDisplayUIAutomationScript_macOS13.setReduceTransparencyIsOn(newReduceTransparencyIsEnabled, sequence: sequence, waitAtMost: waitForTimespan)
                 // verify that the state has changed
                 // TODO: we probably want to refactor this into a standard function (which takes a closure as an argument) which we reuse in many places
                 waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
@@ -254,7 +255,7 @@ public class ColorFilterTypeUIAutomationSetSettingProxy: UIAutomationSetSettingP
     
     public func setColorFilterType(_ value: MorphicSettings.AccessibilityDisplaySettings.ColorFilterType, waitAtMost: TimeInterval) async throws {
         // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
-        let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+        let uiAutomationSequence = UIAutomationSequence()
         let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
         
         do {
