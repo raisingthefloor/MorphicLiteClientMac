@@ -111,7 +111,7 @@ public class AccessibilityZoomUIAutomationScript_macOS13 {
     
     private static func launchOrAttachSystemSettingsThenNavigativeToAccessibilityZoom(sequence: UIAutomationSequence?, waitFor: TimeInterval) async throws -> SystemSettingsAccessibilityZoomCategoryPane_macOS13 {
         let (categoryPane, launchedSystemSettingsApp) = try await SystemSettingsApp.launchOrAttachThenNavigateTo(.accessibilityZoom, waitUntilFinishedLaunching: waitFor)
-        if launchedSystemSettingsApp == true { sequence?.setScriptLaunchedApplicationFlag() }
+        if launchedSystemSettingsApp == true { sequence?.setScriptLaunchedApplicationFlag(bundleIdentifier: SystemSettingsApp.bundleIdentifier) }
         
         return categoryPane as! SystemSettingsAccessibilityZoomCategoryPane_macOS13
     }

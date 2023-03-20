@@ -41,7 +41,7 @@ public class ZoomEnabledUIAutomation: UIAutomationSetSettingProxy {
     
     public func setMagnifierIsOn(_ value: Bool, waitAtMost: TimeInterval) async throws {
         // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
-        let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+        let uiAutomationSequence = UIAutomationSequence()
         let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
 
         // make sure that magnifier hotkeys are enabled

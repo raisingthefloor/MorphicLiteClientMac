@@ -1191,7 +1191,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
             
             // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
-            let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+            let uiAutomationSequence = UIAutomationSequence()
             let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
 
             // capture the current "contrast enabled" setting
@@ -1255,12 +1255,13 @@ class MorphicBarControlItem: MorphicBarItem {
                 throw MorphicError.unspecified
             }
 
-    //        // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
-    //        let uiAutomationSequence = SystemSettingsUIAutomationSequence()
-    //        let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+            // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+            let sequence = UIAutomationSequence()
+
+//            let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
         
             let setSettingProxy = IncreaseConstrastUIAutomationSetSettingProxy()
-            try await setSettingProxy.setIncreaseContrast(value, waitAtMost: waitAtMost)
+            try await setSettingProxy.setIncreaseContrast(value, sequence: sequence, waitAtMost: waitAtMost)
         } else {
             // macOS 12.x and earlier
             fatalError("This function is not intended for use with macOS versions prior to macOS 13.0: use the non-async version of this function instead")
@@ -1731,7 +1732,7 @@ class MorphicBarControlItem: MorphicBarItem {
             let speakSelectedTextKeyEnabled = defaults.bool(forKey: "SpokenUIUseSpeakingHotKeyFlag")
             if speakSelectedTextKeyEnabled == false {
                 // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
-                let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+                let uiAutomationSequence = UIAutomationSequence()
                 let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
 
                 do {
@@ -1867,7 +1868,7 @@ class MorphicBarControlItem: MorphicBarItem {
 
             if value == true {
                 // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
-                let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+                let uiAutomationSequence = UIAutomationSequence()
                 let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
 
                 let didSetInitialMagnifierZoomStyle = Session.shared.bool(for: .morphicDidSetInitialMagnifierZoomStyle) ?? false
@@ -1932,7 +1933,7 @@ class MorphicBarControlItem: MorphicBarItem {
                 }
             } else /*if value == false*/ {
                 // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
-                let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+                let uiAutomationSequence = UIAutomationSequence()
                 let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
 
                 // make sure that magnifier hotkeys are enabled

@@ -302,7 +302,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
 
         // TODO: there is a potential scenario that our telemetry device uuid could be (incorrectly) saved as a blank entry; we should consider
-        //       how we'd want to deal with that scenario; NOTE: this _might_ pertain to MorphicTelemetry (or it might have just been a Countly issue)
+        //       how we'd want to deal with that scenario; NOTE: this _might_ pertain to MorphicTelemetry (or it might have just been an issue related to the legacy telemetry system)
 
         // capture the raw device UUID
         let rangeOfTelemetryDeviceUuidPrefix = telemetryCompositeId.range(of: "D_")!
@@ -1808,7 +1808,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
         
         // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
-        let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+        let uiAutomationSequence = UIAutomationSequence()
         let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
 
         let newZoomStyle = MorphicSettings.MagnifierZoomSettings.ZoomStyle.pictureInPicture // aka "lens"
@@ -2369,7 +2369,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func launchAllAccessibilityOptionsSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "allAccessibility", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "allAccessibility", tag: (sender as? NSView)?.tag)
         }
         Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityOverview) }
     }
@@ -2377,7 +2377,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func launchBrightnessSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "brightness", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "brightness", tag: (sender as? NSView)?.tag)
         }
         Task { try? await SettingsLinkActions.openSystemSettingsPane(.displaysDisplay) }
     }
@@ -2385,7 +2385,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func launchColorVisionSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "colorFilter", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "colorFilter", tag: (sender as? NSView)?.tag)
         }
         Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayColorFilters) }
     }
@@ -2393,7 +2393,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func launchContrastSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "highContrast", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "highContrast", tag: (sender as? NSView)?.tag)
         }
         Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayDisplay) }
     }
@@ -2401,7 +2401,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func launchDarkModeSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "darkMode", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "darkMode", tag: (sender as? NSView)?.tag)
         }
         Task { try? await SettingsLinkActions.openSystemSettingsPane(.appearance) }
     }
@@ -2409,7 +2409,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func launchLanguageSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "language", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "language", tag: (sender as? NSView)?.tag)
         }
         Task { try? await SettingsLinkActions.openSystemSettingsPane(.languageandregionGeneral) }
     }
@@ -2417,7 +2417,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func launchMagnifierSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "magnifier", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "magnifier", tag: (sender as? NSView)?.tag)
         }
         Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityZoom) }
     }
@@ -2425,7 +2425,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func launchMouseSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "mouse", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "mouse", tag: (sender as? NSView)?.tag)
         }
         Task { try? await SettingsLinkActions.openSystemSettingsPane(.mouse) }
     }
@@ -2433,7 +2433,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func launchNightModeSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "nightMode", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "nightMode", tag: (sender as? NSView)?.tag)
         }
         Task { try? await SettingsLinkActions.openSystemSettingsPane(.displaysNightShift) }
     }
@@ -2441,7 +2441,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func launchPointerSizeSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "pointerSize", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "pointerSize", tag: (sender as? NSView)?.tag)
         }
         Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayCursor) }
     }
@@ -2449,7 +2449,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func launchReadAloudSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "readAloud", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "readAloud", tag: (sender as? NSView)?.tag)
         }
         Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilitySpeech) }
     }
@@ -2457,14 +2457,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func launchKeyboardSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "keyboard", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "keyboard", tag: (sender as? NSView)?.tag)
         }
         Task { try? await SettingsLinkActions.openSystemSettingsPane(.keyboardKeyboard) }
     }
     
     //
     
-    func recordCountlyOpenSystemSettingsEvent(category settingsCategoryName: String, tag: Int?) {
+    func recordTelemetryOpenSystemSettingsEvent(category settingsCategoryName: String, tag: Int?) {
         // NOTE: if we need to send the settings category name, we could do so via event data
         TelemetryClientProxy.enqueueActionMessage(eventName: "systemSettings")
     }

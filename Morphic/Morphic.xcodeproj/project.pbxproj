@@ -1028,7 +1028,6 @@
 			);
 			mainGroup = 31751B002444DE8900EEDF14;
 			packageReferences = (
-				9D3530A325C2860200F8D590 /* XCRemoteSwiftPackageReference "countly-sdk-ios" */,
 			);
 			productRefGroup = 31751B0A2444DE8900EEDF14 /* Products */;
 			projectDirPath = "";
@@ -1824,17 +1823,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		9D3530A325C2860200F8D590 /* XCRemoteSwiftPackageReference "countly-sdk-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Countly/countly-sdk-ios.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 20.11.1;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 31751B012444DE8900EEDF14 /* Project object */;
 }

@@ -25,23 +25,19 @@ import Foundation
 import MorphicCore
 
 public class UIAutomationSequence {
-    private let bundleIdentifier: String
-    private var scriptLaunchedApplication = false
+    private var launchedBundleIdentifiers: Set<String>
     private var isFinished = false
 
-    public init(bundleIdentifier: String) {
-        self.bundleIdentifier = bundleIdentifier
+    public init() {
+        launchedBundleIdentifiers = Set<String>()
     }
-    
+
     deinit {
         if isFinished == false {
-            let isRunningApplication = UIAutomationApp.isRunningApplication(bundleIdentifier: SystemSettingsApp.bundleIdentifier)
-            if self.scriptLaunchedApplication == true && isRunningApplication == true {
-                do {
-                    try SystemSettingsApp.terminate()
-                } catch {
-                    // as we are in a deinit sequence, we ignore any errors; if the user would like to catch any termination errors, they should call finish() manually
-                }
+            do {
+                try self.terminateAllLaunchedApplications()
+            } catch {
+                // as we are in a deinit sequence, we ignore any errors; if the user would like to catch any termination errors, they should call finish() manually
             }
         }
     }
@@ -56,15 +52,36 @@ public class UIAutomationSequence {
             isFinished = true
         }
         
-        let isRunningApplication = UIAutomationApp.isRunningApplication(bundleIdentifier: SystemSettingsApp.bundleIdentifier)
-        if self.scriptLaunchedApplication == true && isRunningApplication == true {
-            try SystemSettingsApp.terminate()
+        try self.terminateAllLaunchedApplications()
+    }
+    
+    // NOTE: this function only throws the first exception it receives from an application while trying to terminate (even if multiple apps threw an exception); it intentinoally waits until all terminations are attempted before rethrowing the error
+    private func terminateAllLaunchedApplications() throws {
+        var caughtError: Error? = nil
+
+        while self.launchedBundleIdentifiers.count > 0 {
+            // NOTE: we remove the launched bundle identifiers as we terminate them (since this function is only called when the operation is being finished or deinit'ed)
+            let launchedBundleIdentifier = self.launchedBundleIdentifiers.removeFirst()
+
+            if UIAutomationApp.isRunningApplication(bundleIdentifier: launchedBundleIdentifier) == true {
+                do {
+                    try UIAutomationApp.terminate(bundleIdentifier: launchedBundleIdentifier)
+                } catch let error {
+                    // catch the first error (if any)
+                    if caughtError == nil {
+                        caughtError = error
+                    }
+                }
+            }
+        }
+        
+        // if terminating application(s) threw error(s), rethrow the first error we caught
+        if let caughtError = caughtError {
+            throw caughtError
         }
     }
-    
-    internal func setScriptLaunchedApplicationFlag() {
-        self.scriptLaunchedApplication = true
+
+    internal func setScriptLaunchedApplicationFlag(bundleIdentifier: String) {
+        self.launchedBundleIdentifiers.insert(bundleIdentifier)
     }
-    
-    
 }

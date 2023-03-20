@@ -48,7 +48,7 @@ class SettingsLinkActions {
 
     static func openSystemSettingsPaneWithTelemetry(_ pane: SystemPreferencePane, category systemSettingsCategory: String) async throws {
         defer {
-            AppDelegate.shared.recordCountlyOpenSystemSettingsEvent(category: systemSettingsCategory, tag: 1)
+            AppDelegate.shared.recordTelemetryOpenSystemSettingsEvent(category: systemSettingsCategory, tag: 1)
         }
         try await openSystemSettingsPane(pane)
     }

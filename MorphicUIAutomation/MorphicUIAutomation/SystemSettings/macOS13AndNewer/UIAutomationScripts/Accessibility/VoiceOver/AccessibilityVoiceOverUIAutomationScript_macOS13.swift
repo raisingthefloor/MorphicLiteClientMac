@@ -38,7 +38,7 @@ public class AccessibilityVoiceOverUIAutomationScript_macOS13 {
 
     private static func launchOrAttachSystemSettingsThenNavigativeToAccessibilityVoiceOver(sequence: UIAutomationSequence?, waitFor: TimeInterval) async throws -> SystemSettingsAccessibilityVoiceOverCategoryPane_macOS13 {
         let (categoryPane, launchedSystemSettingsApp) = try await SystemSettingsApp.launchOrAttachThenNavigateTo(.accessibilityVoiceOver, waitUntilFinishedLaunching: waitFor)
-        if launchedSystemSettingsApp == true { sequence?.setScriptLaunchedApplicationFlag() }
+        if launchedSystemSettingsApp == true { sequence?.setScriptLaunchedApplicationFlag(bundleIdentifier: SystemSettingsApp.bundleIdentifier) }
 
         return categoryPane as! SystemSettingsAccessibilityVoiceOverCategoryPane_macOS13
     }
