@@ -72,13 +72,15 @@ class QuickHelpWindow: NSWindow {
     public static func hide(withoutDelay: Bool = false, completion: (() -> Void)? = nil) {
         shared?.hideQueued = true
         if withoutDelay == false {
-            Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {
-                timer in
-                if shared?.hideQueued ?? false {
-                    shared?.close()
-                    shared = nil
+            DispatchQueue.main.async {
+                Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {
+                    timer in
+                    if shared?.hideQueued ?? false {
+                        shared?.close()
+                        shared = nil
+                    }
+                    completion?()
                 }
-                completion?()
             }
         } else {
             DispatchQueue.main.async {

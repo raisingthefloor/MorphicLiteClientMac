@@ -728,10 +728,12 @@ public class Session {
         }
         
         if waitFiveSecondsBeforeSave == true {
-            preferencesSaveTimer = .scheduledTimer(withTimeInterval: 5, repeats: false) {
-                timer in
-                //
-                savePreferencesAsynchronously()
+            DispatchQueue.main.async {
+                self.preferencesSaveTimer = .scheduledTimer(withTimeInterval: 5, repeats: false) {
+                    timer in
+                    //
+                    savePreferencesAsynchronously()
+                }
             }
         } else {
             savePreferencesAsynchronously()
