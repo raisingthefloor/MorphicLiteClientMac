@@ -220,7 +220,7 @@ stages:
     jobs:
       - job: autoupdate
         pool:
-          vmImage: "ubuntu-18.04"
+          vmImage: "ubuntu-20.04"
         steps:
         - task: Bash@3
           displayName: Publish auto-update files to AWS S3
