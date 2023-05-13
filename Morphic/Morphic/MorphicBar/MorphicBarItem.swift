@@ -1640,7 +1640,7 @@ class MorphicBarControlItem: MorphicBarItem {
         //
         
         // get the window ID of the topmost window
-        guard let (topmostWindowOwnerName, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
+        guard let (_ /* topmostWindowOwnerName */, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
             NSLog("Could not get ID of topmost window")
             return
         }
@@ -1737,8 +1737,10 @@ class MorphicBarControlItem: MorphicBarItem {
                 let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
 
                 do {
+                    var waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
                     try await AccessibilitySpokenContentUIAutomationScript_macOS13.setSpeakSelectionIsEnabled(true, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
 
+                    // send the hotkey (asynchronously) once we have enabled macOS's "speak selected text" feature
                     // NOTE: although the setting has been updated (and reading the default will now return true), it takes macOS a few seconds to recognize the new hotkey.  We have not found any reliable way to detect when macOS recognizes the new hotkey combo, so we fall back to the (not ideal) strategy of simply waiting an arbitrary two seconds.
                     AsyncUtils.wait(atMost: 2.0, for: { false /* return false means to wait the full interval */ }) {
                         success in
