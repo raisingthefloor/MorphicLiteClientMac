@@ -40,7 +40,7 @@ public class SettingsManager {
         if #available(macOS 13.0, *) {
             // macOS 13.0 and later
 
-            // NOTE: with macOS 13.0 and later, the automation setup is completed by calling registerUIAuatomationSetSettingProxies once during startup; this is necessary due to a circular dependency issue (which we should resolve when we remove the legacy ui automation code)
+            // NOTE: with macOS 13.0 and later, the automation setup is completed by calling registerUIAutomationSetSettingProxies once during startup; this is necessary due to a circular dependency issue (which we should resolve when we remove the legacy ui automation code)
         } else {
             // macOS 12.x and earlier
             
