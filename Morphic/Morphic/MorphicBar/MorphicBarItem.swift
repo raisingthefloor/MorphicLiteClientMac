@@ -1737,7 +1737,7 @@ class MorphicBarControlItem: MorphicBarItem {
                 let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
 
                 do {
-                    var waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+                    let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
                     try await AccessibilitySpokenContentUIAutomationScript_macOS13.setSpeakSelectionIsEnabled(true, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
 
                     // send the hotkey (asynchronously) once we have enabled macOS's "speak selected text" feature
