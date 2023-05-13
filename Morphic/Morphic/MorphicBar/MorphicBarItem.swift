@@ -1777,15 +1777,9 @@ class MorphicBarControlItem: MorphicBarItem {
                     MorphicDebugLog.writeToDebugLog("readSelectedText: setSpeakSelectionIsEnabled has completed")
 
                     // send the hotkey (asynchronously) once we have enabled macOS's "speak selected text" feature
-                    MorphicDebugLog.writeToDebugLog("readSelectedText: WAIT up to 5 seconds for macOS to reflect that the new setting is active")
-                    AsyncUtils.wait(atMost: 5.0, for: { defaults.bool(forKey: "SpokenUIUseSpeakingHotKeyFlag") == true }) {
+                    MorphicDebugLog.writeToDebugLog("readSelectedText: WAIT UP TO 2 seconds for macOS to reflect that the new setting is active")
+                    AsyncUtils.wait(atMost: min(waitForTimespan, 2.0), for: { false /* return false: wait 2 seconds */ }) {
                         success in
-                        MorphicDebugLog.writeToDebugLog("readSelectedText: wait for setting to take effect is complete; success: \(success)")
-                        
-                        if success == false {
-                            MorphicDebugLog.writeToDebugLog("readSelectedText: After five seconds, the setting had still not been reflected")
-                        }
-                        
                         MorphicDebugLog.writeToDebugLog("readSelectedText: with the hotkey now enabled, call sendSpeakSelectedTextHotKey to send the hotkey")
                         Self.sendSpeakSelectedTextHotKey(defaults: defaults)
                         MorphicDebugLog.writeToDebugLog("readSelectedText: The function sendSpeakSelectedTextHotKey has completed")
