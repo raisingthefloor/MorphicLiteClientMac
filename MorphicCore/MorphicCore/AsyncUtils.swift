@@ -62,50 +62,9 @@ public class AsyncUtils {
             }
         }
     }
-    
-    static func writeToDebugLog(_ text: String) {
-        let text = String(format: "%.2f", Date().timeIntervalSince1970) + " | " + text + "\n"
-        
-        guard let applicationSupportDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
-            print("ERROR: COULD NOT GET APPLICATION SUPPORT DIRECTORY")
-            return
-        }
-        
-        let pathAsUrl = applicationSupportDirectory.appendingPathComponent("morphic_debug.log")
-        guard let fileHandle = try? FileHandle(forWritingTo: pathAsUrl) else {
-            do {
-                print("ERROR: COULD NOT GET A FILE HANDLE TO THE DEBUG LOG; WRITING A NEW FILE INSTEAD")
-                try text.write(to: pathAsUrl, atomically: true, encoding: .utf8)
-            } catch {
-                print("ERROR: COULD NOT GET A FILE HANDLE TO THE DEBUG LOG, AND ALSO COULD NOT WRITE OUT A NEW FILE")
-            }
-            return
-        }
-
-        defer {
-            do {
-                try fileHandle.close()
-            } catch {
-                print("ERROR: COULD NOT CLOSE FILE HANDLE")
-            }
-        }
-        
-        if #available(macOS 10.15.4, *) {
-            guard let _ = try? fileHandle.seekToEnd() else {
-                print("ERROR: COULD NOT SEEK TO END OF FILE")
-                return
-            }
-        } else {
-            // Fallback on earlier versions
-            let currentData = fileHandle.readDataToEndOfFile()
-            fileHandle.write(currentData)
-        }
-        fileHandle.write(text.data(using: .utf8)!)
-    }
 
     // NOTE: this function returns true if the condition matched; it returns false upon timeout
     public static func wait(atMost: TimeInterval, for condition: @escaping () -> Bool) async -> Bool {
-        AsyncUtils.writeToDebugLog("AsyncUtils.wait: enter function")
         guard atMost >= 0.0 else {
             fatalError("Argument 'atMost' cannot be a negative value")
         }
@@ -118,24 +77,19 @@ public class AsyncUtils {
 
         // NOTE: in the future, we may want to let the caller specify a wait interval; for now, we're using 20ms to provide a good balance of CPU cycle usage and responsiveness
         let waitInterval = 20.0
-        AsyncUtils.writeToDebugLog("AsyncUtils.wait: now starting toop")
         while condition() == false {
             let currentWaitInterval = min(waitInterval, waitUntilTimestamp - ProcessInfo.processInfo.systemUptime)
             if currentWaitInterval <= 0 {
                 // timeout; return false
-                AsyncUtils.writeToDebugLog("AsyncUtils.wait: TIMEOUT")
                 return false
             }
 
             // wait for the specified wait interval before we re-check the condition
-            AsyncUtils.writeToDebugLog("AsyncUtils.wait: sleeping now...")
             guard let _ = try? await Task.sleep(nanoseconds: UInt64((currentWaitInterval / 1_000) * Double(NSEC_PER_SEC))) else {
                 // in case that Task.sleep threw an exception, abort and return false; this should only happen when the process is being torn down, etc. as we do not cancel the timer ourselves
-                AsyncUtils.writeToDebugLog("AsyncUtils.wait: Task.sleep threw an exception!!!  ABORTING...")
                 return false
             }
         }
-        AsyncUtils.writeToDebugLog("AsyncUtils.wait: the condition has returned true")
 
         // if we reach here, the condition returned true
         return true

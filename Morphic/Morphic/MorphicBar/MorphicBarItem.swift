@@ -1589,33 +1589,24 @@ class MorphicBarControlItem: MorphicBarItem {
 
     @objc
     func readselected(_ sender: Any?) {
-        MorphicDebugLog.writeToDebugLog("readselected function called")
         defer {
             TelemetryClientProxy.enqueueActionMessage(eventName: "readSelectedToggle")
         }
         
         if #available(macOS 13.0, *) {
-            MorphicDebugLog.writeToDebugLog("macOS 13 detected")
             // macOS 13.0 and later
             Task {
-                MorphicDebugLog.writeToDebugLog("calling readSelectedText function (with await)")
                 do {
                     let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
                     try await self.readSelectedText(waitAtMost: waitForTimespan)
-                    MorphicDebugLog.writeToDebugLog("readSelectedText has returned")
                 } catch {
-                    MorphicDebugLog.writeToDebugLog("CATCH BLOCK: readSelectedText failed")
                     // NOTE: we currently have no method for alerting the user to errors
                 }
-                MorphicDebugLog.writeToDebugLog("DONE with readSelectedText function (with await)")
             }
         } else {
-            MorphicDebugLog.writeToDebugLog("macOS 12 or earlier detected")
             // macOS 12.x and earlier
             do {
-                MorphicDebugLog.writeToDebugLog("calling readSelectedText function (without await)")
                 try self.readSelectedText()
-                MorphicDebugLog.writeToDebugLog("DONE with readSelectedText function (without await)")
             } catch {
                 // NOTE: we currently have no method for alerting the user to errors
             }
@@ -1626,27 +1617,21 @@ class MorphicBarControlItem: MorphicBarItem {
     
     // NOTE: sendSpeakSelectedTextHotKey will be called synchronously or asynchronously (depending on whether we need to enable the OS feature asynchronously first)
     private static func sendSpeakSelectedTextHotKey(defaults: UserDefaults) {
-        MorphicDebugLog.writeToDebugLog("readSelectedText: capturing speak selected hotkey combo")
         // obtain any custom-specified key sequence used for activating the "speak selected text" feature in macOS (or else assume default)
         let speakSelectedTextHotKeyCombo = defaults.integer(forKey: "SpokenUIUseSpeakingHotKeyCombo")
-        MorphicDebugLog.writeToDebugLog("readSelectedText: speakSelectedTextHotKeyCombo: \(speakSelectedTextHotKeyCombo)")
         //
         let keyCode: CGKeyCode
         let keyOptions: MorphicInput.KeyOptions
         if speakSelectedTextHotKeyCombo != 0 {
-            MorphicDebugLog.writeToDebugLog("readSelectedText: decoding custom hotkey")
             guard let (customKeyCode, customKeyOptions) = MorphicInput.parseDefaultsKeyCombo(speakSelectedTextHotKeyCombo) else {
                 // NOTE: while we should be able to decode any custom hotkey, this code is here to capture edge cases we have not anticipated
                 // NOTE: in the future, we should consider an informational prompt alerting the user that we could not decode their custom hotkey (so they know why the feature did not work...or at least that it intentionally did not work)
-                MorphicDebugLog.writeToDebugLog("readSelectedText: Could NOT decode the custom hotkey")
                 NSLog("Could not decode custom hotkey")
                 return
             }
             keyCode = customKeyCode
             keyOptions = customKeyOptions
-            MorphicDebugLog.writeToDebugLog("readSelectedText: custom hotkey... keyCode: \(keyCode); keyOptions: \(keyOptions)")
         } else {
-            MorphicDebugLog.writeToDebugLog("readSelectedText: no custom hotkey was found; proceeding with Option+Esc (default)")
             // default hotkey is Option+Esc
             keyCode = CGKeyCode(kVK_Escape)
             keyOptions = .withAlternateKey
@@ -1655,50 +1640,36 @@ class MorphicBarControlItem: MorphicBarItem {
         //
         
         // get the window ID of the topmost window
-        MorphicDebugLog.writeToDebugLog("readSelectedText: Get the window ID of the topmost window")
         guard let (topmostWindowOwnerName, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
             NSLog("Could not get ID of topmost window")
-            MorphicDebugLog.writeToDebugLog("readSelectedText: Could not get ID of topmost window")
             return
         }
-        MorphicDebugLog.writeToDebugLog("readSelectedText: topmostWindowOwnerName: \(topmostWindowOwnerName); topmostProcessId: \(topmostProcessId)")
 
         // capture a reference to the topmost application
-        MorphicDebugLog.writeToDebugLog("readSelectedText: Get a reference to the topmost application")
         guard let topmostApplication = NSRunningApplication(processIdentifier: pid_t(topmostProcessId)) else {
             NSLog("Could not get reference to application owning the topmost window")
-            MorphicDebugLog.writeToDebugLog("readSelectedText: Could not get reference to application owning the topmost window")
             return
         }
         
         // activate the topmost application
-        MorphicDebugLog.writeToDebugLog("readSelectedText: Activate the topmost window...")
         guard topmostApplication.activate(options: .activateIgnoringOtherApps) == true else {
-            MorphicDebugLog.writeToDebugLog("readSelectedText: Could not activate the topmost window")
             NSLog("Could not activate the topmost window")
             return
         }
         
-        MorphicDebugLog.writeToDebugLog("readSelectedText: WAIT up to 2 seconds for the window to become active, then send the 'speak' hotkey")
         AsyncUtils.wait(atMost: 2.0, for: { topmostApplication.isActive == true }) {
             success in
-            MorphicDebugLog.writeToDebugLog("readSelectedText: wait has completed; success: \(success)")
             
             if success == false {
                 NSLog("Could not activate topmost application within two seconds")
-                MorphicDebugLog.writeToDebugLog("readSelectedText: Could not activate topmost application within two seconds")
             }
             
             // send the "speak selected text key" to the system
-            MorphicDebugLog.writeToDebugLog("readSelectedText: SEND THE HOTKEY NOW")
             guard let _ = try? MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) else {
-                MorphicDebugLog.writeToDebugLog("readSelectedText: Could not send 'speak selected text' hotkey to the keyboard input stream")
                 NSLog("Could not send 'Speak selected text' hotkey to the keyboard input stream")
                 return
             }
-            MorphicDebugLog.writeToDebugLog("readSelectedText: SUCCESSFULLY SENT THE HOTKEY COMBO")
         }
-        MorphicDebugLog.writeToDebugLog("readSelectedText: [we're exiting the routine here")
     }
     
     func readSelectedText() throws {
@@ -1744,17 +1715,14 @@ class MorphicBarControlItem: MorphicBarItem {
         if #available(macOS 13.0, *) {
             // macOS 13.0 and later
             
-            MorphicDebugLog.writeToDebugLog("readSelectedText: checking for a11y permission")
             // verify that we have accessibility permissions (since UI automation will not work without them)
             // NOTE: this function call will prompt the user for authorization if they have not already granted it
             guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
                 NSLog("User had not granted 'accessibility' authorization; user now prompted")
                 throw MorphicError.unspecified
             }
-            MorphicDebugLog.writeToDebugLog("readSelectedText: a11y permission grant found (i.e. true)")
 
             // NOTE: we retrieve system settings here which are _not_ otherwise captured by Morphic; if we decide to capture those settings in the future for broader capture/apply purposes, then we should modify this code to access those settings via Session.shared (if doing so will ensure that we are not getting cached data...rather than 'captured or set data'...since we need to check these settings every time this function is called).
-            MorphicDebugLog.writeToDebugLog("readSelectedText: getting defaults for speech synthesis")
             let defaultsDomain = "com.apple.speech.synthesis.general.prefs"
             guard let defaults = UserDefaults(suiteName: defaultsDomain) else {
                 NSLog("Could not access defaults domain: \(defaultsDomain)")
@@ -1762,36 +1730,25 @@ class MorphicBarControlItem: MorphicBarItem {
             }
             
             // make sure the user has "speak selected text..." enabled in System Preferences
-            MorphicDebugLog.writeToDebugLog("readSelectedText: determining if speak selected text key is enabled")
             let speakSelectedTextKeyEnabled = defaults.bool(forKey: "SpokenUIUseSpeakingHotKeyFlag")
             if speakSelectedTextKeyEnabled == false {
-                MorphicDebugLog.writeToDebugLog("readSelectedText: speak selected text key was not enabled; trying to enable it now")
                 // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
                 let uiAutomationSequence = UIAutomationSequence()
                 let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
 
                 do {
-                    MorphicDebugLog.writeToDebugLog("readSelectedText: calling setSpeakSelectionIsEnabled")
-                    var waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
                     try await AccessibilitySpokenContentUIAutomationScript_macOS13.setSpeakSelectionIsEnabled(true, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
-                    MorphicDebugLog.writeToDebugLog("readSelectedText: setSpeakSelectionIsEnabled has completed")
 
-                    // send the hotkey (asynchronously) once we have enabled macOS's "speak selected text" feature
-                    MorphicDebugLog.writeToDebugLog("readSelectedText: WAIT UP TO 2 seconds for macOS to reflect that the new setting is active")
-                    AsyncUtils.wait(atMost: min(waitForTimespan, 2.0), for: { false /* return false: wait 2 seconds */ }) {
+                    // NOTE: although the setting has been updated (and reading the default will now return true), it takes macOS a few seconds to recognize the new hotkey.  We have not found any reliable way to detect when macOS recognizes the new hotkey combo, so we fall back to the (not ideal) strategy of simply waiting an arbitrary two seconds.
+                    AsyncUtils.wait(atMost: 2.0, for: { false /* return false means to wait the full interval */ }) {
                         success in
-                        MorphicDebugLog.writeToDebugLog("readSelectedText: with the hotkey now enabled, call sendSpeakSelectedTextHotKey to send the hotkey")
                         Self.sendSpeakSelectedTextHotKey(defaults: defaults)
-                        MorphicDebugLog.writeToDebugLog("readSelectedText: The function sendSpeakSelectedTextHotKey has completed")
                     }
-                    MorphicDebugLog.writeToDebugLog("readSelectedText: The '5 second wait block' has completed")
                 } catch {
                     // ignore any errors, as we don't have any mechanism to report errors
-                    MorphicDebugLog.writeToDebugLog("readSelectedText: ERROR while trying to enable speakSelectionIsEnabled")
                 }
             } else {
                 // send the hotkey (synchronously) now
-                MorphicDebugLog.writeToDebugLog("readSelectedText: speakSelectionIsEnabled is already true; sending the hot key now")
                 Self.sendSpeakSelectedTextHotKey(defaults: defaults)
             }
         } else {

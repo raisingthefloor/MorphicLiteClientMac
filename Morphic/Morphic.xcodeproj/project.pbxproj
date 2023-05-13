@@ -158,7 +158,6 @@
 		9D53D8EA2784A9B700A96576 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */; };
 		9D69161F2911B7EA002F3A21 /* MorphicMacOSNative.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */; };
 		9D6916202911B7EA002F3A21 /* MorphicMacOSNative.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9D7634F22A0E295B00DE1679 /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D7634F12A0E295B00DE1679 /* DebugLog.swift */; };
 		9D77209E252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
 		9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */; };
 		9D8CEB132507AECF001276E4 /* MorphicBarButtonItemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */; };
@@ -439,7 +438,6 @@
 		9D4D47CA26CBFE5400AC6E3D /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperlinkTextField.swift; sourceTree = "<group>"; };
 		9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicMacOSNative.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9D7634F12A0E295B00DE1679 /* DebugLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLog.swift; sourceTree = "<group>"; };
 		9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicImageUtils.swift; sourceTree = "<group>"; };
 		9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutBoxWindowController.swift; sourceTree = "<group>"; };
 		9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemIcon.swift; sourceTree = "<group>"; };
@@ -630,7 +628,6 @@
 				9D3530DB25C30FF600F8D590 /* Versioning */,
 				318744F32481A2DA00AE3954 /* CreateDiskImage.sh */,
 				9DB06AD62534ADD6008AB056 /* CreatePackage.sh */,
-				9D7634F12A0E295B00DE1679 /* DebugLog.swift */,
 			);
 			path = Morphic;
 			sourceTree = "<group>";
@@ -1239,7 +1236,6 @@
 			files = (
 				9D8CEB132507AECF001276E4 /* MorphicBarButtonItemIcon.swift in Sources */,
 				31E1E185244683DC009C4092 /* Theme.swift in Sources */,
-				9D7634F22A0E295B00DE1679 /* DebugLog.swift in Sources */,
 				9DA46E8125CA743B006BEAAC /* PermissionsSuccessWindowController.swift in Sources */,
 				31751B9F2444F22900EEDF14 /* MorphicBarWindow.swift in Sources */,
 				9D4B24E72517068200F0B2E2 /* SettingsLinkActions.swift in Sources */,
