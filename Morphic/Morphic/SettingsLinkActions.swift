@@ -46,11 +46,29 @@ class SettingsLinkActions {
         case mouse
     }
 
+    // NOTE: when we deprecate macOS 11 support, we could actually combine the macOS 12 logic into this function (since macOS 12.0 appears to fully support async)
     static func openSystemSettingsPaneWithTelemetry(_ pane: SystemPreferencePane, category systemSettingsCategory: String) async throws {
-        defer {
-            AppDelegate.shared.recordTelemetryOpenSystemSettingsEvent(category: systemSettingsCategory, tag: 1)
+        if #available(macOS 13.0, *) {
+            defer {
+                AppDelegate.shared.recordTelemetryOpenSystemSettingsEvent(category: systemSettingsCategory, tag: 1)
+            }
+            try await openSystemSettingsPane(pane)
+        } else {
+            // macOS 12.x and earlier
+            fatalError("This function is not intended for use with macOS versions prior to macOS 13.0: use the non-async version of this function instead")
         }
-        try await openSystemSettingsPane(pane)
+    }
+
+    static func openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(_ pane: SystemPreferencePane, category systemSettingsCategory: String) {
+        if #available(macOS 13.0, *) {
+            fatalError("This version of macOS is not supported by this code; use the new async version instead.")
+        } else {
+            // macOS 12.x and earlier
+            defer {
+                AppDelegate.shared.recordTelemetryOpenSystemSettingsEvent(category: systemSettingsCategory, tag: 1)
+            }
+            openSystemSettingsPane_macOS12AndEarlier(pane)
+        }
     }
 
     // NOTE: this legacy implementation of openSystemSettingsPane is only compatible with macOS versions prior to macOS 13.0; once we deprecate support for earlier versions of macOS, we should delete this function and its callback
@@ -135,6 +153,7 @@ class SettingsLinkActions {
     }
     
     // NOTE: this legacy implementation of openSystemSettingsPane is only compatible with macOS versions prior to macOS 13.0; once we deprecate support for earlier versions of macOS, we should delete this function and its callback
+    // NOTE: macOS 12.0 supports async functionality, so we could merge this functionality into the async function once we deprecate support for macOS 11.0.  [Early versions of macOS 11.0 don't seem to support async with Swift, but late builds of macOS 11 have some support for async and macOS 12.0 seems to support async robustly.]  If we do the merge, we'd still need to copy the "macOS 12.x and earlier" section into the above function; the settings panels ARE different in earlier versions of macOS (prior to macOS 13).
     static func openSystemSettingsPane_macOS12AndEarlier(_ pane: SystemPreferencePane) {
         if #available(macOS 13.0, *) {
             fatalError("This version of macOS is not supported by this code; use the new async version instead.")
