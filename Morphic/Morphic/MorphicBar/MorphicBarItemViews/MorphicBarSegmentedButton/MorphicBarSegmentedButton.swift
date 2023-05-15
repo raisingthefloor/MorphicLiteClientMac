@@ -100,6 +100,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         var quickDemoVideoUrl: URL? = nil
         var quickDemoVideoTelemetryCategory: String? = nil
         var settingsBlock: (() async throws -> Void)? = nil
+        var settingsBlock_macOS12AndEarlier: (() -> Void)? = nil // NOTE: technically we could use the ASYNC function with macOS 12.0
         
         var getStateBlock: (() -> Bool)? = nil
         //
@@ -115,7 +116,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         var accessibilityLabelByState: [NSControl.StateValue : String]? = [:]
         
         /// Create a segment with a title
-        init(title: String, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() async throws -> Void)?, style: MorphicBarControlItemStyle) {
+        init(title: String, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() async throws -> Void)?, settingsBlock_macOS12AndEarlier: (() -> Void)?, style: MorphicBarControlItemStyle) {
             self.title = title
             self.helpProvider = helpProvider
             self.fillColor = fillColor
@@ -125,11 +126,12 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             self.quickDemoVideoUrl = quickDemoVideoUrl
             self.quickDemoVideoTelemetryCategory = quickDemoVideoTelemetryCategory
             self.settingsBlock = settingsBlock
+            self.settingsBlock_macOS12AndEarlier = settingsBlock_macOS12AndEarlier
             self.style = style
         }
         
         /// Create a segment with an icon
-        init(icon: NSImage, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() async throws -> Void)?, style: MorphicBarControlItemStyle) {
+        init(icon: NSImage, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() async throws -> Void)?, settingsBlock_macOS12AndEarlier: (() -> Void)?, style: MorphicBarControlItemStyle) {
             self.icon = icon
             self.helpProvider = helpProvider
             self.fillColor = fillColor
@@ -139,6 +141,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             self.quickDemoVideoUrl = quickDemoVideoUrl
             self.quickDemoVideoTelemetryCategory = quickDemoVideoTelemetryCategory
             self.settingsBlock = settingsBlock
+            self.settingsBlock_macOS12AndEarlier = settingsBlock_macOS12AndEarlier
             self.style = style
         }
     }
@@ -562,7 +565,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             if let getStateBlock = segment.getStateBlock {
                 button.getStateBlock = getStateBlock
             }
-            add(button: button, showLearnMoreMenuItem: segment.learnMoreUrl != nil, showQuickDemoVideoMenuItem: segment.quickDemoVideoUrl != nil, showSettingsMenuItem: segment.settingsBlock != nil)
+            add(button: button, showLearnMoreMenuItem: segment.learnMoreUrl != nil, showQuickDemoVideoMenuItem: segment.quickDemoVideoUrl != nil, showSettingsMenuItem: segment.settingsBlock != nil && segment.settingsBlock_macOS12AndEarlier != nil)
         }
         needsLayout = true
     }
@@ -719,9 +722,19 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         }
         selectedSegmentIndex = button.tag
         let selectedSegment = segments[selectedSegmentIndex]
-        guard let settingsBlock = selectedSegment.settingsBlock else {
-            return
+        if #available(macOS 12.0, *) {
+            // macOS 12.0 and later
+            guard let settingsBlock = selectedSegment.settingsBlock else {
+                return
+            }
+            Task { try? await settingsBlock() }
+        } else {
+            guard let settingsBlock_macOS11AndEarlier = selectedSegment.settingsBlock_macOS12AndEarlier else {
+                return
+            }
+            DispatchQueue.main.async {
+                settingsBlock_macOS11AndEarlier()
+            }
         }
-        Task { try? await settingsBlock() }
     }
 }

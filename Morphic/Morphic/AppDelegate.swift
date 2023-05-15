@@ -2371,7 +2371,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordTelemetryOpenSystemSettingsEvent(category: "allAccessibility", tag: (sender as? NSView)?.tag)
         }
-        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityOverview) }
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityOverview) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.accessibilityOverview)
+        }
     }
     
     @IBAction
@@ -2379,7 +2384,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordTelemetryOpenSystemSettingsEvent(category: "brightness", tag: (sender as? NSView)?.tag)
         }
-        Task { try? await SettingsLinkActions.openSystemSettingsPane(.displaysDisplay) }
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.displaysDisplay) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.displaysDisplay)
+        }
     }
     
     @IBAction
@@ -2387,7 +2397,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordTelemetryOpenSystemSettingsEvent(category: "colorFilter", tag: (sender as? NSView)?.tag)
         }
-        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayColorFilters) }
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayColorFilters) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.accessibilityDisplayColorFilters)
+        }
     }
     
     @IBAction
@@ -2395,7 +2410,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordTelemetryOpenSystemSettingsEvent(category: "highContrast", tag: (sender as? NSView)?.tag)
         }
-        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayDisplay) }
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayDisplay) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.accessibilityDisplayDisplay)
+        }
     }
     
     @IBAction
@@ -2403,7 +2423,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordTelemetryOpenSystemSettingsEvent(category: "darkMode", tag: (sender as? NSView)?.tag)
         }
-        Task { try? await SettingsLinkActions.openSystemSettingsPane(.appearance) }
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.appearance) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.appearance)
+        }
     }
 
     @IBAction
@@ -2411,7 +2436,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordTelemetryOpenSystemSettingsEvent(category: "language", tag: (sender as? NSView)?.tag)
         }
-        Task { try? await SettingsLinkActions.openSystemSettingsPane(.languageandregionGeneral) }
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.languageandregionGeneral) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.languageandregionGeneral)
+        }
     }
     
     @IBAction
@@ -2419,7 +2449,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordTelemetryOpenSystemSettingsEvent(category: "magnifier", tag: (sender as? NSView)?.tag)
         }
-        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityZoom) }
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityZoom) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.accessibilityZoom)
+        }
     }
 
     @IBAction
@@ -2427,7 +2462,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordTelemetryOpenSystemSettingsEvent(category: "mouse", tag: (sender as? NSView)?.tag)
         }
-        Task { try? await SettingsLinkActions.openSystemSettingsPane(.mouse) }
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.mouse) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.mouse)
+        }
     }
 
     @IBAction
@@ -2435,7 +2475,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordTelemetryOpenSystemSettingsEvent(category: "nightMode", tag: (sender as? NSView)?.tag)
         }
-        Task { try? await SettingsLinkActions.openSystemSettingsPane(.displaysNightShift) }
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.displaysNightShift) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.displaysNightShift)
+        }
     }
     
     @IBAction
@@ -2443,7 +2488,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordTelemetryOpenSystemSettingsEvent(category: "pointerSize", tag: (sender as? NSView)?.tag)
         }
-        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayCursor) }
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayCursor) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.accessibilityDisplayCursor)
+        }
     }
     
     @IBAction
@@ -2451,7 +2501,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordTelemetryOpenSystemSettingsEvent(category: "readAloud", tag: (sender as? NSView)?.tag)
         }
-        Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilitySpeech) }
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilitySpeech) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.accessibilitySpeech)
+        }
     }
 
     @IBAction
@@ -2459,7 +2514,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             recordTelemetryOpenSystemSettingsEvent(category: "keyboard", tag: (sender as? NSView)?.tag)
         }
-        Task { try? await SettingsLinkActions.openSystemSettingsPane(.keyboardKeyboard) }
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.keyboardKeyboard) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.keyboardKeyboard)
+        }
     }
     
     //
