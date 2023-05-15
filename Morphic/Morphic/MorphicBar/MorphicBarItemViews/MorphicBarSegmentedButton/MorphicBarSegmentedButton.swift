@@ -729,11 +729,11 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             }
             Task { try? await settingsBlock() }
         } else {
-            guard let settingsBlock_macOS11AndEarlier = selectedSegment.settingsBlock_macOS12AndEarlier else {
+            guard let settingsBlock_macOS12AndEarlier = selectedSegment.settingsBlock_macOS12AndEarlier else {
                 return
             }
             DispatchQueue.main.async {
-                settingsBlock_macOS11AndEarlier()
+                settingsBlock_macOS12AndEarlier()
             }
         }
     }
