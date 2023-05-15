@@ -10,8 +10,8 @@ elif [[ "${BRANCH}" == *"staging/"* ]]; then
 elif [[ "${BRANCH}" == *"release/"* ]]; then
   echo "detected release build. will notarize"
 else
-  echo "detected PR build. Will not notarize"
-  exit 0
+  echo "detected PR build. Will notarize"
+#  exit 0
 fi
 
 USERNAME="${USERNAME}"

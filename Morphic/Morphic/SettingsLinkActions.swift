@@ -130,6 +130,16 @@ class SettingsLinkActions {
             }
         } else {
             // macOS 12.x and earlier
+            fatalError("This function is not intended for use with macOS versions prior to macOS 13.0: use the non-async version of this function instead")
+        }
+    }
+    
+    // NOTE: this legacy implementation of openSystemSettingsPane is only compatible with macOS versions prior to macOS 13.0; once we deprecate support for earlier versions of macOS, we should delete this function and its callback
+    static func openSystemSettingsPane_macOS12AndEarlier(_ pane: SystemPreferencePane) {
+        if #available(macOS 13.0, *) {
+            fatalError("This version of macOS is not supported by this code; use the new async version instead.")
+        } else {
+            // macOS 12.x and earlier
             switch pane {
             case .accessibilityOverview:
                 let accessibilityUIAutomation = AccessibilityUIAutomation()
