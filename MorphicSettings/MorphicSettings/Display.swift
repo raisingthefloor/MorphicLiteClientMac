@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -21,14 +21,17 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Foundation
+import Cocoa
 import MorphicCore
 
 public class Display {
+    public let uuid: UUID
     
-    init(id: UInt32) {
-        self.id = id
-        possibleModes = findPossibleModes() ?? []
+    // NOTE: this function is private because we only trust UUIDs which we received from our own internal code
+    private init(uuid: UUID) {
+        self.uuid = uuid
+        // NOTE: if the display has been removed before findPossibleModes() is called, this will return an empty set
+        possibleModes = self.findPossibleModes() ?? []
         
         normalMode = possibleModes.first(where: { $0.isDefault })
         // if no modes are marked as "default" then choose the last mode (which in theory has the highest resolution) from the GUI-usable resolutions
@@ -38,23 +41,66 @@ public class Display {
         }
     }
     
-    private var id: UInt32
+    public func id() -> UInt32? {
+        return MorphicDisplay.getDisplayIdForDisplayUuid(self.uuid)
+    }
+    
+    // NOTE: we are unsure as to whether screen is a mutable variable (i.e. if it changes when the computer switches between integrated and discrete graphics);if it's not mutable in this scenario, then make this a calculated property instead
+    public func screen() -> NSScreen? {
+        guard let selfDisplayId = self.id() else {
+            return nil
+        }
+        
+        for screen in NSScreen.screens {
+            if let screenDisplayId = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? CGDirectDisplayID {
+                if screenDisplayId == selfDisplayId {
+                    return screen
+                }
+            }
+        }
+        
+        // if we could not find our screen, return nil
+        return nil
+    }
     
     public static var main: Display? = {
-        if let id = MorphicDisplay.getMainDisplayId(){
-            return Display(id: id)
+        if let uuid = MorphicDisplay.getMainDisplayUuid() {
+            return Display(uuid: uuid)
         }
         return nil
     }()
     
+    public static func activeDisplays() -> [Display]? {
+        var result = [Display]()
+
+        guard let activeDisplayUuids = MorphicDisplay.getActiveDisplayUuids() else {
+            return nil
+        }
+        
+        for displayUuid in activeDisplayUuids {
+            let display = Display(uuid: displayUuid)
+            result.append(display)
+        }
+
+        return result
+    }
+    
+    public static func displayContainingPoint(_ point: NSPoint) -> Display? {
+        guard let targetDisplayUuid = MorphicSettings.MorphicDisplay.getDisplayUuidForPoint(point) else {
+            return nil
+        }
+        
+        return Display(uuid: targetDisplayUuid)
+    }
+    
     public func zoom(to percentage: Double) throws {
         guard let mode = self.mode(for: percentage) else {
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
         do {
-            try MorphicDisplay.setCurrentDisplayMode(for: id, to: mode)
+            try MorphicDisplay.setCurrentDisplayMode(for: uuid, to: mode)
         } catch {
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
     }
     
@@ -110,11 +156,11 @@ public class Display {
     private var normalMode: MorphicDisplay.DisplayMode?
     
     private var currentMode: MorphicDisplay.DisplayMode? {
-        return MorphicDisplay.getCurrentDisplayMode(for: id)
+        return MorphicDisplay.getCurrentDisplayMode(for: uuid)
     }
     
     private func findPossibleModes() -> [MorphicDisplay.DisplayMode]? {
-        guard let allDisplayModes = MorphicDisplay.getAllDisplayModes(for: id) else {
+        guard let allDisplayModes = MorphicDisplay.getAllDisplayModes(for: uuid) else {
             return []
         }
         if allDisplayModes.count == 0 {
@@ -336,10 +382,20 @@ public class Display {
 public class DisplayZoomHandler: ClientSettingHandler {
     
     public override func read(completion: @escaping (SettingHandler.Result) -> Void) {
-        guard let percentage = Display.main?.currentPercentage else {
+        // NOTE: due to a limitation in Morphic 1.x, we use the current mouse pointer location as a proxy for the screen on which the
+        //       Morphic bar is currently shown; in the future, we should get the current display for the MorphicBar WINDOW instead
+        guard let mousePointerLocation = MorphicSettings.MorphicMouse.getCurrentLocation() else {
+            assertionFailure("Could not locate the mouse pointer")
             completion(.failed)
             return
         }
+        guard let display = Display.displayContainingPoint(mousePointerLocation) else {
+            assertionFailure("Could not determine which display contains the mouse pointer")
+            completion(.failed)
+            return
+        }
+
+        let percentage = display.currentPercentage
         completion(.succeeded(value: percentage))
     }
     
@@ -352,8 +408,22 @@ public class DisplayZoomHandler: ClientSettingHandler {
             completion(false)
             return
         }
+        
+        // NOTE: due to a limitation in Morphic 1.x, we use the current mouse pointer location as a proxy for the screen on which the
+        //       Morphic bar is currently shown; in the future, we should get the current display for the MorphicBar WINDOW instead
+        guard let mousePointerLocation = MorphicSettings.MorphicMouse.getCurrentLocation() else {
+            assertionFailure("Could not locate the mouse pointer")
+            completion(false)
+            return
+        }
+        guard let display = Display.displayContainingPoint(mousePointerLocation) else {
+            assertionFailure("Could not determine which display contains the mouse pointer")
+            completion(false)
+            return
+        }
+        
         let success: Bool
-        if let _ = try? Display.main?.zoom(to: percentage) {
+        if let _ = try? display.zoom(to: percentage) {
             success = true
         } else {
             success = false

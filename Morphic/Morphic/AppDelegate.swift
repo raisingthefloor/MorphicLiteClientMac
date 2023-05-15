@@ -1,10 +1,10 @@
-// Copyright 2020-2021 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -22,12 +22,14 @@
 // * Consumer Electronics Association Foundation
 
 import Cocoa
-import Countly
+import CryptoKit
 import OSLog
 import MorphicCore
+import MorphicMacOSNative
 import MorphicService
 import MorphicSettings
 import MorphicTelemetry
+import MorphicUIAutomation
 import ServiceManagement
 
 private let logger = OSLog(subsystem: "app", category: "delegate")
@@ -55,8 +57,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     private var voiceOverEnabledObservation: NSKeyValueObservation?
     private var appleKeyboardUIModeObservation: NSKeyValueObservation?
-    
-    private var telemetryClient: MorphicTelemetryClient?
+
+    private var telemetryHeartbeatTimer: Timer?
 
     private let appCastUrl: URL = {
         guard let frontEndUrlAsString = Bundle.main.infoDictionary?["FrontEndURL"] as? String else {
@@ -103,7 +105,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         ConfigurableFeatures.shared.telemetrySiteId = commonConfiguration.telemetrySiteId
 
         if ConfigurableFeatures.shared.telemetryIsEnabled == true {
-            self.configureCountly()
             self.configureTelemetry()
         }
         
@@ -115,6 +116,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             }
         #endif
 
+        // setup ui automation set setting proxies (macOS 13.0 and above)
+        if #available(macOS 13.0, *) {
+            MorphicSettingsUIAutomationBridgeHelper.setupUIAutomationSetSettingProxies()
+        }
+        
         os_log(.info, log: logger, "opening morphic session...")
         populateSolutions()
         createStatusItem()
@@ -196,7 +202,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     self.reloadCustomMorphicBars() {
                         success, error in
                     }
-                    // schedule daily refreshes of the Morphic community bars
+                    // schedule daily refreshes of the Morphic custom bars
                     self.scheduleNextDailyMorphicCustomMorphicBarsRefresh()
                 }
                 DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate.userDidSignin), name: .morphicSignin, object: nil)
@@ -227,22 +233,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
     }
     
-    internal func countly_RecordEvent(_ key: String) {
-        if ConfigurableFeatures.shared.telemetryIsEnabled == true {
-            Countly.sharedInstance().recordEvent(key)
-            
-            self.telemetryClient?.enqueueActionMessage(eventName: key)
-        }
-    }
-    
-    internal func countly_RecordEvent(_ key: String, segmentation: [String: String]?) {
-        if ConfigurableFeatures.shared.telemetryIsEnabled == true {
-            Countly.sharedInstance().recordEvent(key, segmentation: segmentation)
-            
-            self.telemetryClient?.enqueueActionMessage(eventName: key)
-        }
-    }
-    
     private struct TelemetryIdComponents
     {
         public var compositeId: String
@@ -251,6 +241,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     //
     private func getOrCreateTelemetryIdComponents() -> TelemetryIdComponents {
+        let hasValidTelemetrySiteId = ConfigurableFeatures.shared.telemetrySiteId != nil && ConfigurableFeatures.shared.telemetrySiteId != ""
+        
         // retrieve the telemetry device ID for this device; if it doesn't exist then create a new one
         var telemetryCompositeId: String
         var telemetryCompositeIdAsOptional = UserDefaults.morphic.telemetryDeviceUuid()
@@ -264,8 +256,20 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             telemetryCompositeId = telemetryCompositeIdAsOptional
         } else {
             // create a new device uuid for purposes of telemetry
+            //
+            var anonDeviceUuid: UUID
+            // if the configuration file has a telemetry site id, hash the MAC address to derive a one-way hash for pseudonomized device telemetry; note that this will only happen when sites opt-in to site grouping by specifying the site id
+            if hasValidTelemetrySiteId == true {
+                // NOTE: this derivation is used because sites often reinstall computers frequently (sometimes even daily), so this provides some pseudonomous stability with the site's telemetry data
+                let hashedMacAddressGuid = Self.getHashedMacAddressForSiteTelemetryId()
+                anonDeviceUuid = hashedMacAddressGuid ?? NSUUID() as UUID
+            } else {
+                // for non-siteID computers, just generate a UUID
+                anonDeviceUuid = NSUUID() as UUID
+            }
+            
             // NOTE: GUIDs should be lowercase; macOS outputs UUIDs as uppercase; therefore we manually lowercase them
-            telemetryCompositeId = "D_" + NSUUID().uuidString.lowercased()
+            telemetryCompositeId = "D_" + anonDeviceUuid.uuidString.lowercased()
             UserDefaults.morphic.set(telemetryDeviceUuid: telemetryCompositeId)
         }
         
@@ -298,53 +302,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
 
         // TODO: there is a potential scenario that our telemetry device uuid could be (incorrectly) saved as a blank entry; we should consider
-        //       how we'd want to deal with that scenario; NOTE: this _might_ just pertain to countly--or it might pertain to MorphicTelemetry as well
+        //       how we'd want to deal with that scenario; NOTE: this _might_ pertain to MorphicTelemetry (or it might have just been an issue related to the legacy telemetry system)
 
         // capture the raw device UUID
         let rangeOfTelemetryDeviceUuidPrefix = telemetryCompositeId.range(of: "D_")!
         let telemetryDeviceUuid = String(telemetryCompositeId.suffix(from: rangeOfTelemetryDeviceUuidPrefix.upperBound))
 
         return TelemetryIdComponents(compositeId: telemetryCompositeId, siteId: telemetrySiteIdAsOptional, deviceUuid: telemetryDeviceUuid)
-    }
-    
-    func configureCountly() {
-        guard let appKey = Bundle.main.infoDictionary?["CountlyAppKey"] as? String else {
-            assertionFailure("Missing Countly app key.  Check build config files")
-            os_log(.fault, log: logger, "Missing Countly app key.  Check build config files")
-            return
-        }
-        guard let serverUrl = Bundle.main.infoDictionary?["CountlyServerUrl"] as? String else {
-            assertionFailure("Missing Countly server url.  Check build config files")
-            os_log(.fault, log: logger, "Missing Countly server url.  Check build config files")
-            return
-        }
-        
-        // retrieve the telemetry composite ID for this device; if it doesn't exist then create a new one
-        let telemetryDeviceCompositeId = self.getOrCreateTelemetryIdComponents().compositeId;
-
-        let config: CountlyConfig = CountlyConfig()
-        config.appKey = appKey
-        config.host = serverUrl
-        if let compositeVersion = VersionUtils.compositeVersion() {
-            // TODO: figure out where we pass in the appVersion on macOS
-            config.customMetrics[CLYMetricKey.appVersion.rawValue] = compositeVersion
-        }
-        config.features = [CLYFeature.crashReporting]
-        //
-        #if DEBUG
-        config.enableDebug = true
-        #endif
-        //
-        // if Countly is using another telemetry ID, reset the stored device ID and specify the new telemetry ID
-        // NOTE: There is also a 'setNewDeviceID' method on Countly.sharedInstance() which would let us change the session ID _after_ starting up the session...which has additional features like being able to update older records to the new telemetry ID...but this method is simpler and less error-prone for our current needs (and we can supplement our use with the function call method if needed in the future)
-        if Countly.sharedInstance().deviceID() != telemetryDeviceCompositeId {
-            // NOTE: changing the deviceID via config takes no effect if an existing "deviceID" is already in use; therefore we reset it here out of an abundance of caution (and to handle situations where we might change the "deviceID" to another telemetry ID instead)
-            config.resetStoredDeviceID = true
-            config.deviceID = telemetryDeviceCompositeId
-        }
-        //
-        Countly.sharedInstance().start(with: config)
-        Countly.sharedInstance().beginSession()
     }
     
     func prependSiteIdToTelemetryUuid(_ value: String, telemetrySiteId: String) -> String {
@@ -438,11 +402,122 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             port: 443,
             path: "/ws",
             useTls: true)
-        var telemetryClient = MorphicTelemetryClient(config: mqttConfig, softwareVersion: self.getApplicationVersion())
+        let telemetryClient = MorphicTelemetryClient(config: mqttConfig, softwareVersion: self.getApplicationVersion())
         telemetryClient.siteId = telemetrySiteId
-        self.telemetryClient = telemetryClient
+        //
+        // create random session id
+        // NOTE: GUIDs should be lowercase; macOS outputs UUIDs as uppercase; therefore we manually lowercase them
+        let telemetrySessionId = NSUUID().uuidString.lowercased()
 
-        telemetryClient.startSession()
+        // configure our telemetry client proxy (which will handle all tleemetry calls after we start up the session)
+        TelemetryClientProxy.configure(telemetryClient: telemetryClient, telemetrySessionId: telemetrySessionId)
+        
+        // start our telemetry session
+        TelemetryClientProxy.startSession()
+        
+        // send the first telemetry message (@session begin)
+        // NOTE: for Morphic 2.0, enqueue this message as soon as we create the telemetry client object
+        let sessionTelemetryEventData = MorphicTelemetryClient.SessionTelemetryEventData(
+            state: "begin",
+            sessionId: telemetrySessionId
+        )
+        let eventData = MorphicTelemetryClient.TelemetryEventData.session(sessionTelemetryEventData)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "@session", data: eventData);
+
+        // initialize (and start) our heartbeat timer; it should send the heartbeat message every 12 hours
+        let telemetryHeartbeatTimer = Timer(timeInterval: 12 * 3600, target: self, selector: #selector(sendTelemetryHeartbeat), userInfo: nil, repeats: true)
+        self.telemetryHeartbeatTimer = telemetryHeartbeatTimer
+        RunLoop.current.add(telemetryHeartbeatTimer, forMode: .common)
+    }
+    
+    // NOTE: this function returns nil if no network interface MAC could be determined
+    private static func getHashedMacAddressForSiteTelemetryId() -> UUID?
+    {
+        // get the MAC address of the primary (built-in) network interface
+        var macAddressAsByteArray = try? MorphicNetworkInterface.macAddressOfPrimaryNetworkInterface()
+        //
+        // if we couldn't find the MAC address of a primary (built-in) network card, find _any_ network card (even an RX-only one)
+        if (macAddressAsByteArray == nil)
+        {
+            if let macAddressesOfNetworkInterfaces = try? MorphicNetworkInterface.macAddressesOfNetworkInterfaces() {
+                if macAddressesOfNetworkInterfaces.count > 0 {
+                    macAddressAsByteArray = macAddressesOfNetworkInterfaces.first
+                }
+            }
+        }
+        //
+        // if we couldn't find any network interface with a non-zero MAC, then return nil
+        if (macAddressAsByteArray == nil)
+        {
+            return nil
+        }
+
+        let macAddressAsHexString = macAddressAsByteArray!.map({ .init(format: "%02X", $0) }).joined()
+        
+        // at this point, we have a network MAC address which is reasonably stable (i.e. is suitable to derive a telemetry GUID-sized value from)
+        // convert the mac address (hex string) to a type 3 UUID (MD5-hashed); note that we pre-pend "MAC_" before the mac address to avoid internal collissions from other types of potentially-derived site telemetry ids
+        guard let createUuidResult = try? Self.createVersion3Uuid(macAddressAsHexString) else {
+            return nil
+        }
+        let macAddressAsMd5HashedGuid = createUuidResult
+
+        return macAddressAsMd5HashedGuid
+    }
+    
+    private static func createVersion3Uuid(_ value: String) throws -> UUID {
+        let Namespace_MorphicMAC = UUID(uuidString: "472c19e2-b87f-47c2-b7d3-dd9c175a5cfa")!
+
+        let valueToHash = "{" + Namespace_MorphicMAC.uuidString.lowercased() + "}" + value;
+
+        // NOTE: type 3 GUIDs have 122 bits of "random" data; in this case, it'll be a one-way hash derived from a MAC address (so that we aren't capturing the raw mac addresses of site computers)
+        let bufferAsHashDigest = Insecure.MD5.hash(data: valueToHash.data(using: String.Encoding.utf8)!)
+        let bufferAsData = Data(bufferAsHashDigest)
+        var buffer = [UInt8](bufferAsData)
+        
+        // NOTE: MD5 should create 16-byte hashes; if it created a longer array then cut it down to size; if it created a shorter array then return an error
+        if (buffer.count > 16)
+        {
+            buffer.removeLast(buffer.count - 16)
+        }
+        else if (buffer.count < 16)
+        {
+            throw MorphicError.unspecified
+        }
+
+        // clear the fields where version and variant will live
+        buffer[6] &= 0b0000_1111;
+        buffer[8] &= 0b0011_1111;
+        //
+        // set the version and variant bits
+        buffer[6] |= 0b0011_0000; // version 3
+        buffer[8] |= 0b1000_0000; // 0b10 represents an RFC 4122 UUID
+
+        // turn the buffer into a guid
+        var reorderedBuffer = [UInt8]()
+        reorderedBuffer.reserveCapacity(16)
+        reorderedBuffer.append(contentsOf: buffer[0...3].reversed())
+        reorderedBuffer.append(contentsOf: buffer[4...5].reversed())
+        reorderedBuffer.append(contentsOf: buffer[6...7].reversed())
+        reorderedBuffer.append(contentsOf: buffer[8...9])
+        reorderedBuffer.append(contentsOf: buffer[10...15])
+        //
+        let bufferAsUuid = NSUUID(uuidBytes: &reorderedBuffer) as UUID
+
+        return bufferAsUuid;
+
+    }
+
+    @objc private func sendTelemetryHeartbeat(_ timer: Timer) {
+        guard let telemetrySessionId = TelemetryClientProxy.telemetrySessionId else {
+            return
+        }
+        
+        let sessionTelemetryEventData = MorphicTelemetryClient.SessionTelemetryEventData(
+            state: "heartbeat",
+            sessionId: telemetrySessionId
+        )
+        let eventData = MorphicTelemetryClient.TelemetryEventData.session(sessionTelemetryEventData)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "@session", data: eventData);
     }
     
     func getApplicationVersion() -> String {
@@ -488,9 +563,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     func applicationWillTerminate(_ aNotification: Notification) {
         if ConfigurableFeatures.shared.telemetryIsEnabled == true {
-            Countly.sharedInstance().endSession()
-            
-            self.telemetryClient?.endSession()
+            TelemetryClientProxy.endSession()
         }
     }
     
@@ -514,6 +587,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         Session.shared.open {
             NotificationCenter.default.post(name: .morphicSessionUserDidChange, object: Session.shared)
             
+            TelemetryClientProxy.enqueueActionMessage(eventName: "signIn")
+
             // TODO: previously in Morphic Basic for macOS, a user's cloud preferences were applied when they logged in; this behavior may need to be split (based on whether they're logging in to get their morphicbars...or logging in to get their preferences)
             let userInfo = notification.userInfo ?? [:]
             if !(userInfo["isRegister"] as? Bool ?? false) {
@@ -606,7 +681,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         self.logoutMenuItem?.isHidden = (session.user == nil)
         
         if session.user != nil {
-            // reload the community bar
+            // reload the custom bar
             reloadCustomMorphicBars() {
                 success, error in
                 // NOTE: we may want to consider telling the user of the error if we can't reload the bars
@@ -654,6 +729,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         public let function: String?
         // for type: control
         public let feature: String?
+        // for type: application
+        public let appId: String?
     }
     //
     internal struct TelemetryConfigSection: Decodable {
@@ -843,7 +920,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     os_log(.error, log: logger, "Invalid MorphicBar item")
                     continue
                 }
-                if (extraItem.type != "control") && ((extraItem.label == nil) || (extraItem.tooltipHeader == nil)) {
+                if (extraItem.type != "control") && ((extraItem.label == nil)) {
                     // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
                     os_log(.error, log: logger, "Invalid MorphicBar item")
                     continue
@@ -869,6 +946,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     os_log(.error, log: logger, "Invalid MorphicBar item")
                     continue
                 }
+                
+                // if the "application" is missing its appId, log the error and skip this item
+                if (extraItem.type == "application") && (extraItem.appId == nil || extraItem.appId == "") {
+                    // NOTE: consider refusing to start up (for security reasons) if the configuration file cannot be read
+                    os_log(.error, log: logger, "Invalid MorphicBar item")
+                    continue
+                }
 
                 let extraMorphicBarItem = MorphicBarExtraItem(
                     type: extraItem.type,
@@ -877,7 +961,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     tooltipText: extraItem.tooltipText,
                     url: extraItem.url,
                     function: extraItem.function,
-                    feature: extraItem.feature)
+                    feature: extraItem.feature,
+                    appId: extraItem.appId
+                )
                 result.extraMorphicBarItems.append(extraMorphicBarItem)
             }
         }
@@ -913,12 +999,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         let waitTimeForSettingCompletion = TimeInterval(10) // 10 seconds max per setting
         
         // color filters
-        if #available(macOS 10.15, *) {
-            // we do not currently have a mechanism to report success/failure
-            let currentColorFiltersIsEnabled = MorphicDisplayAccessibilitySettings.colorFiltersEnabled
-            if currentColorFiltersIsEnabled != defaultColorFiltersIsEnabled {
-                MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(defaultColorFiltersIsEnabled)
-            }
+        //
+        // NOTE: we do not currently have a mechanism to report success/failure
+        let currentColorFiltersIsEnabled = MorphicDisplayAccessibilitySettings.colorFiltersEnabled
+        if currentColorFiltersIsEnabled != defaultColorFiltersIsEnabled {
+            MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(defaultColorFiltersIsEnabled)
         }
         //
         // night mode
@@ -930,9 +1015,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         //
         // screen scaling
         // NOTE: this zooms to 100% of the RECOMMENDED value, not 100% of native resolution
-        if let displayCurrentPercentage = Display.main?.currentPercentage {
-            if displayCurrentPercentage != defaultDisplayZoomPercentage {
-                _ = try? Display.main?.zoom(to: defaultDisplayZoomPercentage)
+        if let activeDisplays = Display.activeDisplays() {
+            for activeDisplay in activeDisplays {
+                let displayCurrentPercentage = activeDisplay.currentPercentage
+                if displayCurrentPercentage != defaultDisplayZoomPercentage {
+                    _ = try? activeDisplay.zoom(to: defaultDisplayZoomPercentage)
+                }
             }
         }
         //
@@ -986,7 +1074,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     // NOTE: we maintain a reference to the timer so that we can cancel (invalidate) it, reschedule it, etc.
     var dailyCustomMorphicBarsRefreshTimer: Timer? = nil
     func scheduleNextDailyMorphicCustomMorphicBarsRefresh() {
-        // NOTE: we schedule a community bar reload for 3am every morning local time (+ random 0..<3600 second offset to minimize server peak loads) so that the user gets the latest community bar updates; if their computer is sleeping at 3am then Swift should execute the timer when their computer wakes up
+        // NOTE: we schedule a custom bar reload for 3am every morning local time (+ random 0..<3600 second offset to minimize server peak loads) so that the user gets the latest custom bar updates; if their computer is sleeping at 3am then Swift should execute the timer when their computer wakes up
         
         let secondsInOneDay = 24 * 60 * 60
         
@@ -1162,7 +1250,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 self.selectBasicMorphicBarMenuItem.state = .on
             }
 
-            // now populate the menu with the community names...and highlight the currently-selected community (9)with a checkmark)
+            // now populate the menu with the community names...and highlight the currently-selected community (with a checkmark)
             //
             // add in all the custom bar names
             var menuItemChecked = false
@@ -1384,16 +1472,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     @IBAction func menuBarExtraAboutMorphicMenuItemClicked(_ sender: NSMenuItem) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            self.countly_RecordEvent("aboutMorphic", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "aboutMorphic")
         }
         showAboutBox()
     }
 
     @IBAction func morphicBarIconAboutMorphicMenuItemClicked(_ sender: NSMenuItem) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-            self.countly_RecordEvent("aboutMorphic", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "aboutMorphic")
         }
         showAboutBox()
     }
@@ -1414,22 +1500,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     func terminateMorphicClientDueToCmdQ() {
-        let segmentation = ["eventSource": "keyboardShortcut"]
-        self.countly_RecordEvent("quit", segmentation: segmentation)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "quit")
 
         quitApplication()
     }
     
     @IBAction func menuBarExtraQuitApplicationMenuItemClicked(_ sender: NSMenuItem) {
-        let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-        self.countly_RecordEvent("quit", segmentation: segmentation)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "quit")
 
         quitApplication()
     }
 
     @IBAction func morphicBarIconQuitApplicationMenuItemClicked(_ sender: NSMenuItem) {
-        let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-        self.countly_RecordEvent("quit", segmentation: segmentation)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "quit")
 
         quitApplication()
     }
@@ -1462,6 +1545,23 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        // invalidate (stop) our telemetry heartbeat timer
+        self.telemetryHeartbeatTimer?.invalidate()
+        
+        // enqueue a session termination telemetry event
+        if let telemetrySessionId = TelemetryClientProxy.telemetrySessionId {
+            let sessionTelemetryEventData = MorphicTelemetryClient.SessionTelemetryEventData(
+                state: "end",
+                sessionId: telemetrySessionId
+            )
+            let eventData = MorphicTelemetryClient.TelemetryEventData.session(sessionTelemetryEventData)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "@session", data: eventData);
+            
+            // TODO: in a future iteration, wait up to 2500ms for the telemetry queue to empty.  Or persist the telemetry queue to disk so that the message can be sent the next time that Morphic starts up.  Or do both.
+        }
+
+        //
+        
         var computerIsLoggingOutOrShuttingDown = false
         
         if let currentAppleEvent = NSAppleEventManager.shared().currentAppleEvent {
@@ -1497,12 +1597,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         switch sender.state {
         case .on:
             defer {
-                self.countly_RecordEvent("autorunAfterLoginDisabled")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "autorunAfterLoginDisabled")
             }
             _ = setMorphicAutostartAtLogin(false)
         case .off:
             defer {
-                self.countly_RecordEvent("autorunAfterLoginEnabled")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "autorunAfterLoginEnabled")
             }
             _ = setMorphicAutostartAtLogin(true)
         default:
@@ -1590,9 +1690,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         defer {
             switch newKeyRepeatEnabledState {
             case true:
-                self.countly_RecordEvent("stopKeyRepeatOff")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "stopKeyRepeatOff")
             case false:
-                self.countly_RecordEvent("stopKeyRepeatOn")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "stopKeyRepeatOn")
             }
         }
 
@@ -1633,6 +1733,34 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
 
     //
+
+    func setInitialColorFilterType(waitAtMost: TimeInterval) async throws {
+        if #available(macOS 13.0, *) {
+            // the async version of this function is built for macOS 13 and later: proceed.
+        } else {
+            fatalError("This version of macOS is not yet supported by this code")
+        }
+
+        // verify that we have accessibility permissions (since UI automation will not work without them)
+        // NOTE: this function call will prompt the user for authorization if they have not already granted it
+        guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+            NSLog("User had not granted 'accessibility' authorization; user now prompted")
+            throw MorphicError.unspecified
+        }
+
+//        // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+//        let uiAutomationSequence = SystemSettingsUIAutomationSequence()
+        let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+        
+        let newColorFilterType = MorphicSettings.AccessibilityDisplaySettings.ColorFilterType.protanopia
+
+        let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+        let setSettingProxy = ColorFilterTypeUIAutomationSetSettingProxy()
+        try await setSettingProxy.setColorFilterType(newColorFilterType, waitAtMost: waitForTimespan)
+
+        // finally, record a persistent flag indicating that we have set up the initial magnifier zoom style
+        Session.shared.set(true, for: .morphicDidSetInitialColorFilterType)
+    }
     
     func setInitialColorFilterType() {
 //        // NOTE: color-filter types (as their enumerated int values)
@@ -1644,64 +1772,112 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         // TODO: convert this int into an enumeration (using the values from the above list)
         let colorFilterTypeAsInt: Int = 2 // Red/Green filter (Protanopia)
         
-        Session.shared.apply(colorFilterTypeAsInt, for: .macosColorFilterType) {
-            success in
-            
-            // we do not currently have a mechanism to report success/failure
-            SettingsManager.shared.capture(valueFor: .macosColorFilterType) {
-                verifyColorFilterType in
-                guard let verifyColorFilterTypeAsInt = verifyColorFilterType as? Int else {
-                    // could not get current setting
-                    return
-                }
-                //
-                if verifyColorFilterTypeAsInt != colorFilterTypeAsInt {
-                    NSLog("Could not set color filter type to Red/Green filter (Protanopia)")
-                    assertionFailure("Could not set color filter type to Red/Green filter (Protanopia)")
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            fatalError("This version of macOS is not supported by this code; use the new async version instead.")
+        } else {
+            // macOS 12.x and earlier
+
+            Session.shared.apply(colorFilterTypeAsInt, for: .macosColorFilterType) {
+                success in
+                
+                // we do not currently have a mechanism to report success/failure
+                SettingsManager.shared.capture(valueFor: .macosColorFilterType) {
+                    verifyColorFilterType in
+                    guard let verifyColorFilterTypeAsInt = verifyColorFilterType as? Int else {
+                        // could not get current setting
+                        return
+                    }
+                    //
+                    if verifyColorFilterTypeAsInt != colorFilterTypeAsInt {
+                        NSLog("Could not set color filter type to Red/Green filter (Protanopia)")
+                        assertionFailure("Could not set color filter type to Red/Green filter (Protanopia)")
+                    }
                 }
             }
         }
         
         Session.shared.set(true, for: .morphicDidSetInitialColorFilterType)
     }
-    
+
+    func setInitialMagnifierZoomStyle(waitAtMost: TimeInterval) async throws {
+        if #available(macOS 13.0, *) {
+            // the async version of this function is built for macOS 13 and later: proceed.
+        } else {
+            fatalError("This version of macOS is not yet supported by this code")
+        }
+        
+        // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+        let uiAutomationSequence = UIAutomationSequence()
+        let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+
+        let newZoomStyle = MorphicSettings.MagnifierZoomSettings.ZoomStyle.pictureInPicture // aka "lens"
+        
+        do {
+            let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+            try await AccessibilityZoomUIAutomationScript_macOS13.setZoomStyle(newZoomStyle, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+        } catch let error {
+            throw error
+        }
+        
+        // double-check that the setting has been set correctly (by reading the setting from the system defaults
+        let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+        let verifySuccess = try await AsyncUtils.wait(atMost: waitForTimespan) {
+            let currentZoomStyle = try MorphicSettings.MagnifierZoomSettings.getZoomStyle()
+            return currentZoomStyle?.intValue == newZoomStyle.intValue
+        }
+        if verifySuccess == false {
+            // timeout occurred while waiting for the change to be verified
+            throw MorphicError.unspecified
+        }
+
+        // finally, record a persistent flag indicating that we have set up the initial magnifier zoom style
+        Session.shared.set(true, for: .morphicDidSetInitialMagnifierZoomStyle)
+    }
+
     func setInitialMagnifierZoomStyle(completion: @escaping (_ success: Bool) -> Void) {
-//        // NOTE: zoom styles (as their enumerated int values)
-//        0: "Full screen",
-//        1: "Picture-in-picture",
-//        2: "Split screen",
-        // TODO: convert this int into an enumeration (using the values from the above list)
+        //        // NOTE: zoom styles (as their enumerated int values)
+        //        0: "Full screen",
+        //        1: "Picture-in-picture",
+        //        2: "Split screen",
         let zoomStyleAsInt: Int = 1 // Picture-in-picture (aka "lens")
 
-        Session.shared.apply(zoomStyleAsInt, for: .macosZoomStyle) {
-            success in
-         
-            guard success == true else {
-                completion(false)
-                return
-            }
-            
-            Session.shared.set(true, for: .morphicDidSetInitialMagnifierZoomStyle)
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            fatalError("This version of macOS is not supported by this code; use the new async version instead.")
+        } else {
+            // macOS 12.x and earlier
 
-            // we do not currently have a mechanism to report success/failure
-            SettingsManager.shared.capture(valueFor: .macosZoomStyle) {
-                verifyZoomStyle in
-
-                guard let verifyZoomStyleAsInt = verifyZoomStyle as? Int else {
-                    // could not get current setting
-                    completion(false)
-                    return
-                }
-                //
-                if verifyZoomStyleAsInt != verifyZoomStyleAsInt {
-                    NSLog("Could not set magnifier zoom style to Picture-in-picture")
-                    assertionFailure("Could not set magnifier zoom style to Picture-in-picture")
-
+            Session.shared.apply(zoomStyleAsInt, for: .macosZoomStyle) {
+                success in
+             
+                guard success == true else {
                     completion(false)
                     return
                 }
                 
-                completion(true)
+                Session.shared.set(true, for: .morphicDidSetInitialMagnifierZoomStyle)
+
+                // we do not currently have a mechanism to report success/failure
+                SettingsManager.shared.capture(valueFor: .macosZoomStyle) {
+                    verifyZoomStyle in
+
+                    guard let verifyZoomStyleAsInt = verifyZoomStyle as? Int else {
+                        // could not get current setting
+                        completion(false)
+                        return
+                    }
+                    //
+                    if verifyZoomStyleAsInt != verifyZoomStyleAsInt {
+                        NSLog("Could not set magnifier zoom style to Picture-in-picture")
+                        assertionFailure("Could not set magnifier zoom style to Picture-in-picture")
+
+                        completion(false)
+                        return
+                    }
+                    
+                    completion(true)
+                }
             }
         }
     }
@@ -1801,12 +1977,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         switch sender.state {
         case .on:
             defer {
-                self.countly_RecordEvent("showMorphicBarAfterLoginDisabled")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "showMorphicBarAfterLoginDisabled")
             }
             showMorphicBarAtStart = false
         case .off:
             defer {
-                self.countly_RecordEvent("showMorphicBarAfterLoginEnabled")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "showMorphicBarAfterLoginEnabled")
             }
             showMorphicBarAtStart = true
         default:
@@ -1945,11 +2121,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
             let morphicBarWindowWasVisible = morphicBarWindow != nil
             defer {
-                let segmentation: [String: String] = ["eventSource": "trayIconClick"]
                 if morphicBarWindowWasVisible == true {
-                    self.countly_RecordEvent("morphicBarHide", segmentation: segmentation)
+                    TelemetryClientProxy.enqueueActionMessage(eventName: "morphicBarHide")
                 } else {
-                    self.countly_RecordEvent("morphicBarShow", segmentation: segmentation)
+                    TelemetryClientProxy.enqueueActionMessage(eventName: "morphicBarShow")
                 }
             }
             toggleMorphicBar(sender)
@@ -1967,8 +2142,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
 
             // show the menu (by assigning it to the menubar extra and re-clicking the extra; then disconnect the menu again so that our custom actions (custom left- and right-mouseDown) work properly.
             defer {
-                let segmentation = AppDelegate.shared.createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-                self.countly_RecordEvent("showMenu", segmentation: segmentation)
+                TelemetryClientProxy.enqueueActionMessage(eventName: "showMenu")
             }
             statusItem.menu = self.mainMenu
             statusItemButton.performClick(sender)
@@ -2017,8 +2191,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     @IBAction
     func menuBarExtraShowMorphicBarMenuItemClicked(_ sender: NSMenuItem) {
-        let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-        self.countly_RecordEvent("morphicBarShow", segmentation: segmentation)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "morphicBarShow")
         showMorphicBar(sender)
     }
     
@@ -2041,21 +2214,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     @IBAction
     func menuBarExtraHideMorphicBarMenuItemClicked(_ sender: NSMenuItem) {
-        let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-        self.countly_RecordEvent("morphicBarHide", segmentation: segmentation)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "morphicBarHide")
         hideMorphicBar(sender)
     }
 
     @IBAction
     func morphicBarIconHideMorphicBarMenuItemClicked(_ sender: NSMenuItem) {
-        let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-        self.countly_RecordEvent("morphicBarHide", segmentation: segmentation)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "morphicBarHide")
         hideMorphicBar(sender)
     }
 
     func morphicBarCloseButtonPressed() {
-        let segmentation = ["eventSource": "closeButton"]
-        self.countly_RecordEvent("morphicBarHide", segmentation: segmentation)
+        TelemetryClientProxy.enqueueActionMessage(eventName: "morphicBarHide")
         hideMorphicBar(nil)
     }
     
@@ -2082,8 +2252,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func menuBarExtraCustomizeMorphicbarMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            self.countly_RecordEvent("customizeMorphicbar", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "customizeMorphicbar")
         }
 
         customizeMorphicbarClicked()
@@ -2101,8 +2270,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func menuBarExtraHowToCopySetupsMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            self.countly_RecordEvent("howToCopySetups", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "howToCopySetups")
         }
 
         transferSetupsClicked()
@@ -2116,8 +2284,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     
     @IBAction func menuBarExtraContactUsMenuItemClicked(_ sender: Any) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            self.countly_RecordEvent("contactUs", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "contactUs")
         }
         
         contactUsClicked()
@@ -2131,8 +2298,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func menuBarExtraExploreMorphicMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            self.countly_RecordEvent("exploreMorphic", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "exploreMorphic")
         }
 
         exploreMorphicClicked()
@@ -2141,8 +2307,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func morphicBarIconExploreMorphicMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-            self.countly_RecordEvent("exploreMorphic", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "exploreMorphic")
         }
         
         exploreMorphicClicked()
@@ -2156,8 +2321,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func menuBarExtraQuickDemoMoviesMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            self.countly_RecordEvent("quickDemoVideo", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "quickDemoVideo")
         }
         
         quickDemoMoviesClicked()
@@ -2166,8 +2330,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func morphicBarIconQuickDemoMoviesMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-            self.countly_RecordEvent("quickDemoVideo", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "quickDemoVideo")
         }
 
         quickDemoMoviesClicked()
@@ -2181,8 +2344,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func menuBarExtraOtherHelpfulThingsMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .trayIcon)
-            self.countly_RecordEvent("otherHelpfulThings", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "otherHelpfulThings")
         }
         
         otherHelpfulThingsClicked()
@@ -2191,8 +2353,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func morphicBarIconOtherHelpfulThingsMenuItemClicked(_ sender: NSMenuItem?) {
         defer {
-            let segmentation = createMenuOpenedSourceSegmentation(menuOpenedSource: .morphicBarIcon)
-            self.countly_RecordEvent("otherHelpfulThings", segmentation: segmentation)
+            TelemetryClientProxy.enqueueActionMessage(eventName: "otherHelpfulThings")
         }
 
         otherHelpfulThingsClicked()
@@ -2208,112 +2369,164 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBAction
     func launchAllAccessibilityOptionsSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "allAccessibility", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "allAccessibility", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilityOverview)
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityOverview) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.accessibilityOverview)
+        }
     }
     
     @IBAction
     func launchBrightnessSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "brightness", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "brightness", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.displaysDisplay)
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.displaysDisplay) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.displaysDisplay)
+        }
     }
     
     @IBAction
     func launchColorVisionSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "colorFilter", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "colorFilter", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayColorFilters)
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayColorFilters) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.accessibilityDisplayColorFilters)
+        }
     }
     
     @IBAction
     func launchContrastSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "highContrast", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "highContrast", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay)
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayDisplay) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.accessibilityDisplayDisplay)
+        }
     }
     
     @IBAction
     func launchDarkModeSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "darkMode", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "darkMode", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.general)
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.appearance) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.appearance)
+        }
     }
 
     @IBAction
     func launchLanguageSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "language", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "language", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.languageandregionGeneral)
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.languageandregionGeneral) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.languageandregionGeneral)
+        }
     }
     
     @IBAction
     func launchMagnifierSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "magnifier", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "magnifier", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilityZoom)
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityZoom) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.accessibilityZoom)
+        }
     }
 
     @IBAction
     func launchMouseSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "mouse", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "mouse", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.mouse)
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.mouse) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.mouse)
+        }
     }
 
     @IBAction
     func launchNightModeSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "nightMode", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "nightMode", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.displaysNightShift)
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.displaysNightShift) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.displaysNightShift)
+        }
     }
     
     @IBAction
     func launchPointerSizeSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "pointerSize", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "pointerSize", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayCursor)
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayCursor) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.accessibilityDisplayCursor)
+        }
     }
     
     @IBAction
     func launchReadAloudSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "readAloud", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "readAloud", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.accessibilitySpeech)
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.accessibilitySpeech) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.accessibilitySpeech)
+        }
     }
 
     @IBAction
     func launchKeyboardSettings(_ sender: Any?) {
         defer {
-            recordCountlyOpenSystemSettingsEvent(category: "keyboard", tag: (sender as? NSView)?.tag)
+            recordTelemetryOpenSystemSettingsEvent(category: "keyboard", tag: (sender as? NSView)?.tag)
         }
-        SettingsLinkActions.openSystemPreferencesPane(.keyboardKeyboard)
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task { try? await SettingsLinkActions.openSystemSettingsPane(.keyboardKeyboard) }
+        } else {
+            SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.keyboardKeyboard)
+        }
     }
     
     //
     
-    func recordCountlyOpenSystemSettingsEvent(category settingsCategoryName: String, tag: Int?) {
-        var segmentation: [String: String] = [:]
-        segmentation["category"] = settingsCategoryName
-        if tag == nil || tag! == 0 {
-            // main menu
-            segmentation["eventSource"] = "iconMenu"
-        } else if tag! == 1 {
-            segmentation["eventSource"] = "contextMenu"
-        }
-        self.countly_RecordEvent("systemSettings", segmentation: segmentation)
-//        self.countly_RecordEvent("systemSettings" + settingsCategoryName)
+    func recordTelemetryOpenSystemSettingsEvent(category settingsCategoryName: String, tag: Int?) {
+        // NOTE: if we need to send the settings category name, we could do so via event data
+        TelemetryClientProxy.enqueueActionMessage(eventName: "systemSettings")
     }
     
     //
@@ -2331,7 +2544,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     ///This function fires if the bar window loses focus.
     func windowDidResignKey(_ notification: Notification) {
         morphicBarWindow?.windowIsKey = false
-        morphicBarWindow?.morphicBarViewController.closeTray(nil)   //get rid of this to have the tray stay open when defocused
+        morphicBarWindow?.morphicBarViewController.closeTray(nil)   // get rid of this to have the tray stay open when defocused
         QuickHelpWindow.hide()
     }
      

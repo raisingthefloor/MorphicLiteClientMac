@@ -56,10 +56,12 @@ class CaptureViewController: NSViewController {
             self.captureComplete = true
             self.notifyDelegateIfFullyComplete()
         }
-        minimumTimer = Timer.scheduledTimer(withTimeInterval: minimumTimeInterval, repeats: false){
-            _ in
-            self.miniumTimeComplete = true
-            self.notifyDelegateIfFullyComplete()
+        DispatchQueue.main.async {
+            self.minimumTimer = Timer.scheduledTimer(withTimeInterval: self.minimumTimeInterval, repeats: false) {
+                _ in
+                self.miniumTimeComplete = true
+                self.notifyDelegateIfFullyComplete()
+            }
         }
     }
     

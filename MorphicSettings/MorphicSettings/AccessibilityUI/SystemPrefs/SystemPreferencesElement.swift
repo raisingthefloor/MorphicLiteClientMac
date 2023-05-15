@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -23,9 +23,10 @@
 
 import Foundation
 import MorphicCore
+import MorphicMacOSNative
 
 public class SystemPreferencesElement: ApplicationElement {
-    
+    // NOTE: starting with macOS 13, the app is renamed to "System Settings" but the bundle identifier remains "com.apple.systempreferences"
     public static let bundleIdentifier = "com.apple.systempreferences"
     
     public init() {
@@ -155,6 +156,10 @@ public class SystemPreferencesElement: ApplicationElement {
                 completion(true, ElementType(accessibilityElement: window.accessibilityElement))
                 return
             }
+        case nil:
+            // if this is not an identifiable window, return an error
+            completion(false, nil)
+            return
         }
         guard let showAllButton = window.toolbar?.button(titled: "Show All") else {
             completion(false, nil)
@@ -185,6 +190,9 @@ public class SystemPreferencesElement: ApplicationElement {
                         return matchFunction(windowAsUIElement) == true
                     case .windowTitle(let identifierWindowTitle):
                         return window.title == identifierWindowTitle
+                    case nil:
+                        // if this is not an identifiable window, return an error
+                        return false
                     }
             }) {
                 success in

@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -21,8 +21,9 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Foundation
+import Cocoa
 import MorphicCore
+import MorphicMacOSNative
 
 // NOTE: the MorphicInput class contains the functionality used by Obj-C and Swift applications
 
@@ -191,13 +192,13 @@ public class MorphicInput {
         case .hidSystem:
             guard let eventSourceAsNonOptional = CGEventSource(stateID: .hidSystemState) else {
                 NSLog("sendKey failure: Could not set event source to .hidSystemState")
-                throw MorphicError()
+                throw MorphicError.unspecified
             }
             eventSource = eventSourceAsNonOptional
         case .loginSession:
             guard let eventSourceAsNonOptional: CGEventSource = CGEventSource(stateID: .combinedSessionState) else {
                 NSLog("sendKey failure: Could not set event source to .combinedSessionState")
-                throw MorphicError()
+                throw MorphicError.unspecified
             }
             eventSource = eventSourceAsNonOptional
         case nil:
@@ -208,7 +209,7 @@ public class MorphicInput {
             let keyUpEvent: CGEvent = MorphicInput.createKeyEvent(eventSource: eventSource, keyCode: keyCode, keyOptions: keyOptions, isKeyDown: false) else {
             //
             NSLog("sendKey failure: Could not create keyUp/keyDown events")
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
         // NOTE: Swift manages Core Foundation memory for us; in other languages, be sure to CFRelease
 //        defer {

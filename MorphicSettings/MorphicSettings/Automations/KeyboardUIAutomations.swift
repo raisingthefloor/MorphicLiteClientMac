@@ -27,7 +27,7 @@ import OSLog
 
 private let logger = OSLog(subsystem: "MorphicSettings", category: "KeyboardUIAutomation")
 
-public class KeyboardUIAutomation: UIAutomation {
+public class KeyboardUIAutomation: LegacyUIAutomation {
     public required init() {
     }
     

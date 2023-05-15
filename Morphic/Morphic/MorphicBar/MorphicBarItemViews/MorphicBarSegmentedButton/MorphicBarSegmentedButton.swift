@@ -22,7 +22,6 @@
 // * Consumer Electronics Association Foundation
 
 import Cocoa
-import Countly
 
 // A control similar to a segmented control, but with momentary buttons and custom styling.
 //
@@ -36,7 +35,7 @@ import Countly
 // Given the styling and behavior constraints, it seemed better to make a custom control
 // that draws a series of connected buttons than to use NSSegmentedControl.
 class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
-    // NOTE: in macOS 10.14, setting integerValue to a segment index # doesn't necessarily persist the value; selectedSegmentIndex serves the purpose explicitly instead
+    // NOTE: in macOS 10.14 (and possibly newer releases), setting integerValue to a segment index # doesn't necessarily persist the value; selectedSegmentIndex serves the purpose explicitly instead
     var selectedSegmentIndex: Int = 0
     
     // MARK: - Creating a Segmented Button
@@ -100,7 +99,8 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         var learnMoreTelemetryCategory: String? = nil
         var quickDemoVideoUrl: URL? = nil
         var quickDemoVideoTelemetryCategory: String? = nil
-        var settingsBlock: (() -> Void)? = nil
+        var settingsBlock: (() async throws -> Void)? = nil
+        var settingsBlock_macOS12AndEarlier: (() -> Void)? = nil // NOTE: technically we could use the ASYNC function with macOS 12.0
         
         var getStateBlock: (() -> Bool)? = nil
         //
@@ -116,7 +116,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         var accessibilityLabelByState: [NSControl.StateValue : String]? = [:]
         
         /// Create a segment with a title
-        init(title: String, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() -> Void)?, style: MorphicBarControlItemStyle) {
+        init(title: String, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() async throws -> Void)?, settingsBlock_macOS12AndEarlier: (() -> Void)?, style: MorphicBarControlItemStyle) {
             self.title = title
             self.helpProvider = helpProvider
             self.fillColor = fillColor
@@ -126,11 +126,12 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             self.quickDemoVideoUrl = quickDemoVideoUrl
             self.quickDemoVideoTelemetryCategory = quickDemoVideoTelemetryCategory
             self.settingsBlock = settingsBlock
+            self.settingsBlock_macOS12AndEarlier = settingsBlock_macOS12AndEarlier
             self.style = style
         }
         
         /// Create a segment with an icon
-        init(icon: NSImage, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() -> Void)?, style: MorphicBarControlItemStyle) {
+        init(icon: NSImage, fillColor: NSColor, helpProvider: QuickHelpContentProvider?, accessibilityLabel: String?, learnMoreUrl: URL?, learnMoreTelemetryCategory: String?, quickDemoVideoUrl: URL?, quickDemoVideoTelemetryCategory: String?, settingsBlock: (() async throws -> Void)?, settingsBlock_macOS12AndEarlier: (() -> Void)?, style: MorphicBarControlItemStyle) {
             self.icon = icon
             self.helpProvider = helpProvider
             self.fillColor = fillColor
@@ -140,6 +141,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             self.quickDemoVideoUrl = quickDemoVideoUrl
             self.quickDemoVideoTelemetryCategory = quickDemoVideoTelemetryCategory
             self.settingsBlock = settingsBlock
+            self.settingsBlock_macOS12AndEarlier = settingsBlock_macOS12AndEarlier
             self.style = style
         }
     }
@@ -563,7 +565,7 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             if let getStateBlock = segment.getStateBlock {
                 button.getStateBlock = getStateBlock
             }
-            add(button: button, showLearnMoreMenuItem: segment.learnMoreUrl != nil, showQuickDemoVideoMenuItem: segment.quickDemoVideoUrl != nil, showSettingsMenuItem: segment.settingsBlock != nil)
+            add(button: button, showLearnMoreMenuItem: segment.learnMoreUrl != nil, showQuickDemoVideoMenuItem: segment.quickDemoVideoUrl != nil, showSettingsMenuItem: segment.settingsBlock != nil && segment.settingsBlock_macOS12AndEarlier != nil)
         }
         needsLayout = true
     }
@@ -686,14 +688,9 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             return
         }
         //
-        let learnMoreTelemetryCategory = selectedSegment.learnMoreTelemetryCategory
         defer {
-            var segmentation: [String: String] = [:]
-            if learnMoreTelemetryCategory != nil {
-                segmentation["category"] = learnMoreTelemetryCategory
-            }
-            segmentation["eventSource"] = "contextMenu"
-            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("learnMore", segmentation: segmentation)
+            // NOTE: if we wanted to send the category that the user was learning more about, we could capture selectedSegment.learnMoreTelemetryCateogry--and send that category name via eventData
+            TelemetryClientProxy.enqueueActionMessage(eventName: "learnMore")
         }
         //
         NSWorkspace.shared.open(learnMoreUrl)
@@ -710,14 +707,9 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
             return
         }
         //
-        let quickDemoVideoTelemetryCategory = selectedSegment.quickDemoVideoTelemetryCategory
         defer {
-            var segmentation: [String: String] = [:]
-            if quickDemoVideoTelemetryCategory != nil {
-                segmentation["category"] = quickDemoVideoTelemetryCategory
-            }
-            segmentation["eventSource"] = "contextMenu"
-            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("quickDemoVideo", segmentation: segmentation)
+            // NOTE: if we wanted to send the category that the user was checking out (via quick demo videos), we could capture selectedSegment.quickDemoVideoTelemetryCategory--and send that category name via eventData
+            TelemetryClientProxy.enqueueActionMessage(eventName: "quickDemoVideo")
         }
         //
         NSWorkspace.shared.open(quickDemoVideoUrl)
@@ -730,11 +722,19 @@ class MorphicBarSegmentedButton: NSControl, MorphicBarWindowChildViewDelegate {
         }
         selectedSegmentIndex = button.tag
         let selectedSegment = segments[selectedSegmentIndex]
-        guard let settingsBlock = selectedSegment.settingsBlock else {
-            return
-        }
-        DispatchQueue.main.async {
-            settingsBlock()
+        if #available(macOS 12.0, *) {
+            // macOS 12.0 and later
+            guard let settingsBlock = selectedSegment.settingsBlock else {
+                return
+            }
+            Task { try? await settingsBlock() }
+        } else {
+            guard let settingsBlock_macOS12AndEarlier = selectedSegment.settingsBlock_macOS12AndEarlier else {
+                return
+            }
+            DispatchQueue.main.async {
+                settingsBlock_macOS12AndEarlier()
+            }
         }
     }
 }

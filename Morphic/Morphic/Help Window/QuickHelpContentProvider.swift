@@ -22,9 +22,26 @@
 // * Consumer Electronics Association Foundation
 
 import Cocoa
+import MorphicSettings
 
 protocol QuickHelpContentProvider {
     
     func quickHelpViewController() -> NSViewController?
-    
+
+}
+
+extension QuickHelpContentProvider {
+    func getDisplayForMousePointer() -> Display? {
+        if let mousePointerLocation = MorphicSettings.MorphicMouse.getCurrentLocation() {
+            if let displayContainingMousePointer = Display.displayContainingPoint(mousePointerLocation) {
+                return displayContainingMousePointer
+            } else {
+                assertionFailure("Could not determine which display contains the mouse pointer")
+            }
+        } else {
+            assertionFailure("Could not locate the mouse pointer")
+        }
+        
+        return nil
+    }
 }

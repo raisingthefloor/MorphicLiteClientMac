@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -21,9 +21,9 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Foundation
 import Cocoa
 import MorphicCore
+import MorphicMacOSNative
 import OSLog
 
 private let logger = OSLog(subsystem: "MorphicSettings", category: "ApplicationElement")
@@ -122,7 +122,7 @@ public class ApplicationElement: UIElement {
             return
         }
         if runningApplication.terminate() == false {
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
     }
     
@@ -131,7 +131,7 @@ public class ApplicationElement: UIElement {
             guard accessibilityElement != nil else {
                 return nil
             }
-            guard let mainWindow: MorphicA11yUIElement = accessibilityElement.value(forAttribute: .mainWindow) else {
+            guard let mainWindow: MorphicA11yUIElement = try? accessibilityElement.value(forAttribute: .mainWindow) else {
                 return nil
             }
             return WindowElement(accessibilityElement: mainWindow)
@@ -143,7 +143,7 @@ public class ApplicationElement: UIElement {
             guard accessibilityElement != nil else {
                 return nil
             }
-            guard let windows: [MorphicA11yUIElement] = accessibilityElement.values(forAttribute: .windows) else {
+            guard let windows: [MorphicA11yUIElement] = try? accessibilityElement.values(forAttribute: .windows) else {
                 return nil
             }
 

@@ -22,6 +22,7 @@
 // * Consumer Electronics Association Foundation
 
 import Cocoa
+import MorphicSettings
 
 /// The large tooltip-like window that displays help about MorphicBar actions
 ///
@@ -71,13 +72,15 @@ class QuickHelpWindow: NSWindow {
     public static func hide(withoutDelay: Bool = false, completion: (() -> Void)? = nil) {
         shared?.hideQueued = true
         if withoutDelay == false {
-            Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {
-                timer in
-                if shared?.hideQueued ?? false {
-                    shared?.close()
-                    shared = nil
+            DispatchQueue.main.async {
+                Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {
+                    timer in
+                    if shared?.hideQueued ?? false {
+                        shared?.close()
+                        shared = nil
+                    }
+                    completion?()
                 }
-                completion?()
             }
         } else {
             DispatchQueue.main.async {
@@ -98,11 +101,25 @@ class QuickHelpWindow: NSWindow {
     
     /// Center the window in the screen
     func reposition() {
-        guard let screen = screen else {
+        // NOTE: due to a limitation in Morphic 1.x, we use the current mouse pointer location as a proxy for the screen on which the
+        //       Morphic bar is currently shown; in the future, we should get the current display for the MorphicBar WINDOW instead
+        guard let mousePointerLocation = MorphicSettings.MorphicMouse.getCurrentLocation() else {
+            assertionFailure("Could not locate the mouse pointer")
             return
         }
-        let frame = NSRect(x: round((screen.frame.width - self.frame.size.width) / 2), y: round((screen.frame.height - self.frame.size.height) / 2), width: self.frame.size.width, height: self.frame.size.height)
-        setFrame(frame, display: true, animate: false)
+        guard let display = Display.displayContainingPoint(mousePointerLocation) else {
+            assertionFailure("Could not determine which display contains the mouse pointer")
+            return
+        }
+        
+        guard let screen = display.screen() else {
+            return
+        }
+        
+        // NOTE: rather than setting the window frame's origin to "screen.visibleFrame.origin", we're adjusting the frame position in the RECT directly; if this causes us troubles in the future (i.e. if our origin is not 0,0), consider setting self.setFrameOrigin with values of all-zeros
+
+        let frame = NSRect(x: screen.frame.origin.x + round((screen.frame.width - self.frame.size.width) / 2), y: screen.frame.origin.y + round((screen.frame.height - self.frame.size.height) / 2), width: self.frame.size.width, height: self.frame.size.height)
+        self.setFrame(frame, display: true, animate: false)
     }
     
     class Delegate: NSObject, NSWindowDelegate {

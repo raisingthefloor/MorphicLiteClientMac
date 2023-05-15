@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -134,47 +134,18 @@ public class ZoomEnabledUIAutomation: AccessibilityUIAutomation {
                 completion(false)
                 return
             }
-            if #available(macOS 10.15, *) {
-                guard checked != defaults.bool(forKey: "closeViewZoomedIn") else {
-                    completion(true)
-                    return
-                }
-            } else {
-                // backwards compatibility for macOS 10.14
-                if checked == true {
-                    guard 1.0 == defaults.double(forKey: "closeViewZoomFactor") else {
-                        completion(true)
-                        return
-                    }
-                } else {
-                    guard 1.0 != defaults.double(forKey: "closeViewZoomFactor") else {
-                        completion(true)
-                        return
-                    }
-                }
+            guard checked != defaults.bool(forKey: "closeViewZoomedIn") else {
+                completion(true)
+                return
             }
             guard let _ = try? WorkspaceElement.shared.sendKey(keyCode: CGKeyCode(kVK_ANSI_8), keyOptions: [.withCommandKey, .withAlternateKey]) else {
                 os_log(.error, log: logger, "Failed to send key shortcut")
                 completion(false)
                 return
             }
-            if #available(macOS 10.15, *) {
-                AsyncUtils.wait(atMost: 5.0, for: { checked == defaults.bool(forKey: "closeViewZoomedIn") }) {
-                    success in
-                    completion(success)
-                }
-            } else {
-                // backwards compatibility for macOS 10.14
-                AsyncUtils.wait(atMost: 5.0, for: {
-                    if checked == true {
-                        return 1.0 != defaults.double(forKey: "closeViewZoomFactor")
-                    } else {
-                        return 1.0 == defaults.double(forKey: "closeViewZoomFactor")
-                    }
-                }) {
-                    success in
-                    completion(success)
-                }
+            AsyncUtils.wait(atMost: 5.0, for: { checked == defaults.bool(forKey: "closeViewZoomedIn") }) {
+                success in
+                completion(success)
             }
         }
         

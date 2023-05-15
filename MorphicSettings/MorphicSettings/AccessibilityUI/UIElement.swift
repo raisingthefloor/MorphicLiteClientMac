@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -21,8 +21,8 @@
 // * Adobe Foundation
 // * Consumer Electronics Association Foundation
 
-import Foundation
 import Cocoa
+import MorphicMacOSNative
 import OSLog
 
 private let logger = OSLog(subsystem: "MorphicSettings", category: "UIElement")
@@ -101,7 +101,7 @@ public class UIElement {
     }
     
     private func accessibilityDescendant(role: NSAccessibility.Role, title: String) -> MorphicA11yUIElement? {
-        guard let children = accessibilityElement.children() else {
+        guard let children = try? accessibilityElement.children() else {
             return nil
         }
         var stack = children
@@ -109,16 +109,19 @@ public class UIElement {
         while i < stack.count {
             let candidate = stack[i]
             if candidate.role == role {
-                if candidate.value(forAttribute: .title) == title || candidate.value(forAttribute: .description) == title {
+                let candidateTitle: String? = try? candidate.value(forAttribute: .title)
+                let candidateDescription: String? = try? candidate.value(forAttribute: .description)
+                if candidateTitle == title || candidateDescription == title {
                     return candidate
                 }
-                if let titleElement: MorphicA11yUIElement = candidate.value(forAttribute: .titleUIElement) {
-                    if titleElement.value(forAttribute: .value) == title {
+                if let candidateTitleUIElement: MorphicA11yUIElement = try? candidate.value(forAttribute: .titleUIElement) {
+                    let candidateTitleUIElementValue: String? = try? candidateTitleUIElement.value(forAttribute: .value)
+                    if candidateTitleUIElementValue == title {
                         return candidate
                     }
                 }
             }
-            if let children = candidate.children() {
+            if let children = try? candidate.children() {
                 stack.append(contentsOf: children)
             }
             i += 1
@@ -127,7 +130,7 @@ public class UIElement {
     }
     
     private func accessibilityDescendant(role: NSAccessibility.Role, value: String) -> MorphicA11yUIElement? {
-        guard let children = accessibilityElement.children() else {
+        guard let children = try? accessibilityElement.children() else {
             return nil
         }
         var stack = children
@@ -135,11 +138,12 @@ public class UIElement {
         while i < stack.count {
             let candidate = stack[i]
             if candidate.role == role {
-                if candidate.value(forAttribute: .value) == value {
+                let candidateValue: String? = try? candidate.value(forAttribute: .value)
+                if candidateValue == value {
                     return candidate
                 }
             }
-            if let children = candidate.children() {
+            if let children = try? candidate.children() {
                 stack.append(contentsOf: children)
             }
             i += 1
@@ -148,7 +152,7 @@ public class UIElement {
     }
     
     private func accessibilityDescendant(role: NSAccessibility.Role) -> MorphicA11yUIElement? {
-        guard let children = accessibilityElement.children() else {
+        guard let children = try? accessibilityElement.children() else {
             return nil
         }
         var stack = children
@@ -158,14 +162,16 @@ public class UIElement {
             if candidate.role == role {
                 return candidate
             }
-            if let children = candidate.children() {
+            if let children = try? candidate.children() {
                 stack.append(contentsOf: children)
             }
             i += 1
         }
         return nil
     }
-        
+
+    //
+    
     public func perform(action: Action, completion: @escaping (_ success: Bool, _ nextTarget: UIElement?) -> Void) {
         switch action {
         case .check(let title, let checked):

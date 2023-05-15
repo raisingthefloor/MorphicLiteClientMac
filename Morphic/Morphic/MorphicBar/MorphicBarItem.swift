@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -23,10 +23,11 @@
 
 import Carbon.HIToolbox
 import Cocoa
-import Countly
 import MorphicCore
+import MorphicMacOSNative
 import MorphicSettings
 import MorphicService
+import MorphicUIAutomation
 import OSLog
 
 public class MorphicBarItem {
@@ -68,6 +69,8 @@ public class MorphicBarItem {
             itemAsDictionary["function"] = extraItem.function
             // for type: control (from config.json file, not from custom bar web app schema)
             itemAsDictionary["feature"] = extraItem.feature
+            // for type: application (from config.json file, not from custom bar web app schema)
+            itemAsDictionary["appId"] = extraItem.appId
 
             if let item_ = item(from: itemAsDictionary) {
                 items.append(item_)
@@ -94,7 +97,7 @@ public class MorphicBarItem {
             if let _ = interoperable["function"] {
                 // config.json (Windows-compatible) action item
                 defer {
-                    (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("morphicBarExtraItem")
+                    TelemetryClientProxy.enqueueActionMessage(eventName: "morphicBarExtraItem")
                 }
                 return MorphicBarActionItem(interoperable: interoperable)
             } else {
@@ -113,7 +116,7 @@ public class MorphicBarItem {
             return nil
         }
                 
-        // map the community action items to traditional control items (by mapping their interoperable data)
+        // map the custom action items to traditional control items (by mapping their interoperable data)
         
         var transformedInteroperable: [String: Interoperable?] = [:]
         
@@ -142,6 +145,8 @@ public class MorphicBarItem {
             transformedInteroperable["feature"] = "screensnip"
         case "volume":
             transformedInteroperable["feature"] = "volumewithoutmute"
+        case "usbopeneject":
+            transformedInteroperable["feature"] = "usbopeneject"
         default:
             // no other action items are supported
             break
@@ -318,7 +323,8 @@ class MorphicBarApplicationItem: MorphicBarItem {
         }
         //
         // NOTE: 'exe' designates the identifier of the EXE to run (e.g. "calendar", "calculator", "word", "adobeReader")
-        if let exe = interoperable.string(for: "exe") {
+        // NOTE: 'appId' is the modern term for application identifier (and 'exe' is the old v1 API name...which we should discontinue use of as soon as practical)
+        if let exe = interoperable.string(for: "exe") ?? interoperable.string(for: "appId") {
             self.exe = exe
             self.exeLaunchDetails = MorphicBarApplicationItem.convertExeIdentifierToExecutableLaunchDetails(exe: exe)
             
@@ -387,19 +393,11 @@ class MorphicBarApplicationItem: MorphicBarItem {
     }
     
     private func openApplicationUrl(_ applicationUrl: URL) {
-        if #available(macOS 10.15, *) {
-            // macOS 10.15+
-            let openConfiguration = NSWorkspace.OpenConfiguration()
-            openConfiguration.activates = true
-            NSWorkspace.shared.openApplication(at: applicationUrl, configuration: openConfiguration, completionHandler: { (application, error) in
-                // FUTURE: return an error condition (presumably via callback) if this call results in an error
-            })
-        } else {
-            // macOS 10.14
-            // FUTURE: return an error condition if this call throws an exception
-            // NOTE: this function has been deprecated (but was still available as of macOS 11.0)
-            let _ = try? NSWorkspace.shared.launchApplication(at: applicationUrl, options: [], configuration: [:])
-        }
+        let openConfiguration = NSWorkspace.OpenConfiguration()
+        openConfiguration.activates = true
+        NSWorkspace.shared.openApplication(at: applicationUrl, configuration: openConfiguration, completionHandler: { (application, error) in
+            // FUTURE: return an error condition (presumably via callback) if this call results in an error
+        })
     }
 
     private static func convertExeIdentifierToExecutableLaunchDetails(exe: String) -> ExecutableLaunchDetails? {
@@ -545,8 +543,32 @@ class MorphicBarControlItem: MorphicBarItem {
             let showHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let hideHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             //
-            let colorVisionOnSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: showHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .colorvision), learnMoreTelemetryCategory: "colorFilter", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .colorvision), quickDemoVideoTelemetryCategory: "colorFilter", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilityDisplayColorFilters, category: "colorFilter") }, style: style)
-            let colorVisionOffSemgent = MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: hideHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .colorvision), learnMoreTelemetryCategory: "colorFilter", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .colorvision), quickDemoVideoTelemetryCategory: "colorFilter", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilityDisplayColorFilters, category: "colorFilter") }, style: style)
+            let colorVisionOnSegment = MorphicBarSegmentedButton.Segment(
+                title: localized.string(for: "on"),
+                fillColor: buttonColor,
+                helpProvider: showHelpProvider,
+                accessibilityLabel: localized.string(for: "on.help.title"),
+                learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .colorvision),
+                learnMoreTelemetryCategory: "colorFilter",
+                quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .colorvision),
+                quickDemoVideoTelemetryCategory: "colorFilter",
+                settingsBlock: { try await SettingsLinkActions.openSystemSettingsPaneWithTelemetry(.accessibilityDisplayColorFilters, category: "colorFilter") },
+                settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(.accessibilityDisplayColorFilters, category: "colorFilter") },
+                style: style
+            )
+            let colorVisionOffSemgent = MorphicBarSegmentedButton.Segment(
+                title: localized.string(for: "off"),
+                fillColor: alternateButtonColor,
+                helpProvider: hideHelpProvider,
+                accessibilityLabel: localized.string(for: "off.help.title"),
+                learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .colorvision),
+                learnMoreTelemetryCategory: "colorFilter",
+                quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .colorvision),
+                quickDemoVideoTelemetryCategory: "colorFilter",
+                settingsBlock: { try await SettingsLinkActions.openSystemSettingsPaneWithTelemetry(.accessibilityDisplayColorFilters, category: "colorFilter") },
+                settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(.accessibilityDisplayColorFilters, category: "colorFilter") },
+                style: style
+            )
             let segments = [
                 colorVisionOnSegment,
                 colorVisionOffSemgent
@@ -562,8 +584,32 @@ class MorphicBarControlItem: MorphicBarItem {
             let onHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let offHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), learnMoreTelemetryCategory: "highContrast", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), quickDemoVideoTelemetryCategory: "highContrast", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilityDisplayDisplay, category: "highContrast") }, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), learnMoreTelemetryCategory: "highContrast", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), quickDemoVideoTelemetryCategory: "highContrast", settingsBlock: { SettingsLinkActions.openSystemPreferencesPane(.accessibilityDisplayDisplay) }, style: style)
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "on"),
+                    fillColor: buttonColor,
+                    helpProvider: onHelpProvider,
+                    accessibilityLabel: localized.string(for: "on.help.title"),
+                    learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast),
+                    learnMoreTelemetryCategory: "highContrast",
+                    quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast),
+                    quickDemoVideoTelemetryCategory: "highContrast",
+                    settingsBlock: { try await SettingsLinkActions.openSystemSettingsPaneWithTelemetry(.accessibilityDisplayDisplay, category: "highContrast") },
+                    settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(.accessibilityDisplayDisplay, category: "highContrast") },
+                    style: style
+                ),
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "off"),
+                    fillColor: alternateButtonColor,
+                    helpProvider: offHelpProvider,
+                    accessibilityLabel: localized.string(for: "off.help.title"),
+                    learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast),
+                    learnMoreTelemetryCategory: "highContrast",
+                    quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast),
+                    quickDemoVideoTelemetryCategory: "highContrast",
+                    settingsBlock: { try await SettingsLinkActions.openSystemSettingsPane(.accessibilityDisplayDisplay)},
+                    settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPane_macOS12AndEarlier(.accessibilityDisplayDisplay)},
+                    style: style
+                )
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
@@ -574,21 +620,21 @@ class MorphicBarControlItem: MorphicBarItem {
             let localized = LocalizedStrings(prefix: "control.feature.contrastcolordarknight")
             
             let contrastHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "contrast.help.title"), message: localized.string(for: "contrast.help.message")) }
-            var contrastSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "contrast"), fillColor: buttonColor, helpProvider: contrastHelpProvider, accessibilityLabel: localized.string(for: "contrast.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast), learnMoreTelemetryCategory: "highContrast", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast), quickDemoVideoTelemetryCategory: "highContrast", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilityDisplayDisplay, category: "highContrast") }, style: style)
+            var contrastSegment = MorphicBarSegmentedButton.Segment(
+                title: localized.string(for: "contrast"),
+                fillColor: buttonColor,
+                helpProvider: contrastHelpProvider,
+                accessibilityLabel: localized.string(for: "contrast.tts"),
+                learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .contrast),
+                learnMoreTelemetryCategory: "highContrast",
+                quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .contrast),
+                quickDemoVideoTelemetryCategory: "highContrast",
+                settingsBlock: { try await SettingsLinkActions.openSystemSettingsPaneWithTelemetry(.accessibilityDisplayDisplay, category: "highContrast") },
+                settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(.accessibilityDisplayDisplay, category: "highContrast") },
+                style: style
+            )
             contrastSegment.getStateBlock = {
-                if #available(macOS 10.15, *) {
-                    return MorphicDisplayAccessibilitySettings.increaseContrastEnabled
-                } else {
-                    guard let displayDefaults = UserDefaults(suiteName: "com.apple.universalaccess") else {
-                        NSLog("Could not access defaults domain: \"com.apple.universalaccess\"")
-                        return false // NOTE: ideally we'd return nil
-                    }
-                    guard let contrastEnabled = displayDefaults.value(forKey: "increaseContrast") as? Bool else {
-                        return false // NOTE: ideally we'd return nil
-                    }
-
-                    return contrastEnabled
-                }
+                return MorphicDisplayAccessibilitySettings.increaseContrastEnabled
             }
             contrastSegment.accessibilityLabelByState = [
                 .on: localized.string(for: "contrast.tts.enabled"),
@@ -603,7 +649,19 @@ class MorphicBarControlItem: MorphicBarItem {
             )
             //
             let colorHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "color.help.title"), message: localized.string(for: "color.help.message")) }
-            var colorSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "color"), fillColor: alternateButtonColor, helpProvider: colorHelpProvider, accessibilityLabel: localized.string(for: "color.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .colorvision), learnMoreTelemetryCategory: "colorFilter", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .colorvision), quickDemoVideoTelemetryCategory: "colorFilter", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilityDisplayColorFilters, category: "colorFilter") }, style: style)
+            var colorSegment = MorphicBarSegmentedButton.Segment(
+                title: localized.string(for: "color"),
+                fillColor: alternateButtonColor,
+                helpProvider: colorHelpProvider,
+                accessibilityLabel: localized.string(for: "color.tts"),
+                learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .colorvision),
+                learnMoreTelemetryCategory: "colorFilter",
+                quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .colorvision),
+                quickDemoVideoTelemetryCategory: "colorFilter",
+                settingsBlock: { try await SettingsLinkActions.openSystemSettingsPaneWithTelemetry(.accessibilityDisplayColorFilters, category: "colorFilter") },
+                settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(.accessibilityDisplayColorFilters, category: "colorFilter") },
+                style: style
+            )
             colorSegment.getStateBlock = {
                 return MorphicDisplayAccessibilitySettings.colorFiltersEnabled
             }
@@ -620,7 +678,19 @@ class MorphicBarControlItem: MorphicBarItem {
             )
             //
             let darkHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "dark.help.title"), message: localized.string(for: "dark.help.message")) }
-            var darkSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "dark"), fillColor: buttonColor, helpProvider: darkHelpProvider, accessibilityLabel: localized.string(for: "dark.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .darkmode), learnMoreTelemetryCategory: "darkMode", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .darkmode), quickDemoVideoTelemetryCategory: "darkMode", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.general, category: "darkMode") }, style: style)
+            var darkSegment = MorphicBarSegmentedButton.Segment(
+                title: localized.string(for: "dark"),
+                fillColor: buttonColor,
+                helpProvider: darkHelpProvider,
+                accessibilityLabel: localized.string(for: "dark.tts"),
+                learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .darkmode),
+                learnMoreTelemetryCategory: "darkMode",
+                quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .darkmode),
+                quickDemoVideoTelemetryCategory: "darkMode",
+                settingsBlock: { try await SettingsLinkActions.openSystemSettingsPaneWithTelemetry(.appearance, category: "darkMode") },
+                settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(.appearance, category: "darkMode") },
+                style: style
+            )
             darkSegment.getStateBlock = {
                 let currentAppearanceTheme = MorphicDisplayAppearance.currentAppearanceTheme
                 switch currentAppearanceTheme {
@@ -643,7 +713,19 @@ class MorphicBarControlItem: MorphicBarItem {
             )
             //
             let nightHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "night.help.title"), message: localized.string(for: "night.help.message")) }
-            var nightSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "night"), fillColor: alternateButtonColor, helpProvider: nightHelpProvider, accessibilityLabel: localized.string(for: "night.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), learnMoreTelemetryCategory: "nightMode", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), quickDemoVideoTelemetryCategory: "nightMode", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.displaysNightShift, category: "nightMode") }, style: style)
+            var nightSegment = MorphicBarSegmentedButton.Segment(
+                title: localized.string(for: "night"),
+                fillColor: alternateButtonColor,
+                helpProvider: nightHelpProvider,
+                accessibilityLabel: localized.string(for: "night.tts"),
+                learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode),
+                learnMoreTelemetryCategory: "nightMode",
+                quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode),
+                quickDemoVideoTelemetryCategory: "nightMode",
+                settingsBlock: { try await SettingsLinkActions.openSystemSettingsPaneWithTelemetry(.displaysNightShift, category: "nightMode") },
+                settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(.displaysNightShift, category: "nightMode") },
+                style: style
+            )
             nightSegment.getStateBlock = {
                 return MorphicNightShift.getEnabled()
             }
@@ -675,8 +757,31 @@ class MorphicBarControlItem: MorphicBarItem {
             let copyHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
             let pasteHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "paste.help.title"), message: localized.string(for: "paste.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "copy"), fillColor: buttonColor, helpProvider: copyHelpProvider, accessibilityLabel: localized.string(for: "copy.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .copypaste), learnMoreTelemetryCategory: "copyPaste", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .copypaste), quickDemoVideoTelemetryCategory: "copyPaste", settingsBlock: nil, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "paste"), fillColor: alternateButtonColor, helpProvider: pasteHelpProvider, accessibilityLabel: localized.string(for: "paste.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .copypaste), learnMoreTelemetryCategory: "copyPaste", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .copypaste), quickDemoVideoTelemetryCategory: "copyPaste", settingsBlock: nil, style: style)
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "copy"),
+                    fillColor: buttonColor,
+                    helpProvider: copyHelpProvider,
+                    accessibilityLabel: localized.string(for: "copy.help.title"),
+                    learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .copypaste),
+                    learnMoreTelemetryCategory: "copyPaste",
+                    quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .copypaste),
+                    quickDemoVideoTelemetryCategory: "copyPaste",
+                    settingsBlock: nil,
+                    settingsBlock_macOS12AndEarlier: nil,
+                    style: style),
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "paste"),
+                    fillColor: alternateButtonColor,
+                    helpProvider: pasteHelpProvider,
+                    accessibilityLabel: localized.string(for: "paste.help.title"),
+                    learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .copypaste),
+                    learnMoreTelemetryCategory: "copyPaste",
+                    quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .copypaste),
+                    quickDemoVideoTelemetryCategory: "copyPaste",
+                    settingsBlock: nil,
+                    settingsBlock_macOS12AndEarlier: nil,
+                    style: style
+                )
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
@@ -688,8 +793,32 @@ class MorphicBarControlItem: MorphicBarItem {
             let showHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let hideHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             //
-            let darkModeOnSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: showHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .darkmode), learnMoreTelemetryCategory: "darkMode", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .darkmode), quickDemoVideoTelemetryCategory: "darkMode", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.general, category: "darkMode") }, style: style)
-            let darkModeOffSemgent = MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: hideHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .darkmode), learnMoreTelemetryCategory: "darkMode", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .darkmode), quickDemoVideoTelemetryCategory: "darkMode", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.general, category: "darkMode") }, style: style)
+            let darkModeOnSegment = MorphicBarSegmentedButton.Segment(
+                title: localized.string(for: "on"),
+                fillColor: buttonColor,
+                helpProvider: showHelpProvider,
+                accessibilityLabel: localized.string(for: "on.help.title"),
+                learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .darkmode),
+                learnMoreTelemetryCategory: "darkMode",
+                quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .darkmode),
+                quickDemoVideoTelemetryCategory: "darkMode",
+                settingsBlock: { try await SettingsLinkActions.openSystemSettingsPaneWithTelemetry(.appearance, category: "darkMode") },
+                settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(.appearance, category: "darkMode") },
+                style: style
+            )
+            let darkModeOffSemgent = MorphicBarSegmentedButton.Segment(
+                title: localized.string(for: "off"),
+                fillColor: alternateButtonColor,
+                helpProvider: hideHelpProvider,
+                accessibilityLabel: localized.string(for: "off.help.title"),
+                learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .darkmode),
+                learnMoreTelemetryCategory: "darkMode",
+                quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .darkmode),
+                quickDemoVideoTelemetryCategory: "darkMode",
+                settingsBlock: { try await SettingsLinkActions.openSystemSettingsPaneWithTelemetry(.appearance, category: "darkMode") },
+                settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(.appearance, category: "darkMode") },
+                style: style
+            )
             let segments = [
                 darkModeOnSegment,
                 darkModeOffSemgent
@@ -709,8 +838,31 @@ class MorphicBarControlItem: MorphicBarItem {
             let showHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: isOnOff ? "on.help.title" : "show.help.title"), message: localized.string(for: isOnOff ? "on.help.message" : "show.help.message")) }
             let hideHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: isOnOff ? "off.help.title" : "hide.help.title"), message: localized.string(for: isOnOff ? "off.help.message" : "hide.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: isOnOff ? "on" : "show"), fillColor: buttonColor, helpProvider: showHelpProvider, accessibilityLabel: localized.string(for: isOnOff ? "on.help.title" : "show.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .magnifier), learnMoreTelemetryCategory: "magnifier", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .magnifier), quickDemoVideoTelemetryCategory: "magnifier", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilityZoom, category: "magnifier") }, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: isOnOff ? "off" : "hide"), fillColor: alternateButtonColor, helpProvider: hideHelpProvider, accessibilityLabel: localized.string(for: isOnOff ? "off.help.title" : "hide.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .magnifier), learnMoreTelemetryCategory: "magnifier", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .magnifier), quickDemoVideoTelemetryCategory: "magnifier", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilityZoom, category: "magnifier") }, style: style)
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: isOnOff ? "on" : "show"),
+                    fillColor: buttonColor, helpProvider: showHelpProvider,
+                    accessibilityLabel: localized.string(for: isOnOff ? "on.help.title" : "show.tts"),
+                    learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .magnifier),
+                    learnMoreTelemetryCategory: "magnifier",
+                    quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .magnifier),
+                    quickDemoVideoTelemetryCategory: "magnifier",
+                    settingsBlock: { try await SettingsLinkActions.openSystemSettingsPaneWithTelemetry(.accessibilityZoom, category: "magnifier") },
+                    settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(.accessibilityZoom, category: "magnifier") },
+                    style: style
+                ),
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: isOnOff ? "off" : "hide"),
+                    fillColor: alternateButtonColor,
+                    helpProvider: hideHelpProvider,
+                    accessibilityLabel: localized.string(for: isOnOff ? "off.help.title" : "hide.tts"),
+                    learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .magnifier),
+                    learnMoreTelemetryCategory: "magnifier",
+                    quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .magnifier),
+                    quickDemoVideoTelemetryCategory: "magnifier",
+                    settingsBlock: { try await SettingsLinkActions.openSystemSettingsPaneWithTelemetry(.accessibilityZoom, category: "magnifier") },
+                    settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(.accessibilityZoom, category: "magnifier") },
+                    style: style
+                )
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
@@ -722,8 +874,32 @@ class MorphicBarControlItem: MorphicBarItem {
             let onHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let offHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), learnMoreTelemetryCategory: "nightMode", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), quickDemoVideoTelemetryCategory: "nightMode", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.displaysNightShift, category: "nightMode") }, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode), learnMoreTelemetryCategory: "nightMode", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode), quickDemoVideoTelemetryCategory: "nightMode", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.displaysNightShift, category: "nightMode") }, style: style)
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "on"),
+                    fillColor: buttonColor,
+                    helpProvider: onHelpProvider,
+                    accessibilityLabel: localized.string(for: "on.help.title"),
+                    learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode),
+                    learnMoreTelemetryCategory: "nightMode",
+                    quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode),
+                    quickDemoVideoTelemetryCategory: "nightMode",
+                    settingsBlock: { try await SettingsLinkActions.openSystemSettingsPaneWithTelemetry(.displaysNightShift, category: "nightMode") },
+                    settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(.displaysNightShift, category: "nightMode") },
+                    style: style
+                ),
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "off"),
+                    fillColor: alternateButtonColor,
+                    helpProvider: offHelpProvider,
+                    accessibilityLabel: localized.string(for: "off.help.title"),
+                    learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .nightmode),
+                    learnMoreTelemetryCategory: "nightMode",
+                    quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .nightmode),
+                    quickDemoVideoTelemetryCategory: "nightMode",
+                    settingsBlock: { try await SettingsLinkActions.openSystemSettingsPaneWithTelemetry(.displaysNightShift, category: "nightMode") },
+                    settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(.displaysNightShift, category: "nightMode") },
+                    style: style
+                )
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
@@ -735,8 +911,32 @@ class MorphicBarControlItem: MorphicBarItem {
             let onHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "on.help.title"), message: localized.string(for: "on.help.message")) }
             let offHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "off.help.title"), message: localized.string(for: "off.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "on"), fillColor: buttonColor, helpProvider: onHelpProvider, accessibilityLabel: localized.string(for: "on.tts"), learnMoreUrl: nil, learnMoreTelemetryCategory: nil, quickDemoVideoUrl: nil, quickDemoVideoTelemetryCategory: nil, settingsBlock: nil, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "off"), fillColor: alternateButtonColor, helpProvider: offHelpProvider, accessibilityLabel: localized.string(for: "off.tts"), learnMoreUrl: nil, learnMoreTelemetryCategory: nil, quickDemoVideoUrl: nil, quickDemoVideoTelemetryCategory: nil, settingsBlock: nil, style: style)
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "on"),
+                    fillColor: buttonColor,
+                    helpProvider: onHelpProvider,
+                    accessibilityLabel: localized.string(for: "on.tts"),
+                    learnMoreUrl: nil,
+                    learnMoreTelemetryCategory: nil,
+                    quickDemoVideoUrl: nil,
+                    quickDemoVideoTelemetryCategory: nil,
+                    settingsBlock: nil,
+                    settingsBlock_macOS12AndEarlier: nil,
+                    style: style
+                ),
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "off"),
+                    fillColor: alternateButtonColor,
+                    helpProvider: offHelpProvider,
+                    accessibilityLabel: localized.string(for: "off.tts"),
+                    learnMoreUrl: nil,
+                    learnMoreTelemetryCategory: nil,
+                    quickDemoVideoUrl: nil,
+                    quickDemoVideoTelemetryCategory: nil,
+                    settingsBlock: nil,
+                    settingsBlock_macOS12AndEarlier: nil,
+                    style: style
+                )
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
@@ -747,7 +947,19 @@ class MorphicBarControlItem: MorphicBarItem {
             let localized = LocalizedStrings(prefix: "control.feature.readselected")
             let playStopHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "playstop.help.title"), message: localized.string(for: "playstop.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "playstop"), fillColor: buttonColor, helpProvider: playStopHelpProvider, accessibilityLabel: localized.string(for: "playstop.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .readselMac), learnMoreTelemetryCategory: "readAloud", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .readselMac), quickDemoVideoTelemetryCategory: "readAloud", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.accessibilitySpeech, category: "readAloud") }, style: style)
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "playstop"),
+                    fillColor: buttonColor,
+                    helpProvider: playStopHelpProvider,
+                    accessibilityLabel: localized.string(for: "playstop.tts"),
+                    learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .readselMac),
+                    learnMoreTelemetryCategory: "readAloud",
+                    quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .readselMac),
+                    quickDemoVideoTelemetryCategory: "readAloud",
+                    settingsBlock: { try await SettingsLinkActions.openSystemSettingsPaneWithTelemetry(.accessibilitySpeech, category: "readAloud") },
+                    settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(.accessibilitySpeech, category: "readAloud") },
+                    style: style
+                )
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 14, bottom: 7, right: 14)
@@ -757,8 +969,32 @@ class MorphicBarControlItem: MorphicBarItem {
         case .resolution:
             let localized = LocalizedStrings(prefix: "control.feature.resolution")
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "bigger"), fillColor: buttonColor, helpProvider:  QuickHelpTextSizeBiggerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "bigger.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize), learnMoreTelemetryCategory: "textSize", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize), quickDemoVideoTelemetryCategory: "textSize", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31)),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "smaller"), fillColor: alternateButtonColor, helpProvider: QuickHelpTextSizeSmallerProvider(display: Display.main, localized: localized), accessibilityLabel: localized.string(for: "smaller.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize), learnMoreTelemetryCategory: "textSize", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize), quickDemoVideoTelemetryCategory: "textSize", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31))
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "bigger"),
+                    fillColor: buttonColor,
+                    helpProvider:  QuickHelpTextSizeBiggerProvider(/*display: Display.main, */localized: localized),
+                    accessibilityLabel: localized.string(for: "bigger.tts"),
+                    learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize),
+                    learnMoreTelemetryCategory: "textSize",
+                    quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize),
+                    quickDemoVideoTelemetryCategory: "textSize",
+                    settingsBlock: nil,
+                    settingsBlock_macOS12AndEarlier: nil,
+                    style: .fixedWidth(segmentWidth: 31)
+                ),
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "smaller"),
+                    fillColor: alternateButtonColor,
+                    helpProvider: QuickHelpTextSizeSmallerProvider(/*display: Display.main, */localized: localized),
+                    accessibilityLabel: localized.string(for: "smaller.tts"),
+                    learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .textsize),
+                    learnMoreTelemetryCategory: "textSize",
+                    quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .textsize),
+                    quickDemoVideoTelemetryCategory: "textSize",
+                    settingsBlock: nil,
+                    settingsBlock_macOS12AndEarlier: nil,
+                    style: .fixedWidth(segmentWidth: 31)
+                )
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.target = self
@@ -772,7 +1008,19 @@ class MorphicBarControlItem: MorphicBarItem {
         case .screensnip:
             let localized = LocalizedStrings(prefix: "control.feature.screensnip")
             let copyHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "copy.help.title"), message: localized.string(for: "copy.help.message")) }
-            var snipSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "copy"), fillColor: buttonColor, helpProvider: copyHelpProvider, accessibilityLabel: localized.string(for: "copy.tts"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .snip), learnMoreTelemetryCategory: "screenSnip", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .snip), quickDemoVideoTelemetryCategory: "screenSnip", settingsBlock: { SettingsLinkActions.openSystemPreferencesPaneWithTelemetry(.keyboardShortcutsScreenshots, category: "screenSnip") }, style: style)
+            var snipSegment = MorphicBarSegmentedButton.Segment(
+                title: localized.string(for: "copy"),
+                fillColor: buttonColor,
+                helpProvider: copyHelpProvider,
+                accessibilityLabel: localized.string(for: "copy.tts"),
+                learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .snip),
+                learnMoreTelemetryCategory: "screenSnip",
+                quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .snip),
+                quickDemoVideoTelemetryCategory: "screenSnip",
+                settingsBlock: { try await SettingsLinkActions.openSystemSettingsPaneWithTelemetry(.keyboardShortcutsScreenshots, category: "screenSnip") },
+                settingsBlock_macOS12AndEarlier: { SettingsLinkActions.openSystemSettingsPaneWithTelemetry_macOS12AndEarlier(.keyboardShortcutsScreenshots, category: "screenSnip") },
+                style: style
+            )
             snipSegment.settingsMenuItemTitle = "Other Screenshot Shortcuts"
             let segments = [
                 snipSegment
@@ -787,8 +1035,32 @@ class MorphicBarControlItem: MorphicBarItem {
             let openHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "open.help.title"), message: localized.string(for: "open.help.message")) }
             let ejectHelpProvider = QuickHelpDynamicTextProvider { (title: localized.string(for: "eject.help.title"), message: localized.string(for: "eject.help.message")) }
             let segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "open"), fillColor: buttonColor, helpProvider: openHelpProvider, accessibilityLabel: localized.string(for: "open.help.title"), learnMoreUrl: nil, learnMoreTelemetryCategory: nil, quickDemoVideoUrl: nil, quickDemoVideoTelemetryCategory: nil, settingsBlock: nil, style: style),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "eject"), fillColor: alternateButtonColor, helpProvider: ejectHelpProvider, accessibilityLabel: localized.string(for: "eject.help.title"), learnMoreUrl: nil, learnMoreTelemetryCategory: nil, quickDemoVideoUrl: nil, quickDemoVideoTelemetryCategory: nil, settingsBlock: nil, style: style)
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "open"),
+                    fillColor: buttonColor,
+                    helpProvider: openHelpProvider,
+                    accessibilityLabel: localized.string(for: "open.help.title"),
+                    learnMoreUrl: nil,
+                    learnMoreTelemetryCategory: nil,
+                    quickDemoVideoUrl: nil,
+                    quickDemoVideoTelemetryCategory: nil,
+                    settingsBlock: nil,
+                    settingsBlock_macOS12AndEarlier: nil,
+                    style: style
+                ),
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "eject"),
+                    fillColor: alternateButtonColor,
+                    helpProvider: ejectHelpProvider,
+                    accessibilityLabel: localized.string(for: "eject.help.title"),
+                    learnMoreUrl: nil,
+                    learnMoreTelemetryCategory: nil,
+                    quickDemoVideoUrl: nil,
+                    quickDemoVideoTelemetryCategory: nil,
+                    settingsBlock: nil,
+                    settingsBlock_macOS12AndEarlier: nil,
+                    style: style
+                )
             ]
             let view = MorphicBarSegmentedButtonItemView(title: localized.string(for: "title"), segments: segments, style: style)
             view.segmentedButton.contentInsets = NSEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
@@ -799,12 +1071,48 @@ class MorphicBarControlItem: MorphicBarItem {
              .volumewithoutmute:
             let localized = LocalizedStrings(prefix: "control.feature.volume")
             var segments = [
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "up"), fillColor: buttonColor, helpProvider: QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "up.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), learnMoreTelemetryCategory: "volume", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), quickDemoVideoTelemetryCategory: "volume", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31)),
-                MorphicBarSegmentedButton.Segment(title: localized.string(for: "down"), fillColor: alternateButtonColor, helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "down.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), learnMoreTelemetryCategory: "volume", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), quickDemoVideoTelemetryCategory: "volume", settingsBlock: nil, style: .fixedWidth(segmentWidth: 31))
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "up"),
+                    fillColor: buttonColor,
+                    helpProvider: QuickHelpVolumeUpProvider(audioOutput: AudioOutput.main, localized: localized),
+                    accessibilityLabel: localized.string(for: "up.help.title"),
+                    learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute),
+                    learnMoreTelemetryCategory: "volume",
+                    quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute),
+                    quickDemoVideoTelemetryCategory: "volume",
+                    settingsBlock: nil,
+                    settingsBlock_macOS12AndEarlier: nil,
+                    style: .fixedWidth(segmentWidth: 31)
+                ),
+                MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "down"),
+                    fillColor: alternateButtonColor,
+                    helpProvider: QuickHelpVolumeDownProvider(audioOutput: AudioOutput.main, localized: localized),
+                    accessibilityLabel: localized.string(for: "down.help.title"),
+                    learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute),
+                    learnMoreTelemetryCategory: "volume",
+                    quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute),
+                    quickDemoVideoTelemetryCategory: "volume",
+                    settingsBlock: nil,
+                    settingsBlock_macOS12AndEarlier: nil,
+                    style: .fixedWidth(segmentWidth: 31)
+                )
             ]
             if feature == .volume {
                 // create and add mute segment
-                var muteSegment = MorphicBarSegmentedButton.Segment(title: localized.string(for: "mute"), fillColor: buttonColor, helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized), accessibilityLabel: localized.string(for: "mute.help.title"), learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute), learnMoreTelemetryCategory: "volume", quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute), quickDemoVideoTelemetryCategory: "volume", settingsBlock: nil, style: style)
+                var muteSegment = MorphicBarSegmentedButton.Segment(
+                    title: localized.string(for: "mute"),
+                    fillColor: buttonColor,
+                    helpProvider: QuickHelpVolumeMuteProvider(audioOutput: AudioOutput.main, localized: localized),
+                    accessibilityLabel: localized.string(for: "mute.help.title"),
+                    learnMoreUrl: MorphicBarControlItem.learnMoreUrl(for: .volmute),
+                    learnMoreTelemetryCategory: "volume",
+                    quickDemoVideoUrl: MorphicBarControlItem.quickDemoVideoUrl(for: .volmute),
+                    quickDemoVideoTelemetryCategory: "volume",
+                    settingsBlock: nil,
+                    settingsBlock_macOS12AndEarlier: nil,
+                    style: style
+                )
                 muteSegment.getStateBlock = {
                     guard let defaultAudioDeviceId = MorphicAudio.getDefaultAudioDeviceId() else {
                         // default: return false
@@ -852,9 +1160,18 @@ class MorphicBarControlItem: MorphicBarItem {
         guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
             return
         }
-        guard let display = Display.main else {
+        
+        // NOTE: due to a limitation in Morphic 1.x, we use the current mouse pointer location as a proxy for the screen on which the
+        //       Morphic bar is currently shown; in the future, we should get the current display for the MorphicBar WINDOW instead
+        guard let mousePointerLocation = MorphicSettings.MorphicMouse.getCurrentLocation() else {
+            assertionFailure("Could not locate the mouse pointer")
             return
         }
+        guard let display = Display.displayContainingPoint(mousePointerLocation) else {
+            assertionFailure("Could not determine which display contains the mouse pointer")
+            return
+        }
+
         var percentage: Double
         var isZoomingIn: Bool
         var zoomToStep: Int?
@@ -870,15 +1187,11 @@ class MorphicBarControlItem: MorphicBarItem {
         }
         //
         defer {
-            var segmentation: [String: String] = [:]
-            segmentation["scalePercent"] =  String(Int(percentage * 100))
-            if let zoomToStep = zoomToStep {
-                segmentation["dotOffset"] = String(zoomToStep)
-            }
+            // NOTE: if we wanted to send the scale percentage, we could capture "scalePercentage"--and then send that as a parameter via eventData; ideally we'd look at this from a "relative to system default/recommended %" basis, rather than "dots" or absolute %
             if isZoomingIn == true {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("textSizeIncrease", segmentation: segmentation)
+                TelemetryClientProxy.enqueueActionMessage(eventName: "textSizeIncrease")
             } else {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("textSizeDecrease", segmentation: segmentation)
+                TelemetryClientProxy.enqueueActionMessage(eventName: "textSizeDecrease")
             }
         }
         //
@@ -1000,7 +1313,7 @@ class MorphicBarControlItem: MorphicBarItem {
     @objc
     func signout(_ sender: Any?) {
         defer {
-            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("signOut")
+            TelemetryClientProxy.enqueueActionMessage(eventName: "signOut")
         }
         
         MorphicProcess.logOutUserViaOsaScriptWithConfirmation()
@@ -1009,7 +1322,7 @@ class MorphicBarControlItem: MorphicBarItem {
     @objc
     func screensnip(_ sender: Any?) {
         defer {
-            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("screenSnip")
+            TelemetryClientProxy.enqueueActionMessage(eventName: "screenSnip")
         }
 
         // verify that we have accessibility permissions (since UI automation and sendKeys will not work without them)
@@ -1028,7 +1341,7 @@ class MorphicBarControlItem: MorphicBarItem {
             keyOptions = hotKeyInfo.keyOptions
             hotKeyEnabled = hotKeyInfo.enabled
         } else {
-            // NOTE: in macOS 10.14+ (tested through 10.15), the hotkeys are not written out to the appropriate .plist file until one of them is changed (including disabling the enabled-by-default feature); the current strategy is to assume the default key combo in this scenario, but in the future we may want to consider reverse engineering the HI libraries or Keyboard system preferences pane to find another way to get this data
+            // NOTE: in macOS 10.15+ (tested through 10.15), the hotkeys are not written out to the appropriate .plist file until one of them is changed (including disabling the enabled-by-default feature); the current strategy is to assume the default key combo in this scenario, but in the future we may want to consider reverse engineering the HI libraries or Keyboard system preferences pane to find another way to get this data
             
             // default values
             keyCode = CGKeyCode(kVK_ANSI_4)
@@ -1056,8 +1369,45 @@ class MorphicBarControlItem: MorphicBarItem {
         }
     }
 
+    // NOTE: the operation of the button's "setColorFilterState" is a more complicated script than what the settings handler for color filter state does (i.e. that setting handler opens the System Settings and checks/unchecks the appropriate box)
+    private func setColorFilterState(_ state: Bool, waitAtMost: TimeInterval) async throws {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            
+            // if the inverse state is "enabled", then make sure we've set the initial color filter type
+            if state == true {
+                // set the default color filter type (if it hasn't already been set)
+                let didSetInitialColorFilterType = Session.shared.bool(for: .morphicDidSetInitialColorFilterType) ?? false
+                if didSetInitialColorFilterType == false {
+                    // NOTE: we currently ignore success/failure from the following function
+                    let _ = try await AppDelegate.shared.setInitialColorFilterType(waitAtMost: waitAtMost)
+                }
+            }
+            
+            // apply the inverse state
+            //
+            // NOTE: due to current limitations in our implementation, we are unable to disable "invert colors" (which is the desired effect when enabling color filters); this is unlikely to be a common scenario, but if we run into it then we need to use the backup UI automation mechanism
+            // NOTE: in the future, we should rework the settings handlers so that they can call native code which can launch a UI automation (instead of being either/or)...and then move this logic to the settings handler code
+            if state == true && MorphicDisplayAccessibilitySettings.invertColorsEnabled == true {
+                // NOTE: in our current implementation, we have no method to determine success/failure of the operation
+                Session.shared.apply(state, for: .macosColorFilterEnabled, completion: { _ in })
+            } else {
+                // NOTE: in our current implementation, we have no method to determine success/failure of the operation
+                MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(state)
+            }
+        } else {
+            // macOS 12.x and earlier
+            fatalError("This function is intended for use with macOS 13.0 and later; use the nonasync version of this function for earlier versions.")
+        }
+    }
+    
     private func setColorFilterState(_ state: Bool, completion: @escaping (Bool) -> Void) {
-        if #available(macOS 10.15, *) {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            fatalError("This function is intended for use with macOS versions prior to macOS 13.0; use the async version of this function for macOS 13.0 and greater instead.")
+        } else {
+            // macOS 12.x and earlier
+         
             // if the inverse state is "enabled", then make sure we've set the initial color filter type
             if state == true {
                 // set the default color filter type (if it hasn't already been set)
@@ -1078,58 +1428,196 @@ class MorphicBarControlItem: MorphicBarItem {
                 MorphicDisplayAccessibilitySettings.setColorFiltersEnabled(state)
                 completion(true)
             }
-        } else {
-            // macOS 10.14
-            self.warnColorVisionFiltersNotAvailableOnMacOS10_14()
         }
     }
      
-    private func warnColorVisionFiltersNotAvailableOnMacOS10_14() {
-        let alert = NSAlert()
-        alert.messageText = "Color Vision filters not available."
-        alert.informativeText = "Color Vision filters (including color blindness filters) are not available in this older version of macOS.\n\nPlease upgrade to macOS 10.15 (Catalina) or newer to use this feature."
-        alert.alertStyle = .informational
-        alert.addButton(withTitle: "OK")
-        _ = alert.runModal()
-    }
-    
     @objc
     func colorvision(_ sender: Any?) {
-        guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
+        guard let senderAsSegmentedButton = sender as? MorphicBarSegmentedButton else {
             return
         }
-        if segment == 0 {
-            defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("colorFiltersOn")
-            }
+        let segment = senderAsSegmentedButton.selectedSegmentIndex
+        
+        let newValue = (segment == 0 ? true : false)
+        
+        defer {
+            TelemetryClientProxy.enqueueActionMessage(eventName: (newValue == true) ? "colorFiltersOn" : "colorFiltersOff")
+        }
 
-            self.setColorFilterState(true) {
-                _ in
+        if #available(macOS 13.0, *) {
+            Task {
+                let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
+                try await self.setColorFilterState(newValue, waitAtMost: waitForTimespan)
+
+                guard let verifyColorFiltersAreEnabled = try AccessibilityDisplaySettings.getColorFiltersAreEnabled() else {
+                    // could not get current setting
+                    return
+                }
+                await senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyColorFiltersAreEnabled)
             }
         } else {
-            defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("colorFiltersOff")
-            }
-
-            self.setColorFilterState(false) {
-                _ in
+            self.setColorFilterState(newValue) {
+                success in
+                
+                // NOTE: we do not currently have a mechanism to report success/failure
+                SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+                    verifyValue in
+                    guard let verifyValueAsBoolean = verifyValue as? Bool else {
+                        // could not get current setting
+                        return
+                    }
+                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyValueAsBoolean)
+                }
             }
         }
     }
 
+     // NOTE: this function returns the new contrast state
+     func toggleContrastState() throws -> Bool {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            fatalError("This function is intended for use with macOS versions prior to macOS 13.0; use the async version of this function for macOS 13.0 and greater instead.")
+        } else {
+            // macOS 12.x and earlier
+
+            // verify that we have accessibility permissions (since UI automation will not work without them)
+            // NOTE: this function call will prompt the user for authorization if they have not already granted it
+            guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+                NSLog("User had not granted 'accessibility' authorization; user now prompted")
+                throw MorphicError.unspecified
+            }
+
+            // capture the current "contrast enabled" setting
+            let increaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+            // calculate the inverse state
+            let newIncreaseContrastEnabled = !increaseContrastEnabled
+            
+            self.setContrastState(newIncreaseContrastEnabled)
+            
+            // we do not currently have a mechanism to report success/failure
+            let verifyIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
+            return verifyIncreaseContrastEnabled
+        }
+    }
+    
+    // NOTE: this function returns the new contrast state
+    func toggleContrastState(waitAtMost: TimeInterval) async throws -> Bool {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            
+            // verify that we have accessibility permissions (since UI automation will not work without them)
+            // NOTE: this function call will prompt the user for authorization if they have not already granted it
+            guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+                NSLog("User had not granted 'accessibility' authorization; user now prompted")
+                throw MorphicError.unspecified
+            }
+            
+            // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+            let uiAutomationSequence = UIAutomationSequence()
+            let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+
+            // capture the current "contrast enabled" setting
+            var waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+            let increaseContrastIsEnabled = try await AccessibilityDisplayUIAutomationScript_macOS13.getIncreaseContrastIsOn(sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+            // calculate the inverse state
+            let newIncreaseContrastEnabled = !increaseContrastIsEnabled
+        
+            waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+            try await self.setContrastState(newIncreaseContrastEnabled, waitAtMost: waitForTimespan)
+
+            // verify that the state has changed
+            waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+            let verifyIncreaseContrastEnabled = try await AsyncUtils.wait(atMost: waitForTimespan) {
+                guard let verifyValue = try MorphicSettings.AccessibilityDisplaySettings.getIncreaseContrastIsEnabled() else {
+                    return false
+                }
+
+                return verifyValue == newIncreaseContrastEnabled
+            }
+            if verifyIncreaseContrastEnabled == false {
+                // could not verify "reduce transparency" value change
+                throw MorphicError.unspecified
+            }
+
+            return newIncreaseContrastEnabled
+        } else {
+            // macOS 12.x and earlier
+            fatalError("This function is not intended for use with macOS versions prior to macOS 13.0: use the non-async version of this function instead")
+        }
+    }
+    
+    func setContrastState(_ value: Bool) {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            fatalError("This function is intended for use with macOS versions prior to macOS 13.0; use the async version of this function for macOS 13.0 and greater instead.")
+        } else {
+            // macOS 12.x and earlier
+
+            // verify that we have accessibility permissions (since UI automation will not work without them)
+            // NOTE: this function call will prompt the user for authorization if they have not already granted it
+            guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+                NSLog("User had not granted 'accessibility' authorization; user now prompted")
+                return
+            }
+
+            Session.shared.apply(value, for: .macosDisplayContrastEnabled) {
+                _ in
+            }
+        }
+    }
+    
+    func setContrastState(_ value: Bool, waitAtMost: TimeInterval) async throws {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            
+            // verify that we have accessibility permissions (since UI automation will not work without them)
+            // NOTE: this function call will prompt the user for authorization if they have not already granted it
+            guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+                NSLog("User had not granted 'accessibility' authorization; user now prompted")
+                throw MorphicError.unspecified
+            }
+
+            // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+            let sequence = UIAutomationSequence()
+
+//            let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+        
+            let setSettingProxy = IncreaseConstrastUIAutomationSetSettingProxy()
+            try await setSettingProxy.setIncreaseContrast(value, sequence: sequence, waitAtMost: waitAtMost)
+        } else {
+            // macOS 12.x and earlier
+            fatalError("This function is not intended for use with macOS versions prior to macOS 13.0: use the non-async version of this function instead")
+        }
+    }
+    
     @objc
     func contrast(_ sender: Any?) {
         guard let segment = (sender as? MorphicBarSegmentedButton)?.selectedSegmentIndex else {
             return
         }
+        
+        let newState: Bool
         if segment == 0 {
-            Session.shared.apply(true, for: .macosDisplayContrastEnabled) {
-                _ in
+            newState = true
+        } else {
+            newState = false
+        }
+        
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task {
+                // NOTE: we have no mechanism to report success/failure in the current implementation of this "contrast(...)" @objc function
+                do {
+                    let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
+                    try await self.setContrastState(newState, waitAtMost: waitForTimespan)
+                } catch {
+                    // NOTE: we don't currently have a way to report an error to the caller
+                }
             }
         } else {
-            Session.shared.apply(false, for: .macosDisplayContrastEnabled) {
-                _ in
-            }
+            // macOS 12.x and earlier
+            // NOTE: we have no mechanism to report success/failure in the current implementation of this "contrast(...)" @objc function
+            self.setContrastState(newState)
         }
     }
     
@@ -1217,43 +1705,64 @@ class MorphicBarControlItem: MorphicBarItem {
 //                let verifyIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
 //                senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyIncreaseContrastEnabled)
 //            } else {
-                // macOS 10.14
-             
-                // capture the current "contrast enabled" setting
-                let increaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
-                // calculate the inverse state
-                let newIncreaseContrastEnabled = !increaseContrastEnabled
-                //
-                defer {
-                    (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newIncreaseContrastEnabled ? "highContrastOn" : "highContrastOff")
-                }
-                // apply the inverse state
-                Session.shared.apply(newIncreaseContrastEnabled, for: .macosDisplayContrastEnabled) {
-                    success in
-                    // we do not currently have a mechanism to report success/failure
+                // macOS 10.14 (and tested to work in newer verisons of macOS such as macOS 10.15, macOS 11+, etc.)
 
-                    let verifyIncreaseContrastEnabled = MorphicDisplayAccessibilitySettings.increaseContrastEnabled
-                    senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyIncreaseContrastEnabled)
+                if #available(macOS 13.0, *) {
+                    Task {
+                        do {
+                            // NOTE: due to limitations in how this function gets called after the button press, we don't have a good way to return the result of the toggle (i.e. the new state)
+                            let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
+                            let newContrastState = try await self.toggleContrastState(waitAtMost: waitForTimespan)
+
+                            defer {
+                                TelemetryClientProxy.enqueueActionMessage(eventName: newContrastState ? "highContrastOn" : "highContrastOff")
+                            }
+                            await senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newContrastState)
+                        } catch {
+                            // ignore any errors; we don't have a way to report success/failure
+                        }
+                    }
+                } else {
+                    do {
+                        let newContrastState = try self.toggleContrastState()
+
+                        defer {
+                            TelemetryClientProxy.enqueueActionMessage(eventName: newContrastState ? "highContrastOn" : "highContrastOff")
+                        }
+                        senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: newContrastState)
+                    } catch {
+                        // ignore any errors; we don't have a way to report success/failure
+                    }
                 }
-//            }
         case 1:
             // color (color filter)
             
-            if #available(macOS 10.15, *) {
-                // capture the current "color filter enabled" setting
-                SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
-                    value in
-                    guard let valueAsBoolean = value as? Bool else {
-                        // could not get current setting
-                        return
+            // capture the current "color filter enabled" setting
+            SettingsManager.shared.capture(valueFor: .macosColorFilterEnabled) {
+                value in
+                guard let valueAsBoolean = value as? Bool else {
+                    // could not get current setting
+                    return
+                }
+                // calculate the inverse state
+                let newValue = !valueAsBoolean
+                
+                defer {
+                    TelemetryClientProxy.enqueueActionMessage(eventName: newValue ? "colorFiltersOn" : "colorFiltersOff")
+                }
+                
+                if #available(macOS 13.0, *) {
+                    Task {
+                        let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
+                        try await self.setColorFilterState(newValue, waitAtMost: waitForTimespan)
+
+                        guard let verifyColorFiltersAreEnabled = try AccessibilityDisplaySettings.getColorFiltersAreEnabled() else {
+                            // could not get current setting
+                            return
+                        }
+                        await senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyColorFiltersAreEnabled)
                     }
-                    // calculate the inverse state
-                    let newValue = !valueAsBoolean
-                    
-                    defer {
-                        (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newValue ? "colorFiltersOn" : "colorFiltersOff")
-                    }
-                    
+                } else {
                     self.setColorFilterState(newValue) {
                         success in
                         
@@ -1268,9 +1777,6 @@ class MorphicBarControlItem: MorphicBarItem {
                         }
                     }
                 }
-            } else {
-                // macOS 10.14
-                self.warnColorVisionFiltersNotAvailableOnMacOS10_14()
             }
         case 2:
             // dark
@@ -1285,7 +1791,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
             //
             defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newDarkModeEnabled ? "darkModeOn" : "darkModeOff")
+                TelemetryClientProxy.enqueueActionMessage(eventName: newDarkModeEnabled ? "darkModeOn" : "darkModeOff")
             }
             //
             switch newDarkModeEnabled {
@@ -1305,7 +1811,7 @@ class MorphicBarControlItem: MorphicBarItem {
             }
             senderAsSegmentedButton.setButtonState(index: segment, stateAsBool: verifyButtonState)
 
-//            // NOTE: if we ever have problems with our reverse-engineered implementation (above), the below UI automation code also works (albeit very slowly)
+//            // NOTE: if we ever have problems with our reverse-engineered implementation (above), the below UI automation code also works (albeit very slowly); note that this only works with macOS releases prior to macOS 13.0 and it would need to be updated to the correspondingly-appropriate code for newer versions of macOS
 //            switch NSApp.effectiveAppearance.name {
 //            case .darkAqua,
 //                 .vibrantDark,
@@ -1338,7 +1844,7 @@ class MorphicBarControlItem: MorphicBarItem {
             let newNightShiftEnabled = !nightShiftEnabled
             //
             defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent(newNightShiftEnabled ? "nightModeOn" : "nightModeOff")
+                TelemetryClientProxy.enqueueActionMessage(eventName: newNightShiftEnabled ? "nightModeOn" : "nightModeOff")
             }
             //
             MorphicNightShift.setEnabled(newNightShiftEnabled)
@@ -1362,13 +1868,13 @@ class MorphicBarControlItem: MorphicBarItem {
         }
         if segment == 0 {
             defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("darkModeOn")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "darkModeOn")
             }
 
             MorphicDisplayAppearance.setCurrentAppearanceTheme(.dark)
         } else {
             defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("darkModeOff")
+                TelemetryClientProxy.enqueueActionMessage(eventName: "darkModeOff")
             }
 
             MorphicDisplayAppearance.setCurrentAppearanceTheme(.light)
@@ -1406,91 +1912,172 @@ class MorphicBarControlItem: MorphicBarItem {
     @objc
     func readselected(_ sender: Any?) {
         defer {
-            (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("readSelectedToggle")
+            TelemetryClientProxy.enqueueActionMessage(eventName: "readSelectedToggle")
         }
         
-        // verify that we have accessibility permissions (since UI automation and sendKeys will not work without them)
-        // NOTE: this function call will prompt the user for authorization if they have not already granted it
-        guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
-            NSLog("User had not granted 'accessibility' authorization; user now prompted")
-            return
-        }
-        
-        // NOTE: we retrieve system settings here which are _not_ otherwise captured by Morphic; if we decide to capture those settings in the future for broader capture/apply purposes, then we should modify this code to access those settings via Session.shared (if doing so will ensure that we are not getting cached data...rather than 'captured or set data'...since we need to check these settings every time this function is called).
-        let defaultsDomain = "com.apple.speech.synthesis.general.prefs"
-        guard let defaults = UserDefaults(suiteName: defaultsDomain) else {
-            NSLog("Could not access defaults domain: \(defaultsDomain)")
-            return
-        }
-        
-        // NOTE: sendSpeakSelectedTextHotKey will be called synchronously or asynchronously (depending on whether we need to enable the OS feature asynchronously first)
-        let sendSpeakSelectedTextHotKey = {
-            // obtain any custom-specified key sequence used for activating the "speak selected text" feature in macOS (or else assume default)
-            let speakSelectedTextHotKeyCombo = defaults.integer(forKey: "SpokenUIUseSpeakingHotKeyCombo")
-            //
-            let keyCode: CGKeyCode
-            let keyOptions: MorphicInput.KeyOptions
-            if speakSelectedTextHotKeyCombo != 0 {
-                guard let (customKeyCode, customKeyOptions) = MorphicInput.parseDefaultsKeyCombo(speakSelectedTextHotKeyCombo) else {
-                    // NOTE: while we should be able to decode any custom hotkey, this code is here to capture edge cases we have not anticipated
-                    // NOTE: in the future, we should consider an informational prompt alerting the user that we could not decode their custom hotkey (so they know why the feature did not work...or at least that it intentionally did not work)
-                    NSLog("Could not decode custom hotkey")
-                    return
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            Task {
+                do {
+                    let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
+                    try await self.readSelectedText(waitAtMost: waitForTimespan)
+                } catch {
+                    // NOTE: we currently have no method for alerting the user to errors
                 }
-                keyCode = customKeyCode
-                keyOptions = customKeyOptions
-            } else {
-                // default hotkey is Option+Esc
-                keyCode = CGKeyCode(kVK_Escape)
-                keyOptions = .withAlternateKey
-            }
-            
-            //
-            
-            // get the window ID of the topmost window
-            guard let (_ /* topmostWindowOwnerName */, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
-                NSLog("Could not get ID of topmost window")
-                return
-            }
-
-            // capture a reference to the topmost application
-            guard let topmostApplication = NSRunningApplication(processIdentifier: pid_t(topmostProcessId)) else {
-                NSLog("Could not get reference to application owning the topmost window")
-                return
-            }
-            
-            // activate the topmost application
-            guard topmostApplication.activate(options: .activateIgnoringOtherApps) == true else {
-                NSLog("Could not activate the topmost window")
-                return
-            }
-            
-            AsyncUtils.wait(atMost: 2.0, for: { topmostApplication.isActive == true }) {
-                success in
-                if success == false {
-                    NSLog("Could not activate topmost application within two seconds")
-                }
-                
-                // send the "speak selected text key" to the system
-                guard let _ = try? MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) else {
-                    NSLog("Could not send 'Speak selected text' hotkey to the keyboard input stream")
-                    return
-                }
-            }
-        }
-        
-        // make sure the user has "speak selected text..." enabled in System Preferences
-        let speakSelectedTextKeyEnabled = defaults.bool(forKey: "SpokenUIUseSpeakingHotKeyFlag")
-        if speakSelectedTextKeyEnabled == false {
-            // if SpokenUIUseSpeakingHotKeyFlag is false, then enable it via UI automation
-            Session.shared.apply(true, for: .macosSpeakSelectedTextEnabled) {
-                _ in
-                // send the hotkey (asynchronously) once we have enabled macOS's "speak selected text" feature
-                sendSpeakSelectedTextHotKey()
             }
         } else {
-            // send the hotkey (synchronously) now
-            sendSpeakSelectedTextHotKey()
+            // macOS 12.x and earlier
+            do {
+                try self.readSelectedText()
+            } catch {
+                // NOTE: we currently have no method for alerting the user to errors
+            }
+        }
+    }
+
+    //
+    
+    // NOTE: sendSpeakSelectedTextHotKey will be called synchronously or asynchronously (depending on whether we need to enable the OS feature asynchronously first)
+    private static func sendSpeakSelectedTextHotKey(defaults: UserDefaults) {
+        // obtain any custom-specified key sequence used for activating the "speak selected text" feature in macOS (or else assume default)
+        let speakSelectedTextHotKeyCombo = defaults.integer(forKey: "SpokenUIUseSpeakingHotKeyCombo")
+        //
+        let keyCode: CGKeyCode
+        let keyOptions: MorphicInput.KeyOptions
+        if speakSelectedTextHotKeyCombo != 0 {
+            guard let (customKeyCode, customKeyOptions) = MorphicInput.parseDefaultsKeyCombo(speakSelectedTextHotKeyCombo) else {
+                // NOTE: while we should be able to decode any custom hotkey, this code is here to capture edge cases we have not anticipated
+                // NOTE: in the future, we should consider an informational prompt alerting the user that we could not decode their custom hotkey (so they know why the feature did not work...or at least that it intentionally did not work)
+                NSLog("Could not decode custom hotkey")
+                return
+            }
+            keyCode = customKeyCode
+            keyOptions = customKeyOptions
+        } else {
+            // default hotkey is Option+Esc
+            keyCode = CGKeyCode(kVK_Escape)
+            keyOptions = .withAlternateKey
+        }
+        
+        //
+        
+        // get the window ID of the topmost window
+        guard let (_ /* topmostWindowOwnerName */, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
+            NSLog("Could not get ID of topmost window")
+            return
+        }
+
+        // capture a reference to the topmost application
+        guard let topmostApplication = NSRunningApplication(processIdentifier: pid_t(topmostProcessId)) else {
+            NSLog("Could not get reference to application owning the topmost window")
+            return
+        }
+        
+        // activate the topmost application
+        guard topmostApplication.activate(options: .activateIgnoringOtherApps) == true else {
+            NSLog("Could not activate the topmost window")
+            return
+        }
+        
+        AsyncUtils.wait(atMost: 2.0, for: { topmostApplication.isActive == true }) {
+            success in
+            
+            if success == false {
+                NSLog("Could not activate topmost application within two seconds")
+            }
+            
+            // send the "speak selected text key" to the system
+            guard let _ = try? MorphicInput.sendKey(keyCode: keyCode, keyOptions: keyOptions) else {
+                NSLog("Could not send 'Speak selected text' hotkey to the keyboard input stream")
+                return
+            }
+        }
+    }
+    
+    func readSelectedText() throws {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            fatalError("This function is intended for use with macOS versions prior to macOS 13.0; use the async version of this function for macOS 13.0 and greater instead.")
+        } else {
+            // macOS 12.x and earlier
+
+            // verify that we have accessibility permissions (since UI automation will not work without them)
+            // NOTE: this function call will prompt the user for authorization if they have not already granted it
+            guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+                NSLog("User had not granted 'accessibility' authorization; user now prompted")
+                throw MorphicError.unspecified
+            }
+            
+            // NOTE: we retrieve system settings here which are _not_ otherwise captured by Morphic; if we decide to capture those settings in the future for broader capture/apply purposes, then we should modify this code to access those settings via Session.shared (if doing so will ensure that we are not getting cached data...rather than 'captured or set data'...since we need to check these settings every time this function is called).
+            let defaultsDomain = "com.apple.speech.synthesis.general.prefs"
+            guard let defaults = UserDefaults(suiteName: defaultsDomain) else {
+                NSLog("Could not access defaults domain: \(defaultsDomain)")
+                return
+            }
+            
+            // make sure the user has "speak selected text..." enabled in System Preferences
+            let speakSelectedTextKeyEnabled = defaults.bool(forKey: "SpokenUIUseSpeakingHotKeyFlag")
+            if speakSelectedTextKeyEnabled == false {
+                // macOS 12.x and earlier
+
+                // if SpokenUIUseSpeakingHotKeyFlag is false, then enable it via UI automation
+                Session.shared.apply(true, for: .macosSpeakSelectedTextEnabled) {
+                    _ in
+                    // send the hotkey (asynchronously) once we have enabled macOS's "speak selected text" feature
+                    Self.sendSpeakSelectedTextHotKey(defaults: defaults)
+                }
+            } else {
+                // send the hotkey (synchronously) now
+                Self.sendSpeakSelectedTextHotKey(defaults: defaults)
+            }
+        }
+    }
+    
+    func readSelectedText(waitAtMost: TimeInterval) async throws {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            
+            // verify that we have accessibility permissions (since UI automation will not work without them)
+            // NOTE: this function call will prompt the user for authorization if they have not already granted it
+            guard MorphicA11yAuthorization.authorizationStatus(promptIfNotAuthorized: true) == true else {
+                NSLog("User had not granted 'accessibility' authorization; user now prompted")
+                throw MorphicError.unspecified
+            }
+
+            // NOTE: we retrieve system settings here which are _not_ otherwise captured by Morphic; if we decide to capture those settings in the future for broader capture/apply purposes, then we should modify this code to access those settings via Session.shared (if doing so will ensure that we are not getting cached data...rather than 'captured or set data'...since we need to check these settings every time this function is called).
+            let defaultsDomain = "com.apple.speech.synthesis.general.prefs"
+            guard let defaults = UserDefaults(suiteName: defaultsDomain) else {
+                NSLog("Could not access defaults domain: \(defaultsDomain)")
+                return
+            }
+            
+            // make sure the user has "speak selected text..." enabled in System Preferences
+            let speakSelectedTextKeyEnabled = defaults.bool(forKey: "SpokenUIUseSpeakingHotKeyFlag")
+            if speakSelectedTextKeyEnabled == false {
+                // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+                let uiAutomationSequence = UIAutomationSequence()
+                let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+
+                do {
+                    let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+                    try await AccessibilitySpokenContentUIAutomationScript_macOS13.setSpeakSelectionIsEnabled(true, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+
+                    // send the hotkey (asynchronously) once we have enabled macOS's "speak selected text" feature
+                    // NOTE: although the setting has been updated (and reading the default will now return true), it takes macOS a few seconds to recognize the new hotkey.  We have not found any reliable way to detect when macOS recognizes the new hotkey combo, so we fall back to the (not ideal) strategy of simply waiting an arbitrary two seconds.
+                    AsyncUtils.wait(atMost: 2.0, for: { false /* return false means to wait the full interval */ }) {
+                        success in
+                        Self.sendSpeakSelectedTextHotKey(defaults: defaults)
+                    }
+                } catch {
+                    // ignore any errors, as we don't have any mechanism to report errors
+                }
+            } else {
+                // send the hotkey (synchronously) now
+                Self.sendSpeakSelectedTextHotKey(defaults: defaults)
+            }
+        } else {
+            // macOS 12.x and earlier
+            fatalError("This function is not intended for use with macOS versions prior to macOS 13.0: use the non-async version of this function instead")
         }
     }
 
@@ -1500,13 +2087,85 @@ class MorphicBarControlItem: MorphicBarItem {
             return
         }
         let session = Session.shared
-        if segment == 0 {
-            defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("magnifierShow")
+
+        let newState: Bool = (segment == 0 ? true : false)
+
+        defer {
+            TelemetryClientProxy.enqueueActionMessage(eventName: (newState == true) ? "magnifierShow" : "magnifierHide")
+        }
+        
+        if #available(macOS 13.0, *) {
+            Task {
+                do {
+                    let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
+                    try await self.setMagnifierState(newState, waitAtMost: waitForTimespan)
+                } catch {
+                    // NOTE: we don't currently have a mechanism to raise errors to the user
+                }
             }
-            
-            // this is the code which will activate our magnifier once we have established that it is configured properly
-            let activateMagnifier: () -> Void = {
+        } else {
+            // NOTE: we don't currently have a mechanism to raise errors to the user
+            self.setMagnifierState(newState, forSession: session)
+        }
+    }
+    
+    func setMagnifierState(_ value: Bool, forSession session: Session) {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+            fatalError("This function is intended for use with macOS versions prior to macOS 13.0; use the async version of this function for macOS 13.0 and greater instead.")
+        } else {
+            // macOS 12.x and earlier
+
+            if value == true {
+                // this is the code which will activate our magnifier once we have established that it is configured properly
+                let activateMagnifier: () -> Void = {
+                    session.storage.load(identifier: "__magnifier__") {
+                        (_, preferences: Preferences?) in
+                        // since the magnifier zoom is being shown (i.e. enabled), set the cursor to the center of the display where the mouse cursor is located
+                        // NOTE: we might need to push a mouse movement message to the system so that the magnifier knows that the mouse has actually moved; or we might need to insert a UI-thread-nonblocking delay which lets the run loop catch up first (if that would remedy any mouse pointer location syncing issues)
+                        if let mousePointerLocation = MorphicSettings.MorphicMouse.getCurrentLocation() {
+                            if let currentDisplay = Display.displayContainingPoint(mousePointerLocation) {
+                                let _ = try? MorphicSettings.MorphicMouse.movePointerToCenterOfDisplay(displayUuid: currentDisplay.uuid)
+                            }
+                        }
+                        
+                        if let preferences = preferences {
+                            // temporary workaround: if "style" was specified as a preference, remove it (because it's a one-time setup preference)
+                            var mutablePreferences = preferences
+                            if mutablePreferences.get(key: .macosZoomStyle) != nil {
+                                mutablePreferences.remove(key: .macosZoomStyle)
+                            }
+                            
+                            let apply = ApplySession(settingsManager: session.settings, preferences: mutablePreferences)
+                            apply.addFirst(key: .macosZoomEnabled, value: true)
+                            apply.run {
+                            }
+                        } else {
+                            session.apply(true, for: .macosZoomEnabled) {
+                                _ in
+                            }
+                        }
+                    }
+                }
+
+                // set the default magnifier zoom style (if it hasn't already been set)
+                let didSetInitialMagnifierZoomStyle = Session.shared.bool(for: .morphicDidSetInitialMagnifierZoomStyle) ?? false
+                if didSetInitialMagnifierZoomStyle == false {
+                    // NOTE: we get no "success/failure" from the following function, so we just have to assume success
+                    AppDelegate.shared.setInitialMagnifierZoomStyle() {
+                        success in
+                        
+                        guard success == true else {
+                            os_log("Cannot set initial magnifier zoom style")
+                            return
+                        }
+                        
+                        activateMagnifier()
+                    }
+                } else {
+                    activateMagnifier()
+                }
+            } else /*if value == false*/ {
                 session.storage.load(identifier: "__magnifier__") {
                     (_, preferences: Preferences?) in
                     if let preferences = preferences {
@@ -1517,58 +2176,133 @@ class MorphicBarControlItem: MorphicBarItem {
                         }
                         
                         let apply = ApplySession(settingsManager: session.settings, preferences: mutablePreferences)
-                        apply.addFirst(key: .macosZoomEnabled, value: true)
+                        apply.addFirst(key: .macosZoomEnabled, value: false)
                         apply.run {
                         }
                     } else {
-                        session.apply(true, for: .macosZoomEnabled) {
+                        session.apply(false, for: .macosZoomEnabled) {
                             _ in
                         }
                     }
                 }
             }
-            
-            // set the default magnifier zoom style (if it hasn't already been set)
-            let didSetInitialMagnifierZoomStyle = Session.shared.bool(for: .morphicDidSetInitialMagnifierZoomStyle) ?? false
-            if didSetInitialMagnifierZoomStyle == false {
-                // NOTE: we get no "success/failure" from the following function, so we just have to assume success
-                AppDelegate.shared.setInitialMagnifierZoomStyle() {
-                    success in
-                    
-                    guard success == true else {
-                        os_log("Cannot set initial magnifier zoom style")
-                        return
+        }
+    }
+    
+    func setMagnifierState(_ value: Bool, waitAtMost: TimeInterval) async throws {
+        if #available(macOS 13.0, *) {
+            // macOS 13.0 and later
+
+            if value == true {
+                // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+                let uiAutomationSequence = UIAutomationSequence()
+                let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+
+                let didSetInitialMagnifierZoomStyle = Session.shared.bool(for: .morphicDidSetInitialMagnifierZoomStyle) ?? false
+                if didSetInitialMagnifierZoomStyle == false {
+                    do {
+                        let waitForTimespan = UIAutomationApp.defaultMaximumWaitInterval
+                        try await AppDelegate.shared.setInitialMagnifierZoomStyle(waitAtMost: waitForTimespan)
+                    } catch {
+                        // NOTE: we must be able to set the initial magnifier zoom style; if we cannot, the feature cannot be known to work properly
+                        throw MorphicError.unspecified
+                    }
+                }
+
+                // make sure that magnifier hotkeys are enabled
+                do {
+                    let hotkeysEnabledAsOptional = try MorphicSettings.MagnifierZoomSettings.getHotkeysEnabled()
+                    guard let hotkeysEnabled = hotkeysEnabledAsOptional else {
+                        throw MorphicError.unspecified
                     }
                     
-                    activateMagnifier()
+                    if hotkeysEnabled == false {
+                        let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+                        try await AccessibilityZoomUIAutomationScript_macOS13.setHotkeysEnabled(true, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+                    }
+                } catch let error {
+                    throw error
                 }
-            } else {
-                activateMagnifier()
+                
+                // since the magnifier zoom is being shown (i.e. enabled), set the cursor to the center of the display where the mouse cursor is located
+                // NOTE: we might need to push a mouse movement message to the system so that the magnifier knows that the mouse has actually moved; or we might need to insert a UI-thread-nonblocking delay which lets the run loop catch up first (if that would remedy any mouse pointer location syncing issues)
+                if let mousePointerLocation = MorphicSettings.MorphicMouse.getCurrentLocation() {
+                    if let currentDisplay = Display.displayContainingPoint(mousePointerLocation) {
+                        do {
+                            let _ = try MorphicSettings.MorphicMouse.movePointerToCenterOfDisplay(displayUuid: currentDisplay.uuid)
+                        } catch {
+                            // ignore any errors while moving pointer to the center of the display
+                        }
+                    }
+                }
+
+                // activate the magnifier
+                guard let magnifierIsEnabled = try MorphicSettings.MagnifierZoomSettings.getMagnifierEnabled() else {
+                    throw MorphicError.unspecified
+                }
+                if magnifierIsEnabled == false {
+                    try MorphicSettings.MagnifierZoomSettings.sendMagnifierToggleZoomHotkey()
+
+                    let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+
+                    // wait for the magnifier to show
+                    let magnifierShowSuccess = try await AsyncUtils.wait(atMost: waitForTimespan) {
+                        guard let magnifierIsEnabled = try MorphicSettings.MagnifierZoomSettings.getMagnifierEnabled() else {
+                            return false
+                        }
+
+                        return magnifierIsEnabled == true
+                    }
+                    
+                    if magnifierShowSuccess == false {
+                        throw MorphicError.unspecified
+                    }
+                }
+            } else /*if value == false*/ {
+                // set up a UIAutomationSequence so that cleanup can occur once the sequence goes out of scope (e.g. auto-terminate the app)
+                let uiAutomationSequence = UIAutomationSequence()
+                let waitAbsoluteDeadline = ProcessInfo.processInfo.systemUptime + waitAtMost
+
+                // make sure that magnifier hotkeys are enabled
+                do {
+                    let hotkeysEnabledAsOptional = try MorphicSettings.MagnifierZoomSettings.getHotkeysEnabled()
+                    guard let hotkeysEnabled = hotkeysEnabledAsOptional else {
+                        throw MorphicError.unspecified
+                    }
+                    
+                    if hotkeysEnabled == false {
+                        let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+                        try await AccessibilityZoomUIAutomationScript_macOS13.setHotkeysEnabled(true, sequence: uiAutomationSequence, waitAtMost: waitForTimespan)
+                    }
+                } catch let error {
+                    throw error
+                }
+                
+                // deactivate the magnifier
+                // NOTE: to gracefully degrade for the user, we'll allow the sending of the toggle hotkey to try to turn "off" the magnifier if the magnifier is on and also if we cannot determine its state
+                let magnifierIsEnabledAsOptional = try MorphicSettings.MagnifierZoomSettings.getMagnifierEnabled()
+                if magnifierIsEnabledAsOptional == true || magnifierIsEnabledAsOptional == nil {
+                    try MorphicSettings.MagnifierZoomSettings.sendMagnifierToggleZoomHotkey()
+
+                    let waitForTimespan = max(waitAbsoluteDeadline - ProcessInfo.processInfo.systemUptime, 0)
+
+                    // wait for the magnifier to hide
+                    let magnifierHideSuccess = try await AsyncUtils.wait(atMost: waitForTimespan) {
+                        guard let magnifierIsEnabled = try MorphicSettings.MagnifierZoomSettings.getMagnifierEnabled() else {
+                            return false
+                        }
+
+                        return magnifierIsEnabled == false
+                    }
+                    
+                    if magnifierHideSuccess == false {
+                        throw MorphicError.unspecified
+                    }
+                }
             }
         } else {
-            defer {
-                (NSApplication.shared.delegate as? AppDelegate)?.countly_RecordEvent("magnifierHide")
-            }
-            
-            session.storage.load(identifier: "__magnifier__") {
-                (_, preferences: Preferences?) in
-                if let preferences = preferences {
-                    // temporary workaround: if "style" was specified as a preference, remove it (because it's a one-time setup preference)
-                    var mutablePreferences = preferences
-                    if mutablePreferences.get(key: .macosZoomStyle) != nil {
-                        mutablePreferences.remove(key: .macosZoomStyle)
-                    }
-
-                    let apply = ApplySession(settingsManager: session.settings, preferences: mutablePreferences)
-                    apply.addFirst(key: .macosZoomEnabled, value: false)
-                    apply.run {
-                    }
-                } else {
-                    session.apply(false, for: .macosZoomEnabled) {
-                        _ in
-                    }
-                }
-            }
+            // macOS 12.x and earlier
+            fatalError("This function is not intended for use with macOS versions prior to macOS 13.0: use the non-async version of this function instead")
         }
     }
     
@@ -1577,15 +2311,13 @@ class MorphicBarControlItem: MorphicBarItem {
 fileprivate struct LocalizedStrings {
     
     var prefix: String
-    var table = "MorphicBarViewController"
-    var bundle = Bundle.main
     
     init(prefix: String) {
         self.prefix = prefix
     }
     
     func string(for suffix: String) -> String {
-        return bundle.localizedString(forKey: prefix + "." + suffix, value: nil, table: table)
+        return Bundle.main.localizedString(forKey: prefix + "." + suffix, value: nil, table: nil)
     }
 }
 
@@ -1610,15 +2342,19 @@ fileprivate class QuickHelpDynamicTextProvider: QuickHelpContentProvider {
 
 fileprivate class QuickHelpTextSizeBiggerProvider: QuickHelpContentProvider {
     
-    init(display: Display?, localized: LocalizedStrings) {
-        self.display = display
+    init(/*display: Display?, */localized: LocalizedStrings) {
+//        self.display = display
         self.localized = localized
     }
     
-    var display: Display?
+//    var display: Display?
     var localized: LocalizedStrings
     
     func quickHelpViewController() -> NSViewController? {
+        // NOTE: due to a limitation in Morphic 1.x, we use the current mouse pointer location as a proxy for the screen on which the
+        //       Morphic bar is currently shown; in the future, we should get the current display for the MorphicBar WINDOW instead
+        let display = getDisplayForMousePointer()
+
         let viewController = QuickHelpStepViewController(nibName: "QuickHelpStepViewController", bundle: nil)
         let total = display?.numberOfSteps ?? 1
         var step = display?.currentStep ?? -1
@@ -1640,15 +2376,18 @@ fileprivate class QuickHelpTextSizeBiggerProvider: QuickHelpContentProvider {
 
 fileprivate class QuickHelpTextSizeSmallerProvider: QuickHelpContentProvider {
     
-    init(display: Display?, localized: LocalizedStrings) {
-        self.display = display
+    init(/*display: Display?, */localized: LocalizedStrings) {
+//        self.display = display
         self.localized = localized
     }
-    
-    var display: Display?
+//    var display: Display?
     var localized: LocalizedStrings
     
     func quickHelpViewController() -> NSViewController? {
+        // NOTE: due to a limitation in Morphic 1.x, we use the current mouse pointer location as a proxy for the screen on which the
+        //       Morphic bar is currently shown; in the future, we should get the current display for the MorphicBar WINDOW instead
+        let display = getDisplayForMousePointer()
+
         let viewController = QuickHelpStepViewController(nibName: "QuickHelpStepViewController", bundle: nil)
         let total = display?.numberOfSteps ?? 1
         var step = display?.currentStep ?? -1

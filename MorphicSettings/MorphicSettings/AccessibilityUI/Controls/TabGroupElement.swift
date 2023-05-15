@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -23,21 +23,36 @@
 
 import Foundation
 import MorphicCore
+import MorphicMacOSNative
 
 public class TabGroupElement: UIElement {
     
     public func select(tabTitled title: String) throws {
         guard let tab = self.tab(titled: title) else {
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
         try tab.select()
     }
     
     public func tab(titled: String) -> TabElement? {
-        guard let tabs: [MorphicA11yUIElement] = accessibilityElement.values(forAttribute: .tabs) else {
+        guard let tabs: [MorphicA11yUIElement] = try? accessibilityElement.values(forAttribute: .tabs) else {
             return nil
         }
-        guard let tab = tabs.first(where: { $0.value(forAttribute: .title) == titled }) else {
+        guard let tab = tabs.first(where: {
+            do {
+                let title: String? = try $0.value(forAttribute: .title)
+                guard let title = title else {
+                    // if we could not retrieve the title attribute, return false
+                    // NOTE: in the future, we should consider bubbling-up errors
+                    return false
+                }
+                return title == titled
+            } catch {
+                // if trying to retrieve the title attribute resulted in an error, return false
+                // NOTE: in the future, we should consider bubbling-up errors
+                return false
+            }
+        }) else {
             return nil
         }
         return TabElement(accessibilityElement: tab)

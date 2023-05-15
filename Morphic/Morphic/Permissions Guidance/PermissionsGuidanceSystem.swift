@@ -24,6 +24,7 @@
 import Cocoa
 import Foundation
 import MorphicCore
+import MorphicMacOSNative
 import MorphicSettings
 
 public protocol PermissionsWindowController: NSWindowController {

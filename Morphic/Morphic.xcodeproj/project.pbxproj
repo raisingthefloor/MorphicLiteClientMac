@@ -3,23 +3,19 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		3103974024B15DB600F5AA84 /* CustomCursorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3103973F24B15DB600F5AA84 /* CustomCursorButton.swift */; };
 		3103974424B1702800F5AA84 /* PageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3103974324B1702800F5AA84 /* PageViewController.xib */; };
-		3130B0EB24A41A05003864DD /* LoginWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3130B0EA24A41A05003864DD /* LoginWindow.xib */; };
 		3130B0ED24A41CCF003864DD /* CaptureWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3130B0EC24A41CCF003864DD /* CaptureWindow.xib */; };
 		3130B0EF24A41E8D003864DD /* LoginWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3130B0EE24A41E8D003864DD /* LoginWindowController.swift */; };
 		3130B0F124A41FA6003864DD /* CaptureWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3130B0F024A41FA6003864DD /* CaptureWindowController.swift */; };
 		3130B0F524A42006003864DD /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3130B0F424A42006003864DD /* PageViewController.swift */; };
 		3130B0F824A42020003864DD /* CaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3130B0F624A42020003864DD /* CaptureViewController.swift */; };
-		3130B0F924A42020003864DD /* CaptureViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3130B0F724A42020003864DD /* CaptureViewController.xib */; };
 		3130B0FC24A4202E003864DD /* CreateAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3130B0FA24A4202E003864DD /* CreateAccountViewController.swift */; };
-		3130B0FD24A4202E003864DD /* CreateAccountViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3130B0FB24A4202E003864DD /* CreateAccountViewController.xib */; };
 		3130B10024A42037003864DD /* DoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3130B0FE24A42037003864DD /* DoneViewController.swift */; };
-		3130B10124A42037003864DD /* DoneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3130B0FF24A42037003864DD /* DoneViewController.xib */; };
 		314EB6DB24A697C300CF3D48 /* macos.solutions.json in Resources */ = {isa = PBXBuildFile; fileRef = 314EB6DA24A697C300CF3D48 /* macos.solutions.json */; };
 		316E681E24B28D8900FA09D5 /* macos.solutions.json in Resources */ = {isa = PBXBuildFile; fileRef = 314EB6DA24A697C300CF3D48 /* macos.solutions.json */; };
 		31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31751B0C2444DE8900EEDF14 /* AppDelegate.swift */; };
@@ -106,8 +102,11 @@
 		9D2C146925EC68F500D66DAD /* logo_dropbox.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C146825EC68F500D66DAD /* logo_dropbox.pdf */; };
 		9D2C146C25EC699C00D66DAD /* logo_googleDrive.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C146B25EC699C00D66DAD /* logo_googleDrive.pdf */; };
 		9D2C146F25EC69A500D66DAD /* logo_onedrive.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D2C146E25EC69A500D66DAD /* logo_onedrive.pdf */; };
-		9D3530A525C2860200F8D590 /* Countly in Frameworks */ = {isa = PBXBuildFile; productRef = 9D3530A425C2860200F8D590 /* Countly */; };
 		9D3530DD25C3101100F8D590 /* VersionUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3530DC25C3101100F8D590 /* VersionUtils.swift */; };
+		9D363E342798873200D52A98 /* LoginWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D363E362798873200D52A98 /* LoginWindow.xib */; };
+		9D363E3B2798875700D52A98 /* CaptureViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D363E3D2798875700D52A98 /* CaptureViewController.xib */; };
+		9D363E422798876000D52A98 /* CreateAccountViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D363E442798876000D52A98 /* CreateAccountViewController.xib */; };
+		9D363E492798876900D52A98 /* DoneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D363E4B2798876900D52A98 /* DoneViewController.xib */; };
 		9D3A347E25ED4FD400C26902 /* logo_netflix.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D3A347D25ED4FD400C26902 /* logo_netflix.pdf */; };
 		9D3A348125ED515900C26902 /* logo_spotify.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D3A348025ED515900C26902 /* logo_spotify.pdf */; };
 		9D3A348525ED51D300C26902 /* logo_youtube.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D3A348425ED51D300C26902 /* logo_youtube.pdf */; };
@@ -153,23 +152,25 @@
 		9D3B9EDF26BC7BEB00C9F174 /* MorphicTelemetry.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D3B9EDD26BC7BEB00C9F174 /* MorphicTelemetry.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9D49D4DD25BBA93B001DD452 /* Autoupdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */; };
 		9D49D4F225BBAA00001DD452 /* UpdateAvailableWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */; };
-		9D49D4F325BBAA00001DD452 /* UpdateAvailableWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */; };
 		9D4B24E72517068200F0B2E2 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
 		9D4D47C326CBFE2500AC6E3D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9D4D47C526CBFE2500AC6E3D /* Localizable.strings */; };
+		9D53D8E92784A9B700A96576 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */; };
+		9D53D8EA2784A9B700A96576 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */; };
+		9D69161F2911B7EA002F3A21 /* MorphicMacOSNative.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */; };
+		9D6916202911B7EA002F3A21 /* MorphicMacOSNative.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9D77209E252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */; };
 		9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */; };
-		9D82576F24D31C1E00F6E932 /* AboutBoxWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D82576D24D31C1E00F6E932 /* AboutBoxWindowController.xib */; };
-		9D82577124D353C800F6E932 /* HyperlinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D82577024D353C800F6E932 /* HyperlinkTextField.swift */; };
 		9D8CEB132507AECF001276E4 /* MorphicBarButtonItemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */; };
 		9D8CEB152507AED7001276E4 /* MorphicBarButtonItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */; };
+		9D8EB4EE2947AA2B006F2DDA /* MorphicUIAutomation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D8EB4ED2947AA2B006F2DDA /* MorphicUIAutomation.framework */; };
+		9D8EB4EF2947AA2B006F2DDA /* MorphicUIAutomation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D8EB4ED2947AA2B006F2DDA /* MorphicUIAutomation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9D94BB22262A046400BF4992 /* logo_opera.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB21262A046400BF4992 /* logo_opera.pdf */; };
 		9D94BB25262A046A00BF4992 /* logo_firefox.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB24262A046A00BF4992 /* logo_firefox.pdf */; };
 		9D94BB28262A047100BF4992 /* logo_chrome.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9D94BB27262A047100BF4992 /* logo_chrome.pdf */; };
-		9DA46E7925CA743B006BEAAC /* PermissionsSuccessWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DA46E7225CA743B006BEAAC /* PermissionsSuccessWindow.xib */; };
-		9DA46E7B25CA743B006BEAAC /* PermissionsGuidanceWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DA46E7325CA743B006BEAAC /* PermissionsGuidanceWindow.xib */; };
 		9DA46E7D25CA743B006BEAAC /* PermissionsGuidanceSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7425CA743B006BEAAC /* PermissionsGuidanceSystem.swift */; };
 		9DA46E8125CA743B006BEAAC /* PermissionsSuccessWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7625CA743B006BEAAC /* PermissionsSuccessWindowController.swift */; };
 		9DA46E8325CA743B006BEAAC /* PermissionsGuidanceWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA46E7725CA743B006BEAAC /* PermissionsGuidanceWindowController.swift */; };
+		9DB72E9D29B0452A007C3100 /* TelemetryClientProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB72E9C29B0452A007C3100 /* TelemetryClientProxy.swift */; };
 		9DC0D3FB25E5EAAC00E17D9E /* globe.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DC0D3FA25E5EAAC00E17D9E /* globe.pdf */; };
 		9DC0D3FE25E5F05800E17D9E /* calendar.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DC0D3FD25E5F05800E17D9E /* calendar.pdf */; };
 		9DC0D40525E5F1FF00E17D9E /* comments.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DC0D40425E5F1FF00E17D9E /* comments.pdf */; };
@@ -191,9 +192,12 @@
 		9DD4F4E0251A2FC500ADCC25 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DD4F4DE251A2FC500ADCC25 /* MainMenu.xib */; };
 		9DDAE61025094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DDAE60F25094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift */; };
 		9DE112E72522243200591E08 /* CopySettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE112E52522243100591E08 /* CopySettingsWindowController.swift */; };
-		9DE112E82522243200591E08 /* CopySettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9DE112E62522243200591E08 /* CopySettingsWindow.xib */; };
 		9DFB6E012624B7E500AD39D1 /* logo_calculator.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 9DFB6E002624B7E500AD39D1 /* logo_calculator.pdf */; };
-		9DE45BAA25171C6000209421 /* SettingsLinkActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */; };
+		CEB8708F273369CF002E7601 /* AboutBoxWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB87091273369CF002E7601 /* AboutBoxWindowController.xib */; };
+		CEC23E6D2733870500E8D032 /* PermissionsSuccessWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEC23E6F2733870500E8D032 /* PermissionsSuccessWindow.xib */; };
+		CEC23E742733870C00E8D032 /* PermissionsGuidanceWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEC23E762733870C00E8D032 /* PermissionsGuidanceWindow.xib */; };
+		CEC23E7B2733872700E8D032 /* UpdateAvailableWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEC23E7D2733872700E8D032 /* UpdateAvailableWindow.xib */; };
+		CEC23E822733873400E8D032 /* CopySettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEC23E842733873400E8D032 /* CopySettingsWindow.xib */; };
 		DF35CECA2541BCD200C3FF77 /* MorphicBarTrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */; };
 /* End PBXBuildFile section */
 
@@ -215,8 +219,10 @@
 			dstSubfolderSpec = 10;
 			files = (
 				31751B4B2444E04300EEDF14 /* MorphicCore.framework in Embed Frameworks */,
+				9D6916202911B7EA002F3A21 /* MorphicMacOSNative.framework in Embed Frameworks */,
 				31751B4F2444E04300EEDF14 /* MorphicSettings.framework in Embed Frameworks */,
 				31751B4D2444E04300EEDF14 /* MorphicService.framework in Embed Frameworks */,
+				9D8EB4EF2947AA2B006F2DDA /* MorphicUIAutomation.framework in Embed Frameworks */,
 				9D3B9EDF26BC7BEB00C9F174 /* MorphicTelemetry.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -282,17 +288,13 @@
 /* Begin PBXFileReference section */
 		3103973F24B15DB600F5AA84 /* CustomCursorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCursorButton.swift; sourceTree = "<group>"; };
 		3103974324B1702800F5AA84 /* PageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PageViewController.xib; sourceTree = "<group>"; };
-		3130B0EA24A41A05003864DD /* LoginWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginWindow.xib; sourceTree = "<group>"; };
 		3130B0EC24A41CCF003864DD /* CaptureWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CaptureWindow.xib; sourceTree = "<group>"; };
 		3130B0EE24A41E8D003864DD /* LoginWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWindowController.swift; sourceTree = "<group>"; };
 		3130B0F024A41FA6003864DD /* CaptureWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureWindowController.swift; sourceTree = "<group>"; };
 		3130B0F424A42006003864DD /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		3130B0F624A42020003864DD /* CaptureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureViewController.swift; sourceTree = "<group>"; };
-		3130B0F724A42020003864DD /* CaptureViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CaptureViewController.xib; sourceTree = "<group>"; };
 		3130B0FA24A4202E003864DD /* CreateAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountViewController.swift; sourceTree = "<group>"; };
-		3130B0FB24A4202E003864DD /* CreateAccountViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CreateAccountViewController.xib; sourceTree = "<group>"; };
 		3130B0FE24A42037003864DD /* DoneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoneViewController.swift; sourceTree = "<group>"; };
-		3130B0FF24A42037003864DD /* DoneViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DoneViewController.xib; sourceTree = "<group>"; };
 		314EB6DA24A697C300CF3D48 /* macos.solutions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = macos.solutions.json; sourceTree = "<group>"; };
 		31751B092444DE8900EEDF14 /* Morphic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Morphic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31751B0C2444DE8900EEDF14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -323,7 +325,6 @@
 		31C12CBF24B143A000B617A8 /* QuickHelpStepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickHelpStepViewController.swift; sourceTree = "<group>"; };
 		31C12CC024B143A000B617A8 /* QuickHelpStepViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QuickHelpStepViewController.xib; sourceTree = "<group>"; };
 		31C12CC324B1441E00B617A8 /* PageControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageControl.swift; sourceTree = "<group>"; };
-		31CE56E92448E27400A52A7B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/MorphicBarViewController.strings; sourceTree = "<group>"; };
 		31CE56F2244A3CDB00A52A7B /* QuickHelpWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickHelpWindow.swift; sourceTree = "<group>"; };
 		31CE56F4244A407000A52A7B /* QuickHelpViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QuickHelpViewController.xib; sourceTree = "<group>"; };
 		31CE56F6244A408000A52A7B /* QuickHelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickHelpViewController.swift; sourceTree = "<group>"; };
@@ -377,6 +378,18 @@
 		9D2C146B25EC699C00D66DAD /* logo_googleDrive.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_googleDrive.pdf; sourceTree = "<group>"; };
 		9D2C146E25EC69A500D66DAD /* logo_onedrive.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_onedrive.pdf; sourceTree = "<group>"; };
 		9D3530DC25C3101100F8D590 /* VersionUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionUtils.swift; sourceTree = "<group>"; };
+		9D363E382798873400D52A98 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/LoginWindow.strings; sourceTree = "<group>"; };
+		9D363E392798873600D52A98 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LoginWindow.xib; sourceTree = "<group>"; };
+		9D363E3A2798874500D52A98 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LoginWindow.strings; sourceTree = "<group>"; };
+		9D363E3C2798875700D52A98 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CaptureViewController.xib; sourceTree = "<group>"; };
+		9D363E3F2798875900D52A98 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CaptureViewController.strings; sourceTree = "<group>"; };
+		9D363E412798875A00D52A98 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/CaptureViewController.strings; sourceTree = "<group>"; };
+		9D363E432798876000D52A98 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CreateAccountViewController.xib; sourceTree = "<group>"; };
+		9D363E462798876200D52A98 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CreateAccountViewController.strings; sourceTree = "<group>"; };
+		9D363E482798876300D52A98 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/CreateAccountViewController.strings; sourceTree = "<group>"; };
+		9D363E4A2798876900D52A98 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/DoneViewController.xib; sourceTree = "<group>"; };
+		9D363E4D2798876B00D52A98 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/DoneViewController.strings; sourceTree = "<group>"; };
+		9D363E4F2798876C00D52A98 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/DoneViewController.strings; sourceTree = "<group>"; };
 		9D3A347D25ED4FD400C26902 /* logo_netflix.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_netflix.pdf; sourceTree = "<group>"; };
 		9D3A348025ED515900C26902 /* logo_spotify.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_spotify.pdf; sourceTree = "<group>"; };
 		9D3A348425ED51D300C26902 /* logo_youtube.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_youtube.pdf; sourceTree = "<group>"; };
@@ -421,26 +434,24 @@
 		9D3B9EDD26BC7BEB00C9F174 /* MorphicTelemetry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicTelemetry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Autoupdater.swift; sourceTree = "<group>"; };
 		9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAvailableWindow.swift; sourceTree = "<group>"; };
-		9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpdateAvailableWindow.xib; sourceTree = "<group>"; };
 		9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsLinkActions.swift; sourceTree = "<group>"; };
-		9D4D47C426CBFE2500AC6E3D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9D4D47CA26CBFE5400AC6E3D /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperlinkTextField.swift; sourceTree = "<group>"; };
+		9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicMacOSNative.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicImageUtils.swift; sourceTree = "<group>"; };
 		9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutBoxWindowController.swift; sourceTree = "<group>"; };
-		9D82576D24D31C1E00F6E932 /* AboutBoxWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AboutBoxWindowController.xib; sourceTree = "<group>"; };
-		9D82577024D353C800F6E932 /* HyperlinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperlinkTextField.swift; sourceTree = "<group>"; };
 		9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemIcon.swift; sourceTree = "<group>"; };
 		9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemView.swift; sourceTree = "<group>"; };
+		9D8EB4ED2947AA2B006F2DDA /* MorphicUIAutomation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicUIAutomation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D94BB21262A046400BF4992 /* logo_opera.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_opera.pdf; sourceTree = "<group>"; };
 		9D94BB24262A046A00BF4992 /* logo_firefox.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_firefox.pdf; sourceTree = "<group>"; };
 		9D94BB27262A047100BF4992 /* logo_chrome.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_chrome.pdf; sourceTree = "<group>"; };
 		9D9DF072251DAE460073F8FB /* MorphicLauncherRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = MorphicLauncherRelease.entitlements; sourceTree = "<group>"; };
-		9DA46E7225CA743B006BEAAC /* PermissionsSuccessWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PermissionsSuccessWindow.xib; path = "Permissions Guidance/PermissionsSuccessWindow.xib"; sourceTree = "<group>"; };
-		9DA46E7325CA743B006BEAAC /* PermissionsGuidanceWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PermissionsGuidanceWindow.xib; path = "Permissions Guidance/PermissionsGuidanceWindow.xib"; sourceTree = "<group>"; };
 		9DA46E7425CA743B006BEAAC /* PermissionsGuidanceSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionsGuidanceSystem.swift; path = "Permissions Guidance/PermissionsGuidanceSystem.swift"; sourceTree = "<group>"; };
 		9DA46E7625CA743B006BEAAC /* PermissionsSuccessWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionsSuccessWindowController.swift; path = "Permissions Guidance/PermissionsSuccessWindowController.swift"; sourceTree = "<group>"; };
 		9DA46E7725CA743B006BEAAC /* PermissionsGuidanceWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionsGuidanceWindowController.swift; path = "Permissions Guidance/PermissionsGuidanceWindowController.swift"; sourceTree = "<group>"; };
 		9DB06AD62534ADD6008AB056 /* CreatePackage.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = CreatePackage.sh; sourceTree = "<group>"; };
+		9DB72E9C29B0452A007C3100 /* TelemetryClientProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryClientProxy.swift; sourceTree = "<group>"; };
 		9DC0D3FA25E5EAAC00E17D9E /* globe.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = globe.pdf; sourceTree = "<group>"; };
 		9DC0D3FD25E5F05800E17D9E /* calendar.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = calendar.pdf; sourceTree = "<group>"; };
 		9DC0D40425E5F1FF00E17D9E /* comments.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = comments.pdf; sourceTree = "<group>"; };
@@ -464,8 +475,25 @@
 		9DD4F4E2251A2FC500ADCC25 /* MorphicLauncherDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorphicLauncherDebug.entitlements; sourceTree = "<group>"; };
 		9DDAE60F25094C4F0072C711 /* MorphicBarSegmentedButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarSegmentedButtonItemView.swift; sourceTree = "<group>"; };
 		9DE112E52522243100591E08 /* CopySettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopySettingsWindowController.swift; sourceTree = "<group>"; };
-		9DE112E62522243200591E08 /* CopySettingsWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CopySettingsWindow.xib; sourceTree = "<group>"; };
 		9DFB6E002624B7E500AD39D1 /* logo_calculator.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = logo_calculator.pdf; sourceTree = "<group>"; };
+		CEB8709427336AE4002E7601 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CEC23E602733846100E8D032 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AboutBoxWindowController.xib; sourceTree = "<group>"; };
+		CEC23E62273384E600E8D032 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/AboutBoxWindowController.strings; sourceTree = "<group>"; };
+		CEC23E682733853E00E8D032 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AboutBoxWindowController.strings; sourceTree = "<group>"; };
+		CEC23E6A2733867400E8D032 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
+		CEC23E6C2733867500E8D032 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
+		CEC23E6E2733870500E8D032 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PermissionsSuccessWindow.xib; sourceTree = "<group>"; };
+		CEC23E712733870700E8D032 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PermissionsSuccessWindow.strings; sourceTree = "<group>"; };
+		CEC23E732733870700E8D032 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/PermissionsSuccessWindow.strings; sourceTree = "<group>"; };
+		CEC23E752733870C00E8D032 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PermissionsGuidanceWindow.xib; sourceTree = "<group>"; };
+		CEC23E782733870F00E8D032 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PermissionsGuidanceWindow.strings; sourceTree = "<group>"; };
+		CEC23E7A2733871000E8D032 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/PermissionsGuidanceWindow.strings; sourceTree = "<group>"; };
+		CEC23E7C2733872700E8D032 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/UpdateAvailableWindow.xib; sourceTree = "<group>"; };
+		CEC23E7F2733872900E8D032 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/UpdateAvailableWindow.strings; sourceTree = "<group>"; };
+		CEC23E812733872A00E8D032 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/UpdateAvailableWindow.strings; sourceTree = "<group>"; };
+		CEC23E832733873400E8D032 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CopySettingsWindow.xib; sourceTree = "<group>"; };
+		CEC23E862733873800E8D032 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/CopySettingsWindow.strings; sourceTree = "<group>"; };
+		CEC23E882733873800E8D032 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CopySettingsWindow.strings; sourceTree = "<group>"; };
 		DF35CEC92541BCD200C3FF77 /* MorphicBarTrayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarTrayView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -476,7 +504,8 @@
 			files = (
 				31751B4A2444E04300EEDF14 /* MorphicCore.framework in Frameworks */,
 				9D1FA1CF251A31990008559D /* ServiceManagement.framework in Frameworks */,
-				9D3530A525C2860200F8D590 /* Countly in Frameworks */,
+				9D8EB4EE2947AA2B006F2DDA /* MorphicUIAutomation.framework in Frameworks */,
+				9D69161F2911B7EA002F3A21 /* MorphicMacOSNative.framework in Frameworks */,
 				9D3B9EDE26BC7BEB00C9F174 /* MorphicTelemetry.framework in Frameworks */,
 				31751B4E2444E04300EEDF14 /* MorphicSettings.framework in Frameworks */,
 				31751B4C2444E04300EEDF14 /* MorphicService.framework in Frameworks */,
@@ -516,7 +545,7 @@
 			isa = PBXGroup;
 			children = (
 				3130B0EE24A41E8D003864DD /* LoginWindowController.swift */,
-				3130B0EA24A41A05003864DD /* LoginWindow.xib */,
+				9D363E362798873200D52A98 /* LoginWindow.xib */,
 				3103973F24B15DB600F5AA84 /* CustomCursorButton.swift */,
 			);
 			path = Login;
@@ -530,11 +559,11 @@
 				3130B0F424A42006003864DD /* PageViewController.swift */,
 				3103974324B1702800F5AA84 /* PageViewController.xib */,
 				3130B0F624A42020003864DD /* CaptureViewController.swift */,
-				3130B0F724A42020003864DD /* CaptureViewController.xib */,
+				9D363E3D2798875700D52A98 /* CaptureViewController.xib */,
 				3130B0FA24A4202E003864DD /* CreateAccountViewController.swift */,
-				3130B0FB24A4202E003864DD /* CreateAccountViewController.xib */,
+				9D363E442798876000D52A98 /* CreateAccountViewController.xib */,
 				3130B0FE24A42037003864DD /* DoneViewController.swift */,
-				3130B0FF24A42037003864DD /* DoneViewController.xib */,
+				9D363E4B2798876900D52A98 /* DoneViewController.xib */,
 			);
 			path = Capture;
 			sourceTree = "<group>";
@@ -587,6 +616,7 @@
 				9D2A5AB7259B815800ECD513 /* ConfigurableFeatures.swift */,
 				31751B972444F21700EEDF14 /* Session.swift */,
 				9D4B24E62517068200F0B2E2 /* SettingsLinkActions.swift */,
+				9DB72E9C29B0452A007C3100 /* TelemetryClientProxy.swift */,
 				31E1E184244683DC009C4092 /* Theme.swift */,
 				31E1E186244792D9009C4092 /* DefaultPreferences.json */,
 				9D82576724D3160600F6E932 /* About Box */,
@@ -620,6 +650,8 @@
 		31751B462444E04300EEDF14 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9D8EB4ED2947AA2B006F2DDA /* MorphicUIAutomation.framework */,
+				9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */,
 				9D3B9EDD26BC7BEB00C9F174 /* MorphicTelemetry.framework */,
 				9D1FA1CE251A31990008559D /* ServiceManagement.framework */,
 				31751B472444E04300EEDF14 /* MorphicCore.framework */,
@@ -787,7 +819,7 @@
 			children = (
 				9D49D4DC25BBA93B001DD452 /* Autoupdater.swift */,
 				9D49D4F025BBAA00001DD452 /* UpdateAvailableWindow.swift */,
-				9D49D4F125BBAA00001DD452 /* UpdateAvailableWindow.xib */,
+				CEC23E7D2733872700E8D032 /* UpdateAvailableWindow.xib */,
 			);
 			path = AutoUpdate;
 			sourceTree = "<group>";
@@ -796,8 +828,8 @@
 			isa = PBXGroup;
 			children = (
 				9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */,
-				9D82576D24D31C1E00F6E932 /* AboutBoxWindowController.xib */,
-				9D82577024D353C800F6E932 /* HyperlinkTextField.swift */,
+				CEB87091273369CF002E7601 /* AboutBoxWindowController.xib */,
+				9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */,
 			);
 			path = "About Box";
 			sourceTree = "<group>";
@@ -806,9 +838,9 @@
 			isa = PBXGroup;
 			children = (
 				9DA46E7425CA743B006BEAAC /* PermissionsGuidanceSystem.swift */,
-				9DA46E7325CA743B006BEAAC /* PermissionsGuidanceWindow.xib */,
+				CEC23E762733870C00E8D032 /* PermissionsGuidanceWindow.xib */,
 				9DA46E7725CA743B006BEAAC /* PermissionsGuidanceWindowController.swift */,
-				9DA46E7225CA743B006BEAAC /* PermissionsSuccessWindow.xib */,
+				CEC23E6F2733870500E8D032 /* PermissionsSuccessWindow.xib */,
 				9DA46E7625CA743B006BEAAC /* PermissionsSuccessWindowController.swift */,
 			);
 			name = "Permissions Guidance";
@@ -874,7 +906,7 @@
 			isa = PBXGroup;
 			children = (
 				9DE112E52522243100591E08 /* CopySettingsWindowController.swift */,
-				9DE112E62522243200591E08 /* CopySettingsWindow.xib */,
+				CEC23E842733873400E8D032 /* CopySettingsWindow.xib */,
 			);
 			path = CopySettingsWindow;
 			sourceTree = "<group>";
@@ -903,7 +935,6 @@
 			);
 			name = Morphic;
 			packageProductDependencies = (
-				9D3530A425C2860200F8D590 /* Countly */,
 			);
 			productName = Morphic;
 			productReference = 31751B092444DE8900EEDF14 /* Morphic.app */;
@@ -997,7 +1028,6 @@
 			);
 			mainGroup = 31751B002444DE8900EEDF14;
 			packageReferences = (
-				9D3530A325C2860200F8D590 /* XCRemoteSwiftPackageReference "countly-sdk-ios" */,
 			);
 			productRefGroup = 31751B0A2444DE8900EEDF14 /* Products */;
 			projectDirPath = "";
@@ -1034,10 +1064,10 @@
 				9DC0D40825E5F2ED00E17D9E /* envelope_open_text.pdf in Resources */,
 				9D2C145025EC611B00D66DAD /* logo_mail.jpg in Resources */,
 				9D2C146625EC68AF00D66DAD /* logo_box.pdf in Resources */,
-				9DA46E7925CA743B006BEAAC /* PermissionsSuccessWindow.xib in Resources */,
+				CEC23E6D2733870500E8D032 /* PermissionsSuccessWindow.xib in Resources */,
 				9D2C142C25EC5CD600D66DAD /* logo_twitter.pdf in Resources */,
 				31751B822444E11600EEDF14 /* Local.xcconfig in Resources */,
-				9DA46E7B25CA743B006BEAAC /* PermissionsGuidanceWindow.xib in Resources */,
+				CEC23E742733870C00E8D032 /* PermissionsGuidanceWindow.xib in Resources */,
 				9D2C142225EC1C1C00D66DAD /* favicon_foxNews.pdf in Resources */,
 				9D194DE327041D7C00D4BC36 /* logo_msoutlook.pdf in Resources */,
 				9D2C143E25EC5E5400D66DAD /* logo_tumblr.pdf in Resources */,
@@ -1045,7 +1075,7 @@
 				9D3A34D725ED697300C26902 /* logo_cnbc.pdf in Resources */,
 				9D2C143B25EC5E3B00D66DAD /* logo_reddit.pdf in Resources */,
 				9D3A34E625ED6FD800C26902 /* logo_nbcNews.pdf in Resources */,
-				9D82576F24D31C1E00F6E932 /* AboutBoxWindowController.xib in Resources */,
+				CEB8708F273369CF002E7601 /* AboutBoxWindowController.xib in Resources */,
 				9D3A348B25ED52E100C26902 /* logo_itunes.pdf in Resources */,
 				9D3A34D125ED68EE00C26902 /* logo_bloomberg.pdf in Resources */,
 				9D3A348525ED51D300C26902 /* logo_youtube.pdf in Resources */,
@@ -1057,7 +1087,7 @@
 				9D2C144725EC60D300D66DAD /* logo_icloud.pdf in Resources */,
 				31751B3C2444DFAA00EEDF14 /* Main.xib in Resources */,
 				9D194DE827041D7C00D4BC36 /* logo_msteams.pdf in Resources */,
-				9D49D4F325BBAA00001DD452 /* UpdateAvailableWindow.xib in Resources */,
+				CEC23E7B2733872700E8D032 /* UpdateAvailableWindow.xib in Resources */,
 				9D2C144425EC60CF00D66DAD /* logo_gmail.pdf in Resources */,
 				9D3A34C525ED5DB300C26902 /* logo_abcNews.pdf in Resources */,
 				9D2C146C25EC699C00D66DAD /* logo_googleDrive.pdf in Resources */,
@@ -1067,7 +1097,7 @@
 				9D2C144125EC60CA00D66DAD /* logo_aolOld.pdf in Resources */,
 				9D3A34B925ED5B1300C26902 /* logo_macys.pdf in Resources */,
 				9D3A34E025ED6AA700C26902 /* logo_huffpost.pdf in Resources */,
-				9DE112E82522243200591E08 /* CopySettingsWindow.xib in Resources */,
+				CEC23E822733873400E8D032 /* CopySettingsWindow.xib in Resources */,
 				9D3A34DD25ED6A9D00C26902 /* logo_forbes.pdf in Resources */,
 				31E1E188244794EF009C4092 /* MorphicBarViewController.xib in Resources */,
 				9D94BB28262A047100BF4992 /* logo_chrome.pdf in Resources */,
@@ -1129,12 +1159,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3130B0F924A42020003864DD /* CaptureViewController.xib in Resources */,
+				9D363E3B2798875700D52A98 /* CaptureViewController.xib in Resources */,
 				31751B5A2444E0E400EEDF14 /* Assets.xcassets in Resources */,
-				3130B10124A42037003864DD /* DoneViewController.xib in Resources */,
+				9D363E492798876900D52A98 /* DoneViewController.xib in Resources */,
 				3103974424B1702800F5AA84 /* PageViewController.xib in Resources */,
-				3130B0FD24A4202E003864DD /* CreateAccountViewController.xib in Resources */,
-				3130B0EB24A41A05003864DD /* LoginWindow.xib in Resources */,
+				9D363E422798876000D52A98 /* CreateAccountViewController.xib in Resources */,
+				9D363E342798873200D52A98 /* LoginWindow.xib in Resources */,
 				31751B5D2444E0E400EEDF14 /* MainMenu.xib in Resources */,
 				316E681E24B28D8900FA09D5 /* macos.solutions.json in Resources */,
 				3130B0ED24A41CCF003864DD /* CaptureWindow.xib in Resources */,
@@ -1163,6 +1193,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		318744F52481B38C00AE3954 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -1180,6 +1211,7 @@
 		};
 		9D0AF79024A57FC2007E177E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -1218,6 +1250,7 @@
 				31751B982444F21700EEDF14 /* Session.swift in Sources */,
 				31C12CC124B143A000B617A8 /* QuickHelpStepViewController.swift in Sources */,
 				9D3530DD25C3101100F8D590 /* VersionUtils.swift in Sources */,
+				9DB72E9D29B0452A007C3100 /* TelemetryClientProxy.swift in Sources */,
 				31E1E17F24466EB0009C4092 /* MorphicBarItemViewProtocol.swift in Sources */,
 				31C12CB824B1174900B617A8 /* QuickHelpContentProvider.swift in Sources */,
 				9D49D4F225BBAA00001DD452 /* UpdateAvailableWindow.swift in Sources */,
@@ -1226,6 +1259,7 @@
 				31CE56F3244A3CDB00A52A7B /* QuickHelpWindow.swift in Sources */,
 				31E1E17D24466E7C009C4092 /* MorphicBarView.swift in Sources */,
 				9D8CEB152507AED7001276E4 /* MorphicBarButtonItemView.swift in Sources */,
+				9D53D8E92784A9B700A96576 /* HyperlinkTextField.swift in Sources */,
 				9DE112E72522243200591E08 /* CopySettingsWindowController.swift in Sources */,
 				31751B0D2444DE8900EEDF14 /* AppDelegate.swift in Sources */,
 				9D2A5AB8259B815800ECD513 /* ConfigurableFeatures.swift in Sources */,
@@ -1233,7 +1267,6 @@
 				31C12CBE24B138D000B617A8 /* ProgressIndicator.swift in Sources */,
 				31C12CC424B1441E00B617A8 /* PageControl.swift in Sources */,
 				9D82576E24D31C1E00F6E932 /* AboutBoxWindowController.swift in Sources */,
-				9D82577124D353C800F6E932 /* HyperlinkTextField.swift in Sources */,
 				31E1E17B24466D28009C4092 /* MorphicBarItem.swift in Sources */,
 				9D77209E252BF46A0020BCD6 /* MorphicImageUtils.swift in Sources */,
 			);
@@ -1251,6 +1284,7 @@
 				3130B0F524A42006003864DD /* PageViewController.swift in Sources */,
 				31751B992444F21700EEDF14 /* Session.swift in Sources */,
 				3130B0F124A41FA6003864DD /* CaptureWindowController.swift in Sources */,
+				9D53D8EA2784A9B700A96576 /* HyperlinkTextField.swift in Sources */,
 				3130B0EF24A41E8D003864DD /* LoginWindowController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1287,6 +1321,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				31751B3B2444DFAA00EEDF14 /* Base */,
+				CEC23E6A2733867400E8D032 /* en */,
+				CEC23E6C2733867500E8D032 /* es */,
 			);
 			name = Main.xib;
 			sourceTree = "<group>";
@@ -1303,16 +1339,55 @@
 			isa = PBXVariantGroup;
 			children = (
 				31E1E189244794EF009C4092 /* Base */,
-				31CE56E92448E27400A52A7B /* en */,
 			);
 			name = MorphicBarViewController.xib;
+			sourceTree = "<group>";
+		};
+		9D363E362798873200D52A98 /* LoginWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9D363E392798873600D52A98 /* Base */,
+				9D363E3A2798874500D52A98 /* en */,
+				9D363E382798873400D52A98 /* es */,
+			);
+			name = LoginWindow.xib;
+			sourceTree = "<group>";
+		};
+		9D363E3D2798875700D52A98 /* CaptureViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9D363E3C2798875700D52A98 /* Base */,
+				9D363E3F2798875900D52A98 /* en */,
+				9D363E412798875A00D52A98 /* es */,
+			);
+			name = CaptureViewController.xib;
+			sourceTree = "<group>";
+		};
+		9D363E442798876000D52A98 /* CreateAccountViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9D363E432798876000D52A98 /* Base */,
+				9D363E462798876200D52A98 /* en */,
+				9D363E482798876300D52A98 /* es */,
+			);
+			name = CreateAccountViewController.xib;
+			sourceTree = "<group>";
+		};
+		9D363E4B2798876900D52A98 /* DoneViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9D363E4A2798876900D52A98 /* Base */,
+				9D363E4D2798876B00D52A98 /* en */,
+				9D363E4F2798876C00D52A98 /* es */,
+			);
+			name = DoneViewController.xib;
 			sourceTree = "<group>";
 		};
 		9D4D47C526CBFE2500AC6E3D /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				9D4D47C426CBFE2500AC6E3D /* en */,
 				9D4D47CA26CBFE5400AC6E3D /* es */,
+				CEB8709427336AE4002E7601 /* en */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1323,6 +1398,58 @@
 				9DD4F4DF251A2FC500ADCC25 /* Base */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		CEB87091273369CF002E7601 /* AboutBoxWindowController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEC23E602733846100E8D032 /* Base */,
+				CEC23E62273384E600E8D032 /* es */,
+				CEC23E682733853E00E8D032 /* en */,
+			);
+			name = AboutBoxWindowController.xib;
+			sourceTree = "<group>";
+		};
+		CEC23E6F2733870500E8D032 /* PermissionsSuccessWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEC23E6E2733870500E8D032 /* Base */,
+				CEC23E712733870700E8D032 /* en */,
+				CEC23E732733870700E8D032 /* es */,
+			);
+			name = PermissionsSuccessWindow.xib;
+			path = "Permissions Guidance";
+			sourceTree = "<group>";
+		};
+		CEC23E762733870C00E8D032 /* PermissionsGuidanceWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEC23E752733870C00E8D032 /* Base */,
+				CEC23E782733870F00E8D032 /* en */,
+				CEC23E7A2733871000E8D032 /* es */,
+			);
+			name = PermissionsGuidanceWindow.xib;
+			path = "Permissions Guidance";
+			sourceTree = "<group>";
+		};
+		CEC23E7D2733872700E8D032 /* UpdateAvailableWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEC23E7C2733872700E8D032 /* Base */,
+				CEC23E7F2733872900E8D032 /* es */,
+				CEC23E812733872A00E8D032 /* en */,
+			);
+			name = UpdateAvailableWindow.xib;
+			sourceTree = "<group>";
+		};
+		CEC23E842733873400E8D032 /* CopySettingsWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEC23E832733873400E8D032 /* Base */,
+				CEC23E862733873800E8D032 /* es */,
+				CEC23E882733873800E8D032 /* en */,
+			);
+			name = CopySettingsWindow.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -1380,7 +1507,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1436,7 +1563,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -1460,7 +1587,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MARKETING_VERSION = 1.5;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.Morphic-Debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1485,7 +1613,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MARKETING_VERSION = 1.5;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.Morphic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1509,7 +1638,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MARKETING_VERSION = 1.5;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.MorphicConfigurator-Debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1533,7 +1663,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MARKETING_VERSION = 1.5;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicConfigurator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1558,7 +1689,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.MorphicDockApp-Debug";
 				PRODUCT_NAME = " Morphic ";
 				SWIFT_VERSION = 5.0;
@@ -1582,7 +1713,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicDockApp;
 				PRODUCT_NAME = " Morphic ";
 				PROVISIONING_PROFILE_SPECIFIER = "Morphic Dock App for macOS";
@@ -1607,7 +1738,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.raisingthefloor.MorphicLauncher-Debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1633,7 +1764,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.raisingthefloor.MorphicLauncher;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1692,25 +1823,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		9D3530A325C2860200F8D590 /* XCRemoteSwiftPackageReference "countly-sdk-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Countly/countly-sdk-ios.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 20.11.1;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		9D3530A425C2860200F8D590 /* Countly */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 9D3530A325C2860200F8D590 /* XCRemoteSwiftPackageReference "countly-sdk-ios" */;
-			productName = Countly;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 31751B012444DE8900EEDF14 /* Project object */;
 }

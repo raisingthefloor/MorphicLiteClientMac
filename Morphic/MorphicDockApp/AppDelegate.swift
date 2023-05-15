@@ -119,7 +119,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func activateTopmostWindow() {
         // now, find the topmost application that is NOT us and give it focus :)
         // get the window ID of the topmost window
-        guard let (topmostWindowOwnerName /* topmostWindowOwnerName */, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
+        guard let (_ /* topmostWindowOwnerName */, topmostProcessId) = MorphicWindow.getWindowOwnerNameAndProcessIdOfTopmostWindow() else {
             print("Could not get ID of topmost window")
             return
         }

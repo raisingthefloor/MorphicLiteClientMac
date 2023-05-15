@@ -1,10 +1,10 @@
-// Copyright 2020 Raising the Floor - International
+// Copyright 2020-2022 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
 //
 // You may obtain a copy of the License at
-// https://github.com/GPII/universal/blob/master/LICENSE.txt
+// https://github.com/raisingthefloor/morphic-macos/blob/master/LICENSE.txt
 //
 // The R&D leading to these results received funding from the:
 // * Rehabilitation Services Administration, US Dept. of Education under
@@ -27,14 +27,18 @@ import MorphicCore
 public class ButtonElement: UIElement {
     
     public var enabled: Bool {
-        get{
-            return accessibilityElement.supportedActions()?.contains(.press) ?? false
+        get {
+            guard let supportedActions = try? accessibilityElement.supportedActions() else {
+	    	// NOTE: in the future, we should consider bubbling up any errors
+	    	return false
+	    }
+            return supportedActions.contains(.press) ?? false
         }
     }
     
     public func press() throws {
         guard enabled else {
-            throw MorphicError()
+            throw MorphicError.unspecified
         }
         try accessibilityElement.perform(action: .press)
     }
