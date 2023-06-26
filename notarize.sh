@@ -41,10 +41,10 @@ parseStatus()
 }
 
 # Parse the RequestUUID field from output
-parseRequestUuid()
-{
-  echo "$1" | awk '/RequestUUID/ { print $NF; }'
-}
+#parseRequestUuid()
+#{
+#  echo "$1" | awk '/id/ { print $NF; }'
+#}
 
 toLower()
 {
