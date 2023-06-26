@@ -41,10 +41,10 @@ parseStatus()
 }
 
 # Parse the RequestUUID field from output
-parseRequestUuid()
-{
-  echo "$1" | awk '/id/ { print $NF; }'
-}
+#parseRequestUuid()
+#{
+#  echo "$1" | awk '/id/ { print $NF; }'
+#}
 
 toLower()
 {
@@ -71,15 +71,16 @@ if [[ "$SIGNING_IDENTITY" != "" ]]; then
      "${FILE_PATH}"
 fi
 
-# this will return a “RequestUUID”...which is used as a command-line argument for polling
-NOTARIZE_REQUST=$(xcrun notarytool submit \
+# this will wait until the submission has completed and will return the result of the submission
+NOTARIZE_RESPONSE=$(xcrun notarytool submit \
   --apple-id "${USERNAME}" \
   --team-id "${TEAM_ID}" \
   --password "${APP_PASSWORD}" \
-  "${FILE_PATH}")
+  --wait "${FILE_PATH}")
 
-echo "${NOTARIZE_REQUST}"
+echo "${NOTARIZE_RESPONSE}"
 
+# TODO
 REQUEST_UUID=$(parseRequestUuid "${NOTARIZE_REQUST}")
 if [[ "${REQUEST_UUID}" == "" ]]; then
   exitWithErr "failed to parse request_UUID"
