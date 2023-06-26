@@ -71,11 +71,10 @@ if [[ "$SIGNING_IDENTITY" != "" ]]; then
 fi
 
 # this will return a “RequestUUID”...which is used as a command-line argument for polling
-NOTARIZE_REQUST=$(xcrun altool --notarize-app \
-  --primary-bundle-id "${BUNDLE_ID}" \
-  --username "${USERNAME}" \
+NOTARIZE_REQUST=$(xcrun notarytool submit \
+  --apple-id "${USERNAME}" \
   --password "${APP_PASSWORD}" \
-  --file "${FILE_PATH}")
+  "${FILE_PATH}")
 
 echo "${NOTARIZE_REQUST}"
 
@@ -90,10 +89,10 @@ REQUEST_STATUS="in progress"
 while [[ "$REQUEST_STATUS" == "in progress" ]]; do
   echo "Polling for completion of notarization request"
   sleep 20
-  NOTARY_INFO=$(xcrun altool \
-    --notarization-info ${REQUEST_UUID} \
-    --username "${USERNAME}" \
-    --password "${APP_PASSWORD}")
+  NOTARY_INFO=$(xcrun notarytool info \
+    --apple-id "${USERNAME}" \
+    --password "${APP_PASSWORD}" \
+    ${REQUEST_UUID})
 
   REQUEST_STATUS=$(parseStatus "${NOTARY_INFO}")
   REQUEST_STATUS=$(toLower "$REQUEST_STATUS")
