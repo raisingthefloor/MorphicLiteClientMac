@@ -37,7 +37,7 @@ exitWithErr()
 # Parse the status field from output.
 parseStatus()
 {
-  echo "$1" | awk -F ': ' '/Status:/ { print $2; }'
+  echo "$1" | awk -F ': ' '/status:/ { print $2; }'
 }
 
 # Parse the RequestUUID field from output
@@ -81,34 +81,38 @@ NOTARIZE_RESPONSE=$(xcrun notarytool submit \
 echo "${NOTARIZE_RESPONSE}"
 
 # TODO
-REQUEST_UUID=$(parseRequestUuid "${NOTARIZE_REQUST}")
-if [[ "${REQUEST_UUID}" == "" ]]; then
-  exitWithErr "failed to parse request_UUID"
-fi
+#REQUEST_UUID=$(parseRequestUuid "${NOTARIZE_REQUST}")
+#if [[ "${REQUEST_UUID}" == "" ]]; then
+#  exitWithErr "failed to parse request_UUID"
+#fi
+#
+## Poll for completion
+#
+#REQUEST_STATUS="in progress"
+#while [[ "$REQUEST_STATUS" == "in progress" ]]; do
+#  echo "Polling for completion of notarization request"
+#  sleep 20
+#  NOTARY_INFO=$(xcrun notarytool info \
+#    --apple-id "${USERNAME}" \
+#    --team-id "${TEAM_ID}" \
+#    --password "${APP_PASSWORD}" \
+#    ${REQUEST_UUID})
+#
+#  REQUEST_STATUS=$(parseStatus "${NOTARY_INFO}")
+#  REQUEST_STATUS=$(toLower "$REQUEST_STATUS")
+#
+#  echo "current status: ${REQUEST_STATUS}"
+#done
 
-# Poll for completion
-
-REQUEST_STATUS="in progress"
-while [[ "$REQUEST_STATUS" == "in progress" ]]; do
-  echo "Polling for completion of notarization request"
-  sleep 20
-  NOTARY_INFO=$(xcrun notarytool info \
-    --apple-id "${USERNAME}" \
-    --team-id "${TEAM_ID}" \
-    --password "${APP_PASSWORD}" \
-    ${REQUEST_UUID})
-
-  REQUEST_STATUS=$(parseStatus "${NOTARY_INFO}")
-  REQUEST_STATUS=$(toLower "$REQUEST_STATUS")
-
-  echo "current status: ${REQUEST_STATUS}"
-done
+REQUEST_STATUS=$(parseStatus "${NOTARIZE_RESPONSE}")
+REQUEST_STATUS=$(toLower "$REQUEST_STATUS")
 
 echo "Final notarization status:"
-echo "${NOTARY_INFO}"
+#echo "${NOTARY_INFO}"
+echo "${REQUEST_STATUS}"
 
-if [[ "$REQUEST_STATUS" != "success" ]]; then
-  exitWithErr "failed to get notarization. Status is not 'success'"
+if [[ "$REQUEST_STATUS" != "accepted" ]]; then
+  exitWithErr "failed to get notarization. Status is not 'accepted'"
 fi
 
 echo "stapling notarization to file"
