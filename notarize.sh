@@ -37,15 +37,14 @@ exitWithErr()
 # Parse the status field from output.
 parseStatus()
 {
-#  echo "$1" | awk -F ': ' '/status:/ { print $2; }'
   echo "$1" | awk -F "status: " '{ print $NF; }' | tail -1 | tr -d "[:space:]"
 }
 
 # Parse the RequestUUID field from output
-#parseRequestUuid()
-#{
-#  echo "$1" | awk '/id/ { print $NF; }'
-#}
+parseRequestUuid()
+{
+  echo "$1" | awk -F "id: " '{ print $NF; }' | tail -1 | tr -d "[:space:]"
+}
 
 toLower()
 {
@@ -79,42 +78,31 @@ NOTARIZE_RESPONSE=$(xcrun notarytool submit \
   --password "${APP_PASSWORD}" \
   --wait "${FILE_PATH}")
 
-echo "${NOTARIZE_RESPONSE}"
+#echo "${NOTARIZE_RESPONSE}"
 
-# TODO
-#REQUEST_UUID=$(parseRequestUuid "${NOTARIZE_REQUST}")
-#if [[ "${REQUEST_UUID}" == "" ]]; then
-#  exitWithErr "failed to parse request_UUID"
-#fi
-#
-## Poll for completion
-#
-#REQUEST_STATUS="in progress"
-#while [[ "$REQUEST_STATUS" == "in progress" ]]; do
-#  echo "Polling for completion of notarization request"
-#  sleep 20
-#  NOTARY_INFO=$(xcrun notarytool info \
-#    --apple-id "${USERNAME}" \
-#    --team-id "${TEAM_ID}" \
-#    --password "${APP_PASSWORD}" \
-#    ${REQUEST_UUID})
-#
-#  REQUEST_STATUS=$(parseStatus "${NOTARY_INFO}")
-#  REQUEST_STATUS=$(toLower "$REQUEST_STATUS")
-#
-#  echo "current status: ${REQUEST_STATUS}"
-#done
+REQUEST_UUID=$(parseRequestUuid "${NOTARIZE_RESPONSE}")
+if [[ "${REQUEST_UUID}" == "" ]]; then
+  exitWithErr "failed to parse request_UUID"
+fi
 
 REQUEST_STATUS=$(parseStatus "${NOTARIZE_RESPONSE}")
 REQUEST_STATUS=$(toLower "$REQUEST_STATUS")
 
 echo "Final notarization status:"
-#echo "${NOTARY_INFO}"
 echo "${REQUEST_STATUS}"
 
 if [[ "$REQUEST_STATUS" != "accepted" ]]; then
   exitWithErr "failed to get notarization. Status is not 'accepted'"
 fi
+
+echo "fetching the notary log"
+NOTARY_LOG=$(xcrun notarytool log \
+  --apple-id "${USERNAME}" \
+  --team-id "${TEAM_ID}" \
+  --password "${APP_PASSWORD}" \
+  ${REQUEST_UUID})
+
+#echo "${NOTARY_LOG}"
 
 echo "stapling notarization to file"
 xcrun stapler staple "${FILE_PATH}"
