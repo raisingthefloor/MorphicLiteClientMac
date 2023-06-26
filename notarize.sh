@@ -37,7 +37,8 @@ exitWithErr()
 # Parse the status field from output.
 parseStatus()
 {
-  echo "$1" | awk -F ': ' '/status:/ { print $2; }'
+#  echo "$1" | awk -F ': ' '/status:/ { print $2; }'
+  echo "$1" | awk -F "status: " '{ print $NF; }'
 }
 
 # Parse the RequestUUID field from output
