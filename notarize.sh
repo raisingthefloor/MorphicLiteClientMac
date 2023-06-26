@@ -16,6 +16,7 @@ fi
 
 USERNAME="${USERNAME}"
 APP_PASSWORD="${APP_PASSWORD}"
+TEAM_ID="${TEAM_ID}"
 SIGNING_IDENTITY="${SIGNING_IDENTITY}"
 BUNDLE_ID="${BUNDLE_ID}"
 DMG_PATH="${DMG_PATH}"
@@ -73,6 +74,7 @@ fi
 # this will return a “RequestUUID”...which is used as a command-line argument for polling
 NOTARIZE_REQUST=$(xcrun notarytool submit \
   --apple-id "${USERNAME}" \
+  --team-id "${TEAM_ID}" \
   --password "${APP_PASSWORD}" \
   "${FILE_PATH}")
 
@@ -91,6 +93,7 @@ while [[ "$REQUEST_STATUS" == "in progress" ]]; do
   sleep 20
   NOTARY_INFO=$(xcrun notarytool info \
     --apple-id "${USERNAME}" \
+    --team-id "${TEAM_ID}" \
     --password "${APP_PASSWORD}" \
     ${REQUEST_UUID})
 
