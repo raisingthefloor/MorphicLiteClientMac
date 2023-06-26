@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# see: https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution
+# see: https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution/customizing_the_notarization_workflow
+# see: https://developer.apple.com/documentation/technotes/tn3147-migrating-to-the-latest-notarization-tool
+
 BRANCH="${BRANCH}"
 BRANCH_NAME="${BRANCH_NAME}"
 
@@ -43,7 +47,7 @@ parseStatus()
 # Parse the RequestUUID field from output
 parseRequestUuid()
 {
-  echo "$1" | awk -F "id: " '{ print $NF; }' | tail -1 | tr -d "[:space:]"
+  echo "$1" | awk '/id/ { print $NF; }' | tail -1  | tr -d "[:space:]"
 }
 
 toLower()
