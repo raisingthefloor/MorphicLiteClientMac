@@ -263,7 +263,23 @@ internal class SystemSettingsMainWindow_macOS13 {
         // STEP 2: find the Back button (which is a child of the toolbar)
         let backButtonA11yUIElement: MorphicA11yUIElement?
         do {
-            backButtonA11yUIElement = try toolbarUIElement.accessibilityUiElement.descendant(identifier: "go back", maxDepth: 1)
+            if #available(macOS 14.0, *) {
+                // macOS 14.0 and newer
+                backButtonA11yUIElement = try toolbarUIElement.accessibilityUiElement.dangerousFirstDescendant(where: {
+                    guard $0.role == .button else {
+                        return false
+                    }
+                    
+                    guard let buttonLabel: String = try? $0.value(forAttribute: .description) else {
+                        return false
+                    }
+                    
+                    return buttonLabel == "Back"
+                })
+            } else {
+                // macOS 13.x
+                backButtonA11yUIElement = try toolbarUIElement.accessibilityUiElement.descendant(identifier: "go back", maxDepth: 1)
+            }
         } catch let error {
             throw error
         }
