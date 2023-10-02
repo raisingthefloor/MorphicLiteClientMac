@@ -14,6 +14,7 @@
 		9D6916182911B718002F3A21 /* MorphicProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D6916172911B718002F3A21 /* MorphicProcess.swift */; };
 		9D69161B2911B752002F3A21 /* MorphicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D69161A2911B752002F3A21 /* MorphicCore.framework */; };
 		9D69161C2911B752002F3A21 /* MorphicCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D69161A2911B752002F3A21 /* MorphicCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CE2313D42ABE1D3800075B18 /* MorphicA11yUIElementError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2313D32ABE1D3800075B18 /* MorphicA11yUIElementError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -38,6 +39,7 @@
 		9D6916152911B6DB002F3A21 /* MorphicA11yUIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yUIElement.swift; sourceTree = "<group>"; };
 		9D6916172911B718002F3A21 /* MorphicProcess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MorphicProcess.swift; sourceTree = "<group>"; };
 		9D69161A2911B752002F3A21 /* MorphicCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE2313D32ABE1D3800075B18 /* MorphicA11yUIElementError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicA11yUIElementError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +87,7 @@
 				9D6916112911B6D2002F3A21 /* MorphicA11yAuthorization.swift */,
 				9D6916132911B6D6002F3A21 /* MorphicA11yUIAttributeValueCompatible.swift */,
 				9D6916152911B6DB002F3A21 /* MorphicA11yUIElement.swift */,
+				CE2313D32ABE1D3800075B18 /* MorphicA11yUIElementError.swift */,
 			);
 			path = AccessibilityUI;
 			sourceTree = "<group>";
@@ -185,6 +188,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE2313D42ABE1D3800075B18 /* MorphicA11yUIElementError.swift in Sources */,
 				9D6916182911B718002F3A21 /* MorphicProcess.swift in Sources */,
 				9D6916162911B6DB002F3A21 /* MorphicA11yUIElement.swift in Sources */,
 				9D6916122911B6D2002F3A21 /* MorphicA11yAuthorization.swift in Sources */,
