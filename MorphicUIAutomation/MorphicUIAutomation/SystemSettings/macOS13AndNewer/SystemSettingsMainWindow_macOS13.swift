@@ -1,4 +1,4 @@
-// Copyright 2020-2022 Raising the Floor - US, Inc.
+// Copyright 2020-2023 Raising the Floor - US, Inc.
 //
 // Licensed under the New BSD license. You may not use this file except in
 // compliance with this License.
@@ -93,6 +93,11 @@ internal class SystemSettingsMainWindow_macOS13 {
         // NOTE: this function will navigate to the category specified as "pane", populating the right side of the main splitview with the requested pane; it will then return
         //       the top-level group from that pane (i.e. the child of the right side of the split view, after navigation)
         
+        guard waitAtMost >= 0.0 else {
+            fatalError("Argument 'atMost' cannot be a negative value")
+        }
+        let waitUntilTimestamp = ProcessInfo.processInfo.systemUptime + waitAtMost
+
         // STEP 1: search for the first split view in our UI hierarchy; this should be the split view which lists the categories on the left side of the split view and then shows the category on the right side of the split view
         let categoryGroupUIElement: GroupUIElement
         let detailsGroupUIElement: GroupUIElement
@@ -128,6 +133,9 @@ internal class SystemSettingsMainWindow_macOS13 {
             // could not find the category's row
             throw SystemSettingsApp.NavigationError.unspecified
         }
+
+        // NOTE: depending on whether we're using macOS 13.x or macOS 14.x, we'll need the window title for the category in one or more of the following steps
+        let requiredWindowTitle = SystemSettingsMainWindow_macOS13.windowTitleForCategory(pane)
 
         // STEP 4: if the row is not selected, select it; if the row is already selected, navigate to the category's root if necessary
         let categoryRowUIElement = RowUIElement(accessibilityUiElement: categoryRowA11yUiElement)
@@ -199,11 +207,38 @@ internal class SystemSettingsMainWindow_macOS13 {
                     // even though we didn't actually press the back button, count this attempt against our maximum # of attempts
                     backButtonPressCount += 1
                 }
+                
+                if #available(macOS 14.0, *) {
+                    // macOS 14.0 and newer
+                    let windowTitleMatches: Bool
+                    do {
+                        windowTitleMatches = try self.windowTitleMatches(requiredWindowTitle)
+                    } catch let error {
+                        throw error
+                    }
+                    //
+                    if windowTitleMatches == true {
+                        // we have navigated up to the specified category's main pane; on macOS 14.0 and newer, pressing Back again could lead to another category
+                        break
+                    }
+                } else {
+                    // macOS 13.x
+                    //
+                    // for macOS 13.x, we navigate all the way to the root; using the 14.x search mechanism (stopping when the category matches) could also work, but out of an abundance of caution we aren't modifying 13.x code unless we find/experience actual bugs in it.
+                }
             } while backButtonPressCount < maxAllowedBackButtonPressCount
             
-            // if we were unable to move to the rootof the category, raise an error
-            guard backButtonIsVisible == false else {
-                throw SystemSettingsApp.NavigationError.unspecified
+            if #available(macOS 14.0, *) {
+                // macOS 14.0 or newer
+                //
+                // NOTE: on macOS 14.0 and newer, we don't necessarily expect the back button to be disabled/invisible once we reach the root pane of the category
+            } else {
+                // macOS 13.x
+                //
+                // if we were unable to move to the root of the category, raise an error
+                guard backButtonIsVisible == false else {
+                    throw SystemSettingsApp.NavigationError.unspecified
+                }
             }
         } else {
             // row is not selected; select it now
@@ -216,11 +251,11 @@ internal class SystemSettingsMainWindow_macOS13 {
  
         // STEP 5: wait for the category's contents to be loaded in the right pane (to confirm that the action was completed successfully)
         //
-        let requiredWindowTitle = SystemSettingsMainWindow_macOS13.windowTitleForCategory(pane)
-        //
         let navigationComplete: Bool
         do {
-            navigationComplete = try await self.waitForNavigationToCompleteUsingWindowTitle(requiredWindowTitle, waitAtMost: waitAtMost, matchAnySuffix: true)
+            // NOTE: we will check for the navigation to be completed for at least one iteration (i.e. wait time of "0")
+            let remainingWaitTime = max(waitUntilTimestamp - ProcessInfo.processInfo.systemUptime, 0)
+            navigationComplete = try await self.waitForNavigationToCompleteUsingWindowTitle(requiredWindowTitle, waitAtMost: remainingWaitTime, matchAnySuffix: true)
         } catch let error {
             throw error
         }
@@ -335,20 +370,10 @@ internal class SystemSettingsMainWindow_macOS13 {
         let navigationComplete: Bool
         do {
             navigationComplete = try await AsyncUtils.wait(atMost: waitAtMost, for: {
-                let windowTitle: String?
                 do {
-                    windowTitle = try self.windowUIElement.title()
+                    return try self.windowTitleMatches(requiredWindowTitle, matchAnySuffix: matchAnySuffix)
                 } catch let error {
                     throw error
-                }
-                guard let windowTitle = windowTitle else {
-                    return false
-                }
-                //
-                if matchAnySuffix == false {
-                    return windowTitle == requiredWindowTitle
-                } else {
-                    return windowTitle.starts(with: requiredWindowTitle)
                 }
             })
         } catch let error {
@@ -356,6 +381,24 @@ internal class SystemSettingsMainWindow_macOS13 {
         }
         
         return navigationComplete
+    }
+    
+    internal func windowTitleMatches(_ requiredWindowTitle: String, matchAnySuffix: Bool = false) throws -> Bool {
+        let windowTitle: String?
+        do {
+            windowTitle = try self.windowUIElement.title()
+        } catch let error {
+            throw error
+        }
+        guard let windowTitle = windowTitle else {
+            return false
+        }
+        //
+        if matchAnySuffix == false {
+            return windowTitle == requiredWindowTitle
+        } else {
+            return windowTitle.starts(with: requiredWindowTitle)
+        }
     }
     
     public func sheet() throws -> SheetUIElement? {
