@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# see: https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution
+# see: https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution/customizing_the_notarization_workflow
+# see: https://developer.apple.com/documentation/technotes/tn3147-migrating-to-the-latest-notarization-tool
+
 BRANCH="${BRANCH}"
 BRANCH_NAME="${BRANCH_NAME}"
 
@@ -16,6 +20,7 @@ fi
 
 USERNAME="${USERNAME}"
 APP_PASSWORD="${APP_PASSWORD}"
+TEAM_ID="${TEAM_ID}"
 SIGNING_IDENTITY="${SIGNING_IDENTITY}"
 BUNDLE_ID="${BUNDLE_ID}"
 DMG_PATH="${DMG_PATH}"
@@ -36,13 +41,13 @@ exitWithErr()
 # Parse the status field from output.
 parseStatus()
 {
-  echo "$1" | awk -F ': ' '/Status:/ { print $2; }'
+  echo "$1" | awk -F "status: " '{ print $NF; }' | tail -1 | tr -d "[:space:]"
 }
 
 # Parse the RequestUUID field from output
 parseRequestUuid()
 {
-  echo "$1" | awk '/RequestUUID/ { print $NF; }'
+  echo "$1" | awk '/id/ { print $NF; }' | tail -1  | tr -d "[:space:]"
 }
 
 toLower()
@@ -70,43 +75,38 @@ if [[ "$SIGNING_IDENTITY" != "" ]]; then
      "${FILE_PATH}"
 fi
 
-# this will return a “RequestUUID”...which is used as a command-line argument for polling
-NOTARIZE_REQUST=$(xcrun altool --notarize-app \
-  --primary-bundle-id "${BUNDLE_ID}" \
-  --username "${USERNAME}" \
+# this will wait until the submission has completed and will return the result of the submission
+NOTARIZE_RESPONSE=$(xcrun notarytool submit \
+  --apple-id "${USERNAME}" \
+  --team-id "${TEAM_ID}" \
   --password "${APP_PASSWORD}" \
-  --file "${FILE_PATH}")
+  --wait "${FILE_PATH}")
 
-echo "${NOTARIZE_REQUST}"
+#echo "${NOTARIZE_RESPONSE}"
 
-REQUEST_UUID=$(parseRequestUuid "${NOTARIZE_REQUST}")
+REQUEST_UUID=$(parseRequestUuid "${NOTARIZE_RESPONSE}")
 if [[ "${REQUEST_UUID}" == "" ]]; then
   exitWithErr "failed to parse request_UUID"
 fi
 
-# Poll for completion
-
-REQUEST_STATUS="in progress"
-while [[ "$REQUEST_STATUS" == "in progress" ]]; do
-  echo "Polling for completion of notarization request"
-  sleep 20
-  NOTARY_INFO=$(xcrun altool \
-    --notarization-info ${REQUEST_UUID} \
-    --username "${USERNAME}" \
-    --password "${APP_PASSWORD}")
-
-  REQUEST_STATUS=$(parseStatus "${NOTARY_INFO}")
-  REQUEST_STATUS=$(toLower "$REQUEST_STATUS")
-
-  echo "current status: ${REQUEST_STATUS}"
-done
+REQUEST_STATUS=$(parseStatus "${NOTARIZE_RESPONSE}")
+REQUEST_STATUS=$(toLower "$REQUEST_STATUS")
 
 echo "Final notarization status:"
-echo "${NOTARY_INFO}"
+echo "${REQUEST_STATUS}"
 
-if [[ "$REQUEST_STATUS" != "success" ]]; then
-  exitWithErr "failed to get notarization. Status is not 'success'"
+if [[ "$REQUEST_STATUS" != "accepted" ]]; then
+  exitWithErr "failed to get notarization. Status is not 'accepted'"
 fi
+
+echo "fetching the notary log"
+NOTARY_LOG=$(xcrun notarytool log \
+  --apple-id "${USERNAME}" \
+  --team-id "${TEAM_ID}" \
+  --password "${APP_PASSWORD}" \
+  ${REQUEST_UUID})
+
+#echo "${NOTARY_LOG}"
 
 echo "stapling notarization to file"
 xcrun stapler staple "${FILE_PATH}"

@@ -85,6 +85,9 @@ public struct MorphicA11yUIElement {
             return result
         } catch let error as InitError {
             throw error
+        } catch let error {
+            assertionFailure("undocumented error path")
+            throw error
         }
     }
 
@@ -94,8 +97,14 @@ public struct MorphicA11yUIElement {
         guard self.supportedAttributes.contains(.children) == true else {
             return []
         }
-        guard let children: [MorphicA11yUIElement] = try? self.values(forAttribute: .children) else {
-            throw MorphicError.unspecified
+        let children: [MorphicA11yUIElement]
+        do {
+            children = try self.values(forAttribute: .children)
+        } catch let error as MorphicA11yUIElementError {
+            throw error
+        } catch let error {
+            assertionFailure("undocumented error path")
+            throw error
         }
         //
         return children
@@ -129,12 +138,18 @@ public struct MorphicA11yUIElement {
             case .noValue:
                 return nil
             default:
-                throw MorphicError.unspecified
+                throw MorphicA11yUIElementError.axError(error)
             }
         }
         //
-        guard let result = try? MorphicA11yAttributeValueCompatibleSampleImpl.fromCFTypeRef(valueAsCFTypeRef!) else {
-            throw MorphicError.unspecified
+        let result: FoundationA11yUIAttributeValueCompatible
+        do {
+            result = try MorphicA11yAttributeValueCompatibleSampleImpl.fromCFTypeRef(valueAsCFTypeRef!)
+        } catch let error as MorphicA11yUIAttributeValueCompatibleError {
+            throw MorphicA11yUIElementError.uiAttributeValueCompatibleError(error)
+        } catch let error {
+            assertionFailure("undocumented error path")
+            throw error
         }
         return (result as! T)
     }
@@ -142,28 +157,47 @@ public struct MorphicA11yUIElement {
     //
 
     public func values<T>(forAttribute attribute: NSAccessibility.Attribute) throws -> [T] where T: MorphicA11yUIAttributeValueCompatible {
-        guard let result: [T] = try? MorphicA11yUIElement.values(forAttribute: attribute, forAXUIElement: self.axUiElement) else {
-            throw MorphicError.unspecified
+        let result: [T]
+        do {
+            result = try MorphicA11yUIElement.values(forAttribute: attribute, forAXUIElement: self.axUiElement)
+        } catch let error as MorphicA11yUIElementError {
+            throw error
+        } catch let error {
+            assertionFailure("undocumented error path")
+            throw error
         }
+
         return result
     }
 
     public static func values<T>(forAttribute attribute: NSAccessibility.Attribute, forAXUIElement axUiElement: AXUIElement) throws -> [T] where T: MorphicA11yUIAttributeValueCompatible {
         var valuesAsCFArray: CFArray? = nil
 
-        guard let numberOfValues = try? MorphicA11yUIElement.valueCount(forAttribute: attribute, forAXUIElement: axUiElement) else {
-            throw MorphicError.unspecified
+        let numberOfValues: Int
+        do {
+            numberOfValues = try MorphicA11yUIElement.valueCount(forAttribute: attribute, forAXUIElement: axUiElement)
+        } catch MorphicA11yUIElementError.axError(let error) {
+            throw MorphicA11yUIElementError.axError(error)
+        } catch let error {
+            assertionFailure("undocumented error path")
+            throw error
         }
 
         let error = AXUIElementCopyAttributeValues(axUiElement, attribute.rawValue as CFString, 0, numberOfValues, &valuesAsCFArray)
         guard error == .success && valuesAsCFArray != nil else {
-            throw MorphicError.unspecified
+            throw MorphicA11yUIElementError.axError(error)
         }
         //
         var values: [T] = []
         for valueAsCFTypeRef in valuesAsCFArray! as [CFTypeRef] {
-            guard let value = try? MorphicA11yAttributeValueCompatibleSampleImpl.fromCFTypeRef(valueAsCFTypeRef) else {
-                throw MorphicError.unspecified
+            let value:  FoundationA11yUIAttributeValueCompatible
+            do {
+                value = try MorphicA11yAttributeValueCompatibleSampleImpl.fromCFTypeRef(valueAsCFTypeRef)
+            } catch let error as MorphicA11yUIAttributeValueCompatibleError {
+                throw MorphicA11yUIElementError.uiAttributeValueCompatibleError(error)
+            } catch let error {
+                assertionFailure("undocumented error path")
+                throw error
             }
             values.append(value as! T)
         }
@@ -177,7 +211,7 @@ public struct MorphicA11yUIElement {
         var count: CFIndex = 0
         let error = AXUIElementGetAttributeValueCount(axUiElement, attribute.rawValue as CFString, &count)
         guard error == .success else {
-            throw MorphicError.unspecified
+            throw MorphicA11yUIElementError.axError(error)
         }
         return count as Int
     }
@@ -192,7 +226,7 @@ public struct MorphicA11yUIElement {
         let valueAsCFTypeRef = value.toCFTypeRef()
         let error = AXUIElementSetAttributeValue(axUiElement, attribute.rawValue as CFString, valueAsCFTypeRef)
         guard error == .success else {
-            throw MorphicError.unspecified
+            throw MorphicA11yUIElementError.axError(error)
         }
     }
 
@@ -202,7 +236,7 @@ public struct MorphicA11yUIElement {
         var supportedActionNamesAsCFArray: CFArray?
         let error = AXUIElementCopyActionNames(axUiElement, &supportedActionNamesAsCFArray)
         guard error == .success && supportedActionNamesAsCFArray != nil else {
-            throw MorphicError.unspecified
+            throw MorphicA11yUIElementError.axError(error)
         }
         //
         var supportedActions: [NSAccessibility.Action] = []
@@ -219,7 +253,7 @@ public struct MorphicA11yUIElement {
     public func perform(action: NSAccessibility.Action) throws {
         let error = AXUIElementPerformAction(self.axUiElement, action.rawValue as CFString)
         guard error == .success else {
-            throw MorphicError.unspecified
+            throw MorphicA11yUIElementError.axError(error)
         }
     }
 }

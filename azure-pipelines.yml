@@ -14,7 +14,7 @@ trigger:
 variables:
 # must be created in the azure UI under Pipelines > Library and specify accessKey, secretKey, region, and bucket
 - group: 's3-public-bucket-upload'
-# Provides: P12_PASSWORD, APPLICATION_SIGNING_IDENTITY, INSTALLER_SIGNING_IDENTITY, ALTOOL_USERNAME, ALTOOL_APP_PASSWORD
+# Provides: P12_PASSWORD, APPLICATION_SIGNING_IDENTITY, INSTALLER_SIGNING_IDENTITY, ALTOOL_USERNAME, ALTOOL_APP_PASSWORD, TEAM_ID
 - group: 'macos-signing'
 - name: sdk
   value: macosx12.3
@@ -182,6 +182,7 @@ stages:
             DMG_PATH: './Morphic/Morphic.dmg'
             BUNDLE_ID: 'org.raisingthefloor.Morphic.dmg'
             USERNAME: '$(ALTOOL_USERNAME)'
+            TEAM_ID: '$(TEAM_ID)'
             APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
             SIGNING_IDENTITY: '$(APPLICATION_SIGNING_IDENTITY)'
           inputs:
@@ -195,6 +196,7 @@ stages:
             PKG_PATH: './Morphic/Morphic.pkg'
             BUNDLE_ID: 'org.raisingthefloor.MorphicInstaller.pkg'
             USERNAME: '$(ALTOOL_USERNAME)'
+            TEAM_ID: '$(TEAM_ID)'
             APP_PASSWORD: '$(ALTOOL_APP_PASSWORD)'
           inputs:
             targetType: 'filePath'
