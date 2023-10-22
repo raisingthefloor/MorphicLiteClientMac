@@ -63,13 +63,7 @@ public class SpeechCheckboxUIAutomation: AccessibilityUIAutomation {
 public class SpeakSelectedTextEnabledUIAutomation: SpeechCheckboxUIAutomation {
 
     override var checkboxTitle: String! {
-        if ProcessInfo().isOperatingSystemAtLeast(OperatingSystemVersion(majorVersion: 10, minorVersion: 16, patchVersion: 0)) {
-            // >= macOS 11.0
-            return "Speak selection"
-        } else {
-            // macOS 10.15
-            return "Speak selected text when the key is pressed"
-        }
+        return "Speak selection"
     }
 
 }

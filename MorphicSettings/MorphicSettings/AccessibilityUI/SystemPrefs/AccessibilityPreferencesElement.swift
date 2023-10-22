@@ -42,13 +42,7 @@ public class AccessibilityPreferencesElement: UIElement {
                 case .overview:
                     return "Overview"
                 case .speech:
-                    if ProcessInfo().isOperatingSystemAtLeast(OperatingSystemVersion(majorVersion: 10, minorVersion: 16, patchVersion: 0)) {
-                        // >= macOS 11.0
-                        return "Spoken Content"
-                    } else {
-                        // macOS 10.15
-                        return "Speech"
-                    }
+                    return "Spoken Content"
                 case .voiceOver:
                     return "VoiceOver"
                 case .zoom:
@@ -71,11 +65,6 @@ public class AccessibilityPreferencesElement: UIElement {
                 return
             }
             AsyncUtils.wait(atMost: 1.0, for: {
-	    	// macOS 10.15
-                if self.tabGroup?.tab(titled: "Overview") != nil {
-                    return true
-                }
-		// macOS 11.0
                 if self.label(value: "Your Mac can be customized to support your vision, hearing, physical motor, and learning & literacy requirements.") != nil {
                     return true
                 }
@@ -114,13 +103,7 @@ public class AccessibilityPreferencesElement: UIElement {
             }
             //
             let waitForCheckboxTitle: String
-            if ProcessInfo().isOperatingSystemAtLeast(OperatingSystemVersion(majorVersion: 10, minorVersion: 16, patchVersion: 0)) {
-                // >= macOS 11.0
-                waitForCheckboxTitle = "Speak announcements"
-            } else {
-                // macOS 10.15
-                waitForCheckboxTitle = "Enable announcements"
-            }
+            waitForCheckboxTitle = "Speak announcements"
             //
             AsyncUtils.wait(atMost: 1.0, for: { self.checkbox(titled: waitForCheckboxTitle) != nil}) {
                 success in
