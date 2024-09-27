@@ -33,7 +33,7 @@ variables:
   value: 'OTHER_CODE_SIGN_FLAGS="--timestamp" CURRENT_PROJECT_VERSION="$(Build.BuildNumber)"'
 
 pool:
-  vmImage: 'macOS-12'
+  vmImage: 'macOS-15'
 
 stages:
   - stage: build
