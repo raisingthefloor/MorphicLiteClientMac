@@ -19,7 +19,7 @@ variables:
 - name: sdk
   value: macosx15.0
 - name: xcodeDeveloperDir
-  value: '/Applications/Xcode_16.0.app/Contents/Developer'
+  value: '/Applications/Xcode_16.app/Contents/Developer'
 - name: configuration
   value: 'Release'
 - name: workspacePath
