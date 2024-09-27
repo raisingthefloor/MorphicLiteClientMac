@@ -29,7 +29,9 @@ class AboutBoxWindowController: NSWindowController, NSWindowDelegate {
     
     @IBOutlet weak var versionTextField: NSTextField!
     @IBOutlet weak var buildTextField: NSTextField!
-    
+
+    @IBOutlet weak var copyrightTextField: NSTextField!
+
     override var windowNibName: NSNib.Name? {
         return NSNib.Name("AboutBoxWindowController")
     }
@@ -59,16 +61,18 @@ class AboutBoxWindowController: NSWindowController, NSWindowDelegate {
 
         // populate the version and build # in our labels
         if let shortVersionAsString = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-            versionTextField.stringValue = "version " + shortVersionAsString
+            self.versionTextField.stringValue = "version " + shortVersionAsString
         } else {
-            versionTextField.stringValue = "[version is unknown]"
+            self.versionTextField.stringValue = "[version is unknown]"
         }
         //
         if let buildAsString = Bundle.main.infoDictionary?["CFBundleVersion" as String] {
-            buildTextField.stringValue = "(build \(buildAsString))"
+            self.buildTextField.stringValue = "(build \(buildAsString))"
         } else {
-            buildTextField.stringValue = "[build version is unknown]"
+            self.buildTextField.stringValue = "[build version is unknown]"
         }
+        
+        self.copyrightTextField.stringValue = "Copyright (c) 2020-2024 Raising the Floor - US Inc."
     }
     
     func centerOnScreen() {
