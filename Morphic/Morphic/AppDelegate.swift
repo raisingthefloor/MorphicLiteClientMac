@@ -173,7 +173,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 self.selectMorphicBarMenuItem.isHidden = hideCustomMorphicBarMenuItems 
                 self.customizeMorphicBarMenuItem.isHidden = hideCustomMorphicBarMenuItems 
 
-                
                 // update our list of custom MorphicBars
                 self.updateSelectMorphicBarMenuItem()
 
