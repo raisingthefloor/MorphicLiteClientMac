@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="19162" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23094" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19162"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23094"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner"/>
@@ -10,11 +10,14 @@
             <connections>
                 <outlet property="automaticallyStartMorphicAtLoginMenuItem" destination="Ir1-cH-h7Z" id="o0E-FB-fVt"/>
                 <outlet property="copySettingsBetweenComputersMenuItem" destination="WUC-ZR-CdM" id="vlM-8I-iQP"/>
+                <outlet property="customizeMorphicBarMenuItem" destination="ZaP-ZB-1RU" id="Lec-9H-Jmp"/>
                 <outlet property="hideMorphicBarMenuItem" destination="gOm-Gw-nLp" id="f86-ih-DaC"/>
                 <outlet property="hideQuickHelpMenuItem" destination="v0X-Ch-Q5h" id="Xc2-0F-awk"/>
+                <outlet property="howToCopySettingsMenuItem" destination="pnf-1u-KLS" id="qmg-8R-4f3"/>
                 <outlet property="loginMenuItem" destination="S6R-h6-1Yz" id="zO2-OE-N39"/>
                 <outlet property="logoutMenuItem" destination="fdS-ef-rqr" id="2v2-vJ-y1T"/>
                 <outlet property="mainMenu" destination="iDk-eb-5cB" id="OjZ-YL-Pes"/>
+                <outlet property="saveCurrentSettingsMenuItem" destination="VF9-cs-dFo" id="0NT-Z1-WVs"/>
                 <outlet property="selectBasicMorphicBarMenuItem" destination="AVi-t6-lRs" id="yVx-cX-1oR"/>
                 <outlet property="selectMorphicBarMenuItem" destination="qcc-Q2-sYr" id="Gm9-io-FQH"/>
                 <outlet property="showMorphicBarAtStartMenuItem" destination="cGf-Qp-TV9" id="oUQ-4Y-1Ym"/>
