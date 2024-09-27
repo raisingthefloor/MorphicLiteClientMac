@@ -17,9 +17,9 @@ variables:
 # Provides: P12_PASSWORD, APPLICATION_SIGNING_IDENTITY, INSTALLER_SIGNING_IDENTITY, ALTOOL_USERNAME, ALTOOL_APP_PASSWORD, TEAM_ID
 - group: 'macos-signing'
 - name: sdk
-  value: macosx12.3
+  value: macosx15.0
 - name: xcodeDeveloperDir
-  value: '/Applications/Xcode_14.0.app/Contents/Developer'
+  value: '/Applications/Xcode_16.0.app/Contents/Developer'
 - name: configuration
   value: 'Release'
 - name: workspacePath
