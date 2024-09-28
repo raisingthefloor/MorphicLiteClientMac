@@ -67,7 +67,25 @@ internal class SystemSettingsMainWindow_macOS13 {
     }
     
     private static func windowTitleForCategory(_ category: CategoryPane) -> String {
-        if #available(macOS 13.0, *) {
+        if #available(macOS 15.0, *) {
+            switch category {
+            case .accessibility:
+                return "Accessibility"
+            case .appearance:
+                return "Appearance"
+            case .displays:
+                return "Displays"
+            case .general:
+                // OBSERVATION: ideally in macOS 15.0 (and maybe 14.x?) we would look for the "general" header up top, since an empty string is problematic to match (i.e. could easily cause a false match)
+                return ""
+            case .keyboard:
+                return "Keyboard"
+            case .mouse:
+                return "Mouse"
+            case .trackpad:
+                return "Trackpad"
+            }
+        } else if #available(macOS 13.0, *) {
             switch category {
             case .accessibility:
                 return "Accessibility"
