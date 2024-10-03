@@ -36,14 +36,21 @@ internal class ConfigurableFeatures
         case restore
     }
 
+//    public var atOnDemandIsEnbled: Bool = true // NOTE: Windows-exclusive feature in current release
+//    public var atUseCounterIsEnabled: Bool = false // NOTE: Windows-exclusive feature in current release
     public var autorunConfig: AutorunConfigOption? = nil
-    public var checkForUpdatesIsEnabled: Bool = false 
+    public var checkForUpdatesIsEnabled: Bool = true
+//    public var cloudSettingsTransferIsEnabled: Bool = true // NOTE: currently specified in Session instead of ConfigurableFeatures
+    public var customMorphicBarsIsEnabled: Bool = true
     public var resetSettingsIsEnabled: Bool = false
-    public var telemetryIsEnabled: Bool = true
+    public var signInIsEnabled: Bool = true
     
     public var morphicBarVisibilityAfterLogin: MorphicBarVisibilityAfterLoginOption? = nil
     public var morphicBarExtraItems: [AppDelegate.MorphicBarExtraItem] = []
 
+    //    public var hideMorphicAfterLoginUntil: Date? = nil // NOTE: Windows-exclusive feature in current release
+
+    public var telemetryIsEnabled: Bool = true
     public var telemetrySiteId: String?
     
     static var shared: ConfigurableFeatures = {

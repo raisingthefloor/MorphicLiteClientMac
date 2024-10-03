@@ -3,10 +3,10 @@
     <title>Morphic</title>
     <license file="License.rtf" mime-type="application/rtf" />
     <pkg-ref id="org.raisingthefloor.Morphic.pkg"/>
-    <options customize="never" require-scripts="false" hostArchitectures="x86_64"/>
+    <options customize="never" require-scripts="false" hostArchitectures="x86_64,arm64"/>
     <volume-check>
         <allowed-os-versions>
-            <os-version min="10.15"/>
+            <os-version min="12.0"/>
         </allowed-os-versions>
     </volume-check>
     <choices-outline>

@@ -43,9 +43,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     @IBOutlet weak var showMorphicBarMenuItem: NSMenuItem?
     @IBOutlet weak var hideMorphicBarMenuItem: NSMenuItem?
     @IBOutlet weak var copySettingsBetweenComputersMenuItem: NSMenuItem!
+    @IBOutlet weak var saveCurrentSettingsMenuItem: NSMenuItem!
+    @IBOutlet weak var howToCopySettingsMenuItem: NSMenuItem!
     @IBOutlet weak var loginMenuItem: NSMenuItem!
     @IBOutlet weak var logoutMenuItem: NSMenuItem?
     @IBOutlet weak var selectMorphicBarMenuItem: NSMenuItem!
+    @IBOutlet weak var customizeMorphicBarMenuItem: NSMenuItem!
     
     @IBOutlet weak var automaticallyStartMorphicAtLoginMenuItem: NSMenuItem!
     @IBOutlet weak var showMorphicBarAtStartMenuItem: NSMenuItem!
@@ -96,16 +99,31 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         let commonConfiguration = self.getCommonConfiguration()
         ConfigurableFeatures.shared.morphicBarVisibilityAfterLogin = commonConfiguration.morphicBarVisibilityAfterLogin
         ConfigurableFeatures.shared.morphicBarExtraItems = commonConfiguration.extraMorphicBarItems
+        //
+//        ConfigurableFeatures.shared.atOnDemandIsEnbled = commonConfiguration.atOnDemandIsEnabled // NOTE: Windows-exclusive feature in current release
+//        ConfigurableFeatures.shared.atUseCounterIsEnabled = commonConfiguration.atUseCounterIsEnabled // NOTE: Windows-exclusive feature in current release
         ConfigurableFeatures.shared.autorunConfig = commonConfiguration.autorunConfig
         ConfigurableFeatures.shared.checkForUpdatesIsEnabled = commonConfiguration.checkForUpdatesIsEnabled
+//        ConfigurableFeatures.shared.cloudSettingsTransferIsEnabled = commonConfiguration.cloudSettingsTransferIsEnabled // NOTE: currently specified in Session instead of ConfigurableFeatures
+        ConfigurableFeatures.shared.customMorphicBarsIsEnabled = commonConfiguration.customMorphicBarsIsEnabled
         ConfigurableFeatures.shared.resetSettingsIsEnabled = commonConfiguration.resetSettingsIsEnabled
+        ConfigurableFeatures.shared.signInIsEnabled = commonConfiguration.signInIsEnabled
+        //
         ConfigurableFeatures.shared.telemetryIsEnabled = telemetryIsEnabled
         Session.shared.isCaptureAndApplyEnabled = commonConfiguration.cloudSettingsTransferIsEnabled
         Session.shared.isServerPreferencesSyncEnabled = true
         ConfigurableFeatures.shared.telemetrySiteId = commonConfiguration.telemetrySiteId
+        //
+        //    public var hideMorphicAfterLoginUntil: Date? = nil // NOTE: Windows-exclusive feature in current release
 
         if ConfigurableFeatures.shared.telemetryIsEnabled == true {
             self.configureTelemetry()
+        }
+        
+        // NOTE: if ConfigurableFeatures.shared.signInIsEnabled is false, then cascade this 'false' setting to force-disable related login-related features
+        if ConfigurableFeatures.shared.signInIsEnabled == false {
+            Session.shared.isCaptureAndApplyEnabled = false
+            ConfigurableFeatures.shared.customMorphicBarsIsEnabled = false
         }
         
         #if DEBUG
@@ -133,13 +151,28 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                     self.resetSettings()
                 }
 
-                self.copySettingsBetweenComputersMenuItem?.isHidden = (Session.shared.isCaptureAndApplyEnabled == false)
+                let hideCopySettingsMenuItems = (Session.shared.isCaptureAndApplyEnabled == false)
+                self.copySettingsBetweenComputersMenuItem?.isHidden = hideCopySettingsMenuItems
+                self.saveCurrentSettingsMenuItem?.isHidden = hideCopySettingsMenuItems
+                self.howToCopySettingsMenuItem?.isHidden = hideCopySettingsMenuItems
                 
-                self.loginMenuItem?.isHidden = (Session.shared.user != nil)
-                self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
+                if ConfigurableFeatures.shared.signInIsEnabled == true {
+                    // if ConfigurableFeatures.shared.signInIsEnabled is true, then show the appropriate login/logout menu item (and hide the opposite menu item)
+                    self.loginMenuItem?.isHidden = (Session.shared.user != nil)
+                    self.logoutMenuItem?.isHidden = (Session.shared.user == nil)
+                } else {
+                    // if ConfigurableFeatures.shared.signInIsEnabled is false, then hide the settings which allow the user to sign in
+                    self.loginMenuItem?.isHidden = true
+                    self.logoutMenuItem?.isHidden = true
+                }
 
                 self.mainMenu?.delegate = self
                 
+                // show/hide our 'switch MorphicBar' and 'customize MorphicBar' menu items depending on whether or not custom MorphicBars are enabled
+                let hideCustomMorphicBarMenuItems = !ConfigurableFeatures.shared.customMorphicBarsIsEnabled
+                self.selectMorphicBarMenuItem.isHidden = hideCustomMorphicBarMenuItems 
+                self.customizeMorphicBarMenuItem.isHidden = hideCustomMorphicBarMenuItems 
+
                 // update our list of custom MorphicBars
                 self.updateSelectMorphicBarMenuItem()
 
@@ -677,10 +710,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         guard let session = notification.object as? Session else {
             return
         }
-        self.loginMenuItem?.isHidden = (session.user != nil)
-        self.logoutMenuItem?.isHidden = (session.user == nil)
+        self.loginMenuItem?.isHidden = (session.user != nil || ConfigurableFeatures.shared.signInIsEnabled == false)
+        self.logoutMenuItem?.isHidden = (session.user == nil || ConfigurableFeatures.shared.signInIsEnabled == false)
         
-        if session.user != nil {
+        if session.user != nil && ConfigurableFeatures.shared.customMorphicBarsIsEnabled == true {
             // reload the custom bar
             reloadCustomMorphicBars() {
                 success, error in
@@ -746,10 +779,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 public let scope: String?
             }
             //
+//            internal let atOnDemand: EnabledFeature? // NOTE: Windows-exclusive feature in current release
+//            internal let atUseCounter: EnabledFeature? // NOTE: Windows-exclusive feature in current release
             internal let autorunAfterLogin: EnabledFeature?
             internal let checkForUpdates: EnabledFeature?
             internal let cloudSettingsTransfer: EnabledFeature?
+            internal let customMorphicBars: EnabledFeature?
             internal let resetSettings: EnabledFeature?
+            internal let signIn: EnabledFeature?
         }
         internal struct MorphicBarConfigSection: Decodable
         {
@@ -775,38 +812,50 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         let disableTelemetryFileExists = FileManager.default.fileExists(atPath: disableTelemetryFilePath)
         return disableTelemetryFileExists
     }
-    
+
     struct CommonConfigurationContents {
-        public var autorunConfig: ConfigurableFeatures.AutorunConfigOption? = nil
+        public var autorunConfig: ConfigurableFeatures.AutorunConfigOption?
         //
-        public var checkForUpdatesIsEnabled: Bool = false
-        public var cloudSettingsTransferIsEnabled: Bool = false
-        public var resetSettingsIsEnabled: Bool = false
+//        public var atOnDemandIsEnabled: Bool // NOTE: Windows-exclusive feature in current release
+//        public var atUseCounterIsEnabled: Bool // NOTE: Windows-exclusive feature in current release
+        public var checkForUpdatesIsEnabled: Bool
+        public var cloudSettingsTransferIsEnabled: Bool
+        public var customMorphicBarsIsEnabled: Bool
+        public var resetSettingsIsEnabled: Bool
+        public var signInIsEnabled: Bool
         //
-        public var morphicBarVisibilityAfterLogin: ConfigurableFeatures.MorphicBarVisibilityAfterLoginOption? = nil
-        public var extraMorphicBarItems: [MorphicBarExtraItem] = []
+        public var morphicBarVisibilityAfterLogin: ConfigurableFeatures.MorphicBarVisibilityAfterLoginOption?
+        public var extraMorphicBarItems: [MorphicBarExtraItem]
         //
-        public var telemetrySiteId: String? = nil
+        public var telemetrySiteId: String?
     }
     func getCommonConfiguration() -> CommonConfigurationContents {
         // set up default configuration
-        var result = CommonConfigurationContents()
-        //
-        // autorun
-        result.autorunConfig = nil
-        //
-        // check for updates
-        result.checkForUpdatesIsEnabled = true
-        //
-        // copy settings to/from cloud
-        result.cloudSettingsTransferIsEnabled = true
-        //
-        // reset settings (to standard)
-        result.resetSettingsIsEnabled = false
-        //
-        // morphic bar (visibility and extra items)
-        result.morphicBarVisibilityAfterLogin = nil
-        result.extraMorphicBarItems = []
+        var result = CommonConfigurationContents(
+            // autorun
+            autorunConfig: nil,
+            //
+            // AT on Demand
+//            atOnDemandIsEnabled = true, // NOTE: Windows-exclusive feature in current release
+            // AT Use counter
+//            atUseCounterIsEnabled = false, // NOTE: Windows-exclusive feature in current release
+            // check for updates
+            checkForUpdatesIsEnabled: true,
+            // copy settings to/from cloud
+            cloudSettingsTransferIsEnabled: true,
+            // enable use of custom MorphicBars (from cloud)
+            customMorphicBarsIsEnabled: true,
+            // reset settings (to standard)
+            resetSettingsIsEnabled: false,
+            // enable sign-in to Morphic services (settings transfer, custom MorphicBars, etc.)
+            signInIsEnabled: true,
+            //
+            // morphic bar (visibility and extra items)
+            morphicBarVisibilityAfterLogin: nil,
+            extraMorphicBarItems: [],
+            //
+            telemetrySiteId: nil
+        )
         
         guard let applicationSupportPath = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .localDomainMask, true).first else {
             os_log(.error, log: logger, "Could not locate system application support directory")
@@ -881,9 +930,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
             result.cloudSettingsTransferIsEnabled = configFileCloudSettingsTransferIsEnabled
         }
         
+        // capture the custom MorphicBars "is enabled" setting
+        if let configFileCustomMorphicBarsIsEnabled = decodedConfigFile.features?.customMorphicBars?.enabled {
+            result.customMorphicBarsIsEnabled = configFileCustomMorphicBarsIsEnabled
+        }
+        
         // capture the reset settings (to standard) "is enabled" setting
         if let configFileResetSettingsIsEnabled = decodedConfigFile.features?.resetSettings?.enabled {
             result.resetSettingsIsEnabled = configFileResetSettingsIsEnabled
+        }
+        
+        // cature the sign-in enable/disable setting
+        if let configFileSignInIsEnabled = decodedConfigFile.features?.signIn?.enabled {
+            result.signInIsEnabled = configFileSignInIsEnabled
         }
 
         // capture the desired after-login (autorun) visibility of the MorphicBar
@@ -1224,8 +1283,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
     }
     
     func updateSelectMorphicBarMenuItem() {
-        self.selectMorphicBarMenuItem.isHidden = false
-
         // TODO: we should determine if the user has a subscription; if so we should display the "Edit my MorphicBars..." item in the menu as well
 
         // remove all the menu items before the 'Basic MorphicBar' menu item
@@ -1421,8 +1478,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
                 self.updateSelectMorphicBarMenuItem()
             }
             
-            self.loginMenuItem?.isHidden = false
-            self.logoutMenuItem?.isHidden = true
+            if ConfigurableFeatures.shared.signInIsEnabled == true {
+                self.loginMenuItem?.isHidden = false
+                self.logoutMenuItem?.isHidden = true
+            } else {
+                self.loginMenuItem?.isHidden = true
+                self.logoutMenuItem?.isHidden = true
+            }
         }
     }
     
@@ -1619,7 +1681,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         // NOTE: in the future, we may want to save the autostart state in UserDefaults (although perhaps not in "UserDefaults.morphic"); we'd need to store in the UserDefaults area which was specific to _this_ user and _this_ application (including differentiating between Morphic and Morphic Community if there are two apps for that
         // If we do switch to UserDefaults in the future, we will effectively capture its "autostart enabled" state when we set it and then trust that the user hasn't used launchctl at the command-line to reverse our state; the worst-case scenario with this approach should be that our corresponding menu item checkbox is out of sync with system reality, and a poweruser who uses launchctl could simply uncheck and then recheck the menu item (or use launchctl) to reenable autostart-at-login for Morphic
         
-        // NOTE: SMCopyAllJobDictionaries (the API typically used to get the list of login items) was deprecated in macOS 10.10 but has not been replaced.  It is technically still available as of macOS 10.15.
+        // NOTE: SMCopyAllJobDictionaries (the API typically used to get the list of login items) was deprecated in macOS 10.10 but has not been replaced.  It is technically still available as of macOS 10.15+.
         guard let userLaunchedApps = SMCopyAllJobDictionaries(kSMDomainUserLaunchd)?.takeRetainedValue() as? [[String: Any]] else {
             return false
         }
