@@ -38,7 +38,7 @@ pool:
 stages:
   - stage: build
     jobs:
-      - job: build
+      - job: opensslfixup
         steps:
         - task: Bash@3
           displayName: Install OpenSSL 1.1 manually
@@ -52,6 +52,10 @@ stages:
               make
               sudo make install
               export PATH=/usr/local/openssl/bin:$PATH
+
+      - job: build
+        dependsOn: opensslfixup
+        steps:
         - task: InstallAppleCertificate@2
           inputs:
             certSecureFile: 'raising_the_floor_5AAXYGZ428.p12'
