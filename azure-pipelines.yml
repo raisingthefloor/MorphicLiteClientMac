@@ -56,7 +56,7 @@ stages:
           inputs:
             certSecureFile: 'raising_the_floor_5AAXYGZ428.p12'
             certPwd: '$(P12_PASSWORD)'  
-            opensslPkcsArgs: '-legacy'
+            # opensslPkcsArgs: '-legacy'
             # -legacy is a temporary patch for Azure pipeline while Microsoft updates macos-15 VMs' OpenSSL support
             # see: https://github.com/microsoft/azure-pipelines-tasks/issues/20628
         - task: InstallAppleProvisioningProfile@1
