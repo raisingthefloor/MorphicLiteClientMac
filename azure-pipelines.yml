@@ -40,6 +40,15 @@ stages:
     jobs:
       - job: build
         steps:
+        - name : Install  OpenSSL 1.1 manually
+          run : |
+           wget https://www.openssl.org/source/openssl-1.1.1w.tar.gz
+           tar -xvf openssl-1.1.1w.tar.gz
+           cd openssl-1.1.1w
+           ./config --prefix=/usr/local/openssl
+           make
+           sudo make install
+           export PATH=/usr/local/openssl/bin:$PATH
         - task: InstallAppleCertificate@2
           inputs:
             certSecureFile: 'raising_the_floor_5AAXYGZ428.p12'
