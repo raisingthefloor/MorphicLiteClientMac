@@ -1338,9 +1338,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuDele
         }
         
         // calculate the position (index) of the "Basic MorphicBar" menu item
+        let basicMorphicBarMenuItemTag = -1 // NOTE: to support internationalization, we tag the "Basic MorphicBar" item with a tag of -1
+        //
         var indexOfBasicMorphicBarMenuItem: Int?
         for index in 0..<submenu.items.count {
-            if submenu.item(at: index)!.title == "Basic MorphicBar" {
+//            if submenu.item(at: index)!.title == "Basic MorphicBar" {
+            if submenu.item(at: index)!.tag == basicMorphicBarMenuItemTag {
                 indexOfBasicMorphicBarMenuItem = index
             }
         }
