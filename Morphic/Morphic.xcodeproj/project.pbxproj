@@ -439,6 +439,50 @@
 		9D53D8E82784A9B700A96576 /* HyperlinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperlinkTextField.swift; sourceTree = "<group>"; };
 		9D69161E2911B7EA002F3A21 /* MorphicMacOSNative.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MorphicMacOSNative.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D77209D252BF46A0020BCD6 /* MorphicImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicImageUtils.swift; sourceTree = "<group>"; };
+		9D7D4C1E2CF6D2C5000D7E24 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/PermissionsGuidanceWindow.strings; sourceTree = "<group>"; };
+		9D7D4C1F2CF6D2C5000D7E24 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/PermissionsSuccessWindow.strings; sourceTree = "<group>"; };
+		9D7D4C202CF6D2C5000D7E24 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Main.strings; sourceTree = "<group>"; };
+		9D7D4C212CF6D2C5000D7E24 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/AboutBoxWindowController.strings; sourceTree = "<group>"; };
+		9D7D4C222CF6D2C5000D7E24 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/UpdateAvailableWindow.strings; sourceTree = "<group>"; };
+		9D7D4C232CF6D2C6000D7E24 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/CopySettingsWindow.strings; sourceTree = "<group>"; };
+		9D7D4C242CF6D2C6000D7E24 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/LoginWindow.strings; sourceTree = "<group>"; };
+		9D7D4C252CF6D2C6000D7E24 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/CaptureViewController.strings; sourceTree = "<group>"; };
+		9D7D4C262CF6D2C6000D7E24 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/CreateAccountViewController.strings; sourceTree = "<group>"; };
+		9D7D4C272CF6D2C6000D7E24 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/DoneViewController.strings; sourceTree = "<group>"; };
+		9D7D4C2B2CF6D704000D7E24 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
+		9D7D4C2C2CF6D7B7000D7E24 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/PermissionsGuidanceWindow.strings; sourceTree = "<group>"; };
+		9D7D4C2D2CF6D7B7000D7E24 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/PermissionsSuccessWindow.strings; sourceTree = "<group>"; };
+		9D7D4C2E2CF6D7B8000D7E24 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/Main.strings; sourceTree = "<group>"; };
+		9D7D4C2F2CF6D7B8000D7E24 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/AboutBoxWindowController.strings; sourceTree = "<group>"; };
+		9D7D4C302CF6D7B8000D7E24 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/UpdateAvailableWindow.strings; sourceTree = "<group>"; };
+		9D7D4C312CF6D7B8000D7E24 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/CopySettingsWindow.strings; sourceTree = "<group>"; };
+		9D7D4C322CF6D7B8000D7E24 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/LoginWindow.strings; sourceTree = "<group>"; };
+		9D7D4C332CF6D7B9000D7E24 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/CaptureViewController.strings; sourceTree = "<group>"; };
+		9D7D4C342CF6D7B9000D7E24 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/CreateAccountViewController.strings; sourceTree = "<group>"; };
+		9D7D4C352CF6D7B9000D7E24 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/DoneViewController.strings; sourceTree = "<group>"; };
+		9D7D4C392CF6D7C9000D7E24 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/Localizable.strings; sourceTree = "<group>"; };
+		9D7D4C3A2CF6D933000D7E24 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/PermissionsGuidanceWindow.strings; sourceTree = "<group>"; };
+		9D7D4C3B2CF6D933000D7E24 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/PermissionsSuccessWindow.strings; sourceTree = "<group>"; };
+		9D7D4C3C2CF6D934000D7E24 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Main.strings; sourceTree = "<group>"; };
+		9D7D4C3D2CF6D934000D7E24 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/AboutBoxWindowController.strings; sourceTree = "<group>"; };
+		9D7D4C3E2CF6D934000D7E24 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/UpdateAvailableWindow.strings; sourceTree = "<group>"; };
+		9D7D4C3F2CF6D934000D7E24 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/CopySettingsWindow.strings; sourceTree = "<group>"; };
+		9D7D4C402CF6D934000D7E24 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LoginWindow.strings; sourceTree = "<group>"; };
+		9D7D4C412CF6D934000D7E24 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/CaptureViewController.strings; sourceTree = "<group>"; };
+		9D7D4C422CF6D935000D7E24 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/CreateAccountViewController.strings; sourceTree = "<group>"; };
+		9D7D4C432CF6D935000D7E24 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/DoneViewController.strings; sourceTree = "<group>"; };
+		9D7D4C442CF6D940000D7E24 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		9D7D4C502CF6D985000D7E24 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/PermissionsGuidanceWindow.strings; sourceTree = "<group>"; };
+		9D7D4C512CF6D985000D7E24 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/PermissionsSuccessWindow.strings; sourceTree = "<group>"; };
+		9D7D4C522CF6D985000D7E24 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Main.strings; sourceTree = "<group>"; };
+		9D7D4C532CF6D985000D7E24 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/AboutBoxWindowController.strings; sourceTree = "<group>"; };
+		9D7D4C542CF6D985000D7E24 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/UpdateAvailableWindow.strings; sourceTree = "<group>"; };
+		9D7D4C552CF6D985000D7E24 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/CopySettingsWindow.strings; sourceTree = "<group>"; };
+		9D7D4C562CF6D986000D7E24 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/LoginWindow.strings; sourceTree = "<group>"; };
+		9D7D4C572CF6D986000D7E24 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/CaptureViewController.strings; sourceTree = "<group>"; };
+		9D7D4C582CF6D986000D7E24 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/CreateAccountViewController.strings; sourceTree = "<group>"; };
+		9D7D4C592CF6D986000D7E24 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/DoneViewController.strings; sourceTree = "<group>"; };
+		9D7D4C5A2CF6D994000D7E24 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutBoxWindowController.swift; sourceTree = "<group>"; };
 		9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemIcon.swift; sourceTree = "<group>"; };
 		9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemView.swift; sourceTree = "<group>"; };
@@ -1024,7 +1068,11 @@
 			knownRegions = (
 				en,
 				Base,
+				ar,
 				es,
+				hi,
+				ko,
+				vi,
 			);
 			mainGroup = 31751B002444DE8900EEDF14;
 			packageReferences = (
@@ -1321,8 +1369,12 @@
 			isa = PBXVariantGroup;
 			children = (
 				31751B3B2444DFAA00EEDF14 /* Base */,
+				9D7D4C202CF6D2C5000D7E24 /* ar */,
 				CEC23E6A2733867400E8D032 /* en */,
 				CEC23E6C2733867500E8D032 /* es */,
+				9D7D4C2E2CF6D7B8000D7E24 /* hi */,
+				9D7D4C3C2CF6D934000D7E24 /* ko */,
+				9D7D4C522CF6D985000D7E24 /* vi */,
 			);
 			name = Main.xib;
 			sourceTree = "<group>";
@@ -1347,8 +1399,12 @@
 			isa = PBXVariantGroup;
 			children = (
 				9D363E392798873600D52A98 /* Base */,
+				9D7D4C242CF6D2C6000D7E24 /* ar */,
 				9D363E3A2798874500D52A98 /* en */,
 				9D363E382798873400D52A98 /* es */,
+				9D7D4C322CF6D7B8000D7E24 /* hi */,
+				9D7D4C402CF6D934000D7E24 /* ko */,
+				9D7D4C562CF6D986000D7E24 /* vi */,
 			);
 			name = LoginWindow.xib;
 			sourceTree = "<group>";
@@ -1357,8 +1413,12 @@
 			isa = PBXVariantGroup;
 			children = (
 				9D363E3C2798875700D52A98 /* Base */,
+				9D7D4C252CF6D2C6000D7E24 /* ar */,
 				9D363E3F2798875900D52A98 /* en */,
 				9D363E412798875A00D52A98 /* es */,
+				9D7D4C332CF6D7B9000D7E24 /* hi */,
+				9D7D4C412CF6D934000D7E24 /* ko */,
+				9D7D4C572CF6D986000D7E24 /* vi */,
 			);
 			name = CaptureViewController.xib;
 			sourceTree = "<group>";
@@ -1367,8 +1427,12 @@
 			isa = PBXVariantGroup;
 			children = (
 				9D363E432798876000D52A98 /* Base */,
+				9D7D4C262CF6D2C6000D7E24 /* ar */,
 				9D363E462798876200D52A98 /* en */,
 				9D363E482798876300D52A98 /* es */,
+				9D7D4C342CF6D7B9000D7E24 /* hi */,
+				9D7D4C422CF6D935000D7E24 /* ko */,
+				9D7D4C582CF6D986000D7E24 /* vi */,
 			);
 			name = CreateAccountViewController.xib;
 			sourceTree = "<group>";
@@ -1377,8 +1441,12 @@
 			isa = PBXVariantGroup;
 			children = (
 				9D363E4A2798876900D52A98 /* Base */,
+				9D7D4C272CF6D2C6000D7E24 /* ar */,
 				9D363E4D2798876B00D52A98 /* en */,
 				9D363E4F2798876C00D52A98 /* es */,
+				9D7D4C352CF6D7B9000D7E24 /* hi */,
+				9D7D4C432CF6D935000D7E24 /* ko */,
+				9D7D4C592CF6D986000D7E24 /* vi */,
 			);
 			name = DoneViewController.xib;
 			sourceTree = "<group>";
@@ -1386,8 +1454,12 @@
 		9D4D47C526CBFE2500AC6E3D /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
+				9D7D4C2B2CF6D704000D7E24 /* ar */,
 				9D4D47CA26CBFE5400AC6E3D /* es */,
 				CEB8709427336AE4002E7601 /* en */,
+				9D7D4C392CF6D7C9000D7E24 /* hi */,
+				9D7D4C442CF6D940000D7E24 /* ko */,
+				9D7D4C5A2CF6D994000D7E24 /* vi */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1404,8 +1476,12 @@
 			isa = PBXVariantGroup;
 			children = (
 				CEC23E602733846100E8D032 /* Base */,
+				9D7D4C212CF6D2C5000D7E24 /* ar */,
 				CEC23E62273384E600E8D032 /* es */,
 				CEC23E682733853E00E8D032 /* en */,
+				9D7D4C2F2CF6D7B8000D7E24 /* hi */,
+				9D7D4C3D2CF6D934000D7E24 /* ko */,
+				9D7D4C532CF6D985000D7E24 /* vi */,
 			);
 			name = AboutBoxWindowController.xib;
 			sourceTree = "<group>";
@@ -1414,8 +1490,12 @@
 			isa = PBXVariantGroup;
 			children = (
 				CEC23E6E2733870500E8D032 /* Base */,
+				9D7D4C1F2CF6D2C5000D7E24 /* ar */,
 				CEC23E712733870700E8D032 /* en */,
 				CEC23E732733870700E8D032 /* es */,
+				9D7D4C2D2CF6D7B7000D7E24 /* hi */,
+				9D7D4C3B2CF6D933000D7E24 /* ko */,
+				9D7D4C512CF6D985000D7E24 /* vi */,
 			);
 			name = PermissionsSuccessWindow.xib;
 			path = "Permissions Guidance";
@@ -1425,8 +1505,12 @@
 			isa = PBXVariantGroup;
 			children = (
 				CEC23E752733870C00E8D032 /* Base */,
+				9D7D4C1E2CF6D2C5000D7E24 /* ar */,
 				CEC23E782733870F00E8D032 /* en */,
 				CEC23E7A2733871000E8D032 /* es */,
+				9D7D4C2C2CF6D7B7000D7E24 /* hi */,
+				9D7D4C3A2CF6D933000D7E24 /* ko */,
+				9D7D4C502CF6D985000D7E24 /* vi */,
 			);
 			name = PermissionsGuidanceWindow.xib;
 			path = "Permissions Guidance";
@@ -1436,8 +1520,12 @@
 			isa = PBXVariantGroup;
 			children = (
 				CEC23E7C2733872700E8D032 /* Base */,
+				9D7D4C222CF6D2C5000D7E24 /* ar */,
 				CEC23E7F2733872900E8D032 /* es */,
 				CEC23E812733872A00E8D032 /* en */,
+				9D7D4C302CF6D7B8000D7E24 /* hi */,
+				9D7D4C3E2CF6D934000D7E24 /* ko */,
+				9D7D4C542CF6D985000D7E24 /* vi */,
 			);
 			name = UpdateAvailableWindow.xib;
 			sourceTree = "<group>";
@@ -1446,8 +1534,12 @@
 			isa = PBXVariantGroup;
 			children = (
 				CEC23E832733873400E8D032 /* Base */,
+				9D7D4C232CF6D2C6000D7E24 /* ar */,
 				CEC23E862733873800E8D032 /* es */,
 				CEC23E882733873800E8D032 /* en */,
+				9D7D4C312CF6D7B8000D7E24 /* hi */,
+				9D7D4C3F2CF6D934000D7E24 /* ko */,
+				9D7D4C552CF6D985000D7E24 /* vi */,
 			);
 			name = CopySettingsWindow.xib;
 			sourceTree = "<group>";
