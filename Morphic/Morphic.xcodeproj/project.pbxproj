@@ -483,6 +483,50 @@
 		9D7D4C582CF6D986000D7E24 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/CreateAccountViewController.strings; sourceTree = "<group>"; };
 		9D7D4C592CF6D986000D7E24 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/DoneViewController.strings; sourceTree = "<group>"; };
 		9D7D4C5A2CF6D994000D7E24 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
+		9D7D4C5B2CF6EC82000D7E24 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/PermissionsGuidanceWindow.strings"; sourceTree = "<group>"; };
+		9D7D4C5C2CF6EC82000D7E24 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/PermissionsSuccessWindow.strings"; sourceTree = "<group>"; };
+		9D7D4C5D2CF6EC82000D7E24 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
+		9D7D4C5E2CF6EC82000D7E24 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/AboutBoxWindowController.strings"; sourceTree = "<group>"; };
+		9D7D4C5F2CF6EC82000D7E24 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/UpdateAvailableWindow.strings"; sourceTree = "<group>"; };
+		9D7D4C602CF6EC83000D7E24 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/CopySettingsWindow.strings"; sourceTree = "<group>"; };
+		9D7D4C612CF6EC83000D7E24 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LoginWindow.strings"; sourceTree = "<group>"; };
+		9D7D4C622CF6EC83000D7E24 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/CaptureViewController.strings"; sourceTree = "<group>"; };
+		9D7D4C632CF6EC83000D7E24 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/CreateAccountViewController.strings"; sourceTree = "<group>"; };
+		9D7D4C642CF6EC83000D7E24 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/DoneViewController.strings"; sourceTree = "<group>"; };
+		9D7D4C652CF6EC84000D7E24 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		9D7D4C662CF6EC95000D7E24 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/PermissionsGuidanceWindow.strings"; sourceTree = "<group>"; };
+		9D7D4C672CF6EC95000D7E24 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/PermissionsSuccessWindow.strings"; sourceTree = "<group>"; };
+		9D7D4C682CF6EC95000D7E24 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Main.strings"; sourceTree = "<group>"; };
+		9D7D4C692CF6EC95000D7E24 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/AboutBoxWindowController.strings"; sourceTree = "<group>"; };
+		9D7D4C6A2CF6EC96000D7E24 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/UpdateAvailableWindow.strings"; sourceTree = "<group>"; };
+		9D7D4C6B2CF6EC96000D7E24 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/CopySettingsWindow.strings"; sourceTree = "<group>"; };
+		9D7D4C6C2CF6EC96000D7E24 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/LoginWindow.strings"; sourceTree = "<group>"; };
+		9D7D4C6D2CF6EC96000D7E24 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/CaptureViewController.strings"; sourceTree = "<group>"; };
+		9D7D4C6E2CF6EC96000D7E24 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/CreateAccountViewController.strings"; sourceTree = "<group>"; };
+		9D7D4C6F2CF6EC97000D7E24 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/DoneViewController.strings"; sourceTree = "<group>"; };
+		9D7D4C702CF6EC97000D7E24 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		9D7D4C7C2CF6ECFE000D7E24 /* gu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = gu; path = gu.lproj/PermissionsGuidanceWindow.strings; sourceTree = "<group>"; };
+		9D7D4C7D2CF6ECFF000D7E24 /* gu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = gu; path = gu.lproj/PermissionsSuccessWindow.strings; sourceTree = "<group>"; };
+		9D7D4C7E2CF6ECFF000D7E24 /* gu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = gu; path = gu.lproj/Main.strings; sourceTree = "<group>"; };
+		9D7D4C7F2CF6ECFF000D7E24 /* gu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = gu; path = gu.lproj/AboutBoxWindowController.strings; sourceTree = "<group>"; };
+		9D7D4C802CF6ECFF000D7E24 /* gu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = gu; path = gu.lproj/UpdateAvailableWindow.strings; sourceTree = "<group>"; };
+		9D7D4C812CF6ECFF000D7E24 /* gu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = gu; path = gu.lproj/CopySettingsWindow.strings; sourceTree = "<group>"; };
+		9D7D4C822CF6ED00000D7E24 /* gu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = gu; path = gu.lproj/LoginWindow.strings; sourceTree = "<group>"; };
+		9D7D4C832CF6ED00000D7E24 /* gu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = gu; path = gu.lproj/CaptureViewController.strings; sourceTree = "<group>"; };
+		9D7D4C842CF6ED00000D7E24 /* gu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = gu; path = gu.lproj/CreateAccountViewController.strings; sourceTree = "<group>"; };
+		9D7D4C852CF6ED00000D7E24 /* gu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = gu; path = gu.lproj/DoneViewController.strings; sourceTree = "<group>"; };
+		9D7D4C862CF6ED0D000D7E24 /* gu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = gu; path = gu.lproj/Localizable.strings; sourceTree = "<group>"; };
+		9D7D4C872CF6ED79000D7E24 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/PermissionsGuidanceWindow.strings; sourceTree = "<group>"; };
+		9D7D4C882CF6ED79000D7E24 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/PermissionsSuccessWindow.strings; sourceTree = "<group>"; };
+		9D7D4C892CF6ED79000D7E24 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/Main.strings; sourceTree = "<group>"; };
+		9D7D4C8A2CF6ED79000D7E24 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/AboutBoxWindowController.strings; sourceTree = "<group>"; };
+		9D7D4C8B2CF6ED7A000D7E24 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/UpdateAvailableWindow.strings; sourceTree = "<group>"; };
+		9D7D4C8C2CF6ED7A000D7E24 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/CopySettingsWindow.strings; sourceTree = "<group>"; };
+		9D7D4C8D2CF6ED7A000D7E24 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/LoginWindow.strings; sourceTree = "<group>"; };
+		9D7D4C8E2CF6ED7A000D7E24 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/CaptureViewController.strings; sourceTree = "<group>"; };
+		9D7D4C8F2CF6ED7A000D7E24 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/CreateAccountViewController.strings; sourceTree = "<group>"; };
+		9D7D4C902CF6ED7A000D7E24 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/DoneViewController.strings; sourceTree = "<group>"; };
+		9D7D4C912CF6ED7B000D7E24 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9D82576C24D31C1E00F6E932 /* AboutBoxWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutBoxWindowController.swift; sourceTree = "<group>"; };
 		9D8CEB122507AECF001276E4 /* MorphicBarButtonItemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemIcon.swift; sourceTree = "<group>"; };
 		9D8CEB142507AED7001276E4 /* MorphicBarButtonItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorphicBarButtonItemView.swift; sourceTree = "<group>"; };
@@ -1066,13 +1110,17 @@
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
 				ar,
+				en,
 				es,
+				gu,
 				hi,
 				ko,
 				vi,
+				ur,
+				"zh-Hans",
+				"zh-Hant",
 			);
 			mainGroup = 31751B002444DE8900EEDF14;
 			packageReferences = (
@@ -1372,9 +1420,13 @@
 				9D7D4C202CF6D2C5000D7E24 /* ar */,
 				CEC23E6A2733867400E8D032 /* en */,
 				CEC23E6C2733867500E8D032 /* es */,
+				9D7D4C7E2CF6ECFF000D7E24 /* gu */,
 				9D7D4C2E2CF6D7B8000D7E24 /* hi */,
 				9D7D4C3C2CF6D934000D7E24 /* ko */,
+				9D7D4C892CF6ED79000D7E24 /* ur */,
 				9D7D4C522CF6D985000D7E24 /* vi */,
+				9D7D4C5D2CF6EC82000D7E24 /* zh-Hans */,
+				9D7D4C682CF6EC95000D7E24 /* zh-Hant */,
 			);
 			name = Main.xib;
 			sourceTree = "<group>";
@@ -1402,9 +1454,13 @@
 				9D7D4C242CF6D2C6000D7E24 /* ar */,
 				9D363E3A2798874500D52A98 /* en */,
 				9D363E382798873400D52A98 /* es */,
+				9D7D4C822CF6ED00000D7E24 /* gu */,
 				9D7D4C322CF6D7B8000D7E24 /* hi */,
 				9D7D4C402CF6D934000D7E24 /* ko */,
+				9D7D4C8D2CF6ED7A000D7E24 /* ur */,
 				9D7D4C562CF6D986000D7E24 /* vi */,
+				9D7D4C612CF6EC83000D7E24 /* zh-Hans */,
+				9D7D4C6C2CF6EC96000D7E24 /* zh-Hant */,
 			);
 			name = LoginWindow.xib;
 			sourceTree = "<group>";
@@ -1416,9 +1472,13 @@
 				9D7D4C252CF6D2C6000D7E24 /* ar */,
 				9D363E3F2798875900D52A98 /* en */,
 				9D363E412798875A00D52A98 /* es */,
+				9D7D4C832CF6ED00000D7E24 /* gu */,
 				9D7D4C332CF6D7B9000D7E24 /* hi */,
 				9D7D4C412CF6D934000D7E24 /* ko */,
+				9D7D4C8E2CF6ED7A000D7E24 /* ur */,
 				9D7D4C572CF6D986000D7E24 /* vi */,
+				9D7D4C622CF6EC83000D7E24 /* zh-Hans */,
+				9D7D4C6D2CF6EC96000D7E24 /* zh-Hant */,
 			);
 			name = CaptureViewController.xib;
 			sourceTree = "<group>";
@@ -1430,9 +1490,13 @@
 				9D7D4C262CF6D2C6000D7E24 /* ar */,
 				9D363E462798876200D52A98 /* en */,
 				9D363E482798876300D52A98 /* es */,
+				9D7D4C842CF6ED00000D7E24 /* gu */,
 				9D7D4C342CF6D7B9000D7E24 /* hi */,
 				9D7D4C422CF6D935000D7E24 /* ko */,
+				9D7D4C8F2CF6ED7A000D7E24 /* ur */,
 				9D7D4C582CF6D986000D7E24 /* vi */,
+				9D7D4C632CF6EC83000D7E24 /* zh-Hans */,
+				9D7D4C6E2CF6EC96000D7E24 /* zh-Hant */,
 			);
 			name = CreateAccountViewController.xib;
 			sourceTree = "<group>";
@@ -1444,9 +1508,13 @@
 				9D7D4C272CF6D2C6000D7E24 /* ar */,
 				9D363E4D2798876B00D52A98 /* en */,
 				9D363E4F2798876C00D52A98 /* es */,
+				9D7D4C852CF6ED00000D7E24 /* gu */,
 				9D7D4C352CF6D7B9000D7E24 /* hi */,
 				9D7D4C432CF6D935000D7E24 /* ko */,
+				9D7D4C902CF6ED7A000D7E24 /* ur */,
 				9D7D4C592CF6D986000D7E24 /* vi */,
+				9D7D4C642CF6EC83000D7E24 /* zh-Hans */,
+				9D7D4C6F2CF6EC97000D7E24 /* zh-Hant */,
 			);
 			name = DoneViewController.xib;
 			sourceTree = "<group>";
@@ -1457,9 +1525,13 @@
 				9D7D4C2B2CF6D704000D7E24 /* ar */,
 				9D4D47CA26CBFE5400AC6E3D /* es */,
 				CEB8709427336AE4002E7601 /* en */,
+				9D7D4C862CF6ED0D000D7E24 /* gu */,
 				9D7D4C392CF6D7C9000D7E24 /* hi */,
 				9D7D4C442CF6D940000D7E24 /* ko */,
+				9D7D4C912CF6ED7B000D7E24 /* ur */,
 				9D7D4C5A2CF6D994000D7E24 /* vi */,
+				9D7D4C652CF6EC84000D7E24 /* zh-Hans */,
+				9D7D4C702CF6EC97000D7E24 /* zh-Hant */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1479,9 +1551,13 @@
 				9D7D4C212CF6D2C5000D7E24 /* ar */,
 				CEC23E62273384E600E8D032 /* es */,
 				CEC23E682733853E00E8D032 /* en */,
+				9D7D4C7F2CF6ECFF000D7E24 /* gu */,
 				9D7D4C2F2CF6D7B8000D7E24 /* hi */,
 				9D7D4C3D2CF6D934000D7E24 /* ko */,
+				9D7D4C8A2CF6ED79000D7E24 /* ur */,
 				9D7D4C532CF6D985000D7E24 /* vi */,
+				9D7D4C5E2CF6EC82000D7E24 /* zh-Hans */,
+				9D7D4C692CF6EC95000D7E24 /* zh-Hant */,
 			);
 			name = AboutBoxWindowController.xib;
 			sourceTree = "<group>";
@@ -1493,9 +1569,13 @@
 				9D7D4C1F2CF6D2C5000D7E24 /* ar */,
 				CEC23E712733870700E8D032 /* en */,
 				CEC23E732733870700E8D032 /* es */,
+				9D7D4C7D2CF6ECFF000D7E24 /* gu */,
 				9D7D4C2D2CF6D7B7000D7E24 /* hi */,
 				9D7D4C3B2CF6D933000D7E24 /* ko */,
+				9D7D4C882CF6ED79000D7E24 /* ur */,
 				9D7D4C512CF6D985000D7E24 /* vi */,
+				9D7D4C5C2CF6EC82000D7E24 /* zh-Hans */,
+				9D7D4C672CF6EC95000D7E24 /* zh-Hant */,
 			);
 			name = PermissionsSuccessWindow.xib;
 			path = "Permissions Guidance";
@@ -1508,9 +1588,13 @@
 				9D7D4C1E2CF6D2C5000D7E24 /* ar */,
 				CEC23E782733870F00E8D032 /* en */,
 				CEC23E7A2733871000E8D032 /* es */,
+				9D7D4C7C2CF6ECFE000D7E24 /* gu */,
 				9D7D4C2C2CF6D7B7000D7E24 /* hi */,
 				9D7D4C3A2CF6D933000D7E24 /* ko */,
+				9D7D4C872CF6ED79000D7E24 /* ur */,
 				9D7D4C502CF6D985000D7E24 /* vi */,
+				9D7D4C5B2CF6EC82000D7E24 /* zh-Hans */,
+				9D7D4C662CF6EC95000D7E24 /* zh-Hant */,
 			);
 			name = PermissionsGuidanceWindow.xib;
 			path = "Permissions Guidance";
@@ -1523,9 +1607,13 @@
 				9D7D4C222CF6D2C5000D7E24 /* ar */,
 				CEC23E7F2733872900E8D032 /* es */,
 				CEC23E812733872A00E8D032 /* en */,
+				9D7D4C802CF6ECFF000D7E24 /* gu */,
 				9D7D4C302CF6D7B8000D7E24 /* hi */,
 				9D7D4C3E2CF6D934000D7E24 /* ko */,
+				9D7D4C8B2CF6ED7A000D7E24 /* ur */,
 				9D7D4C542CF6D985000D7E24 /* vi */,
+				9D7D4C5F2CF6EC82000D7E24 /* zh-Hans */,
+				9D7D4C6A2CF6EC96000D7E24 /* zh-Hant */,
 			);
 			name = UpdateAvailableWindow.xib;
 			sourceTree = "<group>";
@@ -1537,9 +1625,13 @@
 				9D7D4C232CF6D2C6000D7E24 /* ar */,
 				CEC23E862733873800E8D032 /* es */,
 				CEC23E882733873800E8D032 /* en */,
+				9D7D4C812CF6ECFF000D7E24 /* gu */,
 				9D7D4C312CF6D7B8000D7E24 /* hi */,
 				9D7D4C3F2CF6D934000D7E24 /* ko */,
+				9D7D4C8C2CF6ED7A000D7E24 /* ur */,
 				9D7D4C552CF6D985000D7E24 /* vi */,
+				9D7D4C602CF6EC83000D7E24 /* zh-Hans */,
+				9D7D4C6B2CF6EC96000D7E24 /* zh-Hant */,
 			);
 			name = CopySettingsWindow.xib;
 			sourceTree = "<group>";
